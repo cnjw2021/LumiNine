@@ -53,9 +53,9 @@ const getFlag = (flag, defaultVal = null, requireValue = false) => {
 
 const batchFilePath = getFlag('--batch-file', null, true);
 const continueOnError = args.includes('--continue-on-error');
-const failedBatchOut = getFlag('--failed-batch-out');
-const logFilePath = getFlag('--log-file');
-const handledUrlsPath = getFlag('--handled-urls');
+const failedBatchOut = getFlag('--failed-batch-out', null, true);
+const logFilePath = getFlag('--log-file', null, true);
+const handledUrlsPath = getFlag('--handled-urls', null, true);
 
 if (!batchFilePath) {
     console.error('❌ --batch-file 옵션이 필요합니다.');
