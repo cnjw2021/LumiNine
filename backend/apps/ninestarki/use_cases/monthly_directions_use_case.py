@@ -1,0 +1,175 @@
+"""월반 방위 산출 유즈케이스 (Monthly Directions Use Case).
+
+처리 흐름:
+1. YearStarDomainService → 연반 중궁성 + 연간지 취득
+2. MonthlyBoardDomainService → 절월(節月) 결정 + 월반 편성
+3. DirectionRuleEngine (기존 재사용) → 길흉방위 판정
+4. 응답 dict 반환
+"""
+from __future__ import annotations
+
+from datetime import date
+from typing import Any, Dict, Optional
+
+from injector import inject
+
+from apps.ninestarki.domain.services.year_star_domain_service import YearStarDomainService
+from apps.ninestarki.domain.services.monthly_board_domain_service import MonthlyBoardDomainService
+from apps.ninestarki.domain.services.direction_rule_engine import DirectionRuleEngine
+from core.utils.logger import get_logger
+
+logger = get_logger(__name__)
+
+
+class MonthlyDirectionsUseCase:
+    """월반(月盤) 기준 방위 길흉 판정 유즈케이스.
+
+    Args:
+        year_star_service: 연반 중궁성 / 연간지 정보 제공
+        monthly_board_service: 월반 편성 도메인 서비스
+        direction_engine: 길흉방위 판별 엔진 (연·월 공통 재사용)
+    """
+
+    @inject
+    def __init__(
+        self,
+        year_star_service: YearStarDomainService,
+        monthly_board_service: MonthlyBoardDomainService,
+        direction_engine: DirectionRuleEngine,
+    ) -> None:
+        self._year_star_service = year_star_service
+        self._monthly_board = monthly_board_service
+        self._direction_engine = direction_engine
+
+    def execute(
+        self,
+        main_star: int,
+        month_star: int,
+        target_year: int,
+        target_month: Optional[int] = None,
+    ) -> Dict[str, Any]:
+        """월반 방위 길흉 결과를 반환한다.
+
+        Args:
+            main_star: 사용자 본명성 (1~9)
+            month_star: 사용자 월명성 (1~9)
+            target_year: 조회 연도
+            target_month: 조회 월 (None 이면 해당 연도 전체 절월 반환)
+
+        Returns:
+            {
+                "main_star": int,
+                "month_star": int,
+                "target_year": int,
+                "monthly_boards": {
+                    "setsu_month_1": { ... },
+                    ...
+                }
+            }
+        """
+        logger.info(
+            "MonthlyDirectionsUseCase.execute: main=%d month=%d year=%d target_month=%s",
+            main_star, month_star, target_year, target_month,
+        )
+
+        # ── 1. 연반 정보 취득 ──────────────────────────
+        year_info = self._year_star_service.get_year_star_info(target_year)
+        if not year_info:
+            raise ValueError(f"연반 정보를 찾을 수 없습니다. year={target_year}")
+
+        year_center_star: int = year_info["star_number"]
+        year_zodiac: str = year_info.get("zodiac", "")
+        if not year_zodiac:
+            raise ValueError(f"연간지(年干支) 정보가 없습니다. year={target_year}")
+
+        # ── 2. 대상 절월(節月) 범위 결정 ──────────────
+        # target_month 가 지정된 경우: 해당 월의 대표 날짜로 1절월만 조회
+        # 지정 없는 경우: target_year 의 1월(寅月)~12월(丑月) 전체 순회
+        if target_month is not None:
+            months_to_query = [target_month]
+        else:
+            months_to_query = list(range(1, 13))
+
+        # ── 3. 각 절월별 월반 편성 + 방위 판정 ────────
+        monthly_boards: Dict[str, Any] = {}
+
+        for setsu_index in months_to_query:
+            try:
+                # 절월 인덱스 1(寅月) → 입춘 직후인 날짜를 SolarTermsRepo 에서 취득하기 위해
+                # 임시로 편의 날짜를 이용한다.
+                # 실제로는 _solar_terms_repo 경유로 절입일을 특정하므로 여기선 해당 절월의
+                # 「절입일 당일」을 get_monthly_board 에 넘기면 된다.
+                period_start = self._resolve_setsu_month_start(target_year, setsu_index)
+                if period_start is None:
+                    logger.warning("절입일 미취득 setsu_index=%d year=%d", setsu_index, target_year)
+                    continue
+
+                board_result = self._monthly_board.get_monthly_board(
+                    target_date=period_start,
+                    year_center_star=year_center_star,
+                    year_zodiac=year_zodiac,
+                )
+
+                # ── 4. 방위 길흉 판정 ──────────────────
+                fortune_status: Dict[str, Any] = {}
+                if board_result.grid_pattern is not None:
+                    fortune_params = {
+                        "main_star": main_star,
+                        "month_star": month_star,
+                        "year_star": year_center_star,
+                        "zodiac": board_result.month_zodiac,
+                    }
+                    fortune_status = board_result.grid_pattern.get_fortune_status(fortune_params)
+
+                key = f"setsu_month_{setsu_index}"
+                monthly_boards[key] = {
+                    "setsu_month_index": board_result.setsu_month_index,
+                    "center_star": board_result.center_star,
+                    "month_zodiac": board_result.month_zodiac,
+                    "month_stem": board_result.month_stem,
+                    "month_branch": board_result.month_branch,
+                    "period_start": board_result.period_start.isoformat(),
+                    "period_end": board_result.period_end.isoformat(),
+                    "directions": fortune_status,
+                }
+
+            except Exception as exc:
+                logger.warning(
+                    "setsu_index=%d の月盤編成でエラー: %s", setsu_index, exc, exc_info=True
+                )
+                continue
+
+        return {
+            "main_star": main_star,
+            "month_star": month_star,
+            "target_year": target_year,
+            "year_center_star": year_center_star,
+            "year_zodiac": year_zodiac,
+            "monthly_boards": monthly_boards,
+        }
+
+    # ──────────────────────────────
+    # Private helpers
+    # ──────────────────────────────
+
+    def _resolve_setsu_month_start(self, year: int, setsu_index: int) -> Optional[date]:
+        """절월(節月) 인덱스에 해당하는 절입일(date)을 취득한다.
+
+        節月インデックスとDBのmonth列の対応関係:
+          setsu_index=1(寅月) ← solar_terms.month=1 (立春)
+          setsu_index=2(卯月) ← solar_terms.month=2 (啓蟄)
+          ...
+          setsu_index=12(丑月) ← solar_terms.month=12 (小寒)
+        """
+        # MonthlyBoardDomainService 는 ISolarTermsRepository を持つが UseCase からは直接は触れない。
+        # _monthly_board が内部的に SolarTermsRepo を保持しているため、
+        # ここでは YearStarDomainService が持つ SolarTermsRepo 経由で取得する。
+        solar_terms_repo = getattr(self._year_star_service, "solar_terms_repo", None)
+        if solar_terms_repo is None:
+            return None
+
+        term = solar_terms_repo.get_term_by_month(year, setsu_index)
+        if term is None:
+            # 丑月(setsu_index=12) は小寒の年がずれる場合がある
+            term = solar_terms_repo.get_term_by_month(year - 1, setsu_index)
+        return term.solar_terms_date if term else None
