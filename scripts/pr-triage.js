@@ -132,12 +132,11 @@ let cursor = null;
 
 try {
     while (hasNextPage) {
-        const query = `
-        {
-          repository(owner: "${repoOwner}", name: "${repoName}") {
-            pullRequest(number: ${PR}) {
+        const query = `query($owner: String!, $name: String!, $pr: Int!, $cursor: String) {
+          repository(owner: $owner, name: $name) {
+            pullRequest(number: $pr) {
               title
-              reviewThreads(first: 50${cursor ? `, after: "${cursor}"` : ''}) {
+              reviewThreads(first: 50, after: $cursor) {
                 pageInfo {
                   hasNextPage
                   endCursor
@@ -158,21 +157,27 @@ try {
                       author { login }
                       body
                       url
-                      createdAt
                     }
                   }
                 }
               }
             }
           }
+        }`;
+
+        const cmdArgs = [
+            'api', 'graphql',
+            '-f', `query=${query}`,
+            '-f', `owner=${repoOwner}`,
+            '-f', `name=${repoName}`,
+            '-F', `pr=${PR}`
+        ];
+        if (cursor) {
+            cmdArgs.push('-f', `cursor=${cursor}`);
         }
-        `;
-        const result = execSync(`gh api graphql -f query='${query.replace(/'/g, "'\\''")}'`, {
-            encoding: 'utf-8',
-            stdio: ['pipe', 'pipe', 'pipe'],
-            maxBuffer: 10 * 1024 * 1024 // 10MB
-        });
-        const data = JSON.parse(result).data.repository.pullRequest;
+
+        const out = execFileSync('gh', cmdArgs, { encoding: 'utf-8', stdio: ['pipe', 'pipe', 'pipe'] });
+        const data = JSON.parse(out).data.repository.pullRequest;
         if (!prData) prData = data;
 
         allThreads.push(...data.reviewThreads.nodes);

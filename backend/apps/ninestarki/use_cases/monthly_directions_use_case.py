@@ -95,6 +95,11 @@ class MonthlyDirectionsUseCase:
         # target_month 가 지정된 경우: 해당 월의 대표 날짜로 1절월만 조회
         # 지정 없는 경우: target_year 의 1월(寅月)~12월(丑月) 전체 순회
         if target_month is not None:
+            # 절월 인덱스 유효 범위(1~12) 검증
+            if not 1 <= target_month <= 12:
+                raise ValueError(
+                    f"Invalid target_month: {target_month}. Valid range is 1-12."
+                )
             months_to_query = [target_month]
         else:
             months_to_query = list(range(1, 13))

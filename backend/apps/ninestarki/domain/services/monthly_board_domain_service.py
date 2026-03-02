@@ -139,7 +139,7 @@ class MonthlyBoardDomainService:
 
     def _determine_setsu_month(
         self, target_date: date, lookup_year: int
-    ):
+    ) -> tuple[Any, int, date]:
         """target_date 가 속하는 절기 레코드, 절월 인덱스, 종료일을 반환한다.
 
         【DB 구조】
