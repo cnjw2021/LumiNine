@@ -11,7 +11,7 @@ from __future__ import annotations
 
 import pytest
 from datetime import date
-from typing import Any, Dict, Optional
+from typing import Any, Optional
 from apps.ninestarki.use_cases.monthly_directions_use_case import MonthlyDirectionsUseCase
 from apps.ninestarki.domain.services.monthly_board_domain_service import MonthlyBoardResult
 
@@ -66,11 +66,19 @@ class _StubMonthlyBoardService:
     def get_period_start_for_setsu(self, year: int, setsu_index: int) -> Optional[date]:
         if setsu_index in self._missing:
             return None
+        # 지적 사항 [5] 대응: 12번(丑月) 절입은 다음 해 1월 5일경(小寒)
+        if setsu_index == 12:
+            return date(year + 1, 1, 5)
         return date(year, max(1, min(12, setsu_index + 1)), 4)
 
     def get_monthly_board(self, target_date: date) -> MonthlyBoardResult:
-        # setsu_index는 target_date.month 로 역산 (테스트용 단순화)
-        idx = target_date.month - 1 if target_date.month > 1 else 12
+        # setsu_index 역산 로직 정밀화:
+        # - 1월 1~4일: 전년 12월(丑月, setsu_index=12)에 속함 (간략화된 Stub 규칙)
+        # - 그 외: month-1
+        if target_date.month == 1 and target_date.day < 5:
+            idx = 12
+        else:
+            idx = target_date.month - 1 if target_date.month > 1 else 12
         return _make_board_result(idx)
 
 

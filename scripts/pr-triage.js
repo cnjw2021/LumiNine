@@ -10,6 +10,8 @@
  *   --offset-auto-fix <N>         auto-fixable 배치 시작 오프셋 (기본 0)
  *   --emit-reply-batch            pr-<PR>-reply-batch.json 생성 (auto-fix 용)
  *   --emit-manual-reply-batch     pr-<PR>-manual-reply-batch.json 생성 (manual/design 용)
+ *   --repo <OWNER/REPO>           대상 GitHub 저장소 (기본: GITHUB_REPOSITORY 또는 현재 gh 설정)
+ *   --pr-review-dir <path>        출력 디렉터리 (기본: .pr-review)
  *   --include-resolved            resolved 코멘트도 포함 (정정 reply 용)
  *   --handled-urls <path>         이미 처리된 코멘트 URL 목록 JSON
  *
@@ -111,54 +113,70 @@ if (!repoOwner || !repoName) {
     }
 }
 
-// ── GraphQL: PR 리뷰 스레드 조회 ─────────────────────────
-console.log(`\n🔍 PR #${PR} Copilot 리뷰 코멘트 조회 중...`);
+let prData = null;
+let allThreads = [];
+let hasNextPage = true;
+let cursor = null;
 
-const query = `
-{
-  repository(owner: "${repoOwner}", name: "${repoName}") {
-
-    pullRequest(number: ${PR}) {
-      title
-      reviewThreads(first: 50) {
-        nodes {
-          id
-          isResolved
-          isOutdated
-          path
-          line
-          startLine
-          diffSide
-          comments(first: 5) {
-            nodes {
-              id
-              databaseId
-              author { login }
-              body
-              url
-              createdAt
+try {
+    while (hasNextPage) {
+        const query = `
+        {
+          repository(owner: "${repoOwner}", name: "${repoName}") {
+            pullRequest(number: ${PR}) {
+              title
+              reviewThreads(first: 50${cursor ? `, after: "${cursor}"` : ''}) {
+                pageInfo {
+                  hasNextPage
+                  endCursor
+                }
+                nodes {
+                  id
+                  isResolved
+                  isOutdated
+                  path
+                  line
+                  startLine
+                  diffSide
+                  comments(first: 10) {
+                    totalCount
+                    nodes {
+                      id
+                      databaseId
+                      author { login }
+                      body
+                      url
+                      createdAt
+                    }
+                  }
+                }
+              }
             }
           }
         }
-      }
-    }
-  }
-}
-`;
+        `;
+        const result = execSync(`gh api graphql -f query='${query.replace(/'/g, "'\\''")}'`, {
+            encoding: 'utf-8',
+            stdio: ['pipe', 'pipe', 'pipe'],
+        });
+        const data = JSON.parse(result).data.repository.pullRequest;
+        if (!prData) prData = data;
 
-let prData;
-try {
-    const result = execSync(`gh api graphql -f query='${query.replace(/'/g, "'\\''")}'`, {
-        encoding: 'utf-8',
-        stdio: ['pipe', 'pipe', 'pipe'],
-    });
-    prData = JSON.parse(result).data.repository.pullRequest;
+        allThreads.push(...data.reviewThreads.nodes);
+        hasNextPage = data.reviewThreads.pageInfo.hasNextPage;
+        cursor = data.reviewThreads.pageInfo.endCursor;
+    }
 } catch (e) {
     console.error('❌ GitHub API 조회 실패:', e.message);
     process.exit(1);
 }
 
-const allThreads = prData.reviewThreads.nodes;
+// 코멘트 누락 경고 (지적 사항 [M1] 대응)
+allThreads.forEach(t => {
+    if (t.comments.totalCount > 10) {
+        console.warn(`⚠️ Warning: Thread ${t.id} has ${t.comments.totalCount} comments, but only 10 were fetched.`);
+    }
+});
 const copilotThreads = allThreads.filter(t =>
     t.comments.nodes.length > 0 &&
     t.comments.nodes[0].author.login === 'copilot-pull-request-reviewer' &&

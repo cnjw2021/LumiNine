@@ -50,7 +50,8 @@ class MonthlyDirectionsUseCase:
             main_star: 사용자 본명성 (1~9)
             month_star: 사용자 월명성 (1~9)
             target_year: 조회 연도
-            target_month: 조회 월 (None 이면 해당 연도 전체 절월 반환)
+            target_month: 조회 절월(節月) 인덱스 (1=寅月/立春 … 12=丑月/小寒).
+                None 이면 해당 연도 전체 절월(1~12)에 대해 월반 방위를 산출한다.
 
         Returns:
             {
@@ -132,6 +133,10 @@ class MonthlyDirectionsUseCase:
                     "setsu_index=%d の月盤編成でエラー: %s", setsu_index, exc, exc_info=True
                 )
                 continue
+
+        # ── 5. 결과 검증 (지적 사항 [M3] 대응) ────────
+        if target_month is not None and not monthly_boards:
+            raise ValueError(f"지정한 절월({target_month})의 데이터를 산출할 수 없습니다. (절입일 누락 등)")
 
         return {
             "main_star": main_star,

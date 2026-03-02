@@ -1,5 +1,6 @@
 """月盤データのAPIルート"""
 
+from typing import Any, Optional
 from flask import Blueprint, jsonify, request
 from flask_jwt_extended import jwt_required
 from core.database import db
@@ -9,6 +10,7 @@ from core.models.star_groups import StarGroup
 from flask_injector import inject
 from core.auth.auth_utils import permission_required
 from core.utils.logger import get_logger
+from datetime import date
 
 logger = get_logger(__name__)
 
@@ -287,7 +289,8 @@ def create_monthly_bp():
             main_star (int, 필수): 사용자 본명성 (1~9)
             month_star (int, 필수): 사용자 월명성 (1~9)
             year (int, 필수): 조회 연도 (예: 2026)
-            month (int, 선택): 조회 절월 인덱스 (1~12). 생략 시 해당 연도 전체 반환.
+            month_index (int, 選択): 조회 절월 인덱스 (1=寅月/立春 … 12=丑月/小寒). 
+                None の場合、該当年の全節月について月盤方位を算出する。
 
         Returns:
             200 OK: {
@@ -316,7 +319,10 @@ def create_monthly_bp():
             main_star = request.args.get('main_star', type=int)
             month_star = request.args.get('month_star', type=int)
             year = request.args.get('year', type=int)
-            month = request.args.get('month', type=int)  # optional
+            month_index = request.args.get('month_index', type=int)
+            if month_index is None:
+                # 하위 호환성 (또는 혼용 방지 전 과기) 을 위해 'month' 도 일단 허용하지만 경고 처리 추천
+                month_index = request.args.get('month', type=int)
 
             # ── 필수 파라미터 검증 ─────────────────────────────
             missing = [k for k, v in {'main_star': main_star, 'month_star': month_star, 'year': year}.items() if v is None]
@@ -328,15 +334,15 @@ def create_monthly_bp():
                 return jsonify({'error': 'main_star は 1~9 の範囲で指定してください'}), 422
             if not 1 <= month_star <= 9:
                 return jsonify({'error': 'month_star は 1~9 の範囲で指定してください'}), 422
-            if month is not None and not 1 <= month <= 12:
-                return jsonify({'error': 'month は 1~12 の範囲で指定してください'}), 422
+            if month_index is not None and not 1 <= month_index <= 12:
+                return jsonify({'error': 'month_index は 1~12 の範囲で指定してください'}), 422
 
             # ── 유즈케이스 실행 ────────────────────────────────
             result = use_case.execute(
                 main_star=main_star,
                 month_star=month_star,
                 target_year=year,
-                target_month=month,
+                target_month=month_index,
             )
 
             return jsonify(result), 200

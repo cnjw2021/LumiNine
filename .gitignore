@@ -59,4 +59,5 @@ frontend/out/
 frontend/build/
 frontend/.env*
 frontend/*.tsbuildinfo
-frontend/next-env.d.ts 
+frontend/next-env.d.ts .pr-review/handled_comment_urls.json
+.pr-review/
