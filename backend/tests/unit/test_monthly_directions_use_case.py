@@ -12,8 +12,6 @@ from __future__ import annotations
 import pytest
 from datetime import date
 from typing import Any, Dict, Optional
-from unittest.mock import MagicMock
-
 from apps.ninestarki.use_cases.monthly_directions_use_case import MonthlyDirectionsUseCase
 from apps.ninestarki.domain.services.monthly_board_domain_service import MonthlyBoardResult
 

@@ -31,7 +31,12 @@ class _StubSolarTerm:
 
 
 class _StubSolarTermsRepo:
-    """절기 데이터를 메모리에 보유하는 Stub ISolarTermsRepository."""
+    """절기 데이터를 메모리에 보유하는 Stub ISolarTermsRepository.
+
+    MonthlyBoardDomainService 가 호출하는 메서드만 구현한다:
+      - get_yearly_terms(year)
+      - get_term_by_month(year, month)
+    """
 
     def __init__(self, terms: list[_StubSolarTerm]):
         self._terms = terms
@@ -43,24 +48,6 @@ class _StubSolarTermsRepo:
         for t in self._terms:
             if t.year == year and t.month == month:
                 return t
-        return None
-
-    def get_term_by_date(self, target_date):
-        for t in reversed(sorted(self._terms, key=lambda x: (x.year, x.month))):
-            if t.solar_terms_date <= target_date:
-                return t
-        return None
-
-    def get_spring_start(self, year: int):
-        return next((t for t in self._terms if t.year == year and t.month == 1), None)
-
-    def list_all(self):
-        return self._terms
-
-    def get_by_id(self, term_id: int):
-        return None
-
-    def update_term(self, *args, **kwargs):
         return None
 
 
@@ -112,8 +99,6 @@ def _make_solar_terms_repo() -> _StubSolarTermsRepo:
     return _StubSolarTermsRepo(terms)
 
 
-
-
 class TestMonthlyBoardDomainService:
     """MonthlyBoardDomainService の結合テスト (Stub Repository 사용)."""
 
@@ -152,7 +137,6 @@ class TestMonthlyBoardDomainService:
             target_date=date(2026, 2, 5),
         )
         assert result.period_start <= result.period_end
-
 
 
     def test_to_dict_has_required_keys(self, service):
