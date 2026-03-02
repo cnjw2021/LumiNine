@@ -76,11 +76,11 @@ if (!Array.isArray(batch) || batch.length === 0) {
 }
 
 // ── handled URLs 로드 ─────────────────────────────────────
-let handledUrls = [];
+let handledUrls = new Set();
 if (handledUrlsPath && fs.existsSync(handledUrlsPath)) {
     try {
         const raw = JSON.parse(fs.readFileSync(handledUrlsPath, 'utf-8'));
-        handledUrls = Array.isArray(raw) ? raw : Object.keys(raw);
+        handledUrls = new Set(Array.isArray(raw) ? raw : Object.keys(raw));
     } catch { /* ignore */ }
 }
 
@@ -122,7 +122,7 @@ for (const item of batch) {
     const { thread_id, comment_id, comment_url, path: filePath, action, reply_body } = item;
 
     // 이미 처리한 URL 스킵
-    if (handledUrls.includes(comment_url)) {
+    if (handledUrls.has(comment_url)) {
         console.log(`⏭️  스킵(already handled): ${comment_url}`);
         continue;
     }
@@ -177,7 +177,7 @@ mutation {
 
         logEntry.status = 'success';
         succeeded.push(item);
-        handledUrls.push(comment_url);
+        handledUrls.add(comment_url);
 
     } catch (err) {
         const errMsg = err.stderr || err.message || String(err);
@@ -214,7 +214,8 @@ if (failedBatchOut && failed.length > 0) {
 // ── handled URLs 업데이트 ─────────────────────────────────
 if (handledUrlsPath) {
     fs.mkdirSync(path.dirname(handledUrlsPath), { recursive: true });
-    fs.writeFileSync(handledUrlsPath, JSON.stringify(handledUrls, null, 2), 'utf-8');
+    // Set을 배열로 변환하여 저장
+    fs.writeFileSync(handledUrlsPath, JSON.stringify([...handledUrls], null, 2), 'utf-8');
 }
 
 // ── 완료 요약 ─────────────────────────────────────────────

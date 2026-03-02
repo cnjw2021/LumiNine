@@ -158,6 +158,7 @@ try {
         const result = execSync(`gh api graphql -f query='${query.replace(/'/g, "'\\''")}'`, {
             encoding: 'utf-8',
             stdio: ['pipe', 'pipe', 'pipe'],
+            maxBuffer: 10 * 1024 * 1024 // 10MB
         });
         const data = JSON.parse(result).data.repository.pullRequest;
         if (!prData) prData = data;
