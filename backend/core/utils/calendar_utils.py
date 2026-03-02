@@ -70,11 +70,7 @@ def get_opposite_zodiac_direction(zodiac: str) -> str:
         ValueError: 無効な干支が指定された場合
     """
     try:
-        if len(zodiac) == 1:
-            branch = zodiac
-        elif len(zodiac) >= 2:
-            branch = zodiac[1]
-        else:
+        if len(zodiac) < 1:
             raise ValueError(f"不正な干支形式です: {zodiac}")
 
         opposite_branch = get_opposite_zodiac(zodiac)
