@@ -98,7 +98,10 @@ class MonthlyDirectionsUseCase:
             # 절월 인덱스 유효 범위(1~12) 검증
             if not 1 <= target_month <= 12:
                 raise NineStarKiError(
-                    f"Invalid target_month: {target_month}. Valid range is 1-12."
+                    f"Invalid target_month: {target_month}. Valid range is 1-12.",
+                    status=422,
+                    code="INVALID_TARGET_MONTH",
+                    details="입력받은 target_month 값이 1~12 범위를 벗어났습니다.",
                 )
             months_to_query = [target_month]
         else:
