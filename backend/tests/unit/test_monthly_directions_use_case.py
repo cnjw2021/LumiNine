@@ -166,7 +166,7 @@ class TestMonthlyDirectionsUseCaseMissingSetsuDate:
 
 
 class TestMonthlyDirectionsUseCaseMissingYearInfo:
-    """연반 정보 미존재 시 ValueError."""
+    """연반 정보 미존재 시 YearInfoNotFoundError."""
 
     @pytest.fixture
     def use_case(self):

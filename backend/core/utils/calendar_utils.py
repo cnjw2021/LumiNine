@@ -100,5 +100,4 @@ def get_opposite_zodiac_direction(zodiac: str) -> str:
 
         return direction
     except Exception as e:
-        print(f"干支の向かい側の方位計算でエラー: {str(e)}, 干支: {zodiac}")
         raise ValueError(f"干支の向かい側の方位計算でエラー: {str(e)}")

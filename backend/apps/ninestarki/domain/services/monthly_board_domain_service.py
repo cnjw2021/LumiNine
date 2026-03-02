@@ -104,7 +104,7 @@ class MonthlyBoardDomainService:
             MonthlyBoardResult
 
         Raises:
-            ValueError: 절기 데이터가 DB에 없는 경우
+            SetsuMonthNotFoundError: 절기 데이터가 DB에 없는 경우
         """
         # 절기 기준 연도(節年): 1월은 立春 이전이므로 전년도로 귀속
         lookup_year = target_date.year
