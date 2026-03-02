@@ -242,8 +242,6 @@ class TestMonthlyBoardDomainService:
     def test_returns_monthly_board_result(self, service):
         result = service.get_monthly_board(
             target_date=date(2026, 2, 5),   # 2026년 寅月 절입일 직후
-            year_center_star=4,             # 上元グループ → 1月=8
-            year_zodiac="甲子",
         )
         assert isinstance(result, MonthlyBoardResult)
         assert 1 <= result.center_star <= 9
@@ -251,8 +249,6 @@ class TestMonthlyBoardDomainService:
     def test_grid_pattern_assembled(self, service):
         result = service.get_monthly_board(
             target_date=date(2026, 2, 5),
-            year_center_star=4,
-            year_zodiac="甲子",
         )
         assert result.grid_pattern is not None
         # Stub returns _StubGridPattern whose center_star equals result.center_star
@@ -261,8 +257,6 @@ class TestMonthlyBoardDomainService:
     def test_month_zodiac_format(self, service):
         result = service.get_monthly_board(
             target_date=date(2026, 2, 5),
-            year_center_star=4,
-            year_zodiac="甲子",
         )
         assert len(result.month_zodiac) == 2
         assert result.month_zodiac[0] in "甲乙丙丁戊己庚辛壬癸"
@@ -271,24 +265,14 @@ class TestMonthlyBoardDomainService:
     def test_period_start_before_period_end(self, service):
         result = service.get_monthly_board(
             target_date=date(2026, 2, 5),
-            year_center_star=4,
-            year_zodiac="甲子",
         )
         assert result.period_start <= result.period_end
 
-    def test_invalid_year_zodiac_raises(self, service):
-        with pytest.raises(ValueError):
-            service.get_monthly_board(
-                target_date=date(2026, 2, 5),
-                year_center_star=4,
-                year_zodiac="??",
-            )
+
 
     def test_to_dict_has_required_keys(self, service):
         result = service.get_monthly_board(
             target_date=date(2026, 2, 5),
-            year_center_star=4,
-            year_zodiac="甲子",
         )
         d = result.to_dict()
         required_keys = {

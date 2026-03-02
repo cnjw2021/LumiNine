@@ -70,7 +70,7 @@ class _StubMonthlyBoardService:
             return None
         return date(year, max(1, min(12, setsu_index + 1)), 4)
 
-    def get_monthly_board(self, target_date: date, year_center_star: int, year_zodiac: str) -> MonthlyBoardResult:
+    def get_monthly_board(self, target_date: date) -> MonthlyBoardResult:
         # setsu_index는 target_date.month 로 역산 (테스트용 단순화)
         idx = target_date.month - 1 if target_date.month > 1 else 12
         return _make_board_result(idx)

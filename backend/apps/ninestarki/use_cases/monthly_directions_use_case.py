@@ -102,8 +102,6 @@ class MonthlyDirectionsUseCase:
 
                 board_result = self._monthly_board.get_monthly_board(
                     target_date=period_start,
-                    year_center_star=year_center_star,
-                    year_zodiac=year_zodiac,
                 )
 
                 # ── 4. 방위 길흉 판정 ──────────────────

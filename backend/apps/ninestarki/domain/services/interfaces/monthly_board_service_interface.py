@@ -23,15 +23,14 @@ class IMonthlyBoardDomainService(ABC):
     def get_monthly_board(
         self,
         target_date: date,
-        year_center_star: int,
-        year_zodiac: str,
     ) -> "MonthlyBoardResult":
         """주어진 날짜에 해당하는 월반(月盤) 결과를 반환한다.
 
+        solar_terms_data 에 star_number(중궁성)와 zodiac(월간지)가
+        사전 구축되어 있으므로 target_date 만 넘기면 된다.
+
         Args:
             target_date: 방위를 조회할 기준 날짜 (절입일 경계를 포함해 판정)
-            year_center_star: 해당 연도의 연반 중궁성 (1~9)
-            year_zodiac: 해당 연도의 연간지 문자열 (예: '甲子')
 
         Returns:
             MonthlyBoardResult 인스턴스
