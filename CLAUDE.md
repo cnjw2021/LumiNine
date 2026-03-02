@@ -24,8 +24,9 @@
 
 - **구성기학 기본 계산**: `/api/nine-star/calculate` (생년월일 기반 본명성, 월명성 등 계산 및 감정)
 - **상성(궁합) 감정**: `/api/nine-star/compatibility` (두 사람의 별을 기반으로 상성 결과 반환)
-- **월반/연반(방위) 차트**: `/api/nine-star/monthly-chart`, `/api/monthly/directions` (월별 길방위/흉방위 계산)
+- **월반/연반(방위) 차트**: `/api/nine-star/monthly-chart`, `/api/monthly/directions` (월별 길방위/흉방위 계산 및 길흉방 산출 로직)
 - **운세 및 가이던스**: `/api/star-life-guidance` (별자리별 삶의 지침 및 운세 제공)
+- **파워스톤 매핑**: (본명성/월명성 및 필요 기운에 따른 맞춤형 파워스톤(원석) 매핑 및 추천 로직 추가 예정)
 
 ## 📁 디렉토리별 역할 1줄 요약
 
