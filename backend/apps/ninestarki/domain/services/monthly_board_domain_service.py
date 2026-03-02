@@ -106,9 +106,14 @@ class MonthlyBoardDomainService:
         Raises:
             SetsuMonthNotFoundError: 절기 데이터가 DB에 없는 경우
         """
-        # 절기 기준 연도(節年): 1월은 立春 이전이므로 전년도로 귀속
+        # 절기 기준 연도(節年):
+        # - 해당 양력 연도의 立春(입춘) 이전 날짜는 전년도의 절년으로 본다.
+        # - 立春 당일 및 이후부터는 해당 연도의 절년으로 본다.
         lookup_year = target_date.year
-        if target_date.month == 1:
+        spring_start_term = self._solar_terms_repo.get_spring_start(lookup_year)
+        if spring_start_term and target_date < spring_start_term.solar_terms_date:
+            lookup_year -= 1
+        elif not spring_start_term and target_date.month == 1:
             lookup_year -= 1
 
         matched_term, setsu_month_index, period_end = self._determine_setsu_month(

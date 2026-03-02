@@ -50,6 +50,12 @@ class _StubSolarTermsRepo:
                 return t
         return None
 
+    def get_spring_start(self, year: int):
+        for t in self._terms:
+            if t.year == year and t.month == 2:
+                return t
+        return None
+
 
 class _StubGridPattern:
     def __init__(self, center_star: int):

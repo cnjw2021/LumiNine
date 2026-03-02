@@ -77,7 +77,7 @@ const emitManualReplyBatch = args.includes('--emit-manual-reply-batch');
 const includeResolved = args.includes('--include-resolved');
 const handledUrlsPath = getFlag('--handled-urls', null, true);
 
-const prReviewDirFromFlag = getFlag('--pr-review-dir', null, true);
+const prReviewDirFromFlag = getFlag('--pr-review-dir', null, false);
 const PR_REVIEW_DIR = prReviewDirFromFlag || process.env.PR_REVIEW_DIR || '.pr-review';
 fs.mkdirSync(PR_REVIEW_DIR, { recursive: true });
 
@@ -95,7 +95,7 @@ if (handledUrlsPath && fs.existsSync(handledUrlsPath)) {
 // 우선순위: 1) --repo OWNER/REPO CLI 옵션
 //           2) GITHUB_REPOSITORY 환경변수 (GitHub Actions)
 //           3) gh repo view --json owner,name 자동 조회
-const repoArg = getFlag('--repo', null, true);
+const repoArg = getFlag('--repo', null, false);
 let repoOwner = null;
 let repoName = null;
 
