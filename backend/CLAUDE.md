@@ -14,6 +14,9 @@
   - `apps/ninestarki/use_cases/`: 애플리케이션 서비스 로직 (비즈니스 흐름 제어).
   - `apps/ninestarki/infrastructure/`: 리포지토리의 구체적인 구현 및 외부 API/DB 연동.
   - `apps/ninestarki/presentation/` & `routes/`: API 엔드포인트(FastAPI Router) 및 Pydantic Request/Response 스키마.
+  - `apps/ninestarki/services/`: 외부 연동 및 부가적인 도메인 서비스를 관장.
+  - `apps/ninestarki/templates/` & `static/`: 생성 결과물(PDF 등)을 위한 HTML 템플릿과 정적 자원.
+  - `apps/ninestarki/constants/` & `utils/`: 도메인 내에서 공통으로 사용되는 상수 및 헬퍼 함수.
 - `db_manage.py`: 데이터베이스 초기화(init) 및 리셋(reset) 등을 수행하기 위한 유틸리티 스크립트.
 
 ## 📦 외부 의존성
