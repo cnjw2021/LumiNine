@@ -1,0 +1,122 @@
+name: Docker Build and Push to GHCR
+
+on:
+  push:
+    branches:
+      - main
+  pull_request:
+    branches:
+      - main
+  workflow_dispatch:
+
+env:
+  REGISTRY: ghcr.io
+  IMAGE_NAME: ${{ github.repository }}
+
+jobs:
+  build-test-and-push:
+    runs-on: ubuntu-latest
+
+    permissions:
+      contents: read
+      packages: write
+
+    env:
+      DB_ROOT_PASSWORD: rootpassword
+      DB_NAME: ninestarki
+      DB_USER: superuser
+      DB_PASSWORD: superpass!
+
+    steps:
+      # 1. GitHub 저장소의 코드를 가져옴
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      # 2. 테스트 환경 준비 및 실행
+      - name: Prepare mock environment files and directories
+        run: |
+          touch frontend/.env.production.frontend
+          touch frontend/.env.development.frontend
+          
+          # IMPORTANT: Truncate (not touch!) production env to prevent its
+          # DATABASE_URL from overriding CI test credentials
+          > backend/.env.production.backend
+
+          # Root .env for docker-compose variable interpolation (mysql container)
+          echo "DB_ROOT_PASSWORD=$DB_ROOT_PASSWORD" > .env
+          echo "DB_NAME=$DB_NAME" >> .env
+          echo "DB_USER=$DB_USER" >> .env
+          echo "DB_PASSWORD=$DB_PASSWORD" >> .env
+          echo "DB_HOST=mysql" >> .env
+          echo "DB_PORT=3306" >> .env
+
+          # Backend .env for Python app (must include DATABASE_URL + app secrets)
+          echo "SECRET_KEY=testsecretkey" > backend/.env.development.backend
+          echo "JWT_SECRET_KEY=testjwtsecretkey" >> backend/.env.development.backend
+          # Append DB vars (needs shell expansion)
+          echo "DB_USER=$DB_USER" >> backend/.env.development.backend
+          echo "DB_PASSWORD=$DB_PASSWORD" >> backend/.env.development.backend
+          echo "DB_HOST=mysql" >> backend/.env.development.backend
+          echo "DB_NAME=$DB_NAME" >> backend/.env.development.backend
+          echo "DB_PORT=3306" >> backend/.env.development.backend
+          echo "DB_ROOT_USER=root" >> backend/.env.development.backend
+          echo "DB_ROOT_PASSWORD=$DB_ROOT_PASSWORD" >> backend/.env.development.backend
+          echo "DATABASE_URL=mysql+pymysql://${DB_USER}:${DB_PASSWORD}@mysql:3306/${DB_NAME}?charset=utf8mb4" >> backend/.env.development.backend
+          echo "SUPERUSER_EMAIL=superuser" >> backend/.env.development.backend
+          echo "SUPERUSER_PASSWORD=$DB_PASSWORD" >> backend/.env.development.backend
+
+          echo "--- Generated .env ---"
+          cat .env
+          echo "--- Generated backend/.env.development.backend ---"
+          cat backend/.env.development.backend
+
+          mkdir -p backend/logs backend/.pytest_cache
+          chmod -R 777 backend/logs backend/.pytest_cache
+
+
+      - name: Run Unit Tests
+        run: |
+          make test-unit
+
+      - name: Dump Docker Logs on Failure
+        if: failure()
+        run: |
+          docker compose -f docker-compose.yml -f docker-compose.dev.yml logs backend mysql
+
+      # GHCR은 소문자 레포지토리 이름만 허용하므로 소문자로 변환
+      - name: Convert image name to lowercase
+        run: echo "IMAGE_NAME=$(echo ${{ env.IMAGE_NAME }} | tr '[:upper:]' '[:lower:]')" >> $GITHUB_ENV
+
+      # 3. GHCR (GitHub Container Registry) 에 로그인
+      - name: Log in to the Container registry
+        uses: docker/login-action@v3
+        with:
+          registry: ${{ env.REGISTRY }}
+          username: ${{ github.actor }}
+          password: ${{ secrets.GITHUB_TOKEN }} # 기본 GITHUB_TOKEN 사용
+
+      # Docker buildx 설정
+      - name: Set up Docker Buildx
+        uses: docker/setup-buildx-action@v3
+
+      # 4. 각 서비스별 Docker 이미지 빌드 및 GHCR에 Push
+      - name: Build and push Frontend image
+        uses: docker/build-push-action@v5
+        with:
+          context: ./frontend
+          push: ${{ github.ref == 'refs/heads/main' }}
+          tags: ${{ env.REGISTRY }}/${{ env.IMAGE_NAME }}-frontend:latest
+
+      - name: Build and push Backend image
+        uses: docker/build-push-action@v5
+        with:
+          context: ./backend
+          push: ${{ github.ref == 'refs/heads/main' }}
+          tags: ${{ env.REGISTRY }}/${{ env.IMAGE_NAME }}-backend:latest
+
+      - name: Build and push Nginx image
+        uses: docker/build-push-action@v5
+        with:
+          context: ./nginx
+          push: ${{ github.ref == 'refs/heads/main' }}
+          tags: ${{ env.REGISTRY }}/${{ env.IMAGE_NAME }}-nginx:latest

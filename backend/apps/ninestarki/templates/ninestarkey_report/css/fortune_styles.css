@@ -1,0 +1,1129 @@
+/* 共通の運気セクションスタイル */
+
+/* タイトルスタイル */
+.fortune-title-base,
+.year-fortune-title,
+.month-fortune-title {
+    font-size: 20px;
+    font-weight: 600;
+    color: #333;
+    text-align: center;
+    margin-bottom: 2.5rem;
+    position: relative;
+    letter-spacing: 0.05em;
+}
+
+.section-title::after,
+.fortune-title-base::after,
+.year-fortune-title::after,
+.month-fortune-title::after {
+    content: '';
+    position: absolute;
+    bottom: -5px;
+    left: 50%;
+    transform: translateX(-50%);
+    width: 60%;
+    height: 1px;
+    background: linear-gradient(to right, transparent, var(--primary-color) 20%, var(--primary-color) 80%, transparent 100%);
+}
+
+/* テーブルスタイル */
+.fortune-table-base,
+.year-fortune-table,
+.month-fortune-table {
+    width: 93%;
+    border-collapse: separate;
+    border-spacing: 0;
+    margin: 0 auto;
+}
+
+/* 背景画像 */
+.background {
+    background-image: var(--report-bg-image);
+    background-repeat: no-repeat;
+    background-size: cover;
+    background-position: center;
+}
+
+/* コンテンツ行 */
+.content-row-base,
+.year-content-row,
+.month-content-row {
+    background-color: transparent;
+}
+
+/* カードスタイル */
+.fortune-card-base,
+.year-card,
+.month-card {
+    background: linear-gradient(135deg, rgba(255, 255, 255, 0.7), rgba(255, 255, 255, 0.6)), 
+               linear-gradient(135deg, var(--section-gradient-1), var(--section-gradient-2));
+    border: 1px solid var(--content-color-3);
+    border-radius: 12px;
+    box-shadow: 0 3px 10px rgba(0, 0, 0, 0.05);
+    width: 100%;
+    margin: 0 auto;
+    overflow: hidden;
+}
+
+/* テーブル内部スタイル */
+.inner-table {
+    width: 100%;
+    border-collapse: collapse;
+}
+
+/* セルスタイル */
+.chart-cell {
+    width: 45%;
+    vertical-align: middle;
+    padding: 2mm;
+    text-align: center;
+    border-right: 1px solid rgba(0, 0, 0, 0.05);
+}
+
+.info-cell {
+    width: 55%;
+    vertical-align: top;
+    padding: 2mm;
+}
+
+/* 年月タイトル */
+.fortune-title-item-base,
+.year-title,
+.month-title {
+    font-size: 18px;
+    font-weight: 600;
+    color: #3490dc;
+    margin: 0;
+    text-align: center;
+}
+
+/* 期間ラッパー */
+.period-wrapper-base {
+    text-align: center;
+    padding: 2mm 0;
+}
+
+.year-period-wrapper {
+    text-align: center;
+    padding: 2mm 0;
+    margin-bottom: 10mm;
+}
+
+.month-period-wrapper {
+    text-align: center;
+    padding: 2mm 0;
+    margin-bottom: 8mm;
+}
+
+/* 期間テキスト */
+.period-text-base,
+.year-period,
+.month-period {
+    font-size: 14px;
+    font-weight: normal;
+    color: #666;
+}
+
+/* 九星盤スタイル */
+/* コンテナ主導でサイズを決定し、内部SVGは100%でフィット */
+.star-chart-container {
+    position: relative;
+    width: 280px;          /* 固定サイズで統一 */
+    max-width: 280px;
+    margin: 1em auto;      /* デフォルトは 1em */
+}
+
+/* 場所の運気（direction-fortune セクション）のみ余白を広げる */
+.direction-fortune-section .star-chart-container {
+    margin: 0.6cm auto;    /* 上下に約6mmの余白 */
+}
+
+.star-chart-svg {
+    width: 100%;           /* コンテナに合わせて可変 */
+    height: auto;
+    display: block;
+}
+
+/* 吉凶マーカー共通スタイル */
+.lucky-marker,
+.unlucky-marker,
+.direction-marker {
+    position: absolute !important;
+    width: 24px !important;
+    height: 24px !important;
+    display: flex !important;
+    align-items: center !important;
+    justify-content: center !important;
+    z-index: 5 !important;
+}
+
+/* 吉運マーカー */
+.marker-lucky {
+    color: #009688 !important; /* 吉運は緑色 */
+    font-size: 22px !important;
+    text-shadow: 0 0 3px white !important;
+}
+
+/* 凶運マーカー */
+.marker-unlucky {
+    color: #FF5722 !important; /* 凶運はオレンジ/赤系 */
+    font-size: 20px !important;
+    text-shadow: 0 0 3px white !important;
+}
+
+/* 警告アイコン */
+.warning-circle {
+    display: flex !important;
+    align-items: center !important;
+    justify-content: center !important;
+    width: 24px !important;
+    height: 24px !important;
+    background-color: #FF9800 !important; /* オレンジ色の円 */
+    border-radius: 50% !important;
+    box-shadow: 0 0 4px rgba(0, 0, 0, 0.15) !important;
+}
+
+.warning-icon {
+    color: white !important; /* 白色の三角形 */
+    font-size: 16px !important;
+}
+
+/* 運気コンテンツ */
+.fortune-content {
+    margin-top: 5mm !important;
+}
+
+.fortune-header {
+    display: flex !important;
+    align-items: center !important;
+    margin-bottom: 5mm !important;
+}
+
+.warning-icon-container, 
+.lucky-icon-container {
+    margin-right: 10px !important;
+    display: flex !important;
+    align-items: center !important;
+    justify-content: center !important;
+}
+
+.lucky-icon-container .marker-lucky {
+    font-size: 24px !important;
+}
+
+/* 運気タイトル */
+.fortune-title {
+    font-size: 16px !important;
+    font-weight: 600 !important;
+    margin: 0 0 5mm 0 !important;
+    color: #333 !important;
+}
+
+/* 運気説明文 */
+.fortune-description {
+    font-size: 14px !important;
+    line-height: 1.5 !important;
+    color: #555 !important;
+    margin: 0 !important;
+    overflow-y: auto !important;
+}
+
+/* 引越し/お水取り 吉日テーブル */
+.dates-table {
+    width: 100% !important;
+    border-collapse: collapse !important;
+    table-layout: fixed !important;
+    font-size: 12px !important;
+}
+
+.dates-table--fortune {
+    width: 100% !important;
+    table-layout: fixed !important;
+    margin-bottom: 8px !important;
+}
+
+.dates-col-month {
+    width: 36px !important;
+}
+
+.dates-table td,
+.dates-table th {
+    border: 1px solid #e0e0e0 !important;
+    border-left: 1px solid #e0e0e0 !important;
+    border-right: 1px solid #e0e0e0 !important;
+    padding: 2px 4px !important;
+    vertical-align: middle !important;
+    word-break: break-word !important;
+    line-height: 1.25 !important;
+}
+
+.dates-header-row td {
+    background-color: #f8f9fa !important;
+    font-weight: 700 !important;
+}
+
+.year-group-header {
+    background-color: #f8f9fa !important;
+    text-align: center !important;
+    font-weight: 600 !important;
+    border: none !important;
+    padding: 2px 0 3px !important;
+    margin-bottom: 4px !important;
+}
+
+.dates-row {
+    background-color: #fff !important;
+}
+
+.dates-header-row .month-cell {
+    padding: 1px 2px !important;
+    text-align: center !important;
+}
+
+.dates-header-row .direction-cell {
+    border-left: 1px solid #e9ecef !important;
+    text-align: center !important;
+    padding: 2px 4px !important;
+}
+
+.dates-row .month-cell {
+    padding: 1px 2px !important;
+    text-align: center !important;
+}
+
+.dates-row .direction-cell {
+    border-left: 1px solid #e9ecef !important;
+    padding: 2px 4px !important;
+    word-break: keep-all !important;
+}
+
+.month-cell {
+    width: 36px !important;
+    text-align: center !important;
+    font-weight: 700 !important;
+}
+
+.direction-cell {
+    text-align: center !important;
+    font-weight: 700 !important;
+}
+
+.dates-text {
+    display: block !important;
+    text-align: center !important;
+    white-space: normal !important;
+}
+
+.fortune-icon {
+    font-size: 18px !important;
+}
+
+.fortune-icon-home {
+    color: #82c91e !important;
+}
+
+.fortune-icon-water {
+    color: #4dabf7 !important;
+}
+
+.year-fortune .fortune-description {
+    max-height: 80mm !important;
+}
+
+.month-fortune .fortune-description {
+    max-height: 70mm !important;
+}
+
+/* 空白行 */
+.spacer-row {
+    height: 0.5mm !important;
+}
+
+/* 月ページ固有スタイル */
+.monthly-fortune-wrapper {
+    width: 100% !important;
+    height: auto !important;
+}
+
+.month-page, 
+.monthly-fortune-wrapper .page {
+    width: 210mm !important;
+    height: 297mm !important;
+    position: relative !important;
+    overflow: hidden !important;
+    page-break-before: always !important;
+    page-break-after: always !important;
+    page-break-inside: avoid !important;
+}
+
+/* 方位別の位置 - 斜め方位（43%）に合わせて46%に調整 */
+/* コンテナ200px、中心100px、46%距離 = 92px */
+.year-fortune .marker-north, 
+.month-fortune .marker-north, 
+.lucky-marker.marker-north, 
+.unlucky-marker.marker-north, 
+.direction-marker.marker-north {
+    top: calc(50% + 45%) !important; /* 北が下：少し上に移動 */
+    left: calc(50% - 7%) !important; /* 少し右に移動 */
+    transform: translate(-50%, -50%) !important;
+}
+
+.year-fortune .marker-south, 
+.month-fortune .marker-south, 
+.lucky-marker.marker-south, 
+.unlucky-marker.marker-south, 
+.direction-marker.marker-south {
+    top: calc(50% - 45%) !important; /* 南が上：少し下に移動 */
+    left: calc(50% - 7%) !important; /* 少し右に移動 */
+    transform: translate(-50%, -50%) !important;
+}
+
+.year-fortune .marker-east, 
+.month-fortune .marker-east, 
+.lucky-marker.marker-east, 
+.unlucky-marker.marker-east, 
+.direction-marker.marker-east {
+    top: calc(50% - 8%) !important; /* Reactと同じ中央からのオフセット */
+    left: calc(50% - 41%) !important; /* 東が左：さらに右に移動 */
+    transform: translate(-50%, -50%) !important;
+}
+
+.year-fortune .marker-west, 
+.month-fortune .marker-west, 
+.lucky-marker.marker-west, 
+.unlucky-marker.marker-west, 
+.direction-marker.marker-west {
+    top: calc(50% - 8%) !important; /* Reactと同じ中央からのオフセット */
+    left: calc(50% + 46%) !important; /* 西が右：中心 + 46% = 96% */
+    transform: translate(-50%, -50%) !important;
+}
+
+/* 斜め方位の位置 - Reactコンポーネントと同じ43%距離を適用 */
+.year-fortune .marker-northeast, 
+.month-fortune .marker-northeast, 
+.lucky-marker.marker-northeast, 
+.unlucky-marker.marker-northeast, 
+.direction-marker.marker-northeast {
+    top: calc(50% + 43% - 8%) !important; /* 北東（左下）：Reactと同じ計算 */
+    left: calc(50% - 38% - 8%) !important; /* さらに右に移動 */
+    transform: translate(-50%, -50%) !important;
+}
+
+.year-fortune .marker-northwest, 
+.month-fortune .marker-northwest, 
+.lucky-marker.marker-northwest, 
+.unlucky-marker.marker-northwest, 
+.direction-marker.marker-northwest {
+    top: calc(50% + 43% - 8%) !important; /* 北西（右下）：Reactと同じ計算 */
+    left: calc(50% + 43% - 8%) !important;
+    transform: translate(-50%, -50%) !important;
+}
+
+.year-fortune .marker-southeast, 
+.month-fortune .marker-southeast, 
+.lucky-marker.marker-southeast, 
+.unlucky-marker.marker-southeast, 
+.direction-marker.marker-southeast {
+    top: calc(50% - 43% - 8%) !important; /* 南東（左上）：Reactと同じ計算 */
+    left: calc(50% - 38% - 8%) !important; /* さらに右に移動 */
+    transform: translate(-50%, -50%) !important;
+}
+
+.year-fortune .marker-southwest, 
+.month-fortune .marker-southwest, 
+.lucky-marker.marker-southwest, 
+.unlucky-marker.marker-southwest, 
+.direction-marker.marker-southwest {
+    top: calc(50% - 43% - 8%) !important; /* 南西（右上）：Reactと同じ計算 */
+    left: calc(50% + 43% - 8%) !important;
+    transform: translate(-50%, -50%) !important;
+}
+
+.year-fortune .marker-center, 
+.month-fortune .marker-center, 
+.marker-center, 
+.direction-marker.marker-center {
+    top: 50% !important;
+    left: 50% !important;
+    transform: translate(-50%, -50%) !important;
+}
+
+/* 方位運のマーカーポジション（場所の運気特有のスタイル） */
+.direction-fortune-table .marker-north,
+.section:has(.direction-fortune-table) .marker-north {
+    bottom: -8% !important;
+    left: 49% !important;
+    transform: translateX(-50%) !important;
+}
+
+.direction-fortune-table .marker-northeast,
+.section:has(.direction-fortune-table) .marker-northeast {
+    bottom: 12% !important;
+    left: 4% !important;
+}
+
+.direction-fortune-table .marker-east,
+.section:has(.direction-fortune-table) .marker-east {
+    left: -14% !important;
+    top: 48% !important;
+    transform: translateY(-50%) !important;
+}
+
+.direction-fortune-table .marker-southeast,
+.section:has(.direction-fortune-table) .marker-southeast {
+    top: 6% !important;
+    left: 6% !important;
+}
+
+.direction-fortune-table .marker-south,
+.section:has(.direction-fortune-table) .marker-south {
+    top: -12% !important;
+    left: 49% !important;
+    transform: translateX(-50%) !important;
+}
+
+.direction-fortune-table .marker-southwest,
+.section:has(.direction-fortune-table) .marker-southwest {
+    top: 6% !important;
+    right: 6% !important;
+}
+
+.direction-fortune-table .marker-west,
+.section:has(.direction-fortune-table) .marker-west {
+    right: -12% !important;
+    top: 48% !important;
+    transform: translateY(-50%) !important;
+}
+
+.direction-fortune-table .marker-northwest,
+.section:has(.direction-fortune-table) .marker-northwest {
+    bottom: 12% !important;
+    right: 6% !important;
+}
+
+/* 方位運セクションのスタイル */
+.direction-fortune-title {
+    font-size: 1.25em;
+    font-weight: 600;
+    color: #333;
+    text-align: center;
+    margin-bottom: 1em;
+    position: relative;
+    letter-spacing: 0.05em;
+}
+
+.direction-fortune-title::after {
+    content: '';
+    position: absolute;
+    bottom: -5px;
+    left: 50%;
+    transform: translateX(-50%);
+    width: 60%;
+    height: 1px;
+    background: linear-gradient(to right, transparent, var(--primary-color) 20%, var(--primary-color) 80%, transparent 100%);
+}
+
+.fortune-description-text {
+    font-size: 14px;
+    line-height: 1.5;
+    color: #555;
+    margin: 1em 0;
+}
+
+.direction-detail-wrapper {
+    margin: 2em 0 1em;
+}
+
+.direction-detail-title {
+    font-size: 16px;
+    font-weight: 600;
+    color: #444;
+    margin-bottom: 0.5em;
+}
+
+.direction-detail-text {
+    font-size: 14px;
+    line-height: 1.5;
+    color: #555;
+}
+
+.direction-details {
+    margin-top: 1.5em;
+}
+
+.direction-item {
+    margin-bottom: 1em;
+}
+
+.direction-name {
+    font-size: 15px;
+    font-weight: 600;
+    color: #3490dc;
+    margin-bottom: 0.3em;
+}
+
+.direction-info {
+    font-size: 14px;
+    line-height: 1.5;
+    color: #555;
+}
+
+/* 九星気学 - 星の色定義 */
+/* テキスト色 */
+.color-1 { color: #0066cc !important; }  /* 一白水星 - 青 */
+.color-2 { color: #000000 !important; }  /* 二黒土星 - 黒 */
+.color-3 { color: #00aa44 !important; }  /* 三碧木星 - 緑 */
+.color-4 { color: #009988 !important; }  /* 四緑木星 - ティール */
+.color-5 { color: #ffcc00 !important; }  /* 五黄土星 - 黄金 */
+.color-6 { color: #777788 !important; }  /* 六白金星 - シルバー */
+.color-7 { color: #e53e3e !important; }  /* 七赤金星 - 赤 */
+.color-8 { color: #8822cc !important; }  /* 八白土星 - 紫 */
+.color-9 { color: #ff3399 !important; }  /* 九紫火星 - ピンク */
+
+/* 背景色 */
+.bg-color-1 { background-color: #0066cc !important; }  /* 一白水星 - 青 */
+.bg-color-2 { background-color: #333333 !important; }  /* 二黒土星 - 黒 */
+.bg-color-3 { background-color: #00aa44 !important; }  /* 三碧木星 - 緑 */
+.bg-color-4 { background-color: #009988 !important; }  /* 四緑木星 - ティール */
+.bg-color-5 { background-color: #ffcc00 !important; }  /* 五黄土星 - 黄金 */
+.bg-color-6 { background-color: #777788 !important; }  /* 六白金星 - シルバー */
+.bg-color-7 { background-color: #e53e3e !important; }  /* 七赤金星 - 赤 */
+.bg-color-8 { background-color: #8822cc !important; }  /* 八白土星 - 紫 */
+.bg-color-9 { background-color: #ff3399 !important; }  /* 九紫火星 - ピンク */
+
+/* 五行の色 */
+.element-金 { color: #d4af37; }
+.element-木 { color: #228b22; }
+.element-水 { color: #1e90ff; }
+.element-火 { color: #ff4500; }
+.element-土 { color: #8b4513; }
+
+/* 星情報表示用共通スタイル */
+/* 星表示セクション */
+.main-star-section {
+    padding: 0 0.1cm;
+    margin-top: 0.6cm;
+    margin-bottom: 0.8cm;
+}
+
+.main-star-title {
+    font-size: 1.25em;
+    font-weight: 600;
+    color: #333;
+    text-align: center;
+    margin-bottom: 1em;
+    position: relative;
+    letter-spacing: 0.05em;
+}
+
+.main-star-title::after {
+    content: '';
+    position: absolute;
+    bottom: -5px;
+    left: 50%;
+    transform: translateX(-50%);
+    width: 60%;
+    height: 1px;
+    background: linear-gradient(to right, transparent, var(--primary-color) 20%, var(--primary-color) 80%, transparent 100%);
+}
+
+/* セクションタイトル */
+.section-title {
+    text-align: center;
+    font-weight: 800;
+    font-size: 22px;
+    margin-bottom: 10px;
+}
+
+/* テーブルスタイル - 基本 */
+.star-table {
+    width: 100%;
+    border-collapse: separate;
+    border-spacing: 10px 0;
+    margin-bottom: 1.2rem;
+}
+
+.star-table td {
+    width: 33.33%;
+    text-align: center;
+    vertical-align: middle;
+    padding: 8px;
+}
+
+/* カードスタイル */
+.card {
+    background-color: #fff8f8;
+    border: 2px solid #ffcaca;
+    border-radius: 8px;
+    padding: 10px 8px;
+    height: 90px;
+}
+
+/* 星タイプ */
+.star-type {
+    font-size: 12px;
+    font-weight: 400;
+    color: #333;
+    margin-bottom: 5px;
+}
+
+/* 星番号 */
+.star-number {
+    font-size: 35px;
+    font-weight: 700;
+    margin: 2px 0;
+    line-height: 1;
+}
+
+/* 星名 */
+.star-name {
+    display: inline-block;
+    font-size: 10px;
+    font-weight: 600;
+    color: white;
+    padding: 2px 4px;
+    border-radius: 4px;
+    margin-top: 2px;
+    white-space: nowrap;
+    min-width: auto;
+}
+
+/* 詳細セクション用テーブル */
+.detail-table {
+    width: 100%;
+    border-collapse: collapse;
+    margin-top: 30px;
+    border: none;
+    background: linear-gradient(135deg, rgba(255, 255, 255, 0.3), rgba(255, 255, 255, 0.2)), 
+              linear-gradient(135deg, var(--section-gradient-1, rgba(240, 240, 245, 0.15)), var(--section-gradient-2, rgba(230, 230, 240, 0.15)));
+    border-radius: 12px;
+    overflow: hidden;
+    box-shadow: 0 1px 3px rgba(0,0,0,0.03);
+}
+
+.detail-table td {
+    padding: 15px;
+    vertical-align: top;
+}
+
+.diagram-cell {
+    width: 45%;
+    text-align: center;
+    padding-right: 5px;
+}
+
+.info-cell {
+    width: 55%;
+}
+
+/* 大きな星番号と名前 */
+.star-info-table {
+    width: 100%;
+    border-collapse: collapse;
+    margin-bottom: 10px;
+}
+
+.star-info-table td {
+    padding: 5px;
+    vertical-align: middle;
+}
+
+.number-cell {
+    width: 60px;
+}
+
+.number-box {
+    width: 55px;
+    height: 55px;
+    display: table-cell;
+    vertical-align: middle;
+    text-align: center;
+    color: white;
+    font-size: 32px;
+    font-weight: 700;
+    border-radius: 8px;
+}
+
+.name-cell {
+    text-align: left;
+    padding-left: 15px;
+}
+
+.star-name-large {
+    font-size: 20px;
+    font-weight: 600;
+    margin-bottom: 4px;
+    display: block;
+}
+
+.element-info {
+    font-size: 14px;
+    color: #666;
+}
+
+/* 特性タグテーブル */
+.tags-table {
+    width: 100%;
+    border-collapse: collapse;
+    margin: 10px 0 15px;
+}
+
+.tags-table td {
+    padding: 3px;
+}
+
+.relationship-icon {
+    vertical-align: middle;
+    margin-right: 8px;
+}
+
+.relationship-text {
+    vertical-align: middle;
+}
+
+.direction-app-highlight {
+    color: var(--primary-color, #3490dc);
+}
+
+.direction-app-table-left {
+    width: 60%;
+    vertical-align: top;
+    padding-right: 15px;
+}
+
+.direction-app-table-right {
+    width: 40%;
+    vertical-align: top;
+}
+
+.direction-app-steps-bold {
+    font-weight: bold;
+}
+
+.direction-app-settings-table {
+    width: 100%;
+    border-collapse: collapse;
+}
+
+.direction-app-settings-image-cell {
+    width: 40%;
+    vertical-align: middle;
+}
+
+.direction-app-settings-image {
+    width: 100%;
+    max-width: 120px;
+    height: auto;
+    border: 1px solid #ddd;
+    border-radius: 4px;
+}
+
+.direction-app-settings-text-cell {
+    width: 60%;
+    vertical-align: middle;
+    text-align: left;
+    padding-left: 10px;
+}
+
+.direction-app-settings-title {
+    font-size: 13px;
+    margin: 0 0 5px 0;
+    font-weight: bold;
+    color: var(--accent-color, #d32f2f);
+}
+
+.direction-app-settings-desc {
+    font-size: 11px;
+    margin: 0;
+    color: #666;
+    line-height: 1.4;
+}
+
+.direction-app-map-image {
+    width: 80%;
+    max-width: 600px;
+    height: auto;
+    display: inline-block;
+}
+
+/* Direction app section */
+.direction-app-title {
+    font-size: 1.25em;
+    font-weight: 600;
+    color: #333;
+    text-align: center;
+    margin-bottom: 1em;
+    position: relative;
+    letter-spacing: 0.05em;
+}
+
+.direction-app-title::after {
+    content: '';
+    position: absolute;
+    bottom: -5px;
+    left: 50%;
+    transform: translateX(-50%);
+    width: 60%;
+    height: 1px;
+    background: linear-gradient(to right, transparent, var(--primary-color) 20%, var(--primary-color) 80%, transparent 100%);
+}
+
+.direction-app-section {
+    background: linear-gradient(135deg, rgba(255, 255, 255, 0.5), rgba(255, 255, 255, 0.4)),
+               linear-gradient(135deg, var(--section-gradient-1), var(--section-gradient-2));
+    padding: 15px;
+    border-radius: 8px;
+    width: 88%;
+    margin: 0 auto 20px auto;
+    box-shadow: 0 1px 3px rgba(0,0,0,0.05);
+    border: 1px solid var(--content-color-3, #e0e0e0);
+}
+
+.direction-app-intro {
+    margin-bottom: 15px;
+}
+
+.direction-app-table {
+    width: 100%;
+    border-collapse: collapse;
+    margin-bottom: 15px;
+}
+
+.direction-app-steps {
+    background-color: rgba(255, 255, 255, 0.7);
+    padding: 12px;
+    border-radius: 8px;
+    border: 1px solid var(--content-color-2, #f0f0f0);
+}
+
+.direction-app-steps-title {
+    font-weight: bold;
+    font-size: 15px;
+    margin-bottom: 8px;
+    color: #333;
+}
+
+.direction-app-steps-list {
+    margin: 0;
+    padding-left: 20px;
+}
+
+.direction-app-steps-list li {
+    font-size: 13px;
+    margin-bottom: 6px;
+}
+
+.direction-app-steps-list li.important {
+    color: var(--accent-color, #d32f2f);
+    font-weight: bold;
+}
+
+.direction-app-settings-box {
+    background-color: rgba(255, 248, 248, 0.8);
+    border-radius: 8px;
+    padding: 10px;
+    text-align: center;
+}
+
+.direction-app-settings-label {
+    padding: 4px 12px;
+    background-color: var(--accent-color, #d32f2f);
+    border-radius: 4px;
+    font-size: 14px;
+    font-weight: bold;
+    margin-bottom: 10px;
+    display: inline-block;
+}
+
+.direction-app-map-container {
+    border-radius: 8px;
+    overflow: hidden;
+    box-shadow: 0 1px 4px rgba(0,0,0,0.1);
+    margin: 0 auto;
+    text-align: center;
+    border: 1px solid var(--content-color-2, #f0f0f0);
+    background: linear-gradient(135deg, rgba(255, 255, 255, 0.5), rgba(255, 255, 255, 0.4)),
+               linear-gradient(135deg, var(--section-gradient-1), var(--section-gradient-2));
+}
+
+.direction-app-map-caption {
+    background-color: var(--content-color-1, #f0f0f0);
+    padding: 6px;
+    text-align: center;
+    font-size: 12px;
+    color: #666;
+}
+
+.direction-app-footer-note {
+    margin: 15px 0 0 0;
+    font-style: italic;
+    text-align: center;
+    font-size: 13px;
+    color: #666;
+}
+
+.tag {
+    display: inline-block;
+    background-color: #fff0f0;
+    color: #666;
+    padding: 4px 12px;
+    border-radius: 5px;
+    font-size: 12px;
+    white-space: nowrap;
+}
+
+.info-title {
+    font-size: 16px;
+    font-weight: 600;
+    color: #333;
+    margin-bottom: 5px;
+    padding-bottom: 8px;
+    border-bottom: 1px solid #eee;
+    display: block;
+}
+
+.info-content {
+    font-size: 12px;
+    line-height: 1.8;
+    color: #333;
+    white-space: pre-wrap;
+    word-wrap: break-word;
+    word-break: normal;
+    margin-top: 0;
+    padding-top: 0;
+    text-indent: 0;
+}
+
+/* 本命星の説明セクション */
+.main-star-info-container {
+    margin-top: 20px;
+    background: linear-gradient(135deg, rgba(255, 255, 255, 0.3), rgba(255, 255, 255, 0.2)), 
+               linear-gradient(135deg, var(--section-gradient-1, rgba(240, 240, 245, 0.15)), var(--section-gradient-2, rgba(230, 230, 240, 0.15)));
+    border-radius: 12px;
+    padding: 15px;
+    box-shadow: 0 1px 3px rgba(0,0,0,0.03);
+    width: 90%;
+    margin-left: auto;
+    margin-right: auto;
+    backdrop-filter: blur(1px);
+}
+
+.main-star-info-container--spaced {
+    margin-top: 20px;
+    padding-bottom: 20px;
+}
+
+.main-star-info-heading {
+    font-size: 18px;
+    font-weight: 700;
+    color: #333;
+    margin-bottom: 12px;
+    text-align: center;
+    text-shadow: 0 1px 2px rgba(255, 255, 255, 0.9);
+}
+
+.main-star-info-heading--spaced {
+    margin-top: 20px;
+}
+
+.main-star-info-text {
+    font-size: 16px;
+    line-height: 1.7;
+    margin-bottom: 15px;
+    color: #333;
+    text-shadow: 0 1px 2px rgba(255, 255, 255, 0.8);
+    font-weight: 500;
+}
+
+.main-star-info-text--tight {
+    margin-bottom: 0;
+}
+
+.detail-table--flat {
+    margin-top: 0;
+    box-shadow: none;
+    background: none;
+}
+
+.star-diagram-img--large {
+    max-width: 280px;
+    max-height: 280px;
+}
+
+.main-star-detail-table {
+    width: 100%;
+    margin-left: auto;
+    margin-right: auto;
+    margin-top: 20px;
+    padding: 15px;
+}
+
+/* 運気スタイル - 追加 */
+.fortune-title-unlucky {
+    color: #e53e3e !important;
+    font-weight: bold !important;
+}
+
+.fortune-content .fortune-title-unlucky {
+    color: #e53e3e !important;
+    font-weight: bold !important;
+}
+
+.year-fortune .fortune-title-unlucky,
+.month-fortune .fortune-title-unlucky {
+    color: #e53e3e !important;
+    font-weight: bold !important;
+}
+
+.transparent-warning {
+    background-color: transparent !important;
+    border: 2px solid #ff5722 !important;
+}
+
+.warning-icon-red {
+    color: #ff5722 !important;
+} 
+
+/* 月の運気タイトルの余白縮小 */
+.month-fortune-title {
+    margin-bottom: 1.2rem !important;
+}
+
+/* 月期間ラッパー余白縮小 */
+.month-period-wrapper {
+    margin-bottom: 4mm !important;
+}
+
+/* 月カード間隔さらに縮小 */
+.month-card {
+    margin: 1mm 0 !important;
+} 
+
+/* 月の運気ページ専用サイズ調整 */
+.month-fortune .star-chart-container {
+    width: 260px !important;
+    max-width: 260px !important;
+}
+
+.month-fortune .month-card {
+    margin: 0.5mm 0 !important;
+}
+
+.month-fortune .chart-cell {
+    padding: 1.5mm !important;
+}
+
+.month-fortune .info-cell {
+    padding: 1.5mm !important;
+}
+
+.spacer-row {
+    height: 0.3mm !important;
+} 
+
+/* 年の運気ページ専用サイズ調整 */
+.year-fortune .star-chart-container {
+    width: 260px !important;
+    max-width: 260px !important;
+} 

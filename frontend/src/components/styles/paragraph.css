@@ -1,0 +1,16 @@
+.paragraph-text {
+  white-space: pre-wrap;
+  line-height: 1.8;
+}
+
+/* 段落間の空間を確保 */
+.paragraph-text p {
+  margin-bottom: 1.5rem;
+}
+
+/* 空行がない場合でも段落として扱うために、改行の後に余白を追加 */
+.paragraph-text br {
+  display: block;
+  content: "";
+  margin-top: 1rem;
+} 

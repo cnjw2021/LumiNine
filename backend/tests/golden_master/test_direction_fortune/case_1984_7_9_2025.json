@@ -1,0 +1,67 @@
+{
+  "east": {
+      "compatibility_level": "BAD",
+      "is_auspicious": false,
+      "marks": [
+          "month_star",
+          "compatibility_matrix"
+      ],
+      "reason": "月命殺, 凶方星"
+  },
+  "north": {
+      "compatibility_level": "GOOD",
+      "is_auspicious": false,
+      "marks": [
+          "main_star"
+      ],
+      "reason": "本命殺"
+  },
+  "northeast": {
+      "compatibility_level": "BETTER",
+      "is_auspicious": false,
+      "marks": [
+          "five_yellow"
+      ],
+      "reason": "五黄殺"
+  },
+  "northwest": {
+      "compatibility_level": "BAD",
+      "is_auspicious": false,
+      "marks": [
+          "opposite_zodiac",
+          "compatibility_matrix"
+      ],
+      "reason": "破, 凶方星"
+  },
+  "south": {
+      "compatibility_level": "GOOD",
+      "is_auspicious": false,
+      "marks": [
+          "main_star_opposite"
+      ],
+      "reason": "本命的殺"
+  },
+  "southeast": {
+      "compatibility_level": "BEST",
+      "is_auspicious": true,
+      "marks": [],
+      "reason": null
+  },
+  "southwest": {
+      "compatibility_level": "BETTER",
+      "is_auspicious": false,
+      "marks": [
+          "dark_sword"
+      ],
+      "reason": "暗剣殺"
+  },
+  "west": {
+      "compatibility_level": "BAD",
+      "is_auspicious": false,
+      "marks": [
+          "compatibility_matrix",
+          "month_star_opposite"
+      ],
+      "reason": "凶方星, 月命的殺"
+  }
+}

@@ -1,0 +1,49 @@
+{# expects: star, svg_url, keywords_source #}
+<table class="detail-table detail-table--flat">
+    <tr>
+        <td class="diagram-cell">
+            <!-- 左側 - 九星盤 -->
+            <img src="{{ svg_url }}"
+                 alt="{{ star.name_jp }}"
+                 class="star-diagram-img--large">
+        </td>
+        <td class="info-cell">
+            <!-- 右側 - 星情報 -->
+            <table class="star-info-table">
+                <tr>
+                    <td class="number-cell">
+                        <div class="number-box bg-color-{{ star.star_number }}">
+                            {{ star.star_number }}
+                        </div>
+                    </td>
+                    <td class="name-cell">
+                        <span class="star-name-large color-{{ star.star_number }}">
+                            {{ star.name_jp }}
+                        </span>
+                        <span class="element-info">
+                            五行：<span class="element-{{ star.element }}">{{ star.element }}</span>
+                        </span>
+                    </td>
+                </tr>
+            </table>
+
+            <!-- 特性タグ用テーブル -->
+            <table class="tags-table">
+                {% if keywords_source %}
+                    {% set keywords = keywords_source.split(',') %}
+                    {% for i in range(0, keywords|length, 3) %}
+                        <tr>
+                            {% for j in range(3) %}
+                                <td>
+                                    {% if i + j < keywords|length %}
+                                        <span class="tag">{{ keywords[i + j]|trim }}</span>
+                                    {% endif %}
+                                </td>
+                            {% endfor %}
+                        </tr>
+                    {% endfor %}
+                {% endif %}
+            </table>
+        </td>
+    </tr>
+</table>

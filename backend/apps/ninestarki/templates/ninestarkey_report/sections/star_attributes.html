@@ -1,0 +1,514 @@
+<style>
+    .attributes-section {
+        padding: 0;
+        margin-top: 0.3cm;
+        margin-bottom: 0.5cm;
+    }
+
+    .attributes-title {
+        font-size: 20px;
+        font-weight: 600;
+        color: #333;
+        text-align: center;
+        margin-bottom: 0.4rem;
+        position: relative;
+        letter-spacing: 0.05em;
+    }
+
+    .attributes-title::after {
+        content: '';
+        position: absolute;
+        bottom: -5px;
+        left: 50%;
+        transform: translateX(-50%);
+        width: 60%;
+        height: 1px;
+        background: linear-gradient(to right, transparent, var(--primary-color) 20%, var(--primary-color) 80%, transparent 100%);
+    }
+
+    .attribute-category {
+        margin-top: 4px;
+        margin-right: 8px;
+        margin-bottom: 4px;
+        position: relative;
+        background-color: rgba(255, 255, 255, 0.5);
+        border-radius: 6px;
+        padding: 6px;
+        box-shadow: 0 1px 3px rgba(0, 0, 0, 0.05);
+    }
+
+    .attribute-divider {
+        display: none; /* 線は非表示にする */
+    }
+
+    .category-header {
+        margin-left: 0;
+        margin-bottom: 4px;
+        padding-bottom: 3px;
+        border-bottom: 2px solid rgba(200, 200, 200, 0.3);
+    }
+
+    .category-badge {
+        display: inline-block;
+        padding: 1px 5px;
+        font-size: 10px;
+        font-weight: 600;
+        color: white;
+        border-radius: 3px;
+        margin-right: 4px;
+    }
+
+    /* カテゴリーバッジの色定義 */
+    .badge-color { background-color: #1c7ed6; }
+    .badge-shape { background-color: #0ca678; }
+    .badge-phenomenon { background-color: #37b24d; }
+    .badge-weather { background-color: #f59f00; }
+    .badge-place { background-color: #f76707; }
+    .badge-item { background-color: #e03131; }
+    .badge-person { background-color: #ae3ec9; }
+    .badge-body { background-color: #7048e8; }
+    .badge-animal { background-color: #4263eb; }
+    .badge-plant { background-color: #1098ad; }
+    .badge-food { background-color: #0ca678; }
+
+    .category-count {
+        font-size: 10px;
+        color: #666;
+        margin-left: 3px;
+    }
+
+    .attribute-items-table {
+        width: 100%;
+        border-collapse: separate;
+        border-spacing: 3px;
+        margin-top: 4px;
+    }
+
+    .attribute-item {
+        background: linear-gradient(135deg, rgba(255, 255, 255, 0.9), rgba(255, 255, 255, 0.7)), 
+                   linear-gradient(135deg, var(--section-gradient-1), var(--section-gradient-2));
+        border-radius: 4px;
+        padding: 3px 5px;
+        box-shadow: 0 1px 3px rgba(0,0,0,0.08);
+        border: 1px solid rgba(255,255,255,0.6);
+        min-height: 25px;
+    }
+    
+    .attribute-item:hover {
+        box-shadow: 0 2px 4px rgba(0,0,0,0.12);
+    }
+
+    .attribute-value {
+        font-weight: 600;
+        font-size: 11px;
+        margin-bottom: 0;
+        word-wrap: break-word;
+        white-space: normal;
+        line-height: 1.3;
+    }
+
+    .attribute-description {
+        font-size: 12px;
+        color: #444;
+        margin: 4px 0;
+        line-height: 1.3;
+    }
+
+    .attribute-cell-left {
+        width: 50%; 
+        vertical-align: top; 
+        padding: 0 4px 0 0; 
+        border-right: none;
+    }
+
+    .attribute-cell-right {
+        width: 50%; 
+        vertical-align: top; 
+        padding: 0 0 0 4px; 
+        border-left: none;
+    }
+
+    .attributes-intro {
+        margin-top: 15px;
+        background: linear-gradient(135deg, rgba(255, 255, 255, 0.85), rgba(255, 255, 255, 0.75)), 
+                   linear-gradient(135deg, var(--section-gradient-1), var(--section-gradient-2));
+        border-radius: 6px;
+        padding: 4px;
+        box-shadow: 0 1px 2px rgba(0,0,0,0.08);
+        margin-bottom: 15px;
+        width: 90%;
+        margin-left: auto;
+        margin-right: auto;
+    }
+
+    .attributes-intro-text {
+        font-size: 15px;
+        line-height: 1.5;
+        text-align: center;
+        margin: 1px 0;
+        color: #333;
+    }
+
+    .attributes-container {
+        position: relative;
+        width: 90%;
+        background: linear-gradient(135deg, rgba(255, 255, 255, 0.8), rgba(255, 255, 255, 0.6)), 
+                   linear-gradient(135deg, var(--section-gradient-1), var(--section-gradient-2));
+        border-radius: 6px;
+        padding: 6px 4px;
+        box-shadow: 0 1px 4px rgba(0,0,0,0.06);
+        margin-left: auto;
+        margin-right: auto;
+    }
+
+    /* 左右の区切り線のスタイル */
+    .attributes-divider {
+        position: absolute;
+        top: 5%;
+        left: 50%;
+        height: 90%;
+        width: 1px;
+        background: rgba(200, 200, 200, 0.4);
+    }
+
+    .attributes-table {
+        width: 100%;
+        border-collapse: separate;
+        border-spacing: 4px;
+        margin-bottom: 1px;
+    }
+</style>
+
+<div class="attributes-section">
+    <h2 class="attributes-title">{{ star_name }}の属性</h2>
+    
+    <!-- 属性情報の説明 -->
+    <div class="attributes-intro">
+        <p class="attributes-intro-text">
+            星の持つエネルギーは、私たちの人生に様々な形で影響を与えています。<br>
+            あなたの星が持つ属性は、魅力や才能、可能性を映し出す鏡です。
+        </p>
+    </div>
+
+    <!-- 属性カテゴリー全体のコンテナ -->
+    <div class="attributes-container">
+        <!-- 中央の区切り線 -->
+        <div class="attributes-divider"></div>
+        
+        <table class="attributes-table">
+            <tbody>
+                <!-- 1行目 -->
+                <tr>
+                    <td class="attribute-cell-left">
+                        <div class="attribute-category">
+                            <div class="category-header">
+                                <span class="category-badge badge-color">色</span>
+                            </div>
+                            <p class="attribute-description">
+                                あなたを彩る色は、内なる感性と外への印象を表します。好きな色を身に付けると運気アップ！
+                            </p>
+                            <table class="attribute-items-table">
+                                <tbody>
+                                    {% for attr in attributes.color %}
+                                    {% if loop.index0 % 2 == 0 %}
+                                    <tr>
+                                    {% endif %}
+                                        <td class="attribute-item">
+                                            <div class="attribute-value">{{ attr.attribute_value }}</div>
+                                        </td>
+                                    {% if loop.index0 % 2 == 1 or loop.last %}
+                                    </tr>
+                                    {% endif %}
+                                    {% endfor %}
+                                </tbody>
+                            </table>
+                        </div>
+                        <hr class="attribute-divider">
+                    </td>
+                    <td class="attribute-cell-right">
+                        <div class="attribute-category">
+                            <div class="category-header">
+                                <span class="category-badge badge-shape">形状</span>
+                            </div>
+                            <p class="attribute-description">
+                                形は宇宙のメッセージ。あなたの心が惹かれる形には、秘められた意味があります。
+                            </p>
+                            <table class="attribute-items-table">
+                                <tbody>
+                                    {% for attr in attributes.shape %}
+                                    {% if loop.index0 % 2 == 0 %}
+                                    <tr>
+                                    {% endif %}
+                                        <td class="attribute-item">
+                                            <div class="attribute-value">{{ attr.attribute_value }}</div>
+                                        </td>
+                                    {% if loop.index0 % 2 == 1 or loop.last %}
+                                    </tr>
+                                    {% endif %}
+                                    {% endfor %}
+                                </tbody>
+                            </table>
+                        </div>
+                        <hr class="attribute-divider">
+                    </td>
+                </tr>
+                
+                <!-- 2行目 -->
+                <tr>
+                    <td class="attribute-cell-left">
+                        <div class="attribute-category">
+                            <div class="category-header">
+                                <span class="category-badge badge-phenomenon">現象</span>
+                            </div>
+                            <p class="attribute-description">
+                                宇宙や自然の現象は、あなたの人生にも映し出されます。その意味を知れば、人生の流れを読み解くヒントに。
+                            </p>
+                            <table class="attribute-items-table">
+                                <tbody>
+                                    {% for attr in attributes.phenomenon %}
+                                    {% if loop.index0 % 2 == 0 %}
+                                    <tr>
+                                    {% endif %}
+                                        <td class="attribute-item">
+                                            <div class="attribute-value">{{ attr.attribute_value }}</div>
+                                        </td>
+                                    {% if loop.index0 % 2 == 1 or loop.last %}
+                                    </tr>
+                                    {% endif %}
+                                    {% endfor %}
+                                </tbody>
+                            </table>
+                        </div>
+                        <hr class="attribute-divider">
+                    </td>
+                    <td class="attribute-cell-right">
+                        <div class="attribute-category">
+                            <div class="category-header">
+                                <span class="category-badge badge-weather">天候</span>
+                            </div>
+                            <p class="attribute-description">
+                                天候はあなたの感情や気分の揺れを表します。晴れの日も雨の日も、あなたの魅力の一部です。
+                            </p>
+                            <table class="attribute-items-table">
+                                <tbody>
+                                    {% for attr in attributes.weather %}
+                                    {% if loop.index0 % 2 == 0 %}
+                                    <tr>
+                                    {% endif %}
+                                        <td class="attribute-item">
+                                            <div class="attribute-value">{{ attr.attribute_value }}</div>
+                                        </td>
+                                    {% if loop.index0 % 2 == 1 or loop.last %}
+                                    </tr>
+                                    {% endif %}
+                                    {% endfor %}
+                                </tbody>
+                            </table>
+                        </div>
+                        <hr class="attribute-divider">
+                    </td>
+                </tr>
+                
+                <!-- 3行目 -->
+                <tr>
+                    <td class="attribute-cell-left">
+                        <div class="attribute-category">
+                            <div class="category-header">
+                                <span class="category-badge badge-place">場所</span>
+                            </div>
+                            <p class="attribute-description">
+                                あなたにとって特別な場所には、魂が共鳴するエネルギーが。訪れると不思議と元気になれる場所かもしれません。
+                            </p>
+                            <table class="attribute-items-table">
+                                <tbody>
+                                    {% for attr in attributes.place %}
+                                    {% if loop.index0 % 2 == 0 %}
+                                    <tr>
+                                    {% endif %}
+                                        <td class="attribute-item">
+                                            <div class="attribute-value">{{ attr.attribute_value }}</div>
+                                        </td>
+                                    {% if loop.index0 % 2 == 1 or loop.last %}
+                                    </tr>
+                                    {% endif %}
+                                    {% endfor %}
+                                </tbody>
+                            </table>
+                        </div>
+                        <hr class="attribute-divider">
+                    </td>
+                    <td class="attribute-cell-right">
+                        <div class="attribute-category">
+                            <div class="category-header">
+                                <span class="category-badge badge-item">物品</span>
+                            </div>
+                            <p class="attribute-description">
+                                縁のある物を身近に置くと、あなたの運気や才能を引き出すお守りになるかも。
+                            </p>
+                            <table class="attribute-items-table">
+                                <tbody>
+                                    {% for attr in attributes.item %}
+                                    {% if loop.index0 % 2 == 0 %}
+                                    <tr>
+                                    {% endif %}
+                                        <td class="attribute-item">
+                                            <div class="attribute-value">{{ attr.attribute_value }}</div>
+                                        </td>
+                                    {% if loop.index0 % 2 == 1 or loop.last %}
+                                    </tr>
+                                    {% endif %}
+                                    {% endfor %}
+                                </tbody>
+                            </table>
+                        </div>
+                        <hr class="attribute-divider">
+                    </td>
+                </tr>
+                
+                <!-- 4行目 -->
+                <tr>
+                    <td class="attribute-cell-left">
+                        <div class="attribute-category">
+                            <div class="category-header">
+                                <span class="category-badge badge-person">人物</span>
+                            </div>
+                            <p class="attribute-description">
+                                縁のある人物タイプには、あなたの成長を助ける鏡のような存在が。人との出会いは宇宙からの贈り物です。
+                            </p>
+                            <table class="attribute-items-table">
+                                <tbody>
+                                    {% for attr in attributes.person %}
+                                    {% if loop.index0 % 2 == 0 %}
+                                    <tr>
+                                    {% endif %}
+                                        <td class="attribute-item">
+                                            <div class="attribute-value">{{ attr.attribute_value }}</div>
+                                        </td>
+                                    {% if loop.index0 % 2 == 1 or loop.last %}
+                                    </tr>
+                                    {% endif %}
+                                    {% endfor %}
+                                </tbody>
+                            </table>
+                        </div>
+                        <hr class="attribute-divider">
+                    </td>
+                    <td class="attribute-cell-right">
+                        <div class="attribute-category">
+                            <div class="category-header">
+                                <span class="category-badge badge-body">身体</span>
+                            </div>
+                            <p class="attribute-description">
+                                体の部位には意識を向けるだけで、エネルギーの流れが変わります。あなたの星の身体的特徴を知って健康に。
+                            </p>
+                            <table class="attribute-items-table">
+                                <tbody>
+                                    {% for attr in attributes.body %}
+                                    {% if loop.index0 % 2 == 0 %}
+                                    <tr>
+                                    {% endif %}
+                                        <td class="attribute-item">
+                                            <div class="attribute-value">{{ attr.attribute_value }}</div>
+                                        </td>
+                                    {% if loop.index0 % 2 == 1 or loop.last %}
+                                    </tr>
+                                    {% endif %}
+                                    {% endfor %}
+                                </tbody>
+                            </table>
+                        </div>
+                        <hr class="attribute-divider">
+                    </td>
+                </tr>
+                
+                <!-- 5行目 -->
+                <tr>
+                    <td class="attribute-cell-left">
+                        <div class="attribute-category">
+                            <div class="category-header">
+                                <span class="category-badge badge-animal">動物</span>
+                            </div>
+                            <p class="attribute-description">
+                                あなたと関わりのある動物には、スピリチュアルなメッセージが。特別な魅力や才能を象徴しています。
+                            </p>
+                            <table class="attribute-items-table">
+                                <tbody>
+                                    {% for attr in attributes.animal %}
+                                    {% if loop.index0 % 2 == 0 %}
+                                    <tr>
+                                    {% endif %}
+                                        <td class="attribute-item">
+                                            <div class="attribute-value">{{ attr.attribute_value }}</div>
+                                        </td>
+                                    {% if loop.index0 % 2 == 1 or loop.last %}
+                                    </tr>
+                                    {% endif %}
+                                    {% endfor %}
+                                </tbody>
+                            </table>
+                        </div>
+                        <hr class="attribute-divider">
+                    </td>
+                    <td class="attribute-cell-right">
+                        <div class="attribute-category">
+                            <div class="category-header">
+                                <span class="category-badge badge-plant">植物</span>
+                            </div>
+                            <p class="attribute-description">
+                                縁の植物は、育てたり眺めたりするだけで癒しを与えてくれます。お部屋に置くと幸運を引き寄せるかも。
+                            </p>
+                            <table class="attribute-items-table">
+                                <tbody>
+                                    {% for attr in attributes.plant %}
+                                    {% if loop.index0 % 2 == 0 %}
+                                    <tr>
+                                    {% endif %}
+                                        <td class="attribute-item">
+                                            <div class="attribute-value">{{ attr.attribute_value }}</div>
+                                        </td>
+                                    {% if loop.index0 % 2 == 1 or loop.last %}
+                                    </tr>
+                                    {% endif %}
+                                    {% endfor %}
+                                </tbody>
+                            </table>
+                        </div>
+                        <hr class="attribute-divider">
+                    </td>
+                </tr>
+                
+                <!-- 6行目 (最後の行) -->
+                <tr>
+                    <td class="attribute-cell-left">
+                        <div class="attribute-category">
+                            <div class="category-header">
+                                <span class="category-badge badge-food">食べ物</span>
+                            </div>
+                            <p class="attribute-description">
+                                あなたと相性の良い食べ物は、心と体のバランスを整え、エネルギーを高めてくれる特別な栄養源です。
+                            </p>
+                            <table class="attribute-items-table">
+                                <tbody>
+                                    {% for attr in attributes.food %}
+                                    {% if loop.index0 % 2 == 0 %}
+                                    <tr>
+                                    {% endif %}
+                                        <td class="attribute-item">
+                                            <div class="attribute-value">{{ attr.attribute_value }}</div>
+                                        </td>
+                                    {% if loop.index0 % 2 == 1 or loop.last %}
+                                    </tr>
+                                    {% endif %}
+                                    {% endfor %}
+                                </tbody>
+                            </table>
+                        </div>
+                    </td>
+                    <td class="attribute-cell-right">
+                        <!-- 何もない場合は空のセルとして表示 -->
+                    </td>
+                </tr>
+            </tbody>
+        </table>
+    </div>
+</div> 

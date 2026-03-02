@@ -1,0 +1,32 @@
+{# expects: year_data #}
+<div class="year-group-header">
+    <span class="year-group-text">{{ year_data.year }}年</span>
+</div>
+<table class="dates-table dates-table--fortune">
+    <colgroup>
+        <col class="dates-col-month">
+        {% for _ in year_data.headers %}
+        <col>
+        {% endfor %}
+    </colgroup>
+    <tr class="dates-header-row">
+        <td class="month-cell"><span class="month-number">月</span></td>
+        {% for dir in year_data.headers %}
+        <td class="direction-cell">
+            <span class="direction-label">{{ dir }}</span>
+        </td>
+        {% endfor %}
+    </tr>
+    {% for row in year_data.rows %}
+        <tr class="dates-row">
+            <td class="month-cell">
+                <span class="month-number">{{ row.month }}月</span>
+            </td>
+            {% for dir in year_data.headers %}
+            <td class="direction-cell">
+                <span class="dates-text">{{ row.cells.get(dir, '') }}</span>
+            </td>
+            {% endfor %}
+        </tr>
+    {% endfor %}
+</table>

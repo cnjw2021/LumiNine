@@ -1,0 +1,73 @@
+{% import 'ninestarkey_report/partials/marker_macros.html' as mark %}
+<div class="section year-fortune">
+    <div class="section-background"></div>
+    <div class="section-content">
+        <h2 class="year-fortune-title">{{ target_year }}〜{{ target_year + 2 }} 年の運気</h2>
+
+        <table class="year-fortune-table">
+            {% for year_key, year_data in year_fortune.directions.items() %}
+                <tr class="year-content-row">
+                    <td colspan="2">
+                        <div class="year-card">
+                            <table class="inner-table">
+                                <tr>
+                                    <td class="chart-cell">
+                                        <!-- 共通マクロで九星盤とマーカーを描画 -->
+                                        {{ mark.star_chart(svg_by_center[year_data.star_number], year_data.directions, result.main_star.star_number) }}
+                                    </td>
+                                    <td class="info-cell">
+                                        <!-- 年度・干支 -->
+                                        <h2 class="year-title">{{ year_data.year }}年 {{ year_data.zodiac }}</h2>
+                                        
+                                        <!-- 期間 -->
+                                        <div class="year-period-wrapper">
+                                            <span class="year-period">({{ year_data.period_start }} 〜 {{ year_data.period_end }})</span>
+                                        </div>
+                                        
+                                        <!-- 運気情報の表示 - 重複を避けた方法で適用 -->
+                                        <div class="fortune-content">
+                                            {% set fortune_displayed = false %}
+                                            
+                                            <!-- 中央の運気情報を優先表示 -->
+                                            {% if year_data.directions.center is defined and year_data.directions.center.title is defined %}
+                                                {% if year_data.directions.center.is_auspicious %}
+                                                    <h3 class="fortune-title">{{ year_data.directions.center.title }}</h3>
+                                                {% else %}
+                                                    <h3 class="fortune-title fortune-title-unlucky">{{ year_data.directions.center.title }}</h3>
+                                                {% endif %}
+                                                <p class="fortune-description">{{ year_data.directions.center.details }}</p>
+                                                {% set fortune_displayed = true %}
+                                            {% endif %}
+                                            
+                                            <!-- 中央に運気情報がない場合のみ、他の方位の本命星情報を表示 -->
+                                            {% if not fortune_displayed %}
+                                                {% set main_star_found = false %}
+                                                {% for direction, direction_data in year_data.directions.items() %}
+                                                    {% if direction_data.is_main_star and direction_data.title is defined and not main_star_found %}
+                                                        {% if direction_data.is_auspicious %}
+                                                            <h3 class="fortune-title">{{ direction_data.title }}</h3>
+                                                        {% else %}
+                                                            <h3 class="fortune-title fortune-title-unlucky">{{ direction_data.title }}</h3>
+                                                        {% endif %}
+                                                        <p class="fortune-description">{{ direction_data.details }}</p>
+                                                        {% set main_star_found = true %}
+                                                    {% endif %}
+                                                {% endfor %}
+                                            {% endif %}
+                                        </div>
+                                    </td>
+                                </tr>
+                            </table>
+                        </div>
+                    </td>
+                </tr>
+                
+                {% if not loop.last %}
+                <tr class="spacer-row">
+                    <td colspan="2"></td>
+                </tr>
+                {% endif %}
+            {% endfor %}
+        </table>
+    </div>
+</div> 

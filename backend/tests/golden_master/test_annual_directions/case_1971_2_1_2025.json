@@ -1,0 +1,908 @@
+{
+  "annual_directions": {
+    "month_1": {
+      "center_star": 9,
+      "directions": {
+        "east": {
+          "compatibility_level": "BEST",
+          "is_auspicious": false,
+          "marks": [
+            "main_star_opposite"
+          ],
+          "reason": "本命的殺"
+        },
+        "north": {
+          "compatibility_level": "GOOD",
+          "is_auspicious": false,
+          "marks": [
+            "five_yellow"
+          ],
+          "reason": "五黄殺"
+        },
+        "northeast": {
+          "compatibility_level": "BAD",
+          "is_auspicious": false,
+          "marks": [
+            "compatibility_matrix"
+          ],
+          "reason": "凶方星"
+        },
+        "northwest": {
+          "compatibility_level": "BAD",
+          "is_auspicious": false,
+          "marks": [
+            "month_star",
+            "compatibility_matrix"
+          ],
+          "reason": "月命殺, 凶方星"
+        },
+        "south": {
+          "compatibility_level": "BAD",
+          "is_auspicious": false,
+          "marks": [
+            "dark_sword",
+            "compatibility_matrix"
+          ],
+          "reason": "暗剣殺, 凶方星"
+        },
+        "southeast": {
+          "compatibility_level": "GOOD",
+          "is_auspicious": false,
+          "marks": [
+            "month_star_opposite"
+          ],
+          "reason": "月命的殺"
+        },
+        "southwest": {
+          "compatibility_level": "BEST",
+          "is_auspicious": false,
+          "marks": [
+            "opposite_zodiac"
+          ],
+          "reason": "破"
+        },
+        "west": {
+          "compatibility_level": "GOOD",
+          "is_auspicious": false,
+          "marks": [
+            "main_star"
+          ],
+          "reason": "本命殺"
+        }
+      },
+      "display_month": "2026年1月",
+      "month": 1,
+      "period_end": "2026-02-03",
+      "period_start": "2026-01-05",
+      "year": 2026,
+      "zodiac": "己丑"
+    },
+    "month_10": {
+      "center_star": 3,
+      "directions": {
+        "east": {
+          "compatibility_level": "BAD",
+          "is_auspicious": false,
+          "marks": [
+            "dark_sword",
+            "month_star",
+            "compatibility_matrix"
+          ],
+          "reason": "暗剣殺, 月命殺, 凶方星"
+        },
+        "north": {
+          "compatibility_level": "GOOD",
+          "is_auspicious": true,
+          "marks": [],
+          "reason": null
+        },
+        "northeast": {
+          "compatibility_level": "BEST",
+          "is_auspicious": true,
+          "marks": [],
+          "reason": null
+        },
+        "northwest": {
+          "compatibility_level": "BAD",
+          "is_auspicious": false,
+          "marks": [
+            "compatibility_matrix",
+            "main_star_opposite"
+          ],
+          "reason": "凶方星, 本命的殺"
+        },
+        "south": {
+          "compatibility_level": "BEST",
+          "is_auspicious": true,
+          "marks": [],
+          "reason": null
+        },
+        "southeast": {
+          "compatibility_level": "GOOD",
+          "is_auspicious": false,
+          "marks": [
+            "main_star",
+            "opposite_zodiac"
+          ],
+          "reason": "本命殺, 破"
+        },
+        "southwest": {
+          "compatibility_level": "BETTER",
+          "is_auspicious": true,
+          "marks": [],
+          "reason": null
+        },
+        "west": {
+          "compatibility_level": "GOOD",
+          "is_auspicious": false,
+          "marks": [
+            "five_yellow",
+            "month_star_opposite"
+          ],
+          "reason": "五黄殺, 月命的殺"
+        }
+      },
+      "display_month": "2025年10月",
+      "month": 10,
+      "period_end": "2025-11-06",
+      "period_start": "2025-10-08",
+      "year": 2025,
+      "zodiac": "丙戌"
+    },
+    "month_11": {
+      "center_star": 2,
+      "directions": {
+        "east": {
+          "compatibility_level": "BETTER",
+          "is_auspicious": true,
+          "marks": [],
+          "reason": null
+        },
+        "north": {
+          "compatibility_level": "BEST",
+          "is_auspicious": true,
+          "marks": [],
+          "reason": null
+        },
+        "northeast": {
+          "compatibility_level": "GOOD",
+          "is_auspicious": false,
+          "marks": [
+            "five_yellow"
+          ],
+          "reason": "五黄殺"
+        },
+        "northwest": {
+          "compatibility_level": "BAD",
+          "is_auspicious": false,
+          "marks": [
+            "compatibility_matrix",
+            "month_star_opposite"
+          ],
+          "reason": "凶方星, 月命的殺"
+        },
+        "south": {
+          "compatibility_level": "BEST",
+          "is_auspicious": true,
+          "marks": [],
+          "reason": null
+        },
+        "southeast": {
+          "compatibility_level": "BAD",
+          "is_auspicious": false,
+          "marks": [
+            "month_star",
+            "opposite_zodiac",
+            "compatibility_matrix"
+          ],
+          "reason": "月命殺, 破, 凶方星"
+        },
+        "southwest": {
+          "compatibility_level": "GOOD",
+          "is_auspicious": false,
+          "marks": [
+            "dark_sword"
+          ],
+          "reason": "暗剣殺"
+        },
+        "west": {
+          "compatibility_level": "BAD",
+          "is_auspicious": false,
+          "marks": [
+            "compatibility_matrix"
+          ],
+          "reason": "凶方星"
+        }
+      },
+      "display_month": "2025年11月",
+      "month": 11,
+      "period_end": "2025-12-06",
+      "period_start": "2025-11-07",
+      "year": 2025,
+      "zodiac": "丁亥"
+    },
+    "month_12": {
+      "center_star": 1,
+      "directions": {
+        "east": {
+          "compatibility_level": "GOOD",
+          "is_auspicious": true,
+          "marks": [],
+          "reason": null
+        },
+        "north": {
+          "compatibility_level": "BEST",
+          "is_auspicious": false,
+          "marks": [
+            "dark_sword"
+          ],
+          "reason": "暗剣殺"
+        },
+        "northeast": {
+          "compatibility_level": "BAD",
+          "is_auspicious": false,
+          "marks": [
+            "compatibility_matrix"
+          ],
+          "reason": "凶方星"
+        },
+        "northwest": {
+          "compatibility_level": "GOOD",
+          "is_auspicious": false,
+          "marks": [
+            "main_star"
+          ],
+          "reason": "本命殺"
+        },
+        "south": {
+          "compatibility_level": "GOOD",
+          "is_auspicious": false,
+          "marks": [
+            "five_yellow",
+            "opposite_zodiac"
+          ],
+          "reason": "五黄殺, 破"
+        },
+        "southeast": {
+          "compatibility_level": "BETTER",
+          "is_auspicious": false,
+          "marks": [
+            "main_star_opposite"
+          ],
+          "reason": "本命的殺"
+        },
+        "southwest": {
+          "compatibility_level": "BEST",
+          "is_auspicious": true,
+          "marks": [],
+          "reason": null
+        },
+        "west": {
+          "compatibility_level": "BAD",
+          "is_auspicious": false,
+          "marks": [
+            "compatibility_matrix"
+          ],
+          "reason": "凶方星"
+        }
+      },
+      "display_month": "2025年12月",
+      "month": 12,
+      "period_end": "2026-01-04",
+      "period_start": "2025-12-07",
+      "year": 2025,
+      "zodiac": "戊子"
+    },
+    "month_2": {
+      "center_star": 2,
+      "directions": {
+        "east": {
+          "compatibility_level": "BETTER",
+          "is_auspicious": true,
+          "marks": [],
+          "reason": null
+        },
+        "north": {
+          "compatibility_level": "BEST",
+          "is_auspicious": true,
+          "marks": [],
+          "reason": null
+        },
+        "northeast": {
+          "compatibility_level": "GOOD",
+          "is_auspicious": false,
+          "marks": [
+            "five_yellow"
+          ],
+          "reason": "五黄殺"
+        },
+        "northwest": {
+          "compatibility_level": "BAD",
+          "is_auspicious": false,
+          "marks": [
+            "compatibility_matrix",
+            "month_star_opposite"
+          ],
+          "reason": "凶方星, 月命的殺"
+        },
+        "south": {
+          "compatibility_level": "BEST",
+          "is_auspicious": true,
+          "marks": [],
+          "reason": null
+        },
+        "southeast": {
+          "compatibility_level": "BAD",
+          "is_auspicious": false,
+          "marks": [
+            "month_star",
+            "compatibility_matrix"
+          ],
+          "reason": "月命殺, 凶方星"
+        },
+        "southwest": {
+          "compatibility_level": "GOOD",
+          "is_auspicious": false,
+          "marks": [
+            "dark_sword",
+            "opposite_zodiac"
+          ],
+          "reason": "暗剣殺, 破"
+        },
+        "west": {
+          "compatibility_level": "BAD",
+          "is_auspicious": false,
+          "marks": [
+            "compatibility_matrix"
+          ],
+          "reason": "凶方星"
+        }
+      },
+      "display_month": "2025年2月",
+      "month": 2,
+      "period_end": "2025-03-04",
+      "period_start": "2025-02-03",
+      "year": 2025,
+      "zodiac": "戊寅"
+    },
+    "month_3": {
+      "center_star": 1,
+      "directions": {
+        "east": {
+          "compatibility_level": "GOOD",
+          "is_auspicious": true,
+          "marks": [],
+          "reason": null
+        },
+        "north": {
+          "compatibility_level": "BEST",
+          "is_auspicious": false,
+          "marks": [
+            "dark_sword"
+          ],
+          "reason": "暗剣殺"
+        },
+        "northeast": {
+          "compatibility_level": "BAD",
+          "is_auspicious": false,
+          "marks": [
+            "compatibility_matrix"
+          ],
+          "reason": "凶方星"
+        },
+        "northwest": {
+          "compatibility_level": "GOOD",
+          "is_auspicious": false,
+          "marks": [
+            "main_star"
+          ],
+          "reason": "本命殺"
+        },
+        "south": {
+          "compatibility_level": "GOOD",
+          "is_auspicious": false,
+          "marks": [
+            "five_yellow"
+          ],
+          "reason": "五黄殺"
+        },
+        "southeast": {
+          "compatibility_level": "BETTER",
+          "is_auspicious": false,
+          "marks": [
+            "main_star_opposite"
+          ],
+          "reason": "本命的殺"
+        },
+        "southwest": {
+          "compatibility_level": "BEST",
+          "is_auspicious": true,
+          "marks": [],
+          "reason": null
+        },
+        "west": {
+          "compatibility_level": "BAD",
+          "is_auspicious": false,
+          "marks": [
+            "opposite_zodiac",
+            "compatibility_matrix"
+          ],
+          "reason": "破, 凶方星"
+        }
+      },
+      "display_month": "2025年3月",
+      "month": 3,
+      "period_end": "2025-04-03",
+      "period_start": "2025-03-05",
+      "year": 2025,
+      "zodiac": "己卯"
+    },
+    "month_4": {
+      "center_star": 9,
+      "directions": {
+        "east": {
+          "compatibility_level": "BEST",
+          "is_auspicious": false,
+          "marks": [
+            "main_star_opposite"
+          ],
+          "reason": "本命的殺"
+        },
+        "north": {
+          "compatibility_level": "GOOD",
+          "is_auspicious": false,
+          "marks": [
+            "five_yellow"
+          ],
+          "reason": "五黄殺"
+        },
+        "northeast": {
+          "compatibility_level": "BAD",
+          "is_auspicious": false,
+          "marks": [
+            "compatibility_matrix"
+          ],
+          "reason": "凶方星"
+        },
+        "northwest": {
+          "compatibility_level": "BAD",
+          "is_auspicious": false,
+          "marks": [
+            "month_star",
+            "opposite_zodiac",
+            "compatibility_matrix"
+          ],
+          "reason": "月命殺, 破, 凶方星"
+        },
+        "south": {
+          "compatibility_level": "BAD",
+          "is_auspicious": false,
+          "marks": [
+            "dark_sword",
+            "compatibility_matrix"
+          ],
+          "reason": "暗剣殺, 凶方星"
+        },
+        "southeast": {
+          "compatibility_level": "GOOD",
+          "is_auspicious": false,
+          "marks": [
+            "month_star_opposite"
+          ],
+          "reason": "月命的殺"
+        },
+        "southwest": {
+          "compatibility_level": "BEST",
+          "is_auspicious": true,
+          "marks": [],
+          "reason": null
+        },
+        "west": {
+          "compatibility_level": "GOOD",
+          "is_auspicious": false,
+          "marks": [
+            "main_star"
+          ],
+          "reason": "本命殺"
+        }
+      },
+      "display_month": "2025年4月",
+      "month": 4,
+      "period_end": "2025-05-04",
+      "period_start": "2025-04-04",
+      "year": 2025,
+      "zodiac": "庚辰"
+    },
+    "month_5": {
+      "center_star": 8,
+      "directions": {
+        "east": {
+          "compatibility_level": "BEST",
+          "is_auspicious": false,
+          "marks": [
+            "month_star_opposite"
+          ],
+          "reason": "月命的殺"
+        },
+        "north": {
+          "compatibility_level": "BAD",
+          "is_auspicious": false,
+          "marks": [
+            "compatibility_matrix"
+          ],
+          "reason": "凶方星"
+        },
+        "northeast": {
+          "compatibility_level": "GOOD",
+          "is_auspicious": false,
+          "marks": [
+            "dark_sword",
+            "main_star"
+          ],
+          "reason": "暗剣殺, 本命殺"
+        },
+        "northwest": {
+          "compatibility_level": "BETTER",
+          "is_auspicious": false,
+          "marks": [
+            "opposite_zodiac"
+          ],
+          "reason": "破"
+        },
+        "south": {
+          "compatibility_level": "BAD",
+          "is_auspicious": false,
+          "marks": [
+            "compatibility_matrix"
+          ],
+          "reason": "凶方星"
+        },
+        "southeast": {
+          "compatibility_level": "BEST",
+          "is_auspicious": true,
+          "marks": [],
+          "reason": null
+        },
+        "southwest": {
+          "compatibility_level": "GOOD",
+          "is_auspicious": false,
+          "marks": [
+            "five_yellow",
+            "main_star_opposite"
+          ],
+          "reason": "五黄殺, 本命的殺"
+        },
+        "west": {
+          "compatibility_level": "BAD",
+          "is_auspicious": false,
+          "marks": [
+            "month_star",
+            "compatibility_matrix"
+          ],
+          "reason": "月命殺, 凶方星"
+        }
+      },
+      "display_month": "2025年5月",
+      "month": 5,
+      "period_end": "2025-06-04",
+      "period_start": "2025-05-05",
+      "year": 2025,
+      "zodiac": "辛巳"
+    },
+    "month_6": {
+      "center_star": 7,
+      "directions": {
+        "east": {
+          "compatibility_level": "GOOD",
+          "is_auspicious": false,
+          "marks": [
+            "five_yellow"
+          ],
+          "reason": "五黄殺"
+        },
+        "north": {
+          "compatibility_level": "BAD",
+          "is_auspicious": false,
+          "marks": [
+            "opposite_zodiac",
+            "compatibility_matrix",
+            "main_star_opposite"
+          ],
+          "reason": "破, 凶方星, 本命的殺"
+        },
+        "northeast": {
+          "compatibility_level": "BAD",
+          "is_auspicious": false,
+          "marks": [
+            "month_star",
+            "compatibility_matrix"
+          ],
+          "reason": "月命殺, 凶方星"
+        },
+        "northwest": {
+          "compatibility_level": "GOOD",
+          "is_auspicious": true,
+          "marks": [],
+          "reason": null
+        },
+        "south": {
+          "compatibility_level": "GOOD",
+          "is_auspicious": false,
+          "marks": [
+            "main_star"
+          ],
+          "reason": "本命殺"
+        },
+        "southeast": {
+          "compatibility_level": "BEST",
+          "is_auspicious": true,
+          "marks": [],
+          "reason": null
+        },
+        "southwest": {
+          "compatibility_level": "BAD",
+          "is_auspicious": false,
+          "marks": [
+            "compatibility_matrix",
+            "month_star_opposite"
+          ],
+          "reason": "凶方星, 月命的殺"
+        },
+        "west": {
+          "compatibility_level": "BETTER",
+          "is_auspicious": false,
+          "marks": [
+            "dark_sword"
+          ],
+          "reason": "暗剣殺"
+        }
+      },
+      "display_month": "2025年6月",
+      "month": 6,
+      "period_end": "2025-07-06",
+      "period_start": "2025-06-05",
+      "year": 2025,
+      "zodiac": "壬午"
+    },
+    "month_7": {
+      "center_star": 6,
+      "directions": {
+        "east": {
+          "compatibility_level": "BAD",
+          "is_auspicious": false,
+          "marks": [
+            "compatibility_matrix"
+          ],
+          "reason": "凶方星"
+        },
+        "north": {
+          "compatibility_level": "GOOD",
+          "is_auspicious": false,
+          "marks": [
+            "main_star",
+            "month_star_opposite"
+          ],
+          "reason": "本命殺, 月命的殺"
+        },
+        "northeast": {
+          "compatibility_level": "BETTER",
+          "is_auspicious": false,
+          "marks": [
+            "water_fire",
+            "opposite_zodiac"
+          ],
+          "reason": "水火殺, 破"
+        },
+        "northwest": {
+          "compatibility_level": "BEST",
+          "is_auspicious": false,
+          "marks": [
+            "dark_sword"
+          ],
+          "reason": "暗剣殺"
+        },
+        "south": {
+          "compatibility_level": "BAD",
+          "is_auspicious": false,
+          "marks": [
+            "month_star",
+            "water_fire",
+            "compatibility_matrix",
+            "main_star_opposite"
+          ],
+          "reason": "月命殺, 水火殺, 凶方星, 本命的殺"
+        },
+        "southeast": {
+          "compatibility_level": "GOOD",
+          "is_auspicious": false,
+          "marks": [
+            "five_yellow"
+          ],
+          "reason": "五黄殺"
+        },
+        "southwest": {
+          "compatibility_level": "BAD",
+          "is_auspicious": false,
+          "marks": [
+            "compatibility_matrix"
+          ],
+          "reason": "凶方星"
+        },
+        "west": {
+          "compatibility_level": "GOOD",
+          "is_auspicious": true,
+          "marks": [],
+          "reason": null
+        }
+      },
+      "display_month": "2025年7月",
+      "month": 7,
+      "period_end": "2025-08-06",
+      "period_start": "2025-07-07",
+      "year": 2025,
+      "zodiac": "癸未"
+    },
+    "month_8": {
+      "center_star": 5,
+      "directions": {
+        "east": {
+          "compatibility_level": "BAD",
+          "is_auspicious": false,
+          "marks": [
+            "no_dark_sword_center_five",
+            "compatibility_matrix"
+          ],
+          "reason": "凶方星"
+        },
+        "north": {
+          "compatibility_level": "BAD",
+          "is_auspicious": false,
+          "marks": [
+            "no_dark_sword_center_five",
+            "month_star",
+            "compatibility_matrix"
+          ],
+          "reason": "月命殺, 凶方星"
+        },
+        "northeast": {
+          "compatibility_level": "GOOD",
+          "is_auspicious": false,
+          "marks": [
+            "no_dark_sword_center_five",
+            "opposite_zodiac",
+            "main_star_opposite"
+          ],
+          "reason": "破, 本命的殺"
+        },
+        "northwest": {
+          "compatibility_level": "BEST",
+          "is_auspicious": true,
+          "marks": [
+            "no_dark_sword_center_five"
+          ],
+          "reason": null
+        },
+        "south": {
+          "compatibility_level": "BETTER",
+          "is_auspicious": false,
+          "marks": [
+            "no_dark_sword_center_five",
+            "month_star_opposite"
+          ],
+          "reason": "月命的殺"
+        },
+        "southeast": {
+          "compatibility_level": "BAD",
+          "is_auspicious": false,
+          "marks": [
+            "no_dark_sword_center_five",
+            "compatibility_matrix"
+          ],
+          "reason": "凶方星"
+        },
+        "southwest": {
+          "compatibility_level": "GOOD",
+          "is_auspicious": false,
+          "marks": [
+            "no_dark_sword_center_five",
+            "main_star"
+          ],
+          "reason": "本命殺"
+        },
+        "west": {
+          "compatibility_level": "BEST",
+          "is_auspicious": true,
+          "marks": [
+            "no_dark_sword_center_five"
+          ],
+          "reason": null
+        }
+      },
+      "display_month": "2025年8月",
+      "month": 8,
+      "period_end": "2025-09-06",
+      "period_start": "2025-08-07",
+      "year": 2025,
+      "zodiac": "甲申"
+    },
+    "month_9": {
+      "center_star": 4,
+      "directions": {
+        "east": {
+          "compatibility_level": "GOOD",
+          "is_auspicious": false,
+          "marks": [
+            "main_star",
+            "opposite_zodiac"
+          ],
+          "reason": "本命殺, 破"
+        },
+        "north": {
+          "compatibility_level": "BETTER",
+          "is_auspicious": false,
+          "marks": [
+            "water_fire"
+          ],
+          "reason": "水火殺"
+        },
+        "northeast": {
+          "compatibility_level": "BEST",
+          "is_auspicious": false,
+          "marks": [
+            "month_star_opposite"
+          ],
+          "reason": "月命的殺"
+        },
+        "northwest": {
+          "compatibility_level": "GOOD",
+          "is_auspicious": false,
+          "marks": [
+            "five_yellow"
+          ],
+          "reason": "五黄殺"
+        },
+        "south": {
+          "compatibility_level": "GOOD",
+          "is_auspicious": true,
+          "marks": [],
+          "reason": null
+        },
+        "southeast": {
+          "compatibility_level": "BAD",
+          "is_auspicious": false,
+          "marks": [
+            "dark_sword",
+            "compatibility_matrix"
+          ],
+          "reason": "暗剣殺, 凶方星"
+        },
+        "southwest": {
+          "compatibility_level": "BAD",
+          "is_auspicious": false,
+          "marks": [
+            "month_star",
+            "water_fire",
+            "compatibility_matrix"
+          ],
+          "reason": "月命殺, 水火殺, 凶方星"
+        },
+        "west": {
+          "compatibility_level": "BEST",
+          "is_auspicious": false,
+          "marks": [
+            "main_star_opposite"
+          ],
+          "reason": "本命的殺"
+        }
+      },
+      "display_month": "2025年9月",
+      "month": 9,
+      "period_end": "2025-10-07",
+      "period_start": "2025-09-07",
+      "year": 2025,
+      "zodiac": "乙酉"
+    }
+  },
+  "month_star": 1,
+  "target_year": 2025
+}

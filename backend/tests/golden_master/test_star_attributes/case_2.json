@@ -1,0 +1,94 @@
+[
+    {
+      "attribute_type": "animal",
+      "attribute_value": "牛・家畜",
+      "description": "二黒土星に関連する動物",
+      "id": 25,
+      "star_number": 2
+    },
+    {
+      "attribute_type": "body",
+      "attribute_value": "胃・脾臓・消化器",
+      "description": "二黒土星に関連する身体部位",
+      "id": 24,
+      "star_number": 2
+    },
+    {
+      "attribute_type": "color",
+      "attribute_value": "黒・濃茶・暗色",
+      "description": "二黒土星に関連する色",
+      "id": 16,
+      "star_number": 2
+    },
+    {
+      "attribute_type": "food",
+      "attribute_value": "芋類・根菜・保存食品",
+      "description": "二黒土星に関連する食べ物",
+      "id": 27,
+      "star_number": 2
+    },
+    {
+      "attribute_type": "food",
+      "attribute_value": "重厚な味わいの料理・黒い食べ物",
+      "description": "二黒土星に関連する食べ物",
+      "id": 28,
+      "star_number": 2
+    },
+    {
+      "attribute_type": "item",
+      "attribute_value": "土・石・陶器・焼き物",
+      "description": "二黒土星に関連する物品",
+      "id": 22,
+      "star_number": 2
+    },
+    {
+      "attribute_type": "person",
+      "attribute_value": "農家・地主・職人",
+      "description": "二黒土星に関連する人物",
+      "id": 23,
+      "star_number": 2
+    },
+    {
+      "attribute_type": "phenomenon",
+      "attribute_value": "保存・蓄積・貯蔵",
+      "description": "二黒土星に関連する現象",
+      "id": 18,
+      "star_number": 2
+    },
+    {
+      "attribute_type": "place",
+      "attribute_value": "山・洞窟・地中",
+      "description": "二黒土星に関連する場所",
+      "id": 21,
+      "star_number": 2
+    },
+    {
+      "attribute_type": "place",
+      "attribute_value": "農地・田畑・倉庫",
+      "description": "二黒土星に関連する場所",
+      "id": 20,
+      "star_number": 2
+    },
+    {
+      "attribute_type": "plant",
+      "attribute_value": "根菜・地中の野菜",
+      "description": "二黒土星に関連する植物",
+      "id": 26,
+      "star_number": 2
+    },
+    {
+      "attribute_type": "shape",
+      "attribute_value": "四角・立方体・安定形",
+      "description": "二黒土星に関連する形状",
+      "id": 17,
+      "star_number": 2
+    },
+    {
+      "attribute_type": "weather",
+      "attribute_value": "曇り・霧・もや",
+      "description": "二黒土星に関連する天候",
+      "id": 19,
+      "star_number": 2
+    }
+  ]
+  

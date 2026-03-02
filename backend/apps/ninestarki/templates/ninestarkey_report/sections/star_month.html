@@ -1,0 +1,33 @@
+<div class="main-star-section">
+    <h2 class="main-star-title">基本鑑定結果</h2>
+    
+    <!-- 本命星の詳細セクション -->
+    <div class="section-title">
+        月命星 （環境・対人関係）
+    </div>
+
+    <!-- 本命星の詳細説明 -->
+    <div class="main-star-info-container">
+        <h3 class="main-star-info-heading">
+            月命星とは
+        </h3>
+        <p class="main-star-info-text">
+            九星気学において月命星は、あなたの生まれ月から算出され、社会的な顔や対人関係における特性を表します。月命星は他者からどのように見られているか、社会での役割、人間関係の傾向などを示しています。これは、あなたが社会に提示している側面、あるいは周囲の環境との相互作用を象徴するものです。
+        </p>
+        
+        <h3 class="main-star-info-heading main-star-info-heading--spaced">
+            月命星の活かし方
+        </h3>
+        <p class="main-star-info-text main-star-info-text--tight">
+            月命星の特性を理解することで、対人関係でのコミュニケーションスタイルや社会での立ち位置を知ることができます。また、対人関係での課題や強みを理解し、より良い人間関係を構築することができるでしょう。職場や友人関係など、様々な社会的環境において、月命星の特性を活かすことで、より調和のとれた関係性を築くことができます。
+        </p>
+    </div>
+
+    <!-- 詳細表示用テーブル -->
+    <div class="main-star-info-container main-star-info-container--spaced">
+        {% set star = result.month_star %}
+        {% set svg_url = svg_by_center[star.star_number] %}
+        {% set keywords_source = (result.month_star_reading and result.month_star_reading.keywords) or '' %}
+        {% include 'ninestarkey_report/partials/star_detail_table.html' %}
+    </div>
+</div> 

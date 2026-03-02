@@ -1,0 +1,60 @@
+.fortune-section {
+    margin: 2rem 0;
+    padding: 1.5rem;
+    background: #f8f9fa;
+    border-radius: 8px;
+}
+
+.fortune-item {
+    display: flex;
+    align-items: flex-start;
+    margin-bottom: 1.5rem;
+}
+
+.fortune-icon {
+    width: 24px;
+    height: 24px;
+    margin-right: 1rem;
+    color: #666;
+}
+
+.fortune-content {
+    flex: 1;
+}
+
+.fortune-title {
+    font-size: 1.1rem;
+    font-weight: 600;
+    margin-bottom: 0.75rem;
+    color: #333;
+}
+
+.lucky-list {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.5rem;
+}
+
+.lucky-item {
+    padding: 0.5rem 1rem;
+    background: white;
+    border-radius: 20px;
+    font-size: 0.9rem;
+    color: #555;
+    box-shadow: 0 1px 3px rgba(0,0,0,0.1);
+}
+
+/* PDFスタイルの調整 */
+@media print {
+    .fortune-section {
+        background: none;
+        padding: 1rem 0;
+        break-inside: avoid;
+    }
+
+    .lucky-item {
+        background: none;
+        border: 1px solid #ddd;
+        box-shadow: none;
+    }
+} 

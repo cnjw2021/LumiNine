@@ -1,0 +1,108 @@
+[
+    {
+      "attribute_type": "animal",
+      "attribute_value": "魚類・水棲動物",
+      "description": "一白水星に関連する動物",
+      "id": 12,
+      "star_number": 1
+    },
+    {
+      "attribute_type": "body",
+      "attribute_value": "腎臓・膀胱・耳",
+      "description": "一白水星に関連する身体部位",
+      "id": 11,
+      "star_number": 1
+    },
+    {
+      "attribute_type": "color",
+      "attribute_value": "白・黒・藍色・青",
+      "description": "一白水星に関連する色",
+      "id": 1,
+      "star_number": 1
+    },
+    {
+      "attribute_type": "food",
+      "attribute_value": "水分の多い食べ物・海産物",
+      "description": "一白水星に関連する食べ物",
+      "id": 14,
+      "star_number": 1
+    },
+    {
+      "attribute_type": "food",
+      "attribute_value": "豆腐・白い食べ物・塩分",
+      "description": "一白水星に関連する食べ物",
+      "id": 15,
+      "star_number": 1
+    },
+    {
+      "attribute_type": "item",
+      "attribute_value": "水・液体・ガラス",
+      "description": "一白水星に関連する物品",
+      "id": 8,
+      "star_number": 1
+    },
+    {
+      "attribute_type": "person",
+      "attribute_value": "哲学者・思想家",
+      "description": "一白水星に関連する人物",
+      "id": 9,
+      "star_number": 1
+    },
+    {
+      "attribute_type": "person",
+      "attribute_value": "研究者・知識人",
+      "description": "一白水星に関連する人物",
+      "id": 10,
+      "star_number": 1
+    },
+    {
+      "attribute_type": "phenomenon",
+      "attribute_value": "流れる・移動",
+      "description": "一白水星に関連する現象",
+      "id": 3,
+      "star_number": 1
+    },
+    {
+      "attribute_type": "phenomenon",
+      "attribute_value": "浸透・循環",
+      "description": "一白水星に関連する現象",
+      "id": 4,
+      "star_number": 1
+    },
+    {
+      "attribute_type": "place",
+      "attribute_value": "川・海・湖・港",
+      "description": "一白水星に関連する場所",
+      "id": 6,
+      "star_number": 1
+    },
+    {
+      "attribute_type": "place",
+      "attribute_value": "水辺・洞窟・地下",
+      "description": "一白水星に関連する場所",
+      "id": 7,
+      "star_number": 1
+    },
+    {
+      "attribute_type": "plant",
+      "attribute_value": "水草・藻・海藻",
+      "description": "一白水星に関連する植物",
+      "id": 13,
+      "star_number": 1
+    },
+    {
+      "attribute_type": "shape",
+      "attribute_value": "波状・曲線・蛇行",
+      "description": "一白水星に関連する形状",
+      "id": 2,
+      "star_number": 1
+    },
+    {
+      "attribute_type": "weather",
+      "attribute_value": "雨・雪・湿気",
+      "description": "一白水星に関連する天候",
+      "id": 5,
+      "star_number": 1
+    }
+  ]
+  

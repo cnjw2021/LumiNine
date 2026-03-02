@@ -1,0 +1,19 @@
+{% import 'ninestarkey_report/partials/marker_macros.html' as mark %}
+<!-- 月の運気全体を囲むラッパー -->
+<div class="monthly-fortune-wrapper month-fortune">
+    <!-- 月の運気セクション - 2〜4月 -->
+    {% set month_list = [2, 3, 4] %}
+    {% include 'ninestarkey_report/partials/monthly_fortune_page.html' %}
+
+    <!-- 月の運気セクション - 5〜7月 -->
+    {% set month_list = [5, 6, 7] %}
+    {% include 'ninestarkey_report/partials/monthly_fortune_page.html' %}
+
+    <!-- 月の運気セクション - 8〜10月 -->
+    {% set month_list = [8, 9, 10] %}
+    {% include 'ninestarkey_report/partials/monthly_fortune_page.html' %}
+
+    <!-- 月の運気セクション - 11〜1月 -->
+    {% set month_list = [11, 12, 1] %}
+    {% include 'ninestarkey_report/partials/monthly_fortune_page.html' %}
+</div>

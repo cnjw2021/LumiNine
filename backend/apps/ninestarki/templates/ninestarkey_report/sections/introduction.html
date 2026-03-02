@@ -1,0 +1,153 @@
+<style>
+    .introduction-section {
+        padding: 0 0.1cm;
+        margin-top: 0.6cm;
+        margin-bottom: 0.8cm;
+    }
+
+
+    .introduction-info-container {
+        margin-top: 20px;
+        margin-bottom: 20px;
+        background: linear-gradient(135deg, rgba(255, 255, 255, 0.3), rgba(255, 255, 255, 0.2)), 
+                   linear-gradient(135deg, var(--section-gradient-1, rgba(240, 240, 245, 0.15)), var(--section-gradient-2, rgba(230, 230, 240, 0.15)));
+        border-radius: 12px;
+        padding: 15px;
+        box-shadow: 0 1px 3px rgba(0,0,0,0.03);
+        width: 90%;
+        margin-left: auto;
+        margin-right: auto;
+        backdrop-filter: blur(1px);
+    }
+
+    .title {
+        font-size: 20px;
+        font-weight: 600;
+        color: #333;
+        text-align: center;
+        margin-bottom: 1rem;
+        position: relative;
+        letter-spacing: 0.05em;
+    }
+
+    .title::after {
+        content: '';
+        position: absolute;
+        bottom: -6px;
+        left: 50%;
+        transform: translateX(-50%);
+        width: 60%;
+        height: 1px;
+        background: linear-gradient(to right, transparent, var(--primary-color) 20%, var(--primary-color) 80%, transparent 100%);
+    }
+
+    .text-box p {
+        margin: 8pt 0;
+    }
+
+    .highlight {
+        font-size: 13pt;
+        font-weight: 600;
+    }
+
+    .number-grid {
+        position: relative;
+        width: 100%;
+        margin: 10px auto;
+    }
+
+    .number-table {
+        margin: 0 auto;
+        border-spacing: 6mm;
+        border-collapse: separate;
+    }
+
+    .number-table td {
+        text-align: center;
+        padding: 0;
+        width: 25mm;
+    }
+
+    .number {
+        font-size: 16pt;
+        color: #4a90e2;
+        font-weight: 500;
+        margin-bottom: 0.1rem;
+    }
+
+    .description {
+        font-size: 11pt;
+        color: #333333;
+        letter-spacing: 0.05em;
+        white-space: nowrap;
+    }
+
+    .text-box:last-of-type {
+        margin-top: 0.5cm;
+    }
+</style>
+
+<div class="introduction-section">
+    <div class="introduction-info-container">
+        <h2 class="title">九星気学とは</h2>
+        <div>
+            <p>九星気学は、<span class="highlight">「宇宙の気の流れ」を九つの星に象徴させた</span>東洋の占術です。起源は古代中国の陰陽五行説や易経に遡り、日本では平安時代に渡来し独自の発展を遂げました。九星気学では、<span class="highlight">「人も自然も同じ気の法則で動いている」</span>という思想が根底にあります。</p>
+            <p>九星気学の特徴は、生年月日から導き出される<span class="highlight">本命星（きのえ星）</span>を基に、その人の性格や運命の傾向を読み解くことです。また、年ごとに巡ってくる運気の流れ（年運）や、人生の転機となる時期も予測できます。方位の吉凶を知ることで、引越しや旅行など重要な行動の指針としても活用されています。</p>
+        </div>
+
+        <div class="number-grid">
+            <table class="number-table">
+                <tbody>
+                    <tr>
+                        <td>
+                            <div class="number"><span class="numerology-number">一</span></div>
+                            <div class="description">一白水星</div>
+                        </td>
+                        <td>
+                            <div class="number"><span class="numerology-number">二</span></div>
+                            <div class="description">二黒土星</div>
+                        </td>
+                        <td>
+                            <div class="number"><span class="numerology-number">三</span></div>
+                            <div class="description">三碧木星</div>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td>
+                            <div class="number"><span class="numerology-number">四</span></div>
+                            <div class="description">四緑木星</div>
+                        </td>
+                        <td>
+                            <div class="number"><span class="numerology-number">五</span></div>
+                            <div class="description">五黄土星</div>
+                        </td>
+                        <td>
+                            <div class="number"><span class="numerology-number">六</span></div>
+                            <div class="description">六白金星</div>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td>
+                            <div class="number"><span class="numerology-number">七</span></div>
+                            <div class="description">七赤金星</div>
+                        </td>
+                        <td>
+                            <div class="number"><span class="numerology-number">八</span></div>
+                            <div class="description">八白土星</div>
+                        </td>
+                        <td>
+                            <div class="number"><span class="numerology-number">九</span></div>
+                            <div class="description">九紫火星</div>
+                        </td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+
+        <div class="text-box">
+            <p>九星はそれぞれ<span class="highlight">水・土・木・金・火</span>の五行と結びつき、さまざまな性質を表します。例えば、一白水星は知性と決断力、九紫火星は情熱と直感力が特徴とされています。</p>
+            <p>また、各星には「中宮」を中心とした<span class="highlight">八方位（東西南北と四隅）</span>があり、その年の中心星（年盤）によって、吉方位と凶方位が変化します。これを応用した「方位盤」は、引越しや旅行の計画に活用されています。</p>
+            <p>九星気学は、現代では自己理解や人間関係の改善、ビジネスでの意思決定などに活用できる実践的な知恵として注目されています。本命星を知ることで自分の持つ資質や可能性を理解し、吉方位を活用することで人生をより良い方向へ導くためのガイドとなるでしょう。</p>
+        </div>
+    </div>
+</div> 

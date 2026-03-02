@@ -1,0 +1,725 @@
+
+    <svg width="600" height="600" xmlns="http://www.w3.org/2000/svg" style="font-family: 'Noto Sans JP', 'Inter', sans-serif;">
+      <defs>
+        <!-- 🎨 React背景の美しいラジアルグラデーション再現 (80%→50%に縮小) -->
+        <radialGradient id="luxuryBackground" cx="50%" cy="50%" r="50%">
+          <stop offset="0%" style="stop-color:#4a4fb8;stop-opacity:0.9"/>
+          <stop offset="25%" style="stop-color:#343481;stop-opacity:0.85"/>
+          <stop offset="60%" style="stop-color:#24245f;stop-opacity:0.9"/>
+          <stop offset="100%" style="stop-color:#0F0F23;stop-opacity:1"/>
+        </radialGradient>
+        
+        <!-- 🌟 中央星の立体的グラデーション (80%→50%に縮小) -->
+        <radialGradient id="centerStarGradient" cx="30%" cy="30%" r="50%">
+          <stop offset="0%" style="stop-color:#22C55E;stop-opacity:1"/>
+          <stop offset="40%" style="stop-color:#22C55E;stop-opacity:0.8"/>
+          <stop offset="100%" style="stop-color:#2D1B69;stop-opacity:0.7"/>
+        </radialGradient>
+        
+        <!-- ✨ 光るボーダーエフェクト -->
+        <linearGradient id="glowBorder" x1="0%" y1="0%" x2="100%" y2="100%">
+          <stop offset="0%" style="stop-color:rgba(135,206,250,0.6);stop-opacity:1"/>
+          <stop offset="50%" style="stop-color:rgba(212,175,55,0.8);stop-opacity:1"/>
+          <stop offset="100%" style="stop-color:rgba(135,206,250,0.6);stop-opacity:1"/>
+        </linearGradient>
+        
+        <!-- 🔆 星のホバーエフェクト用グラデーション (60%→50%に縮小) -->
+        <radialGradient id="starHoverGlow" cx="50%" cy="50%" r="50%">
+          <stop offset="0%" style="stop-color:rgba(135,206,250,0.3);stop-opacity:1"/>
+          <stop offset="50%" style="stop-color:rgba(135,206,250,0.2);stop-opacity:1"/>
+          <stop offset="100%" style="stop-color:rgba(135,206,250,0.1);stop-opacity:1"/>
+        </radialGradient>
+        
+        <!-- 🌠 各九星のカラフルグラデーション (70%→50%に縮小) -->
+        
+        <radialGradient id="elementGradient木" cx="30%" cy="30%" r="50%">
+          <stop offset="0%" style="stop-color:#22C55E;stop-opacity:0.9"/>
+          <stop offset="60%" style="stop-color:#22C55E;stop-opacity:0.6"/>
+          <stop offset="100%" style="stop-color:rgba(45,27,105,0.4);stop-opacity:1"/>
+        </radialGradient>
+        <radialGradient id="elementGradient火" cx="30%" cy="30%" r="50%">
+          <stop offset="0%" style="stop-color:#EF4444;stop-opacity:0.9"/>
+          <stop offset="60%" style="stop-color:#EF4444;stop-opacity:0.6"/>
+          <stop offset="100%" style="stop-color:rgba(45,27,105,0.4);stop-opacity:1"/>
+        </radialGradient>
+        <radialGradient id="elementGradient土" cx="30%" cy="30%" r="50%">
+          <stop offset="0%" style="stop-color:#F59E0B;stop-opacity:0.9"/>
+          <stop offset="60%" style="stop-color:#F59E0B;stop-opacity:0.6"/>
+          <stop offset="100%" style="stop-color:rgba(45,27,105,0.4);stop-opacity:1"/>
+        </radialGradient>
+        <radialGradient id="elementGradient金" cx="30%" cy="30%" r="50%">
+          <stop offset="0%" style="stop-color:#D4AF37;stop-opacity:0.9"/>
+          <stop offset="60%" style="stop-color:#D4AF37;stop-opacity:0.6"/>
+          <stop offset="100%" style="stop-color:rgba(45,27,105,0.4);stop-opacity:1"/>
+        </radialGradient>
+        <radialGradient id="elementGradient水" cx="30%" cy="30%" r="50%">
+          <stop offset="0%" style="stop-color:#3B82F6;stop-opacity:0.9"/>
+          <stop offset="60%" style="stop-color:#3B82F6;stop-opacity:0.6"/>
+          <stop offset="100%" style="stop-color:rgba(45,27,105,0.4);stop-opacity:1"/>
+        </radialGradient>
+        
+        <!-- 💎 ドロップシャドウ効果 -->
+        <filter id="dropShadow" x="-50%" y="-50%" width="200%" height="200%">
+          <feDropShadow dx="0" dy="4" stdDeviation="8" flood-color="rgba(135,206,250,0.4)"/>
+        </filter>
+        
+        <!-- ⚡ 光の境界線フィルター -->
+        <filter id="lightBorder" x="-20%" y="-20%" width="140%" height="140%">
+          <feGaussianBlur in="SourceGraphic" stdDeviation="2" result="blur"/>
+          <feColorMatrix in="blur" type="matrix" values="0 0 0 0 0.53  0 0 0 0 0.81  0 0 0 0 0.98  0 0 0 1 0"/>
+          <feMerge>
+            <feMergeNode in="SourceGraphic"/>
+            <feMergeNode in="blur"/>
+          </feMerge>
+        </filter>
+        
+        <!-- 🌟 光の境界線用グラデーション -->
+        <linearGradient id="boundaryLightGradient" x1="0%" y1="0%" x2="0%" y2="100%">
+          <stop offset="0%" style="stop-color:transparent;stop-opacity:0"/>
+          <stop offset="10%" style="stop-color:rgba(212,175,55,0.1);stop-opacity:1"/>
+          <stop offset="30%" style="stop-color:rgba(212,175,55,0.4);stop-opacity:1"/>
+          <stop offset="50%" style="stop-color:rgba(212,175,55,0.8);stop-opacity:1"/>
+          <stop offset="70%" style="stop-color:rgba(212,175,55,0.4);stop-opacity:1"/>
+          <stop offset="90%" style="stop-color:rgba(212,175,55,0.1);stop-opacity:1"/>
+          <stop offset="100%" style="stop-color:transparent;stop-opacity:0"/>
+        </linearGradient>
+        
+        <!-- 🔆 光の外側エフェクト用グラデーション -->
+        <linearGradient id="outerGlowGradient" x1="0%" y1="0%" x2="0%" y2="100%">
+          <stop offset="0%" style="stop-color:transparent;stop-opacity:0"/>
+          <stop offset="20%" style="stop-color:rgba(135,206,250,0.05);stop-opacity:1"/>
+          <stop offset="40%" style="stop-color:rgba(135,206,250,0.15);stop-opacity:1"/>
+          <stop offset="60%" style="stop-color:rgba(135,206,250,0.15);stop-opacity:1"/>
+          <stop offset="80%" style="stop-color:rgba(135,206,250,0.05);stop-opacity:1"/>
+          <stop offset="100%" style="stop-color:transparent;stop-opacity:0"/>
+        </linearGradient>
+        
+        <!-- ✨ 光るエフェクト用フィルター -->
+        <filter id="glowingLine" x="-50%" y="-50%" width="200%" height="200%">
+          <feGaussianBlur stdDeviation="3" result="coloredBlur"/>
+          <feMerge> 
+            <feMergeNode in="coloredBlur"/>
+            <feMergeNode in="SourceGraphic"/>
+          </feMerge>
+        </filter>
+      </defs>
+
+      <!-- 🎯 メイン背景円 (React版のbackdrop-filter効果を再現) -->
+      <circle cx="300" cy="300" r="270" 
+              fill="url(#luxuryBackground)" 
+              stroke="url(#glowBorder)" 
+              stroke-width="2"
+              filter="url(#lightBorder)"
+              opacity="0.95"/>
+      
+      <!-- 💫 インナーリング (React版の方位リング) -->
+      <circle cx="300" cy="300" r="210" 
+              fill="none" 
+              stroke="rgba(212,175,55,0.4)" 
+              stroke-width="1.5"
+              opacity="0.7"/>
+              
+      <!-- 🔘 ミドルリング (方位と干支の間) -->
+      <circle cx="300" cy="300" r="126" 
+              fill="none" 
+              stroke="rgba(212,175,55,0.3)" 
+              stroke-width="1"
+              opacity="0.6"/>
+              
+      <!-- 🌈 光る方位境界線 (九星気学の正しい方位：東西南北30度、その他60度) -->
+      
+        <!-- 外側の薄い光 -->
+        <line x1="346.3644396618753" y1="312.423314164921" x2="560.7999730980484" y2="369.8811421776806" 
+              stroke="url(#outerGlowGradient)" 
+              stroke-width="2" 
+              opacity="0.4"
+              filter="url(#glowingLine)"/>
+              
+        <!-- メインの光の線 -->
+        <line x1="346.3644396618753" y1="312.423314164921" x2="560.7999730980484" y2="369.8811421776806" 
+              stroke="url(#boundaryLightGradient)" 
+              stroke-width="1" 
+              opacity="0.6"
+              filter="url(#glowingLine)"/>
+              
+        <!-- 中心の鋭い光 -->
+        <line x1="346.3644396618753" y1="312.423314164921" x2="560.7999730980484" y2="369.8811421776806" 
+              stroke="rgba(212,175,55,0.7)" 
+              stroke-width="0.3" 
+              opacity="0.8"/>
+        <!-- 外側の薄い光 -->
+        <line x1="312.423314164921" y1="346.3644396618753" x2="369.8811421776806" y2="560.7999730980484" 
+              stroke="url(#outerGlowGradient)" 
+              stroke-width="2" 
+              opacity="0.4"
+              filter="url(#glowingLine)"/>
+              
+        <!-- メインの光の線 -->
+        <line x1="312.423314164921" y1="346.3644396618753" x2="369.8811421776806" y2="560.7999730980484" 
+              stroke="url(#boundaryLightGradient)" 
+              stroke-width="1" 
+              opacity="0.6"
+              filter="url(#glowingLine)"/>
+              
+        <!-- 中心の鋭い光 -->
+        <line x1="312.423314164921" y1="346.3644396618753" x2="369.8811421776806" y2="560.7999730980484" 
+              stroke="rgba(212,175,55,0.7)" 
+              stroke-width="0.3" 
+              opacity="0.8"/>
+        <!-- 外側の薄い光 -->
+        <line x1="287.576685835079" y1="346.3644396618753" x2="230.11885782231937" y2="560.7999730980484" 
+              stroke="url(#outerGlowGradient)" 
+              stroke-width="2" 
+              opacity="0.4"
+              filter="url(#glowingLine)"/>
+              
+        <!-- メインの光の線 -->
+        <line x1="287.576685835079" y1="346.3644396618753" x2="230.11885782231937" y2="560.7999730980484" 
+              stroke="url(#boundaryLightGradient)" 
+              stroke-width="1" 
+              opacity="0.6"
+              filter="url(#glowingLine)"/>
+              
+        <!-- 中心の鋭い光 -->
+        <line x1="287.576685835079" y1="346.3644396618753" x2="230.11885782231937" y2="560.7999730980484" 
+              stroke="rgba(212,175,55,0.7)" 
+              stroke-width="0.3" 
+              opacity="0.8"/>
+        <!-- 外側の薄い光 -->
+        <line x1="253.63556033812472" y1="312.423314164921" x2="39.20002690195156" y2="369.88114217768066" 
+              stroke="url(#outerGlowGradient)" 
+              stroke-width="2" 
+              opacity="0.4"
+              filter="url(#glowingLine)"/>
+              
+        <!-- メインの光の線 -->
+        <line x1="253.63556033812472" y1="312.423314164921" x2="39.20002690195156" y2="369.88114217768066" 
+              stroke="url(#boundaryLightGradient)" 
+              stroke-width="1" 
+              opacity="0.6"
+              filter="url(#glowingLine)"/>
+              
+        <!-- 中心の鋭い光 -->
+        <line x1="253.63556033812472" y1="312.423314164921" x2="39.20002690195156" y2="369.88114217768066" 
+              stroke="rgba(212,175,55,0.7)" 
+              stroke-width="0.3" 
+              opacity="0.8"/>
+        <!-- 外側の薄い光 -->
+        <line x1="253.63556033812472" y1="287.57668583507905" x2="39.2000269019515" y2="230.1188578223195" 
+              stroke="url(#outerGlowGradient)" 
+              stroke-width="2" 
+              opacity="0.4"
+              filter="url(#glowingLine)"/>
+              
+        <!-- メインの光の線 -->
+        <line x1="253.63556033812472" y1="287.57668583507905" x2="39.2000269019515" y2="230.1188578223195" 
+              stroke="url(#boundaryLightGradient)" 
+              stroke-width="1" 
+              opacity="0.6"
+              filter="url(#glowingLine)"/>
+              
+        <!-- 中心の鋭い光 -->
+        <line x1="253.63556033812472" y1="287.57668583507905" x2="39.2000269019515" y2="230.1188578223195" 
+              stroke="rgba(212,175,55,0.7)" 
+              stroke-width="0.3" 
+              opacity="0.8"/>
+        <!-- 外側の薄い光 -->
+        <line x1="287.576685835079" y1="253.63556033812472" x2="230.11885782231943" y2="39.20002690195156" 
+              stroke="url(#outerGlowGradient)" 
+              stroke-width="2" 
+              opacity="0.4"
+              filter="url(#glowingLine)"/>
+              
+        <!-- メインの光の線 -->
+        <line x1="287.576685835079" y1="253.63556033812472" x2="230.11885782231943" y2="39.20002690195156" 
+              stroke="url(#boundaryLightGradient)" 
+              stroke-width="1" 
+              opacity="0.6"
+              filter="url(#glowingLine)"/>
+              
+        <!-- 中心の鋭い光 -->
+        <line x1="287.576685835079" y1="253.63556033812472" x2="230.11885782231943" y2="39.20002690195156" 
+              stroke="rgba(212,175,55,0.7)" 
+              stroke-width="0.3" 
+              opacity="0.8"/>
+        <!-- 外側の薄い光 -->
+        <line x1="312.423314164921" y1="253.63556033812472" x2="369.8811421776807" y2="39.20002690195156" 
+              stroke="url(#outerGlowGradient)" 
+              stroke-width="2" 
+              opacity="0.4"
+              filter="url(#glowingLine)"/>
+              
+        <!-- メインの光の線 -->
+        <line x1="312.423314164921" y1="253.63556033812472" x2="369.8811421776807" y2="39.20002690195156" 
+              stroke="url(#boundaryLightGradient)" 
+              stroke-width="1" 
+              opacity="0.6"
+              filter="url(#glowingLine)"/>
+              
+        <!-- 中心の鋭い光 -->
+        <line x1="312.423314164921" y1="253.63556033812472" x2="369.8811421776807" y2="39.20002690195156" 
+              stroke="rgba(212,175,55,0.7)" 
+              stroke-width="0.3" 
+              opacity="0.8"/>
+        <!-- 外側の薄い光 -->
+        <line x1="346.3644396618753" y1="287.576685835079" x2="560.7999730980484" y2="230.1188578223194" 
+              stroke="url(#outerGlowGradient)" 
+              stroke-width="2" 
+              opacity="0.4"
+              filter="url(#glowingLine)"/>
+              
+        <!-- メインの光の線 -->
+        <line x1="346.3644396618753" y1="287.576685835079" x2="560.7999730980484" y2="230.1188578223194" 
+              stroke="url(#boundaryLightGradient)" 
+              stroke-width="1" 
+              opacity="0.6"
+              filter="url(#glowingLine)"/>
+              
+        <!-- 中心の鋭い光 -->
+        <line x1="346.3644396618753" y1="287.576685835079" x2="560.7999730980484" y2="230.1188578223194" 
+              stroke="rgba(212,175,55,0.7)" 
+              stroke-width="0.3" 
+              opacity="0.8"/>
+
+      <!-- ⭐ 中央星 (React版の立体効果を再現) -->
+      <circle cx="300" cy="300" r="48" 
+              fill="url(#centerStarGradient)" 
+              stroke="rgba(255,255,255,0.3)" 
+              stroke-width="2"
+              filter="url(#dropShadow)"/>
+      
+      <!-- 📝 中央星のテキスト -->
+      <text x="300" y="300" 
+            text-anchor="middle" 
+            dominant-baseline="middle" 
+            font-size="19.86" 
+            font-weight="700" 
+            fill="#1A1A3E"
+            font-family="Arial, sans-serif">
+        三碧木星
+      </text>
+
+             <!-- 🎪 八方位の星 (React版の美しいエフェクト付き) -->
+       
+        <!-- 星のグループ (ボックスとテキストを一緒に回転) -->
+        <g transform="translate(151.50757595082504, 448.492424049175) rotate(45)">
+          <!-- 星の背景 (シンプル版・フィルター除去) -->
+          <rect x="-42.00000000000001" y="-30" 
+                width="84.00000000000001" height="60" 
+                rx="12" 
+                fill="url(#elementGradient金)"
+                stroke="rgba(212,175,55,0.6)" 
+                stroke-width="1"
+                opacity="0.9"/>
+                
+          <!-- 星名テキスト -->
+          
+          <!-- 横書きテキスト（その他の方向） -->
+          <text x="0" y="-6" 
+                text-anchor="middle" 
+                dominant-baseline="middle" 
+                font-size="19.02" 
+                font-weight="600" 
+                fill="#F9FAFB"
+                font-family="Arial, sans-serif">
+            六白金星
+          </text>
+        </g>
+        <!-- 星のグループ (ボックスとテキストを一緒に回転) -->
+        <g transform="translate(90, 300) rotate(90)">
+          <!-- 星の背景 (シンプル版・フィルター除去) -->
+          <rect x="-42.00000000000001" y="-30" 
+                width="84.00000000000001" height="60" 
+                rx="12" 
+                fill="url(#elementGradient水)"
+                stroke="rgba(212,175,55,0.6)" 
+                stroke-width="1"
+                opacity="0.9"/>
+                
+          <!-- 星名テキスト -->
+          
+        </g>
+        <!-- 星のグループ (ボックスとテキストを一緒に回転) -->
+        <g transform="translate(151.507575950825, 151.50757595082504) rotate(315)">
+          <!-- 星の背景 (シンプル版・フィルター除去) -->
+          <rect x="-42.00000000000001" y="-30" 
+                width="84.00000000000001" height="60" 
+                rx="12" 
+                fill="url(#elementGradient土)"
+                stroke="rgba(212,175,55,0.6)" 
+                stroke-width="1"
+                opacity="0.9"/>
+                
+          <!-- 星名テキスト -->
+          
+          <!-- 横書きテキスト（その他の方向） -->
+          <text x="0" y="-6" 
+                text-anchor="middle" 
+                dominant-baseline="middle" 
+                font-size="19.02" 
+                font-weight="600" 
+                fill="#F9FAFB"
+                font-family="Arial, sans-serif">
+            二黒土星
+          </text>
+        </g>
+        <!-- 星のグループ (ボックスとテキストを一緒に回転) -->
+        <g transform="translate(299.99999999999994, 90) rotate(360)">
+          <!-- 星の背景 (シンプル版・フィルター除去) -->
+          <rect x="-42.00000000000001" y="-30" 
+                width="84.00000000000001" height="60" 
+                rx="12" 
+                fill="url(#elementGradient金)"
+                stroke="rgba(212,175,55,0.6)" 
+                stroke-width="1"
+                opacity="0.9"/>
+                
+          <!-- 星名テキスト -->
+          
+          <!-- 横書きテキスト（その他の方向） -->
+          <text x="0" y="-6" 
+                text-anchor="middle" 
+                dominant-baseline="middle" 
+                font-size="19.02" 
+                font-weight="600" 
+                fill="#F9FAFB"
+                font-family="Arial, sans-serif">
+            七赤金星
+          </text>
+        </g>
+        <!-- 星のグループ (ボックスとテキストを一緒に回転) -->
+        <g transform="translate(448.49242404917493, 151.507575950825) rotate(405)">
+          <!-- 星の背景 (シンプル版・フィルター除去) -->
+          <rect x="-42.00000000000001" y="-30" 
+                width="84.00000000000001" height="60" 
+                rx="12" 
+                fill="url(#elementGradient火)"
+                stroke="rgba(212,175,55,0.6)" 
+                stroke-width="1"
+                opacity="0.9"/>
+                
+          <!-- 星名テキスト -->
+          
+          <!-- 横書きテキスト（その他の方向） -->
+          <text x="0" y="-6" 
+                text-anchor="middle" 
+                dominant-baseline="middle" 
+                font-size="19.02" 
+                font-weight="600" 
+                fill="#F9FAFB"
+                font-family="Arial, sans-serif">
+            九紫火星
+          </text>
+        </g>
+        <!-- 星のグループ (ボックスとテキストを一緒に回転) -->
+        <g transform="translate(510, 299.99999999999994) rotate(450)">
+          <!-- 星の背景 (シンプル版・フィルター除去) -->
+          <rect x="-42.00000000000001" y="-30" 
+                width="84.00000000000001" height="60" 
+                rx="12" 
+                fill="url(#elementGradient土)"
+                stroke="rgba(212,175,55,0.6)" 
+                stroke-width="1"
+                opacity="0.9"/>
+                
+          <!-- 星名テキスト -->
+          
+        </g>
+        <!-- 星のグループ (ボックスとテキストを一緒に回転) -->
+        <g transform="translate(448.49242404917516, 448.4924240491748) rotate(315)">
+          <!-- 星の背景 (シンプル版・フィルター除去) -->
+          <rect x="-42.00000000000001" y="-30" 
+                width="84.00000000000001" height="60" 
+                rx="12" 
+                fill="url(#elementGradient木)"
+                stroke="rgba(212,175,55,0.6)" 
+                stroke-width="1"
+                opacity="0.9"/>
+                
+          <!-- 星名テキスト -->
+          
+          <!-- 横書きテキスト（その他の方向） -->
+          <text x="0" y="-6" 
+                text-anchor="middle" 
+                dominant-baseline="middle" 
+                font-size="19.02" 
+                font-weight="600" 
+                fill="#F9FAFB"
+                font-family="Arial, sans-serif">
+            四緑木星
+          </text>
+        </g>
+        <!-- 星のグループ (ボックスとテキストを一緒に回転) -->
+        <g transform="translate(300, 510) rotate(0)">
+          <!-- 星の背景 (シンプル版・フィルター除去) -->
+          <rect x="-42.00000000000001" y="-30" 
+                width="84.00000000000001" height="60" 
+                rx="12" 
+                fill="url(#elementGradient土)"
+                stroke="rgba(212,175,55,0.6)" 
+                stroke-width="1"
+                opacity="0.9"/>
+                
+          <!-- 星名テキスト -->
+          
+          <!-- 横書きテキスト（その他の方向） -->
+          <text x="0" y="-6" 
+                text-anchor="middle" 
+                dominant-baseline="middle" 
+                font-size="19.02" 
+                font-weight="600" 
+                fill="#F9FAFB"
+                font-family="Arial, sans-serif">
+            八白土星
+          </text>
+        </g>
+      
+      <!-- 🧭 方位・干支ラベル -->
+      
+        <!-- 方位ラベル -->
+        <text x="227.87510831897214" y="372.12489168102786" 
+              text-anchor="middle" 
+              dominant-baseline="middle" 
+              font-size="19.86" 
+              font-weight="600" 
+              fill="#F3F4F6"
+              font-family="Arial, sans-serif"
+              transform="rotate(45 227.87510831897214 372.12489168102786)">
+          北東
+        </text>
+        
+        <!-- 干支ラベル -->
+        <text x="193.93398282201787" y="406.06601717798213" 
+              text-anchor="middle" 
+              dominant-baseline="middle" 
+              font-size="15.54" 
+              font-weight="500" 
+              fill="#E5E7EB"
+              font-family="Arial, sans-serif"
+              transform="rotate(45 193.93398282201787 406.06601717798213)">
+          寅・丑
+        </text>
+        <!-- 方位ラベル -->
+        <text x="198" y="300" 
+              text-anchor="middle" 
+              dominant-baseline="middle" 
+              font-size="19.86" 
+              font-weight="600" 
+              fill="#F3F4F6"
+              font-family="Arial, sans-serif"
+              >
+          東
+        </text>
+        
+        <!-- 干支ラベル -->
+        <text x="150" y="300" 
+              text-anchor="middle" 
+              dominant-baseline="middle" 
+              font-size="15.54" 
+              font-weight="500" 
+              fill="#E5E7EB"
+              font-family="Arial, sans-serif"
+              >
+          卯
+        </text>
+        <!-- 方位ラベル -->
+        <text x="227.87510831897214" y="227.87510831897214" 
+              text-anchor="middle" 
+              dominant-baseline="middle" 
+              font-size="19.86" 
+              font-weight="600" 
+              fill="#F3F4F6"
+              font-family="Arial, sans-serif"
+              transform="rotate(315 227.87510831897214 227.87510831897214)">
+          南東
+        </text>
+        
+        <!-- 干支ラベル -->
+        <text x="193.93398282201787" y="193.93398282201787" 
+              text-anchor="middle" 
+              dominant-baseline="middle" 
+              font-size="15.54" 
+              font-weight="500" 
+              fill="#E5E7EB"
+              font-family="Arial, sans-serif"
+              transform="rotate(315 193.93398282201787 193.93398282201787)">
+          辰・巳
+        </text>
+        <!-- 方位ラベル -->
+        <text x="300" y="198" 
+              text-anchor="middle" 
+              dominant-baseline="middle" 
+              font-size="19.86" 
+              font-weight="600" 
+              fill="#F3F4F6"
+              font-family="Arial, sans-serif"
+              transform="rotate(360 300 198)">
+          南
+        </text>
+        
+        <!-- 干支ラベル -->
+        <text x="300" y="150" 
+              text-anchor="middle" 
+              dominant-baseline="middle" 
+              font-size="15.54" 
+              font-weight="500" 
+              fill="#E5E7EB"
+              font-family="Arial, sans-serif"
+              transform="rotate(360 300 150)">
+          午
+        </text>
+        <!-- 方位ラベル -->
+        <text x="372.12489168102786" y="227.87510831897214" 
+              text-anchor="middle" 
+              dominant-baseline="middle" 
+              font-size="19.86" 
+              font-weight="600" 
+              fill="#F3F4F6"
+              font-family="Arial, sans-serif"
+              transform="rotate(405 372.12489168102786 227.87510831897214)">
+          南西
+        </text>
+        
+        <!-- 干支ラベル -->
+        <text x="406.0660171779821" y="193.93398282201787" 
+              text-anchor="middle" 
+              dominant-baseline="middle" 
+              font-size="15.54" 
+              font-weight="500" 
+              fill="#E5E7EB"
+              font-family="Arial, sans-serif"
+              transform="rotate(405 406.0660171779821 193.93398282201787)">
+          未・申
+        </text>
+        <!-- 方位ラベル -->
+        <text x="402" y="300" 
+              text-anchor="middle" 
+              dominant-baseline="middle" 
+              font-size="19.86" 
+              font-weight="600" 
+              fill="#F3F4F6"
+              font-family="Arial, sans-serif"
+              >
+          西
+        </text>
+        
+        <!-- 干支ラベル -->
+        <text x="450" y="299.99999999999994" 
+              text-anchor="middle" 
+              dominant-baseline="middle" 
+              font-size="15.54" 
+              font-weight="500" 
+              fill="#E5E7EB"
+              font-family="Arial, sans-serif"
+              >
+          酉
+        </text>
+        <!-- 方位ラベル -->
+        <text x="372.124891681028" y="372.12489168102775" 
+              text-anchor="middle" 
+              dominant-baseline="middle" 
+              font-size="19.86" 
+              font-weight="600" 
+              fill="#F3F4F6"
+              font-family="Arial, sans-serif"
+              transform="rotate(315 372.124891681028 372.12489168102775)">
+          北西
+        </text>
+        
+        <!-- 干支ラベル -->
+        <text x="406.06601717798225" y="406.066017177982" 
+              text-anchor="middle" 
+              dominant-baseline="middle" 
+              font-size="15.54" 
+              font-weight="500" 
+              fill="#E5E7EB"
+              font-family="Arial, sans-serif"
+              transform="rotate(315 406.06601717798225 406.066017177982)">
+          亥・戌
+        </text>
+        <!-- 方位ラベル -->
+        <text x="300" y="402" 
+              text-anchor="middle" 
+              dominant-baseline="middle" 
+              font-size="19.86" 
+              font-weight="600" 
+              fill="#F3F4F6"
+              font-family="Arial, sans-serif"
+              transform="rotate(0 300 402)">
+          北
+        </text>
+        
+        <!-- 干支ラベル -->
+        <text x="300" y="450" 
+              text-anchor="middle" 
+              dominant-baseline="middle" 
+              font-size="15.54" 
+              font-weight="500" 
+              fill="#E5E7EB"
+              font-family="Arial, sans-serif"
+              transform="rotate(0 300 450)">
+          子
+        </text>
+      
+      <!-- 🎪 東西の縦書きテキスト（独立配置） -->
+      
+        <!-- 一白水星の縦書きテキスト（WeasyPrint最適化・シンプル版） -->
+        <text x="90" y="273" 
+              text-anchor="middle"
+              dominant-baseline="middle"
+              font-size="19.02" 
+              font-weight="600" 
+              fill="#FFFFFF"
+              font-family="Arial, sans-serif">一</text>
+        <text x="90" y="291" 
+              text-anchor="middle"
+              dominant-baseline="middle"
+              font-size="19.02" 
+              font-weight="600" 
+              fill="#FFFFFF"
+              font-family="Arial, sans-serif">白</text>
+        <text x="90" y="309" 
+              text-anchor="middle"
+              dominant-baseline="middle"
+              font-size="19.02" 
+              font-weight="600" 
+              fill="#FFFFFF"
+              font-family="Arial, sans-serif">水</text>
+        <text x="90" y="327" 
+              text-anchor="middle"
+              dominant-baseline="middle"
+              font-size="19.02" 
+              font-weight="600" 
+              fill="#FFFFFF"
+              font-family="Arial, sans-serif">星</text>
+        <!-- 五黄土星の縦書きテキスト（WeasyPrint最適化・シンプル版） -->
+        <text x="510" y="272.99999999999994" 
+              text-anchor="middle"
+              dominant-baseline="middle"
+              font-size="19.02" 
+              font-weight="600" 
+              fill="#FFFFFF"
+              font-family="Arial, sans-serif">五</text>
+        <text x="510" y="290.99999999999994" 
+              text-anchor="middle"
+              dominant-baseline="middle"
+              font-size="19.02" 
+              font-weight="600" 
+              fill="#FFFFFF"
+              font-family="Arial, sans-serif">黄</text>
+        <text x="510" y="308.99999999999994" 
+              text-anchor="middle"
+              dominant-baseline="middle"
+              font-size="19.02" 
+              font-weight="600" 
+              fill="#FFFFFF"
+              font-family="Arial, sans-serif">土</text>
+        <text x="510" y="326.99999999999994" 
+              text-anchor="middle"
+              dominant-baseline="middle"
+              font-size="19.02" 
+              font-weight="600" 
+              fill="#FFFFFF"
+              font-family="Arial, sans-serif">星</text>
+    </svg>
+  

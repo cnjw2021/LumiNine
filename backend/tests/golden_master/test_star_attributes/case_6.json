@@ -1,0 +1,122 @@
+[
+    {
+      "attribute_type": "animal",
+      "attribute_value": "犬（戌）・イノシシ",
+      "description": "六白金星に関連する動物",
+      "id": 84,
+      "star_number": 6
+    },
+    {
+      "attribute_type": "body",
+      "attribute_value": "右足",
+      "description": "六白金星に関連する身体部位",
+      "id": 82,
+      "star_number": 6
+    },
+    {
+      "attribute_type": "body",
+      "attribute_value": "血圧・脳・首",
+      "description": "六白金星に関連する健康要素",
+      "id": 83,
+      "star_number": 6
+    },
+    {
+      "attribute_type": "color",
+      "attribute_value": "金・銀・白・メタリック",
+      "description": "六白金星に関連する色",
+      "id": 69,
+      "star_number": 6
+    },
+    {
+      "attribute_type": "food",
+      "attribute_value": "カステラ・天ぷら",
+      "description": "六白金星に関連する食べ物",
+      "id": 81,
+      "star_number": 6
+    },
+    {
+      "attribute_type": "food",
+      "attribute_value": "スイカ・メロン",
+      "description": "六白金星に関連する食べ物",
+      "id": 80,
+      "star_number": 6
+    },
+    {
+      "attribute_type": "item",
+      "attribute_value": "貴金属・原鉱石",
+      "description": "六白金星に関連する物品",
+      "id": 76,
+      "star_number": 6
+    },
+    {
+      "attribute_type": "item",
+      "attribute_value": "類・兵器・外套",
+      "description": "六白金星に関連する物品",
+      "id": 77,
+      "star_number": 6
+    },
+    {
+      "attribute_type": "person",
+      "attribute_value": "王・天皇・皇族",
+      "description": "六白金星に関連する人物",
+      "id": 78,
+      "star_number": 6
+    },
+    {
+      "attribute_type": "person",
+      "attribute_value": "者・資本家・陸軍",
+      "description": "六白金星に関連する人物",
+      "id": 79,
+      "star_number": 6
+    },
+    {
+      "attribute_type": "phenomenon",
+      "attribute_value": "まとめる・やりとげる",
+      "description": "六白金星に関連する現象",
+      "id": 72,
+      "star_number": 6
+    },
+    {
+      "attribute_type": "phenomenon",
+      "attribute_value": "回転・スピード",
+      "description": "六白金星に関連する現象",
+      "id": 71,
+      "star_number": 6
+    },
+    {
+      "attribute_type": "place",
+      "attribute_value": "会・高原・兵営",
+      "description": "六白金星に関連する場所",
+      "id": 75,
+      "star_number": 6
+    },
+    {
+      "attribute_type": "place",
+      "attribute_value": "神社仏閣・名所旧跡",
+      "description": "六白金星に関連する場所",
+      "id": 74,
+      "star_number": 6
+    },
+    {
+      "attribute_type": "plant",
+      "attribute_value": "丸い形の果物",
+      "description": "六白金星に関連する植物",
+      "id": 85,
+      "star_number": 6
+    },
+    {
+      "attribute_type": "shape",
+      "attribute_value": "円・球場・車輪",
+      "description": "六白金星に関連する形状",
+      "id": 70,
+      "star_number": 6
+    },
+    {
+      "attribute_type": "weather",
+      "attribute_value": "晴天・青空・旋風",
+      "description": "六白金星に関連する天候",
+      "id": 73,
+      "star_number": 6
+    }
+  ]
+  

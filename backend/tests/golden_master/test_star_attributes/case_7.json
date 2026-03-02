@@ -1,0 +1,101 @@
+[
+    {
+      "attribute_type": "animal",
+      "attribute_value": "猿・鶏・派手な動物",
+      "description": "七赤金星に関連する動物",
+      "id": 96,
+      "star_number": 7
+    },
+    {
+      "attribute_type": "body",
+      "attribute_value": "肺・大腸・皮膚",
+      "description": "七赤金星に関連する身体部位",
+      "id": 95,
+      "star_number": 7
+    },
+    {
+      "attribute_type": "color",
+      "attribute_value": "赤・金・銅色",
+      "description": "七赤金星に関連する色",
+      "id": 86,
+      "star_number": 7
+    },
+    {
+      "attribute_type": "food",
+      "attribute_value": "赤い食べ物・スパイシーな料理",
+      "description": "七赤金星に関連する食べ物",
+      "id": 98,
+      "star_number": 7
+    },
+    {
+      "attribute_type": "food",
+      "attribute_value": "高級食材・豪華な料理・甘い食べ物",
+      "description": "七赤金星に関連する食べ物",
+      "id": 99,
+      "star_number": 7
+    },
+    {
+      "attribute_type": "item",
+      "attribute_value": "貴金属・装飾品・宝石",
+      "description": "七赤金星に関連する物品",
+      "id": 92,
+      "star_number": 7
+    },
+    {
+      "attribute_type": "person",
+      "attribute_value": "商人・営業マン",
+      "description": "七赤金星に関連する人物",
+      "id": 94,
+      "star_number": 7
+    },
+    {
+      "attribute_type": "person",
+      "attribute_value": "芸能人・エンターテイナー",
+      "description": "七赤金星に関連する人物",
+      "id": 93,
+      "star_number": 7
+    },
+    {
+      "attribute_type": "phenomenon",
+      "attribute_value": "拡散・飛散・変化",
+      "description": "七赤金星に関連する現象",
+      "id": 88,
+      "star_number": 7
+    },
+    {
+      "attribute_type": "place",
+      "attribute_value": "西方位・舞台・遊興地",
+      "description": "七赤金星に関連する場所",
+      "id": 91,
+      "star_number": 7
+    },
+    {
+      "attribute_type": "place",
+      "attribute_value": "金属工場・貴金属店",
+      "description": "七赤金星に関連する場所",
+      "id": 90,
+      "star_number": 7
+    },
+    {
+      "attribute_type": "plant",
+      "attribute_value": "花・赤い果実・香りのある植物",
+      "description": "七赤金星に関連する植物",
+      "id": 97,
+      "star_number": 7
+    },
+    {
+      "attribute_type": "shape",
+      "attribute_value": "丸・曲線・波型",
+      "description": "七赤金星に関連する形状",
+      "id": 87,
+      "star_number": 7
+    },
+    {
+      "attribute_type": "weather",
+      "attribute_value": "風・乾燥・金色の光",
+      "description": "七赤金星に関連する天候",
+      "id": 89,
+      "star_number": 7
+    }
+  ]
+  

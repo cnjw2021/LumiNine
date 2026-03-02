@@ -1,0 +1,132 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="UTF-8">
+    <title>背景画像テスト</title>
+    <style>
+        @page {
+            size: A4 portrait;
+            margin: 0;
+        }
+
+        html, body {
+            margin: 0;
+            padding: 0;
+            width: 210mm;
+            height: 297mm;
+            font-family: "Hiragino Mincho ProN", "Yu Mincho", "MS PMincho", serif;
+        }
+
+        .page {
+            position: relative;
+            width: 210mm;
+            height: 297mm;
+            margin: 0;
+            padding: 0;
+            background-color: white;
+            page-break-after: always;
+            overflow: hidden;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+        }
+
+        .background {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            z-index: 0;
+        }
+
+        .content {
+            position: relative;
+            z-index: 1;
+            padding: 4cm;
+            width: 100%;
+            box-sizing: border-box;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+        }
+
+        .text-content {
+            color: #333333;
+            line-height: 2;
+            text-align: center;
+            font-size: 16pt;
+            letter-spacing: 0.1em;
+            margin-bottom: 2cm;
+        }
+
+        .number-grid {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 2cm;
+            margin-top: 2cm;
+            width: 80%;
+        }
+
+        .number-item {
+            text-align: center;
+        }
+
+        .number {
+            font-size: 24pt;
+            color: #4a90e2;
+            margin-bottom: 0.5cm;
+        }
+
+        .number-description {
+            font-size: 14pt;
+            color: #333333;
+        }
+    </style>
+</head>
+<body>
+    <div class="page">
+        <img class="background" src="{{ image_path }}" alt="背景">
+        <div class="content">
+            <div class="text-content">
+                数秘術について
+            </div>
+            <div class="number-grid">
+                <div class="number-item">
+                    <div class="number">2</div>
+                    <div class="number-description">協調性</div>
+                </div>
+                <div class="number-item">
+                    <div class="number">3</div>
+                    <div class="number-description">創造性</div>
+                </div>
+                <div class="number-item">
+                    <div class="number">4</div>
+                    <div class="number-description">安定</div>
+                </div>
+                <div class="number-item">
+                    <div class="number">5</div>
+                    <div class="number-description">自由</div>
+                </div>
+                <div class="number-item">
+                    <div class="number">6</div>
+                    <div class="number-description">愛</div>
+                </div>
+                <div class="number-item">
+                    <div class="number">7</div>
+                    <div class="number-description">探究</div>
+                </div>
+                <div class="number-item">
+                    <div class="number">8</div>
+                    <div class="number-description">成功</div>
+                </div>
+                <div class="number-item">
+                    <div class="number">9</div>
+                    <div class="number-description">博愛</div>
+                </div>
+            </div>
+        </div>
+    </div>
+</body>
+</html>

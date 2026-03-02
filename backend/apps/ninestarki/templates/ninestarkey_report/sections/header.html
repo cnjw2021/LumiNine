@@ -1,0 +1,100 @@
+<style>
+    .header-content {
+        position: relative;
+        padding: 8rem 4rem;
+        text-align: center;
+        font-family: "Hiragino Mincho ProN", "Yu Mincho", "MS PMincho", serif;
+        min-height: 80vh;
+        box-sizing: border-box;
+        display: flex;
+        flex-direction: column;
+        justify-content: center;
+    }
+
+    .report-date {
+        position: absolute;
+        top: 3rem;
+        right: 4rem;
+        font-size: 0.9rem;
+        color: #666666;
+        letter-spacing: 0.1em;
+        z-index: 1;
+    }
+
+    .supervisor-wrapper {
+        margin: 2rem 0;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        gap: 1rem;
+    }
+
+    .supervisor {
+        font-size: 2.4rem;
+        font-weight: 500;
+        letter-spacing: 0.2em;
+        color: #333333;
+    }
+
+    .asterisk {
+        color: {{ style.primary_color }};
+        font-size: 1.2rem;
+    }
+
+    .title-wrapper {
+        margin: 3rem 0;
+        position: relative;
+        padding: 2rem 0;
+    }
+
+    .title-wrapper::before,
+    .title-wrapper::after {
+        content: '';
+        position: absolute;
+        left: 50%;
+        transform: translateX(-50%);
+        width: 200px;
+        height: 1px;
+        background-color: {{ style.primary_color }};
+    }
+
+    .title-wrapper::before {
+        top: 0;
+    }
+
+    .title-wrapper::after {
+        bottom: 0;
+    }
+
+    .report-title {
+        font-size: 3.6rem;
+        font-weight: 500;
+        letter-spacing: 0.25em;
+        color: #333333;
+        line-height: 1.6;
+    }
+
+    .client-info {
+        margin-top: 4rem;
+        font-size: 1.4rem;
+        line-height: 2;
+        color: #333333;
+        letter-spacing: 0.15em;
+    }
+</style>
+
+<div class="header-content">
+    <div class="report-date">鑑定日：{{ report_date }}</div>
+    <div class="supervisor-wrapper">
+        <span class="asterisk">※</span>
+        <span class="supervisor">九星気学鑑定</span>
+        <span class="asterisk">※</span>
+    </div>
+    <div class="title-wrapper">
+        <div class="report-title">開運リポート<br>九星気学</div>
+    </div>
+    <div class="client-info">
+        {{ full_name }} 様<br>
+        生年月日：{{ birthdate }}
+    </div>
+</div>

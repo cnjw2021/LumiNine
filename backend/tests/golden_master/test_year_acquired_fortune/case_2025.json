@@ -1,0 +1,215 @@
+{
+    "directions": {
+      "year_2025": {
+        "directions": {
+          "center": {
+            "is_auspicious": true,
+            "is_main_star": false,
+            "marks": [],
+            "reason": null
+          },
+          "east": {
+            "is_auspicious": true,
+            "is_main_star": false,
+            "marks": [],
+            "reason": null
+          },
+          "north": {
+            "is_auspicious": true,
+            "is_main_star": false,
+            "marks": [],
+            "reason": null
+          },
+          "northeast": {
+            "is_auspicious": true,
+            "is_main_star": false,
+            "marks": [],
+            "reason": null
+          },
+          "northwest": {
+            "is_auspicious": false,
+            "is_main_star": false,
+            "marks": [
+              "opposite_zodiac"
+            ],
+            "reason": "破"
+          },
+          "south": {
+            "is_auspicious": true,
+            "is_main_star": false,
+            "marks": [],
+            "reason": null
+          },
+          "southeast": {
+            "details": "出会いや信頼関係に恵まれ、人間関係が良好に進みやすい時期。交渉や営業活動も実を結びやすく、対話が運を開く鍵です。",
+            "is_auspicious": true,
+            "is_main_star": true,
+            "marks": [],
+            "reason": null,
+            "title": "人脈が広がる好調期"
+          },
+          "southwest": {
+            "is_auspicious": false,
+            "is_main_star": false,
+            "marks": [
+              "dark_sword"
+            ],
+            "reason": "暗剣殺"
+          },
+          "west": {
+            "is_auspicious": true,
+            "is_main_star": false,
+            "marks": [],
+            "reason": null
+          }
+        },
+        "period_end": "2026-02-03",
+        "period_start": "2025-02-04",
+        "star_number": 2,
+        "user_star_direction": "southeast",
+        "year": 2025,
+        "zodiac": "乙巳"
+      },
+      "year_2026": {
+        "directions": {
+          "center": {
+            "details": "予期せぬ問題が起こりやすい時期です。強引な行動や独断は失敗の原因に。人との摩擦や事故にも注意し、冷静さを忘れずに。",
+            "is_auspicious": false,
+            "is_main_star": true,
+            "marks": [],
+            "reason": null,
+            "title": "トラブルの兆し、慎重に"
+          },
+          "east": {
+            "is_auspicious": true,
+            "is_main_star": false,
+            "marks": [],
+            "reason": null
+          },
+          "north": {
+            "is_auspicious": false,
+            "is_main_star": false,
+            "marks": [
+              "dark_sword",
+              "opposite_zodiac"
+            ],
+            "reason": "暗剣殺, 破"
+          },
+          "northeast": {
+            "is_auspicious": true,
+            "is_main_star": false,
+            "marks": [],
+            "reason": null
+          },
+          "northwest": {
+            "is_auspicious": true,
+            "is_main_star": false,
+            "marks": [],
+            "reason": null
+          },
+          "south": {
+            "is_auspicious": true,
+            "is_main_star": false,
+            "marks": [],
+            "reason": null
+          },
+          "southeast": {
+            "is_auspicious": true,
+            "is_main_star": false,
+            "marks": [],
+            "reason": null
+          },
+          "southwest": {
+            "is_auspicious": true,
+            "is_main_star": false,
+            "marks": [],
+            "reason": null
+          },
+          "west": {
+            "is_auspicious": true,
+            "is_main_star": false,
+            "marks": [],
+            "reason": null
+          }
+        },
+        "period_end": "2027-02-03",
+        "period_start": "2026-02-04",
+        "star_number": 1,
+        "user_star_direction": "center",
+        "year": 2026,
+        "zodiac": "丙午"
+      },
+      "year_2027": {
+        "directions": {
+          "center": {
+            "is_auspicious": true,
+            "is_main_star": false,
+            "marks": [],
+            "reason": null
+          },
+          "east": {
+            "is_auspicious": true,
+            "is_main_star": false,
+            "marks": [],
+            "reason": null
+          },
+          "north": {
+            "is_auspicious": true,
+            "is_main_star": false,
+            "marks": [],
+            "reason": null
+          },
+          "northeast": {
+            "is_auspicious": false,
+            "is_main_star": false,
+            "marks": [
+              "opposite_zodiac"
+            ],
+            "reason": "破"
+          },
+          "northwest": {
+            "details": "出世運・仕事運ともに上昇。責任あるポジションが回ってきやすく、リーダーシップを発揮できる時です。",
+            "is_auspicious": true,
+            "is_main_star": true,
+            "marks": [],
+            "reason": null,
+            "title": "行動力で飛躍の時"
+          },
+          "south": {
+            "is_auspicious": false,
+            "is_main_star": false,
+            "marks": [
+              "dark_sword"
+            ],
+            "reason": "暗剣殺"
+          },
+          "southeast": {
+            "is_auspicious": true,
+            "is_main_star": false,
+            "marks": [],
+            "reason": null
+          },
+          "southwest": {
+            "is_auspicious": true,
+            "is_main_star": false,
+            "marks": [],
+            "reason": null
+          },
+          "west": {
+            "is_auspicious": true,
+            "is_main_star": false,
+            "marks": [],
+            "reason": null
+          }
+        },
+        "period_end": "2028-02-03",
+        "period_start": "2027-02-04",
+        "star_number": 9,
+        "user_star_direction": "northwest",
+        "year": 2027,
+        "zodiac": "丁未"
+      }
+    },
+    "target_year": 2025
+  }
+  

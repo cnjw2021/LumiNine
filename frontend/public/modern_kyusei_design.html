@@ -1,0 +1,339 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>九星気学 - Modern Luxury Design</title>
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Noto+Sans+JP:wght@300;400;500;700&family=Inter:wght@300;400;500;600;700&display=swap');
+        
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        body {
+            background: linear-gradient(135deg, #0F0F23, #1A1A3E, #2D1B69);
+            min-height: 100vh;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            font-family: 'Noto Sans JP', 'Inter', sans-serif;
+            overflow: hidden;
+        }
+        
+        .container {
+            position: relative;
+            width: 600px;
+            height: 600px;
+            perspective: 1000px;
+        }
+        
+        .kyusei-board {
+            position: relative;
+            width: 100%;
+            height: 100%;
+            background: rgba(255, 255, 255, 0.05);
+            border-radius: 50%;
+            backdrop-filter: blur(20px);
+            box-shadow: 
+                0 0 60px rgba(212, 175, 55, 0.3),
+                inset 0 0 60px rgba(255, 255, 255, 0.1),
+                0 20px 40px rgba(0, 0, 0, 0.4);
+            border: 1px solid rgba(212, 175, 55, 0.2);
+            animation: rotateBoard 60s linear infinite;
+        }
+        
+        @keyframes rotateBoard {
+            from { transform: rotate(0deg); }
+            to { transform: rotate(360deg); }
+        }
+        
+        .center-star {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            width: 120px;
+            height: 120px;
+            background: linear-gradient(135deg, #D4AF37, #FFD700, #FFA500);
+            border-radius: 50%;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            box-shadow: 
+                0 0 30px rgba(212, 175, 55, 0.6),
+                inset 0 0 20px rgba(255, 255, 255, 0.3);
+            animation: pulse 3s ease-in-out infinite;
+            z-index: 10;
+        }
+        
+        @keyframes pulse {
+            0%, 100% { transform: translate(-50%, -50%) scale(1); }
+            50% { transform: translate(-50%, -50%) scale(1.05); }
+        }
+        
+        .center-star .star-name {
+            font-size: 14px;
+            font-weight: 700;
+            color: #1A1A3E;
+            line-height: 1.2;
+            text-align: center;
+        }
+        
+        .direction-ring {
+            position: absolute;
+            width: 400px;
+            height: 400px;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            border: 2px solid rgba(212, 175, 55, 0.3);
+            border-radius: 50%;
+        }
+        
+        .star-element {
+            position: absolute;
+            width: 80px;
+            height: 80px;
+            background: rgba(255, 255, 255, 0.1);
+            border-radius: 12px;
+            backdrop-filter: blur(10px);
+            border: 1px solid rgba(212, 175, 55, 0.2);
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            text-align: center;
+            transition: all 0.3s ease;
+            cursor: pointer;
+        }
+        
+        .star-element:hover {
+            background: rgba(212, 175, 55, 0.2);
+            transform: scale(1.1);
+            box-shadow: 0 10px 25px rgba(212, 175, 55, 0.4);
+        }
+        
+        .star-name {
+            font-size: 11px;
+            font-weight: 600;
+            color: #E5E7EB;
+            margin-bottom: 2px;
+        }
+        
+        .direction {
+            font-size: 12px;
+            font-weight: 400;
+            color: #D4AF37;
+        }
+        
+        .zodiac {
+            font-size: 10px;
+            font-weight: 300;
+            color: #9CA3AF;
+        }
+        
+        /* 方位別配置（画像の通りの配置：右が東、左が西） */
+        .north { top: 20px; left: 50%; transform: translateX(-50%); }
+        .northeast { top: 70px; right: 70px; }  /* 右上 */
+        .east { right: 20px; top: 50%; transform: translateY(-50%); }  /* 右 */
+        .southeast { bottom: 70px; right: 70px; }  /* 右下 */
+        .south { bottom: 20px; left: 50%; transform: translateX(-50%); }
+        .southwest { bottom: 70px; left: 70px; }  /* 左下 */
+        .west { left: 20px; top: 50%; transform: translateY(-50%); }  /* 左 */
+        .northwest { top: 70px; left: 70px; }  /* 左上 */
+        
+        .compass-lines {
+            position: absolute;
+            width: 100%;
+            height: 100%;
+            top: 0;
+            left: 0;
+        }
+        
+        .compass-line {
+            position: absolute;
+            background: linear-gradient(90deg, transparent, rgba(212, 175, 55, 0.3), transparent);
+            transform-origin: center;
+        }
+        
+        .compass-line.horizontal {
+            width: 100%;
+            height: 1px;
+            top: 50%;
+            left: 0;
+        }
+        
+        .compass-line.vertical {
+            width: 1px;
+            height: 100%;
+            left: 50%;
+            top: 0;
+            background: linear-gradient(180deg, transparent, rgba(212, 175, 55, 0.3), transparent);
+        }
+        
+        .compass-line.diagonal1 {
+            width: 141.42%;
+            height: 1px;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%) rotate(45deg);
+        }
+        
+        .compass-line.diagonal2 {
+            width: 141.42%;
+            height: 1px;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%) rotate(-45deg);
+        }
+        
+        .glow-effect {
+            position: absolute;
+            width: 100%;
+            height: 100%;
+            border-radius: 50%;
+            background: radial-gradient(circle, rgba(212, 175, 55, 0.1) 0%, transparent 70%);
+            animation: glow 4s ease-in-out infinite alternate;
+        }
+        
+        @keyframes glow {
+            from { opacity: 0.5; }
+            to { opacity: 1; }
+        }
+        
+        .title {
+            position: absolute;
+            top: -80px;
+            left: 50%;
+            transform: translateX(-50%);
+            font-size: 28px;
+            font-weight: 700;
+            color: #D4AF37;
+            text-align: center;
+            text-shadow: 0 0 20px rgba(212, 175, 55, 0.5);
+            font-family: 'Inter', sans-serif;
+        }
+        
+        .subtitle {
+            position: absolute;
+            bottom: -60px;
+            left: 50%;
+            transform: translateX(-50%);
+            font-size: 14px;
+            font-weight: 300;
+            color: #9CA3AF;
+            text-align: center;
+            font-family: 'Inter', sans-serif;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1 class="title">九星気学</h1>
+        
+        <div class="kyusei-board">
+            <div class="glow-effect"></div>
+            
+            <div class="compass-lines">
+                <div class="compass-line horizontal"></div>
+                <div class="compass-line vertical"></div>
+                <div class="compass-line diagonal1"></div>
+                <div class="compass-line diagonal2"></div>
+            </div>
+            
+            <div class="direction-ring"></div>
+            
+            <!-- 中央の星 -->
+            <div class="center-star">
+                <div class="star-name">七赤<br>金星</div>
+            </div>
+            
+            <!-- 八方位の星 -->
+            <div class="star-element north">
+                <div class="star-name">二黒土星</div>
+                <div class="direction">南</div>
+                <div class="zodiac">午</div>
+            </div>
+            
+            <div class="star-element northeast">
+                <div class="star-name">四緑木星</div>
+                <div class="direction">南西</div>
+                <div class="zodiac">未・申</div>
+            </div>
+            
+            <div class="star-element east">
+                <div class="star-name">九紫火星</div>
+                <div class="direction">西</div>
+                <div class="zodiac">酉</div>
+            </div>
+            
+            <div class="star-element southeast">
+                <div class="star-name">八白土星</div>
+                <div class="direction">北西</div>
+                <div class="zodiac">亥・戌</div>
+            </div>
+            
+            <div class="star-element south">
+                <div class="star-name">三碧木星</div>
+                <div class="direction">北</div>
+                <div class="zodiac">子</div>
+            </div>
+            
+            <div class="star-element southwest">
+                <div class="star-name">一白水星</div>
+                <div class="direction">北東</div>
+                <div class="zodiac">寅・丑</div>
+            </div>
+            
+            <div class="star-element west">
+                <div class="star-name">五黄土星</div>
+                <div class="direction">東</div>
+                <div class="zodiac">卯</div>
+            </div>
+            
+            <div class="star-element northwest">
+                <div class="star-name">六白金星</div>
+                <div class="direction">南東</div>
+                <div class="zodiac">辰・巳</div>
+            </div>
+        </div>
+        
+        <p class="subtitle">Modern Luxury Design</p>
+    </div>
+    
+    <script>
+        // ホバー効果とインタラクティブ要素
+        document.querySelectorAll('.star-element').forEach(element => {
+            element.addEventListener('mouseenter', function() {
+                this.style.background = 'rgba(212, 175, 55, 0.3)';
+                this.style.boxShadow = '0 15px 35px rgba(212, 175, 55, 0.5)';
+            });
+            
+            element.addEventListener('mouseleave', function() {
+                this.style.background = 'rgba(255, 255, 255, 0.1)';
+                this.style.boxShadow = 'none';
+            });
+            
+            element.addEventListener('click', function() {
+                // クリック時のアニメーション
+                this.style.animation = 'pulse 0.6s ease-in-out';
+                setTimeout(() => {
+                    this.style.animation = '';
+                }, 600);
+            });
+        });
+        
+        // 中央の星のクリック効果
+        document.querySelector('.center-star').addEventListener('click', function() {
+            this.style.animation = 'pulse 1s ease-in-out';
+            setTimeout(() => {
+                this.style.animation = 'pulse 3s ease-in-out infinite';
+            }, 1000);
+        });
+    </script>
+</body>
+</html> 

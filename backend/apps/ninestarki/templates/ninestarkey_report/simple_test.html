@@ -1,0 +1,46 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="UTF-8">
+    <title>九星気学レポート - テスト</title>
+    <style>
+        body {
+            font-family: sans-serif;
+            margin: 40px;
+            line-height: 1.6;
+        }
+        h1 {
+            color: #3490dc;
+            text-align: center;
+        }
+        .content {
+            max-width: 800px;
+            margin: 0 auto;
+            padding: 20px;
+            border: 1px solid #e0e0e0;
+            border-radius: 8px;
+        }
+    </style>
+</head>
+<body>
+    <div class="content">
+        <h1>九星気学レポート - テスト</h1>
+        <p>このページは九星気学レポートのテストページです。</p>
+        <p>氏名: {{ full_name }}</p>
+        <p>生年月日: {{ birthdate }}</p>
+        <p>性別: {{ gender }}</p>
+        
+        <h2>本命星</h2>
+        <p>星番号: {{ result.main_star.star_number }}</p>
+        <p>名称: {{ result.main_star.name_jp }}</p>
+        
+        <h2>月命星</h2>
+        <p>星番号: {{ result.month_star.star_number }}</p>
+        <p>名称: {{ result.month_star.name_jp }}</p>
+        
+        <h2>日命星</h2>
+        <p>星番号: {{ result.day_star.star_number }}</p>
+        <p>名称: {{ result.day_star.name_jp }}</p>
+    </div>
+</body>
+</html> 

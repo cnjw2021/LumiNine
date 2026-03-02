@@ -1,0 +1,97 @@
+/* 引越し/お水取り 吉日テーブル */
+.dates-table {
+    width: 100% !important;
+    border-collapse: collapse !important;
+    table-layout: fixed !important;
+    font-size: 12px !important;
+}
+
+.dates-table--fortune {
+    width: 100% !important;
+    table-layout: fixed !important;
+    margin-bottom: 8px !important;
+}
+
+.dates-col-month {
+    width: 36px !important;
+}
+
+.dates-table td,
+.dates-table th {
+    border: 1px solid #e0e0e0 !important;
+    border-left: 1px solid #e0e0e0 !important;
+    border-right: 1px solid #e0e0e0 !important;
+    padding: 2px 4px !important;
+    vertical-align: middle !important;
+    word-break: break-word !important;
+    line-height: 1.25 !important;
+}
+
+.dates-header-row td {
+    background-color: #f8f9fa !important;
+    font-weight: 700 !important;
+}
+
+.dates-header-row .month-cell {
+    padding: 1px 2px !important;
+    text-align: center !important;
+}
+
+.dates-header-row .direction-cell {
+    border-left: 1px solid #e9ecef !important;
+    text-align: center !important;
+    padding: 2px 4px !important;
+}
+
+.year-group-header {
+    background-color: #f8f9fa !important;
+    text-align: center !important;
+    font-weight: 600 !important;
+    border: none !important;
+    padding: 2px 0 3px !important;
+    margin-bottom: 4px !important;
+}
+
+.dates-row {
+    background-color: #fff !important;
+}
+
+.dates-row .month-cell {
+    padding: 1px 2px !important;
+    text-align: center !important;
+}
+
+.dates-row .direction-cell {
+    border-left: 1px solid #e9ecef !important;
+    padding: 2px 4px !important;
+    word-break: keep-all !important;
+}
+
+.month-cell {
+    width: 36px !important;
+    text-align: center !important;
+    font-weight: 700 !important;
+}
+
+.direction-cell {
+    text-align: center !important;
+    font-weight: 700 !important;
+}
+
+.dates-text {
+    display: block !important;
+    text-align: center !important;
+    white-space: normal !important;
+}
+
+.fortune-icon {
+    font-size: 18px !important;
+}
+
+.fortune-icon-home {
+    color: #82c91e !important;
+}
+
+.fortune-icon-water {
+    color: #4dabf7 !important;
+}

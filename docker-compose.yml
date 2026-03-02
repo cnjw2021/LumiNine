@@ -1,0 +1,160 @@
+services:
+  frontend:
+    build:
+      context: ./frontend
+      dockerfile: Dockerfile
+    container_name: frontend-container
+    ports:
+      - "3000:3000" # Next.jsのデフォルトポート
+    env_file:
+      - ./frontend/.env.production.frontend
+    restart: always
+    networks:
+      - app-network
+
+  backend:
+    build:
+      context: ./backend
+      dockerfile: Dockerfile
+    container_name: backend-container
+    ports:
+      - "5001:5001"
+    volumes:
+      - ./backend/logs:/app/logs:rw
+      - ./mysql/init:/app/mysql/init:ro  # SQLファイルディレクトリをマウント（読み取り専用）
+      - ./backend/data:/app/data:ro  # データディレクトリをマウント（読み取り専用）
+      - ./frontend/public/images/main_star:/app/frontend_images:ro  # フロントエンドのSVG画像をマウント
+      - pdf_tmp:/tmp/pdf
+    env_file:
+      - ./backend/.env.production.backend
+    environment:
+      LANG: en_US.UTF-8
+      LC_CTYPE: en_US.UTF-8
+    restart: always
+    networks:
+      - app-network
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:5001/auth/health"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+      start_period: 30s # gunicorn開始及び、DB 初期化時間を考慮して少し長く設定
+    depends_on:
+      - mysql
+      - redis
+
+  nginx:
+    build:
+      context: ./nginx
+      dockerfile: Dockerfile
+    container_name: nginx-container
+    restart: always
+    ports:
+      - "80:80"
+      - "443:443" # <<< HTTPSポート
+    volumes:
+      - ./nginx/conf.d:/etc/nginx/conf.d
+      - ./certbot/conf:/etc/letsencrypt:ro
+      - ./certbot/www:/var/www/certbot
+    depends_on:
+      frontend:
+        condition: service_started
+      backend:
+        condition: service_healthy
+    networks:
+      - app-network
+
+  mysql:
+    image: mysql:8.0
+    container_name: mysql-container
+    restart: always
+    environment:
+      MYSQL_ROOT_PASSWORD: rootpassword
+      MYSQL_DATABASE: ninestarki
+      MYSQL_USER: ninestarki
+      MYSQL_PASSWORD: ninestarki_password
+      LANG: en_US.UTF-8
+      LC_CTYPE: en_US.UTF-8
+    ports:
+      - "3306:3306"
+    volumes:
+      - mysql_data:/var/lib/mysql
+      - ./mysql/init:/docker-entrypoint-initdb.d  # 初期化スクリプトのディレクトリ
+      - ./backend/data:/var/lib/mysql-files  # CSVファイル用のボリュームを追加
+    networks:
+      - app-network
+    command: >
+      --character-set-server=utf8mb4 
+      --collation-server=utf8mb4_unicode_ci 
+      --secure-file-priv=/var/lib/mysql-files
+
+  redis:
+    image: redis:7-alpine
+    restart: always
+    container_name: redis
+    volumes:
+      - redis_data:/data
+    networks:
+      - app-network
+
+  rq-worker:
+    build:
+      context: ./backend
+      dockerfile: Dockerfile
+      target: production
+    restart: always
+    container_name: rq-worker
+    user: root
+    command: >
+      sh -c "su -s /bin/sh -c 'python -m apps.ninestarki.worker_entrypoint' appuser"
+    env_file:
+      - ./backend/.env.production.backend
+    environment:
+      LANG: en_US.UTF-8
+      LC_CTYPE: en_US.UTF-8
+    depends_on:
+      - redis
+      - mysql
+    networks:
+      - app-network
+    volumes:
+      - pdf_tmp:/tmp/pdf
+
+# <<< Certbot サービス 追加 >>>
+  certbot:
+    image: certbot/certbot
+    container_name: certbot-container
+    # restart: unless-stopped # 必要に応じて再起動ポリシーを設定
+    volumes:
+      - ./certbot/conf:/etc/letsencrypt
+      - ./certbot/www:/var/www/certbot
+    # デフォルトコマンドは更新試行。初回発行時は別コマンドで実行。
+    command: renew --quiet --agree-tos
+
+  # <<< New Relic Infrastructure Agent 追加 >>>
+  newrelic-infra:
+    image: newrelic/infrastructure:latest
+    container_name: newrelic-infra
+    cap_add:
+      - SYS_PTRACE
+    network_mode: host
+    pid: host
+    privileged: true
+    volumes:
+      - "/:/host:ro"
+      - "/var/run/docker.sock:/var/run/docker.sock"
+    env_file:
+      - ./backend/.env.production.backend
+    restart: unless-stopped
+
+volumes:
+  mysql_data:
+    driver: local
+  redis_data:
+    driver: local
+  pdf_tmp:
+    driver: local
+
+networks:
+  app-network:
+    driver: bridge

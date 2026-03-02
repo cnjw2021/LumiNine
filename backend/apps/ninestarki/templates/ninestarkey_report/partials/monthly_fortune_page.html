@@ -1,0 +1,65 @@
+{# expects: month_list, month_fortune, result, svg_by_center #}
+<div class="page">
+    <div class="background"></div>
+    <div class="gradient-overlay"></div>
+    <div class="content">
+        <h2 class="month-fortune-title">{{ target_year }}年 月の運気</h2>
+
+        <table class="month-fortune-table">
+            {% for month_num in month_list %}
+                {% if month_fortune.directions[month_num|string] is defined %}
+                    {% set month_data = month_fortune.directions[month_num|string] %}
+                    <tr class="month-content-row">
+                        <td colspan="2">
+                            <div class="month-card">
+                                <table class="inner-table">
+                                    <tr>
+                                        <td class="chart-cell">
+                                            <!-- 九星盤SVG画像の表示 -->
+                                            {{ mark.star_chart(svg_by_center[month_data.star_number], month_data.directions, result.main_star.star_number) }}
+                                        </td>
+                                        <td class="info-cell">
+                                            <!-- 月・干支 - 干支は後尾の1文字だけ表示 -->
+                                            <h3 class="month-title">{{ month_data.display_title|replace(month_data.zodiac, month_data.zodiac[-1]) }}</h3>
+                                            <div class="month-period-wrapper">
+                                                <span class="month-period">{{ month_data.display_period }}</span>
+                                            </div>
+
+                                            <!-- 運気情報の表示 - 1つだけ表示するように修正 -->
+                                            <div class="fortune-content">
+                                                {% set displayed = false %}
+
+                                                <!-- 中央星(center)または主星(is_main_star)の情報を1つだけ表示 -->
+                                                {% for direction, direction_data in month_data.directions.items() %}
+                                                    {% if not displayed %}
+                                                        {% if (direction == "center" and direction_data.title and direction_data.details) or (direction_data.is_main_star and direction_data.title and direction_data.details) %}
+                                                            <div class="fortune-header">
+                                                                {% if direction_data.is_auspicious %}
+                                                                    <h4 class="fortune-title">{{ direction_data.title }}</h4>
+                                                                {% else %}
+                                                                    <h4 class="fortune-title fortune-title-unlucky">{{ direction_data.title }}</h4>
+                                                                {% endif %}
+                                                            </div>
+                                                            <p class="fortune-description">{{ direction_data.details }}</p>
+                                                            {% set displayed = true %}
+                                                        {% endif %}
+                                                    {% endif %}
+                                                {% endfor %}
+                                            </div>
+                                        </td>
+                                    </tr>
+                                </table>
+                            </div>
+                        </td>
+                    </tr>
+
+                    {% if not loop.last %}
+                    <tr class="spacer-row">
+                        <td colspan="2"></td>
+                    </tr>
+                    {% endif %}
+                {% endif %}
+            {% endfor %}
+        </table>
+    </div>
+</div>

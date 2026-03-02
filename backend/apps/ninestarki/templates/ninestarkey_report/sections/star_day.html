@@ -1,0 +1,33 @@
+<div class="main-star-section">
+    <h2 class="main-star-title">基本鑑定結果</h2>
+    
+    <!-- 本命星の詳細セクション -->
+    <div class="section-title">
+        日命星 （行動・健康）
+    </div>
+
+    <!-- 本命星の詳細説明 -->
+    <div class="main-star-info-container">
+        <h3 class="main-star-info-heading">
+            日命星とは
+        </h3>
+        <p class="main-star-info-text">
+            九星気学において日命星は、あなたの生まれた日から算出され、内面的な性質や行動パターン、健康の傾向を表します。日命星は、表に出さない本当の自分、内なる感情や価値観、無意識的な行動傾向などを示しています。これは自分自身が最も自然に感じる内面の特性であり、ストレスがない状態で表れる本来の姿とも言えます。
+        </p>
+        
+        <h3 class="main-star-info-heading main-star-info-heading--spaced">
+            日命星の活かし方
+        </h3>
+        <p class="main-star-info-text main-star-info-text--tight">
+            日命星の特性を理解することで、自分の内面的な欲求や感情のパターンを知ることができます。また、健康面での注意点や、ストレスへの反応、リラックス方法などの指針を得ることができるでしょう。日常生活では意識していない自分の行動パターンを認識し、自己理解を深めることで、よりバランスの取れた生活習慣を築くことができます。
+        </p>
+    </div>
+
+    <!-- 詳細表示用テーブル -->
+    <div class="main-star-info-container main-star-info-container--spaced">
+        {% set star = result.day_star %}
+        {% set svg_url = svg_by_center[star.star_number] %}
+        {% set keywords_source = (result.day_star_reading and result.day_star_reading.keywords) or '' %}
+        {% include 'ninestarkey_report/partials/star_detail_table.html' %}
+    </div>
+</div> 

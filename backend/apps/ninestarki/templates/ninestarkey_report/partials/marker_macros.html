@@ -1,0 +1,35 @@
+{% import 'ninestarkey_report/partials/marker_map.html' as mp %}
+
+{% macro star_chart(bg_url, directions, main_star_number, marker_type='icon') %}
+{# CSS 側に .star-chart-container { position:relative; } を用意している #}
+<div class="star-chart-container">
+    <img src="{{ bg_url }}" alt="九星盤" class="star-chart-svg">
+
+    {# 九星気学は地図方位と 180° 反転（北=下）が常に適用 #}
+    {% set mapping = mp.marker_pos %}
+
+    {# マーカー描画 #}
+    {% for direction, dir in directions.items() %}
+        {% if marker_type == 'badge' %}
+            {# 場所の運気: 中立(null)は表示しない #}
+            {% set show_marker = (dir.is_auspicious is not none) %}
+        {% else %}
+            {# 月・年の運気: 本命星がある方位のみ表示（中央は五黄土星の場合） #}
+            {% set show_marker = dir.is_main_star or (direction == 'center' and main_star_number == 5) %}
+        {% endif %}
+
+        {% if show_marker %}
+            {% set pos = mapping[direction] %}
+            {% set marker_class = "direction-marker-pos-" ~ loop.index0 %}
+
+            {% if direction == 'center' %}
+                {% set lucky = (main_star_number == 5) %}
+            {% else %}
+                {% set lucky = dir.is_auspicious %}
+            {% endif %}
+
+            {% include 'ninestarkey_report/partials/marker_item.html' %}
+        {% endif %}
+    {% endfor %}
+</div>
+{% endmacro %} 

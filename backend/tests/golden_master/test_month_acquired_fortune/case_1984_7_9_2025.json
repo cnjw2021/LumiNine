@@ -1,0 +1,879 @@
+{
+    "annual_directions": {
+      "month_1": {
+        "center_star": 9,
+        "directions": {
+          "center": {
+            "is_auspicious": true,
+            "is_main_star": false,
+            "marks": [],
+            "reason": null
+          },
+          "east": {
+            "details": "新しいことを始めたくなるような意欲や希望が湧きやすい時期です。心のエネルギーが活発で、行動と感情が連動します。素直な感情を大切に。",
+            "is_auspicious": true,
+            "is_main_star": true,
+            "marks": [],
+            "reason": null,
+            "title": "気持ちが前向きになる時"
+          },
+          "north": {
+            "is_auspicious": true,
+            "is_main_star": false,
+            "marks": [],
+            "reason": null
+          },
+          "northeast": {
+            "is_auspicious": true,
+            "is_main_star": false,
+            "marks": [],
+            "reason": null
+          },
+          "northwest": {
+            "is_auspicious": false,
+            "is_main_star": false,
+            "marks": [
+              "opposite_zodiac"
+            ],
+            "reason": "破"
+          },
+          "south": {
+            "is_auspicious": false,
+            "is_main_star": false,
+            "marks": [
+              "dark_sword"
+            ],
+            "reason": "暗剣殺"
+          },
+          "southeast": {
+            "is_auspicious": true,
+            "is_main_star": false,
+            "marks": [],
+            "reason": null
+          },
+          "southwest": {
+            "is_auspicious": true,
+            "is_main_star": false,
+            "marks": [],
+            "reason": null
+          },
+          "west": {
+            "is_auspicious": true,
+            "is_main_star": false,
+            "marks": [],
+            "reason": null
+          }
+        },
+        "display_month": "2026年1月",
+        "month": 1,
+        "period_end": "2026-02-03",
+        "period_start": "2026-01-05",
+        "year": 2026,
+        "zodiac": "己丑"
+      },
+      "month_10": {
+        "center_star": 3,
+        "directions": {
+          "center": {
+            "is_auspicious": true,
+            "is_main_star": false,
+            "marks": [],
+            "reason": null
+          },
+          "east": {
+            "is_auspicious": false,
+            "is_main_star": false,
+            "marks": [
+              "dark_sword"
+            ],
+            "reason": "暗剣殺"
+          },
+          "north": {
+            "is_auspicious": true,
+            "is_main_star": false,
+            "marks": [],
+            "reason": null
+          },
+          "northeast": {
+            "is_auspicious": true,
+            "is_main_star": false,
+            "marks": [],
+            "reason": null
+          },
+          "northwest": {
+            "is_auspicious": false,
+            "is_main_star": false,
+            "marks": [
+              "opposite_zodiac"
+            ],
+            "reason": "破"
+          },
+          "south": {
+            "details": "感受性が高まり、気づきや洞察が増える時期です。芸術的感覚やひらめきが冴える一方、心も敏感になります。インスピレーションを活かして自己表現を。",
+            "is_auspicious": true,
+            "is_main_star": true,
+            "marks": [],
+            "reason": null,
+            "title": "直感と感性が冴える時"
+          },
+          "southeast": {
+            "is_auspicious": true,
+            "is_main_star": false,
+            "marks": [],
+            "reason": null
+          },
+          "southwest": {
+            "is_auspicious": true,
+            "is_main_star": false,
+            "marks": [],
+            "reason": null
+          },
+          "west": {
+            "is_auspicious": true,
+            "is_main_star": false,
+            "marks": [],
+            "reason": null
+          }
+        },
+        "display_month": "2025年10月",
+        "month": 10,
+        "period_end": "2025-11-06",
+        "period_start": "2025-10-08",
+        "year": 2025,
+        "zodiac": "丙戌"
+      },
+      "month_11": {
+        "center_star": 2,
+        "directions": {
+          "center": {
+            "is_auspicious": true,
+            "is_main_star": false,
+            "marks": [],
+            "reason": null
+          },
+          "east": {
+            "is_auspicious": true,
+            "is_main_star": false,
+            "marks": [],
+            "reason": null
+          },
+          "north": {
+            "details": "感情表現が豊かになり、人との共感が深まりやすい時期です。心のつながりを求める場面が増え、恋愛や家族との交流にも追い風が吹きます。",
+            "is_auspicious": true,
+            "is_main_star": true,
+            "marks": [],
+            "reason": null,
+            "title": "感情が豊かに流れる時"
+          },
+          "northeast": {
+            "is_auspicious": true,
+            "is_main_star": false,
+            "marks": [],
+            "reason": null
+          },
+          "northwest": {
+            "is_auspicious": false,
+            "is_main_star": false,
+            "marks": [
+              "opposite_zodiac"
+            ],
+            "reason": "破"
+          },
+          "south": {
+            "is_auspicious": true,
+            "is_main_star": false,
+            "marks": [],
+            "reason": null
+          },
+          "southeast": {
+            "is_auspicious": true,
+            "is_main_star": false,
+            "marks": [],
+            "reason": null
+          },
+          "southwest": {
+            "is_auspicious": false,
+            "is_main_star": false,
+            "marks": [
+              "dark_sword"
+            ],
+            "reason": "暗剣殺"
+          },
+          "west": {
+            "is_auspicious": true,
+            "is_main_star": false,
+            "marks": [],
+            "reason": null
+          }
+        },
+        "display_month": "2025年11月",
+        "month": 11,
+        "period_end": "2025-12-06",
+        "period_start": "2025-11-07",
+        "year": 2025,
+        "zodiac": "丁亥"
+      },
+      "month_12": {
+        "center_star": 1,
+        "directions": {
+          "center": {
+            "is_auspicious": true,
+            "is_main_star": false,
+            "marks": [],
+            "reason": null
+          },
+          "east": {
+            "is_auspicious": true,
+            "is_main_star": false,
+            "marks": [],
+            "reason": null
+          },
+          "north": {
+            "is_auspicious": false,
+            "is_main_star": false,
+            "marks": [
+              "dark_sword"
+            ],
+            "reason": "暗剣殺"
+          },
+          "northeast": {
+            "is_auspicious": true,
+            "is_main_star": false,
+            "marks": [],
+            "reason": null
+          },
+          "northwest": {
+            "is_auspicious": false,
+            "is_main_star": false,
+            "marks": [
+              "opposite_zodiac"
+            ],
+            "reason": "破"
+          },
+          "south": {
+            "is_auspicious": true,
+            "is_main_star": false,
+            "marks": [],
+            "reason": null
+          },
+          "southeast": {
+            "is_auspicious": true,
+            "is_main_star": false,
+            "marks": [],
+            "reason": null
+          },
+          "southwest": {
+            "details": "じっくりと心の土台を見直し、精神的に成熟できる時期です。内省と改善が大切なテーマ。気づきは遅れて形になりますが、確実に実を結びます.",
+            "is_auspicious": true,
+            "is_main_star": true,
+            "marks": [],
+            "reason": null,
+            "title": "内面の変化と成長の時"
+          },
+          "west": {
+            "is_auspicious": true,
+            "is_main_star": false,
+            "marks": [],
+            "reason": null
+          }
+        },
+        "display_month": "2025年12月",
+        "month": 12,
+        "period_end": "2026-01-04",
+        "period_start": "2025-12-07",
+        "year": 2025,
+        "zodiac": "戊子"
+      },
+      "month_2": {
+        "center_star": 2,
+        "directions": {
+          "center": {
+            "is_auspicious": true,
+            "is_main_star": false,
+            "marks": [],
+            "reason": null
+          },
+          "east": {
+            "is_auspicious": true,
+            "is_main_star": false,
+            "marks": [],
+            "reason": null
+          },
+          "north": {
+            "details": "感情表現が豊かになり、人との共感が深まりやすい時期です。心のつながりを求める場面が増え、恋愛や家族との交流にも追い風が吹きます。",
+            "is_auspicious": true,
+            "is_main_star": true,
+            "marks": [],
+            "reason": null,
+            "title": "感情が豊かに流れる時"
+          },
+          "northeast": {
+            "is_auspicious": true,
+            "is_main_star": false,
+            "marks": [],
+            "reason": null
+          },
+          "northwest": {
+            "is_auspicious": false,
+            "is_main_star": false,
+            "marks": [
+              "opposite_zodiac"
+            ],
+            "reason": "破"
+          },
+          "south": {
+            "is_auspicious": true,
+            "is_main_star": false,
+            "marks": [],
+            "reason": null
+          },
+          "southeast": {
+            "is_auspicious": true,
+            "is_main_star": false,
+            "marks": [],
+            "reason": null
+          },
+          "southwest": {
+            "is_auspicious": false,
+            "is_main_star": false,
+            "marks": [
+              "dark_sword"
+            ],
+            "reason": "暗剣殺"
+          },
+          "west": {
+            "is_auspicious": true,
+            "is_main_star": false,
+            "marks": [],
+            "reason": null
+          }
+        },
+        "display_month": "2025年2月",
+        "month": 2,
+        "period_end": "2025-03-04",
+        "period_start": "2025-02-03",
+        "year": 2025,
+        "zodiac": "戊寅"
+      },
+      "month_3": {
+        "center_star": 1,
+        "directions": {
+          "center": {
+            "is_auspicious": true,
+            "is_main_star": false,
+            "marks": [],
+            "reason": null
+          },
+          "east": {
+            "is_auspicious": true,
+            "is_main_star": false,
+            "marks": [],
+            "reason": null
+          },
+          "north": {
+            "is_auspicious": false,
+            "is_main_star": false,
+            "marks": [
+              "dark_sword"
+            ],
+            "reason": "暗剣殺"
+          },
+          "northeast": {
+            "is_auspicious": true,
+            "is_main_star": false,
+            "marks": [],
+            "reason": null
+          },
+          "northwest": {
+            "is_auspicious": false,
+            "is_main_star": false,
+            "marks": [
+              "opposite_zodiac"
+            ],
+            "reason": "破"
+          },
+          "south": {
+            "is_auspicious": true,
+            "is_main_star": false,
+            "marks": [],
+            "reason": null
+          },
+          "southeast": {
+            "is_auspicious": true,
+            "is_main_star": false,
+            "marks": [],
+            "reason": null
+          },
+          "southwest": {
+            "details": "じっくりと心の土台を見直し、精神的に成熟できる時期です。内省と改善が大切なテーマ。気づきは遅れて形になりますが、確実に実を結びます.",
+            "is_auspicious": true,
+            "is_main_star": true,
+            "marks": [],
+            "reason": null,
+            "title": "内面の変化と成長の時"
+          },
+          "west": {
+            "is_auspicious": true,
+            "is_main_star": false,
+            "marks": [],
+            "reason": null
+          }
+        },
+        "display_month": "2025年3月",
+        "month": 3,
+        "period_end": "2025-04-03",
+        "period_start": "2025-03-05",
+        "year": 2025,
+        "zodiac": "己卯"
+      },
+      "month_4": {
+        "center_star": 9,
+        "directions": {
+          "center": {
+            "is_auspicious": true,
+            "is_main_star": false,
+            "marks": [],
+            "reason": null
+          },
+          "east": {
+            "details": "新しいことを始めたくなるような意欲や希望が湧きやすい時期です。心のエネルギーが活発で、行動と感情が連動します。素直な感情を大切に。",
+            "is_auspicious": true,
+            "is_main_star": true,
+            "marks": [],
+            "reason": null,
+            "title": "気持ちが前向きになる時"
+          },
+          "north": {
+            "is_auspicious": true,
+            "is_main_star": false,
+            "marks": [],
+            "reason": null
+          },
+          "northeast": {
+            "is_auspicious": true,
+            "is_main_star": false,
+            "marks": [],
+            "reason": null
+          },
+          "northwest": {
+            "is_auspicious": false,
+            "is_main_star": false,
+            "marks": [
+              "opposite_zodiac"
+            ],
+            "reason": "破"
+          },
+          "south": {
+            "is_auspicious": false,
+            "is_main_star": false,
+            "marks": [
+              "dark_sword"
+            ],
+            "reason": "暗剣殺"
+          },
+          "southeast": {
+            "is_auspicious": true,
+            "is_main_star": false,
+            "marks": [],
+            "reason": null
+          },
+          "southwest": {
+            "is_auspicious": true,
+            "is_main_star": false,
+            "marks": [],
+            "reason": null
+          },
+          "west": {
+            "is_auspicious": true,
+            "is_main_star": false,
+            "marks": [],
+            "reason": null
+          }
+        },
+        "display_month": "2025年4月",
+        "month": 4,
+        "period_end": "2025-05-04",
+        "period_start": "2025-04-04",
+        "year": 2025,
+        "zodiac": "庚辰"
+      },
+      "month_5": {
+        "center_star": 8,
+        "directions": {
+          "center": {
+            "is_auspicious": true,
+            "is_main_star": false,
+            "marks": [],
+            "reason": null
+          },
+          "east": {
+            "is_auspicious": true,
+            "is_main_star": false,
+            "marks": [],
+            "reason": null
+          },
+          "north": {
+            "is_auspicious": true,
+            "is_main_star": false,
+            "marks": [],
+            "reason": null
+          },
+          "northeast": {
+            "is_auspicious": false,
+            "is_main_star": false,
+            "marks": [
+              "dark_sword"
+            ],
+            "reason": "暗剣殺"
+          },
+          "northwest": {
+            "is_auspicious": false,
+            "is_main_star": false,
+            "marks": [
+              "opposite_zodiac"
+            ],
+            "reason": "破"
+          },
+          "south": {
+            "is_auspicious": true,
+            "is_main_star": false,
+            "marks": [],
+            "reason": null
+          },
+          "southeast": {
+            "details": "信頼関係を築きやすく、対人関係に安定感が出る時期です。感情のやりとりがスムーズで、穏やかな調和を実感できるでしょう。",
+            "is_auspicious": true,
+            "is_main_star": true,
+            "marks": [],
+            "reason": null,
+            "title": "人との心の交流が深まる時"
+          },
+          "southwest": {
+            "is_auspicious": true,
+            "is_main_star": false,
+            "marks": [],
+            "reason": null
+          },
+          "west": {
+            "is_auspicious": true,
+            "is_main_star": false,
+            "marks": [],
+            "reason": null
+          }
+        },
+        "display_month": "2025年5月",
+        "month": 5,
+        "period_end": "2025-06-04",
+        "period_start": "2025-05-05",
+        "year": 2025,
+        "zodiac": "辛巳"
+      },
+      "month_6": {
+        "center_star": 7,
+        "directions": {
+          "center": {
+            "details": "心が不安定になりやすく、迷いや焦りを感じがち。過去への執着や自己否定に注意し、休息を大切に。",
+            "is_auspicious": false,
+            "is_main_star": true,
+            "marks": [],
+            "reason": null,
+            "title": "感情の波に飲まれやすい"
+          },
+          "east": {
+            "is_auspicious": true,
+            "is_main_star": false,
+            "marks": [],
+            "reason": null
+          },
+          "north": {
+            "is_auspicious": true,
+            "is_main_star": false,
+            "marks": [],
+            "reason": null
+          },
+          "northeast": {
+            "is_auspicious": true,
+            "is_main_star": false,
+            "marks": [],
+            "reason": null
+          },
+          "northwest": {
+            "is_auspicious": false,
+            "is_main_star": false,
+            "marks": [
+              "opposite_zodiac"
+            ],
+            "reason": "破"
+          },
+          "south": {
+            "is_auspicious": true,
+            "is_main_star": false,
+            "marks": [],
+            "reason": null
+          },
+          "southeast": {
+            "is_auspicious": true,
+            "is_main_star": false,
+            "marks": [],
+            "reason": null
+          },
+          "southwest": {
+            "is_auspicious": true,
+            "is_main_star": false,
+            "marks": [],
+            "reason": null
+          },
+          "west": {
+            "is_auspicious": false,
+            "is_main_star": false,
+            "marks": [
+              "dark_sword"
+            ],
+            "reason": "暗剣殺"
+          }
+        },
+        "display_month": "2025年6月",
+        "month": 6,
+        "period_end": "2025-07-06",
+        "period_start": "2025-06-05",
+        "year": 2025,
+        "zodiac": "壬午"
+      },
+      "month_7": {
+        "center_star": 6,
+        "directions": {
+          "center": {
+            "is_auspicious": true,
+            "is_main_star": false,
+            "marks": [],
+            "reason": null
+          },
+          "east": {
+            "is_auspicious": true,
+            "is_main_star": false,
+            "marks": [],
+            "reason": null
+          },
+          "north": {
+            "is_auspicious": true,
+            "is_main_star": false,
+            "marks": [],
+            "reason": null
+          },
+          "northeast": {
+            "is_auspicious": false,
+            "is_main_star": false,
+            "marks": [
+              "water_fire"
+            ],
+            "reason": "水火殺"
+          },
+          "northwest": {
+            "details": "心の頑固さや上から目線の態度が周囲との摩擦を招きます。謙虚さを忘れずに。",
+            "is_auspicious": false,
+            "is_main_star": true,
+            "marks": [
+              "dark_sword",
+              "opposite_zodiac"
+            ],
+            "reason": "暗剣殺, 破",
+            "title": "プライドが強くなりすぎ注意"
+          },
+          "south": {
+            "is_auspicious": false,
+            "is_main_star": false,
+            "marks": [
+              "water_fire"
+            ],
+            "reason": "水火殺"
+          },
+          "southeast": {
+            "is_auspicious": true,
+            "is_main_star": false,
+            "marks": [],
+            "reason": null
+          },
+          "southwest": {
+            "is_auspicious": true,
+            "is_main_star": false,
+            "marks": [],
+            "reason": null
+          },
+          "west": {
+            "is_auspicious": true,
+            "is_main_star": false,
+            "marks": [],
+            "reason": null
+          }
+        },
+        "display_month": "2025年7月",
+        "month": 7,
+        "period_end": "2025-08-06",
+        "period_start": "2025-07-07",
+        "year": 2025,
+        "zodiac": "癸未"
+      },
+      "month_8": {
+        "center_star": 5,
+        "directions": {
+          "center": {
+            "is_auspicious": true,
+            "is_main_star": false,
+            "marks": [],
+            "reason": null
+          },
+          "east": {
+            "is_auspicious": true,
+            "is_main_star": false,
+            "marks": [
+              "no_dark_sword_center_five"
+            ],
+            "reason": null
+          },
+          "north": {
+            "is_auspicious": true,
+            "is_main_star": false,
+            "marks": [
+              "no_dark_sword_center_five"
+            ],
+            "reason": null
+          },
+          "northeast": {
+            "is_auspicious": true,
+            "is_main_star": false,
+            "marks": [
+              "no_dark_sword_center_five"
+            ],
+            "reason": null
+          },
+          "northwest": {
+            "is_auspicious": false,
+            "is_main_star": false,
+            "marks": [
+              "no_dark_sword_center_five",
+              "opposite_zodiac"
+            ],
+            "reason": "破"
+          },
+          "south": {
+            "is_auspicious": true,
+            "is_main_star": false,
+            "marks": [
+              "no_dark_sword_center_five"
+            ],
+            "reason": null
+          },
+          "southeast": {
+            "is_auspicious": true,
+            "is_main_star": false,
+            "marks": [
+              "no_dark_sword_center_five"
+            ],
+            "reason": null
+          },
+          "southwest": {
+            "is_auspicious": true,
+            "is_main_star": false,
+            "marks": [
+              "no_dark_sword_center_five"
+            ],
+            "reason": null
+          },
+          "west": {
+            "details": "楽しい交流や笑いのある時間が増える運気です。明るい気分で人と接しやすく、心が和らぐタイミング。恋愛運にも好影響が期待できます。",
+            "is_auspicious": true,
+            "is_main_star": true,
+            "marks": [
+              "no_dark_sword_center_five"
+            ],
+            "reason": null,
+            "title": "気持ちが軽く楽しい時"
+          }
+        },
+        "display_month": "2025年8月",
+        "month": 8,
+        "period_end": "2025-09-06",
+        "period_start": "2025-08-07",
+        "year": 2025,
+        "zodiac": "甲申"
+      },
+      "month_9": {
+        "center_star": 4,
+        "directions": {
+          "center": {
+            "is_auspicious": true,
+            "is_main_star": false,
+            "marks": [],
+            "reason": null
+          },
+          "east": {
+            "is_auspicious": true,
+            "is_main_star": false,
+            "marks": [],
+            "reason": null
+          },
+          "north": {
+            "is_auspicious": false,
+            "is_main_star": false,
+            "marks": [
+              "water_fire"
+            ],
+            "reason": "水火殺"
+          },
+          "northeast": {
+            "details": "家族や身近な人との絆が深まり、感情的に安定しやすい時期です。ゆっくりとした時間が心を整えます。日常の小さな幸せに気づけるタイミング。",
+            "is_auspicious": true,
+            "is_main_star": true,
+            "marks": [],
+            "reason": null,
+            "title": "心の安定と安心感が得られる時"
+          },
+          "northwest": {
+            "is_auspicious": false,
+            "is_main_star": false,
+            "marks": [
+              "opposite_zodiac"
+            ],
+            "reason": "破"
+          },
+          "south": {
+            "is_auspicious": true,
+            "is_main_star": false,
+            "marks": [],
+            "reason": null
+          },
+          "southeast": {
+            "is_auspicious": false,
+            "is_main_star": false,
+            "marks": [
+              "dark_sword"
+            ],
+            "reason": "暗剣殺"
+          },
+          "southwest": {
+            "is_auspicious": false,
+            "is_main_star": false,
+            "marks": [
+              "water_fire"
+            ],
+            "reason": "水火殺"
+          },
+          "west": {
+            "is_auspicious": true,
+            "is_main_star": false,
+            "marks": [],
+            "reason": null
+          }
+        },
+        "display_month": "2025年9月",
+        "month": 9,
+        "period_end": "2025-10-07",
+        "period_start": "2025-09-07",
+        "year": 2025,
+        "zodiac": "乙酉"
+      }
+    },
+    "month_star": 9,
+    "target_year": 2025
+  }
+  

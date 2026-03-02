@@ -1,0 +1,164 @@
+# ==============================================================================
+# 프로덕션 배포용 Docker Compose (ConoHa 서버)
+# ==============================================================================
+# GitHub Actions CI가 빌드한 GHCR 이미지를 사용합니다.
+# 소스 코드 없이 이미지만 Pull하여 실행합니다.
+#
+# 사용법:
+#   docker compose -f docker-compose.prod.yml up -d
+#   또는
+#   ./deploy.sh
+# ==============================================================================
+
+services:
+  frontend:
+    image: ghcr.io/cnjw2021/ninestar-compact-frontend:latest
+    container_name: frontend-container
+    ports:
+      - "3000:3000"
+    env_file:
+      - ./.env.production.frontend
+    restart: always
+    networks:
+      - app-network
+
+  backend:
+    image: ghcr.io/cnjw2021/ninestar-compact-backend:latest
+    container_name: backend-container
+    ports:
+      - "5001:5001"
+    volumes:
+      - backend_logs:/app/logs:rw
+      - pdf_tmp:/tmp/pdf
+      - ./mysql/init:/app/mysql/init:ro
+    env_file:
+      - ./.env.production.backend
+    environment:
+      LANG: en_US.UTF-8
+      LC_CTYPE: en_US.UTF-8
+    restart: always
+    networks:
+      - app-network
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:5001/auth/health"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+      start_period: 30s
+    depends_on:
+      - mysql
+      - redis
+
+  nginx:
+    image: ghcr.io/cnjw2021/ninestar-compact-nginx:latest
+    container_name: nginx-container
+    restart: always
+    ports:
+      - "80:80"
+      - "443:443"
+    volumes:
+      - ./nginx/conf.d:/etc/nginx/conf.d
+      - ./certbot/conf:/etc/letsencrypt:ro
+      - ./certbot/www:/var/www/certbot
+    depends_on:
+      frontend:
+        condition: service_started
+      backend:
+        condition: service_healthy
+    networks:
+      - app-network
+
+  mysql:
+    image: mysql:8.0
+    container_name: mysql-container
+    restart: always
+    env_file:
+      - ./.env.production.backend
+    environment:
+      MYSQL_ROOT_PASSWORD: ${DB_ROOT_PASSWORD}
+      MYSQL_DATABASE: ${DB_NAME:-ninestarki}
+      MYSQL_USER: ${DB_USER:-ninestarki}
+      MYSQL_PASSWORD: ${DB_PASSWORD}
+      LANG: en_US.UTF-8
+      LC_CTYPE: en_US.UTF-8
+    ports:
+      - "3306:3306"
+    volumes:
+      - mysql_data:/var/lib/mysql
+      - ./mysql/init:/docker-entrypoint-initdb.d
+      - mysql_files:/var/lib/mysql-files
+      - ./backend/data/csv:/var/lib/mysql-files/csv
+    networks:
+      - app-network
+    command: >
+      --character-set-server=utf8mb4 
+      --collation-server=utf8mb4_unicode_ci 
+      --secure-file-priv=/var/lib/mysql-files
+
+  redis:
+    image: redis:7-alpine
+    restart: always
+    container_name: redis
+    volumes:
+      - redis_data:/data
+    networks:
+      - app-network
+
+  rq-worker:
+    image: ghcr.io/cnjw2021/ninestar-compact-backend:latest
+    restart: always
+    container_name: rq-worker
+    user: root
+    command: >
+      sh -c "su -s /bin/sh -c 'python -m apps.ninestarki.worker_entrypoint' appuser"
+    env_file:
+      - ./.env.production.backend
+    environment:
+      LANG: en_US.UTF-8
+      LC_CTYPE: en_US.UTF-8
+    depends_on:
+      - redis
+      - mysql
+    networks:
+      - app-network
+    volumes:
+      - pdf_tmp:/tmp/pdf
+
+  certbot:
+    image: certbot/certbot
+    container_name: certbot-container
+    volumes:
+      - ./certbot/conf:/etc/letsencrypt
+      - ./certbot/www:/var/www/certbot
+    command: renew --quiet --agree-tos
+
+  newrelic-infra:
+    image: newrelic/infrastructure:latest
+    container_name: newrelic-infra
+    cap_add:
+      - SYS_PTRACE
+    network_mode: host
+    pid: host
+    privileged: true
+    volumes:
+      - "/:/host:ro"
+      - "/var/run/docker.sock:/var/run/docker.sock"
+    env_file:
+      - ./.env.production.backend
+    restart: unless-stopped
+
+volumes:
+  mysql_data:
+    driver: local
+  mysql_files:
+    driver: local
+  redis_data:
+    driver: local
+  pdf_tmp:
+    driver: local
+  backend_logs:
+    driver: local
+
+networks:
+  app-network:
+    driver: bridge

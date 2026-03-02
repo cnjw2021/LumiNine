@@ -1,0 +1,150 @@
+<!-- 五行相関図セクション全体を囲むラッパー -->
+<style>
+/* 五行相関図セクション固有スタイル */
+.five-elements-section {
+    padding: 0 0.1cm;
+    margin-top: 0.6cm;
+    margin-bottom: 0.8cm;
+}
+
+.five-elements-table {
+    text-align: center;
+    margin: 25px auto;
+}
+
+.five-elements-diagram {
+    width: 70%;
+    max-width: 700px;
+}
+
+.content-box {
+    width: 90%;
+    background: linear-gradient(135deg, rgba(255, 255, 255, 0.5), rgba(255, 255, 255, 0.4)), 
+               linear-gradient(135deg, var(--section-gradient-1), var(--section-gradient-2));
+    border: 1px solid rgba(0, 0, 0, 0.05);
+    border-radius: 12px;
+    overflow: hidden;
+    box-shadow: 0 3px 10px rgba(0, 0, 0, 0.03);
+    margin: 25px auto;
+    padding: 15px;
+    line-height: 1.6;
+}
+
+.five-elements-basic-explanation {
+    max-width: 800px;
+}
+
+.diagram-guide {
+    max-width: 800px;
+}
+
+.five-elements-explanation {
+    max-width: 800px;
+}
+
+.relationship-title {
+    font-size: 1.2rem;
+    font-weight: bold;
+    margin: 1.5rem 0 1rem;
+    color: #444;
+    display: flex;
+    align-items: center;
+    gap: 10px;
+}
+
+.relationship-icon {
+    width: 24px;
+    height: 24px;
+    flex-shrink: 0;
+}
+
+.relationship-type {
+    margin-bottom: 2rem;
+}
+
+.relationship-type:last-child {
+    margin-bottom: 0;
+}
+
+.relationship-type p {
+    margin-bottom: 1.2rem;
+    text-align: justify;
+}
+
+.relationship-type p:last-child {
+    margin-bottom: 0;
+}
+
+.section-title {
+    font-size: 1.25em;
+    font-weight: 600;
+    color: #333;
+    text-align: center;
+    margin-bottom: 1.5em;
+    position: relative;
+    letter-spacing: 0.05em;
+}
+
+.section-title::after {
+    content: '';
+    position: absolute;
+    bottom: -10px;
+    left: 50%;
+    transform: translateX(-50%);
+    width: 60%;
+    height: 1px;
+    background: linear-gradient(to right, transparent, var(--primary-color) 20%, var(--primary-color) 80%, transparent 100%);
+}
+</style>
+
+<!-- 五行相関図ページ -->
+<div class="page">
+    <div class="background"></div>
+    <div class="gradient-overlay"></div>
+    <div class="content">
+        <div class="five-elements-section">
+            <h2 class="section-title text-center">五行相関図</h2>
+            
+            <div class="content-box five-elements-basic-explanation">
+                <p>
+                    九星気学の根幹をなす「五行思想」は、自然界のすべての事象を5つの要素で説明する東洋哲学の考え方です。「木（もく）」「火（か）」「土（ど）」「金（ごん）」「水（すい）」という5つの要素が互いに影響を与え合い、バランスを保ちながら循環することで、世界が成り立っているとされています。
+                </p>
+            </div>
+
+            <div class="five-elements-table">
+                <img src="{{ five_elements_image }}" 
+                     alt="五行相関図" 
+                     class="five-elements-diagram">
+            </div>
+
+            <div class="content-box diagram-guide">
+                <p>
+                    この図は、五行の要素間の関係性を表しています。外側を巡る矢印は相手を育む「相生（そうじょう）」の関係を、中央の星形を描く矢印は相手を抑制する「相剋（そうこく）」の関係を示しています。また、同じ要素同士には「比和（ひわ）」という特別な関係性があります。
+                </p>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- 五行の説明ページ -->
+<div class="page">
+    <div class="background"></div>
+    <div class="gradient-overlay"></div>
+    <div class="content">
+        <div class="five-elements-section">
+            <h2 class="section-title text-center">五行の相性と運気の流れ</h2>
+            
+            <div class="content-box five-elements-explanation">
+                <p>
+                    これらの要素間の関係性を理解することは、ご自身の本命星が持つ性質や、他の星との相性を読み解く重要な鍵となります。それぞれの関係性について、詳しく見ていきましょう。
+                </p>
+
+                {% include 'ninestarkey_report/partials/five_elements_relationship_sousei.html' %}
+
+                {% include 'ninestarkey_report/partials/five_elements_relationship_soukoku.html' %}
+
+                {% include 'ninestarkey_report/partials/five_elements_relationship_hiwa.html' %}
+            </div>
+        </div>
+    </div>
+</div> 

@@ -1,0 +1,225 @@
+<style>
+    .main-star-section {
+        padding: 0 0.1cm;
+        margin-top: 0.6cm;
+        margin-bottom: 0.8cm;
+    }
+
+    /* テーブルスタイル - 基本 */
+    .star-table {
+        width: 100%;
+        border-collapse: separate;
+        border-spacing: 10px 0;
+        margin-bottom: 1.2rem;
+    }
+
+    .star-table td {
+        width: 33.33%;
+        text-align: center;
+        vertical-align: middle;
+        padding: 8px;
+    }
+
+    /* カードスタイル - フロントエンドに合わせて調整 */
+    .card {
+        background-color: #fff8f8;
+        border: 2px solid #ffcaca;
+        -webkit-border-radius: 8px;
+        -moz-border-radius: 8px;
+        border-radius: 8px;
+        padding: 10px 8px;
+        height: 90px;
+    }
+
+    /* 星タイプ */
+    .star-type {
+        font-size: 12px;
+        font-weight: 400;
+        color: #333;
+        margin-bottom: 5px;
+    }
+
+    /* 星番号 - フロントエンドに合わせて調整 */
+    .star-number {
+        font-size: 35px;
+        font-weight: 700;
+        margin: 2px 0;
+        line-height: 1;
+    }
+
+    /* 星名 - フロントエンドに合わせて調整 */
+    .star-name {
+        display: inline-block;
+        font-size: 10px;
+        font-weight: 600;
+        color: white;
+        padding: 2px 4px;
+        -webkit-border-radius: 4px;
+        -moz-border-radius: 4px;
+        border-radius: 4px;
+        margin-top: 2px;
+        white-space: nowrap;
+        min-width: auto;
+    }
+
+    /* 詳細セクション用テーブル */
+    .detail-table {
+        width: 100%;
+        border-collapse: collapse;
+        margin-top: 10px;
+        border: 1px solid rgba(240, 240, 240, 0.3);
+        background: linear-gradient(135deg, rgba(255, 255, 255, 0.5), rgba(255, 255, 255, 0.4)), 
+                   linear-gradient(135deg, var(--section-gradient-1), var(--section-gradient-2));
+        -webkit-border-radius: 12px;
+        -moz-border-radius: 12px;
+        border-radius: 12px;
+        overflow: hidden;
+        box-shadow: 0 2px 8px rgba(0, 0, 0, 0.04);
+    }
+
+    .detail-table td {
+        padding: 15px;
+        vertical-align: top;
+    }
+
+    .diagram-cell {
+        width: 45%;
+        text-align: center;
+        padding-right: 5px;
+    }
+
+    .info-cell {
+        width: 55%;
+    }
+
+    /* 大きな星番号と名前 */
+    .star-info-table {
+        width: 100%;
+        border-collapse: collapse;
+        margin-bottom: 10px;
+    }
+
+    .star-info-table td {
+        padding: 5px;
+        vertical-align: middle;
+    }
+
+    .number-cell {
+        width: 60px;
+    }
+
+    .number-box {
+        width: 55px;
+        height: 55px;
+        display: table-cell;
+        vertical-align: middle;
+        text-align: center;
+        color: white;
+        font-size: 32px;
+        font-weight: 700;
+        -webkit-border-radius: 8px;
+        -moz-border-radius: 8px;
+        border-radius: 8px;
+    }
+
+    .name-cell {
+        text-align: left;
+        padding-left: 15px;
+    }
+
+    .star-name-large {
+        font-size: 20px;
+        font-weight: 600;
+        margin-bottom: 4px;
+        display: block;
+    }
+
+    .element-info {
+        font-size: 14px;
+        color: #666;
+    }
+
+    /* 特性タグテーブル */
+    .tags-table {
+        width: 100%;
+        border-collapse: collapse;
+        margin: 10px 0 15px;
+    }
+
+    .tags-table td {
+        padding: 3px;
+    }
+
+    .tag {
+        display: inline-block;
+        background-color: #fff0f0;
+        color: #666;
+        padding: 4px 12px;
+        -webkit-border-radius: 5px;
+        -moz-border-radius: 5px;
+        border-radius: 5px;
+        font-size: 12px;
+        white-space: nowrap;
+    }
+
+    /* 基本情報セクション */
+    .info-section {
+        width: 95%;
+        border-collapse: collapse;
+        margin-top: 25px;
+        background: linear-gradient(135deg, rgba(255, 255, 255, 0.5), rgba(255, 255, 255, 0.4)), 
+                   linear-gradient(135deg, var(--section-gradient-1), var(--section-gradient-2));
+        border: 1px solid rgba(0, 0, 0, 0.05);
+        -webkit-border-radius: 12px;
+        -moz-border-radius: 12px;
+        border-radius: 12px;
+        overflow: hidden;
+        box-shadow: 0 3px 10px rgba(0, 0, 0, 0.03);
+        margin: 0 auto;
+    }
+
+    .info-section td {
+        padding: 15px;
+        vertical-align: top;
+    }
+
+    .info-title {
+        font-size: 16px;
+        font-weight: 600;
+        color: #333;
+        margin-bottom: 5px;
+        padding-bottom: 8px;
+        border-bottom: 1px solid #eee;
+        display: block;
+    }
+
+    .main-info-content {
+        padding: 0;
+        margin: 0;
+        font-size: 14px;
+        line-height: 1.5;
+        color: #333;
+        white-space: normal;
+        word-wrap: break-word;
+        word-break: normal;
+        text-indent: 0;
+        overflow-wrap: break-word;
+        overflow: hidden;
+        text-overflow: ellipsis;
+        text-shadow: 0 1px 1px rgba(255, 255, 255, 0.7);
+    }
+
+</style>
+
+<div class="main-star-section">
+    <h2 class="main-star-title">基本情報・運命の大きな流れ</h2>
+    
+    <!-- 基本情報セクション用テーブル -->
+    <table class="info-section">
+        <tr>
+            <td>
+                <div class="main-info-content">{{ result.main_star.description|replace('\n', '<br>')|safe }}</div>
+            </td>
+        </tr>
+    </table>
+</div> 

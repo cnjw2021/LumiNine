@@ -1,0 +1,244 @@
+{
+    "moving_dates": [
+        {
+            "auspicious_directions": [
+                "北",
+                "南",
+                "西"
+            ],
+            "date": "2025-02-10"
+        },
+        {
+            "auspicious_directions": [
+                "北",
+                "南",
+                "西"
+            ],
+            "date": "2025-02-19"
+        },
+        {
+            "auspicious_directions": [
+                "北",
+                "南",
+                "西"
+            ],
+            "date": "2025-02-28"
+        },
+        {
+            "auspicious_directions": [
+                "北",
+                "南"
+            ],
+            "date": "2025-05-08"
+        },
+        {
+            "auspicious_directions": [
+                "北",
+                "南"
+            ],
+            "date": "2025-05-17"
+        },
+        {
+            "auspicious_directions": [
+                "北",
+                "南"
+            ],
+            "date": "2025-05-26"
+        },
+        {
+            "auspicious_directions": [
+                "北",
+                "南"
+            ],
+            "date": "2025-06-04"
+        },
+        {
+            "auspicious_directions": [
+                "西"
+            ],
+            "date": "2025-08-12"
+        },
+        {
+            "auspicious_directions": [
+                "西"
+            ],
+            "date": "2025-08-21"
+        },
+        {
+            "auspicious_directions": [
+                "西"
+            ],
+            "date": "2025-08-30"
+        },
+        {
+            "auspicious_directions": [
+                "西"
+            ],
+            "date": "2025-09-09"
+        },
+        {
+            "auspicious_directions": [
+                "西"
+            ],
+            "date": "2025-09-18"
+        },
+        {
+            "auspicious_directions": [
+                "西"
+            ],
+            "date": "2025-09-27"
+        },
+        {
+            "auspicious_directions": [
+                "西"
+            ],
+            "date": "2025-10-06"
+        },
+        {
+            "auspicious_directions": [
+                "南"
+            ],
+            "date": "2025-10-16"
+        },
+        {
+            "auspicious_directions": [
+                "南"
+            ],
+            "date": "2025-10-25"
+        },
+        {
+            "auspicious_directions": [
+                "北",
+                "南",
+                "西"
+            ],
+            "date": "2025-11-13"
+        },
+        {
+            "auspicious_directions": [
+                "北",
+                "南",
+                "西"
+            ],
+            "date": "2025-11-22"
+        },
+        {
+            "auspicious_directions": [
+                "北",
+                "南",
+                "西"
+            ],
+            "date": "2025-12-01"
+        },
+        {
+            "auspicious_directions": [
+                "西"
+            ],
+            "date": "2025-12-11"
+        },
+        {
+            "auspicious_directions": [
+                "西"
+            ],
+            "date": "2025-12-20"
+        },
+        {
+            "auspicious_directions": [
+                "西"
+            ],
+            "date": "2025-12-21"
+        },
+        {
+            "auspicious_directions": [
+                "西"
+            ],
+            "date": "2025-12-30"
+        }
+    ],
+    "water_drawing_dates": [
+        {
+            "auspicious_directions": [
+                "北",
+                "南",
+                "西"
+            ],
+            "auspicious_times": [
+                {
+                    "time": "13時〜15時",
+                    "zodiac": "未"
+                }
+            ],
+            "date": "2025-02-10"
+        },
+        {
+            "auspicious_directions": [
+                "北",
+                "南",
+                "西"
+            ],
+            "auspicious_times": [
+                {
+                    "time": "13時〜15時",
+                    "zodiac": "未"
+                }
+            ],
+            "date": "2025-02-19"
+        },
+        {
+            "auspicious_directions": [
+                "北",
+                "南",
+                "西"
+            ],
+            "auspicious_times": [
+                {
+                    "time": "13時〜15時",
+                    "zodiac": "未"
+                }
+            ],
+            "date": "2025-02-28"
+        },
+        {
+            "auspicious_directions": [
+                "北",
+                "南",
+                "西"
+            ],
+            "auspicious_times": [
+                {
+                    "time": "07時〜09時",
+                    "zodiac": "辰"
+                }
+            ],
+            "date": "2025-11-13"
+        },
+        {
+            "auspicious_directions": [
+                "北",
+                "南",
+                "西"
+            ],
+            "auspicious_times": [
+                {
+                    "time": "07時〜09時",
+                    "zodiac": "辰"
+                }
+            ],
+            "date": "2025-11-22"
+        },
+        {
+            "auspicious_directions": [
+                "北",
+                "南",
+                "西"
+            ],
+            "auspicious_times": [
+                {
+                    "time": "07時〜09時",
+                    "zodiac": "辰"
+                }
+            ],
+            "date": "2025-12-01"
+        }
+    ]
+}

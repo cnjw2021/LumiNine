@@ -1,0 +1,299 @@
+@import url('https://fonts.googleapis.com/css2?family=Noto+Sans+JP:wght@300;400;500;700&family=Inter:wght@300;400;500;600;700&display=swap');
+
+.kyusei-container {
+  position: relative;
+  perspective: 1000px;
+  font-family: 'Noto Sans JP', 'Inter', sans-serif;
+}
+
+/* テーマ: Luxury (デフォルト) */
+.kyusei-container.luxury {
+  background: linear-gradient(135deg, #0F0F23, #1A1A3E, #2D1B69);
+}
+
+/* テーマ: Minimal */
+.kyusei-container.minimal {
+  background: linear-gradient(135deg, #F8FAFC, #E2E8F0, #CBD5E1);
+}
+
+/* テーマ: Classic */
+.kyusei-container.classic {
+  background: linear-gradient(135deg, #FEF7ED, #FED7AA, #FDBA74);
+}
+
+.kyusei-board {
+  position: relative;
+  width: 100%;
+  height: 100%;
+  border-radius: 50%;
+  backdrop-filter: blur(20px);
+  box-shadow: 
+    0 0 60px rgba(212, 175, 55, 0.3),
+    inset 0 0 60px rgba(255, 255, 255, 0.1),
+    0 20px 40px rgba(0, 0, 0, 0.4);
+  border: 1px solid rgba(212, 175, 55, 0.2);
+}
+
+/* Luxury テーマ */
+.luxury .kyusei-board {
+  background: rgba(255, 255, 255, 0.05);
+}
+
+/* Minimal テーマ */
+.minimal .kyusei-board {
+  background: rgba(255, 255, 255, 0.8);
+  box-shadow: 
+    0 0 40px rgba(100, 116, 139, 0.2),
+    inset 0 0 40px rgba(255, 255, 255, 0.1),
+    0 10px 25px rgba(0, 0, 0, 0.1);
+  border: 1px solid rgba(100, 116, 139, 0.2);
+}
+
+/* Classic テーマ */
+.classic .kyusei-board {
+  background: rgba(254, 243, 199, 0.8);
+  box-shadow: 
+    0 0 40px rgba(180, 83, 9, 0.2),
+    inset 0 0 40px rgba(255, 255, 255, 0.1),
+    0 10px 25px rgba(0, 0, 0, 0.1);
+  border: 1px solid rgba(180, 83, 9, 0.2);
+}
+
+.center-star {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  width: 120px;
+  height: 120px;
+  border-radius: 50%;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  box-shadow: 
+    0 0 30px rgba(212, 175, 55, 0.6),
+    inset 0 0 20px rgba(255, 255, 255, 0.3);
+  z-index: 10;
+  cursor: pointer;
+  transition: all 0.3s ease;
+}
+
+.center-star:hover {
+  transform: translate(-50%, -50%) scale(1.05);
+}
+
+.center-star .star-name {
+  font-size: 14px;
+  font-weight: 700;
+  color: #1A1A3E;
+  line-height: 1.2;
+  text-align: center;
+}
+
+.direction-ring {
+  position: absolute;
+  width: 400px;
+  height: 400px;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  border: 2px solid rgba(212, 175, 55, 0.3);
+  border-radius: 50%;
+}
+
+.star-element {
+  position: absolute;
+  width: 80px;
+  height: 80px;
+  background: rgba(255, 255, 255, 0.1);
+  border-radius: 12px;
+  backdrop-filter: blur(10px);
+  border: 1px solid rgba(212, 175, 55, 0.2);
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  text-align: center;
+  transition: all 0.3s ease;
+  cursor: pointer;
+}
+
+.star-element:hover,
+.star-element.hovered {
+  background: rgba(212, 175, 55, 0.2);
+  transform: scale(1.1);
+  box-shadow: 0 10px 25px var(--element-color, rgba(212, 175, 55, 0.4));
+}
+
+.star-name {
+  font-size: 11px;
+  font-weight: 600;
+  margin-bottom: 2px;
+}
+
+.direction {
+  font-size: 12px;
+  font-weight: 400;
+  color: #D4AF37;
+}
+
+.zodiac {
+  font-size: 10px;
+  font-weight: 300;
+  color: #9CA3AF;
+}
+
+/* テーマ別テキストカラー */
+.luxury .star-name {
+  color: #E5E7EB;
+}
+
+.minimal .star-name {
+  color: #1F2937;
+}
+
+.minimal .direction {
+  color: #374151;
+}
+
+.minimal .zodiac {
+  color: #6B7280;
+}
+
+.classic .star-name {
+  color: #92400E;
+}
+
+.classic .direction {
+  color: #B45309;
+}
+
+.classic .zodiac {
+  color: #A16207;
+}
+
+/* 方位別配置 */
+.north { top: 20px; left: 50%; transform: translateX(-50%); }
+.northeast { top: 70px; right: 70px; }
+.east { right: 20px; top: 50%; transform: translateY(-50%); }
+.southeast { bottom: 70px; right: 70px; }
+.south { bottom: 20px; left: 50%; transform: translateX(-50%); }
+.southwest { bottom: 70px; left: 70px; }
+.west { left: 20px; top: 50%; transform: translateY(-50%); }
+.northwest { top: 70px; left: 70px; }
+
+.compass-lines {
+  position: absolute;
+  width: 100%;
+  height: 100%;
+  top: 0;
+  left: 0;
+}
+
+.compass-line {
+  position: absolute;
+  background: linear-gradient(90deg, transparent, rgba(212, 175, 55, 0.3), transparent);
+  transform-origin: center;
+}
+
+.compass-line.horizontal {
+  width: 100%;
+  height: 1px;
+  top: 50%;
+  left: 0;
+}
+
+.compass-line.vertical {
+  width: 1px;
+  height: 100%;
+  left: 50%;
+  top: 0;
+  background: linear-gradient(180deg, transparent, rgba(212, 175, 55, 0.3), transparent);
+}
+
+.compass-line.diagonal1 {
+  width: 141.42%;
+  height: 1px;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%) rotate(45deg);
+}
+
+.compass-line.diagonal2 {
+  width: 141.42%;
+  height: 1px;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%) rotate(-45deg);
+}
+
+.glow-effect {
+  position: absolute;
+  width: 100%;
+  height: 100%;
+  border-radius: 50%;
+  background: radial-gradient(circle, rgba(212, 175, 55, 0.1) 0%, transparent 70%);
+}
+
+.kyusei-title {
+  position: absolute;
+  top: -80px;
+  left: 50%;
+  transform: translateX(-50%);
+  font-size: 28px;
+  font-weight: 700;
+  color: #D4AF37;
+  text-align: center;
+  text-shadow: 0 0 20px rgba(212, 175, 55, 0.5);
+  font-family: 'Inter', sans-serif;
+}
+
+.kyusei-subtitle {
+  position: absolute;
+  bottom: -60px;
+  left: 50%;
+  transform: translateX(-50%);
+  font-size: 14px;
+  font-weight: 300;
+  color: #9CA3AF;
+  text-align: center;
+  font-family: 'Inter', sans-serif;
+}
+
+/* PDF出力用のスタティック版 */
+.kyusei-container.static .kyusei-board {
+  animation: none !important;
+  transform: none !important;
+}
+
+.kyusei-container.static .glow-effect {
+  animation: none !important;
+}
+
+.kyusei-container.static .center-star {
+  animation: none !important;
+}
+
+/* プリント用メディアクエリ */
+@media print {
+  .kyusei-container {
+    background: white !important;
+    color: black !important;
+  }
+  
+  .kyusei-board {
+    background: rgba(255, 255, 255, 0.9) !important;
+    box-shadow: 0 0 20px rgba(0, 0, 0, 0.1) !important;
+    border: 2px solid #000 !important;
+  }
+  
+  .star-element {
+    background: rgba(255, 255, 255, 0.9) !important;
+    border: 1px solid #000 !important;
+  }
+  
+  .star-name, .direction, .zodiac {
+    color: #000 !important;
+  }
+} 

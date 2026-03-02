@@ -1,0 +1,417 @@
+{% import 'ninestarkey_report/partials/marker_macros.html' as mark %}
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Nine Star Ki Report</title>
+    <!-- Font Awesome CDN 추가 -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    <style>
+    .direction-fortune-section {
+        padding: 0 0.1cm;
+        margin-top: 0.5cm;
+        margin-bottom: 0.5cm;
+    }
+    
+    .direction-fortune-info-container {
+        margin-top: 15px;
+        background: linear-gradient(135deg, rgba(255, 255, 255, 0.3), rgba(255, 255, 255, 0.2)), 
+               linear-gradient(135deg, var(--section-gradient-1, rgba(240, 240, 245, 0.15)), var(--section-gradient-2, rgba(230, 230, 240, 0.15)));
+        border-radius: 12px;
+        box-shadow: 0 1px 3px rgba(0,0,0,0.03);
+        width: 93%;
+        margin-left: auto;
+        margin-right: auto;
+        padding-top: 12px;
+        padding-bottom: 12px;
+        backdrop-filter: blur(1px);
+    }
+
+    .direction-fortune-title {
+        font-size: 1.25em;
+        font-weight: 600;
+        color: #333;
+        text-align: center;
+        margin-bottom: 0.7em;
+        position: relative;
+        letter-spacing: 0.05em;
+    }
+
+    .direction-fortune-title::after {
+        content: '';
+        position: absolute;
+        bottom: -5px;
+        left: 50%;
+        transform: translateX(-50%);
+        width: 60%;
+        height: 1px;
+        background: linear-gradient(to right, transparent, var(--primary-color) 20%, var(--primary-color) 80%, transparent 100%);
+    }
+    
+    .fortune-period-wrapper {
+        text-align: center;
+        margin-bottom: 0.8em;
+    }
+    
+    .fortune-period {
+        font-size: 0.875em;
+        color: #666;
+        margin: 0;
+    }
+    
+    /* テーブルベースのレイアウト */
+    .direction-fortune-table {
+        width: 88%;
+        border-collapse: separate;
+        border-spacing: 0.3em;
+        margin: 0 auto;
+        table-layout: fixed;
+    }
+    
+    .table-cell {
+        width: 50%;
+        vertical-align: top;
+        padding: 0.6em;
+        border-radius: 8px;
+        border: 1px solid var(--content-color-3);
+        box-shadow: 0 3px 10px rgba(0, 0, 0, 0.05);
+        background: linear-gradient(135deg, rgba(255, 255, 255, 0.7), rgba(255, 255, 255, 0.6)), 
+                   linear-gradient(135deg, var(--section-gradient-1), var(--section-gradient-2));
+    }
+    
+    .star-chart-cell {
+        text-align: center;
+    }
+    
+    .chart-title {
+        font-size: 1em;
+        font-weight: 600;
+        color: #444;
+        margin: 0 0 0.4em 0;
+    }
+    
+    .chart-description {
+        margin-top: 0.5em;
+        text-align: left;
+        font-size: 0.75em;
+        color: #555;
+        line-height: 1.2;
+    }
+    
+    .guide-title {
+        font-size: 1em;
+        font-weight: 600;
+        color: #444;
+        margin: 0 0 0.4em 0;
+    }
+    
+    .guide-description {
+        font-size: 0.75em;
+        color: #666;
+        margin: 0 0 0.6em 0;
+    }
+    
+    .guide-details {
+        margin-bottom: 0.8em;
+    }
+    
+    .detail-title {
+        font-size: 0.85em;
+        font-weight: 600;
+        color: #555;
+        margin: 0.6em 0 0.3em 0;
+    }
+    
+    .guide-list {
+        margin: 0.3em 0;
+        padding-left: 1em;
+    }
+    
+    .guide-list li {
+        font-size: 0.75em;
+        color: #555;
+        margin-bottom: 0.3em;
+        line-height: 1.2;
+    }
+    
+    .avoid-direction {
+        font-size: 0.75em;
+        color: #e74c3c;
+        background-color: rgba(231, 76, 60, 0.08);
+        padding: 0.3em;
+        border-radius: 4px;
+        margin: 0.4em 0;
+        line-height: 1.2;
+    }
+    
+    .direction-note {
+        font-size: 0.75em;
+        color: #555;
+        font-style: italic;
+        margin: 0.4em 0;
+    }
+    
+    .caution-note {
+        font-size: 0.7em;
+        color: #666;
+        margin: 0.5em 0 0 0;
+        text-align: left;
+        border-top: 1px dotted #ddd;
+        padding-top: 0.4em;
+    }
+    
+    .info-header {
+        display: table;
+        margin-bottom: 0.5em;
+    }
+    
+    .info-dot {
+        display: table-cell;
+        width: 8px;
+        height: 8px;
+        border-radius: 50%;
+        vertical-align: middle;
+    }
+    
+    .info-title {
+        display: table-cell;
+        font-size: 0.95em;
+        font-weight: 600;
+        color: #444;
+        margin: 0;
+        padding-left: 0.4em;
+        vertical-align: middle;
+    }
+    
+    .info-description {
+        font-size: 0.75em;
+        color: #555;
+        margin-bottom: 0.4em;
+    }
+    
+    .special-notice {
+        background-color: rgba(40, 167, 69, 0.1);
+        border-radius: 4px;
+        padding: 3px;
+        margin-bottom: 0.4em;
+    }
+    
+    .special-notice-text {
+        font-size: 0.75em;
+        color: rgb(0, 112, 32);
+        font-weight: 500;
+        margin: 0;
+    }
+    
+    .dates-container {
+        margin-bottom: 0.3em;
+        height: auto;
+        max-height: none;
+        overflow-y: visible;
+    }
+    
+    .dates-table {
+        width: 100%;
+        border-collapse: collapse;
+    }
+    
+    .dates-row {
+        border-bottom: 1px solid #f0f0f0;
+    }
+    
+    .dates-row.no-border {
+        border-bottom: none;
+    }
+    
+    .month-cell {
+        width: 15%;
+        padding: 1px 0;
+        text-align: center;
+        vertical-align: middle;
+    }
+    
+    .month-number {
+        font-size: 0.7em;
+        font-weight: 500;
+    }
+    
+    .dates-cell {
+        width: 65%;
+        padding: 1px 8px;
+        vertical-align: middle;
+    }
+    
+    .dates-text {
+        font-size: 0.7em;
+        font-weight: 500;
+        display: inline-block;
+        margin-right: 8px;
+    }
+    
+    .date-description {
+        font-size: 0.65em;
+        color: #555;
+        font-style: italic;
+        display: inline-block;
+        margin-left: 8px;
+        white-space: nowrap;
+        line-height: 1.2;
+    }
+    
+    .direction-cell {
+        width: 27%;
+        padding: 1px 0;
+        text-align: right;
+        vertical-align: middle;
+    }
+    
+    .direction-label {
+        display: inline-block;
+        font-size: 0.75em;
+        font-weight: 600;
+        padding: 0;
+        border-radius: 0;
+        white-space: nowrap;
+        letter-spacing: 0;
+        color: #333;
+    }
+    
+    .direction-blue {
+        color: var(--primary-color, #1c7ed6);
+        background-color: rgba(66, 153, 225, 0.1);
+    }
+    
+    .direction-green {
+        color: #339933;
+        background-color: rgba(72, 187, 120, 0.1);
+    }
+    
+    .direction-red {
+        color: #e74c3c;
+        background-color: rgba(231, 76, 60, 0.1);
+    }
+    
+    .badge-lucky {
+        background-color: #2ecc71;
+        color: white;
+    }
+    
+    .badge-unlucky {
+        background-color: #e74c3c;
+        color: white;
+    }
+    
+    .year-group-header {
+        margin-top: 0;
+        margin-bottom: 4px;
+        background-color: #f8f9fa;
+        padding: 4px 8px 6px;
+        border-radius: 4px;
+        border-bottom: 4px solid #fff;
+    }
+    
+    .year-group-header-space {
+        margin-top: 8px;
+    }
+    
+    .year-group-text {
+        font-weight: 600;
+        font-size: 0.85em;
+    }
+</style>
+
+<div class="direction-fortune-section">
+    <h2 class="direction-fortune-title">{{ target_year }}年（{{ year_zodiac }}） 場所の運気</h2>
+    <!-- 期間情報 -->
+    <div class="fortune-period-wrapper">
+        <p class="fortune-period">{{ spring_start_date }} 〜 {{ spring_end_date }}</p>
+    </div>
+    <!-- メインコンテンツテーブル -->
+    <table class="direction-fortune-table">
+        <tr>
+            <!-- 左上：九星盤 -->
+            <td class="table-cell star-chart-cell">
+                <h3 class="chart-title">方位の吉凶</h3>
+            {{ mark.star_chart(svg_by_center[result.main_star.star_number], direction_fortune, result.main_star.star_number, 'badge') }}
+                <div class="chart-description">
+                    <p>中央の星は{{ target_year }}年の年盤星。方位ごとの「吉」「凶」表示を参考に、運気を高める行動方向を選びましょう。</p>
+        </div>
+            </td>
+            
+            <!-- 右上：方位運活用ガイド -->
+            <td class="table-cell guide-cell">
+                <div class="direction-guide">
+                    <h3 class="guide-title">方位運活用ガイド</h3>
+                    <p class="guide-description">引越し・就職・重要な買い物には吉方位と吉日を選ぶことで運気を最大化できます</p>
+                    
+                    <div class="guide-details">
+                        <h4 class="detail-title">方位運の活かし方</h4>
+                        <ul class="guide-list">
+                            <li>引越しや旅行は【吉方位】に向かって行うと成功率が高まります</li>
+                            <li>重要な商談や契約は吉方位に向かって行うと成功率が高まります</li>
+                        </ul>
+                        
+                        <h4 class="detail-title">避けるべき方位</h4>
+                        <p class="avoid-direction">
+                            【凶】方位への引越しや長期滞在は避けましょう。これらの方位は{{ target_year }}年のあなたにとって相性が良くありません。
+                        </p>
+                        
+                        {% if has_direction_note %}
+                        <p class="direction-note">
+                            {{ direction_note }}
+                        </p>
+                        {% endif %}
+                    </div>
+                    
+                    <!-- 注意書き -->
+                    <p class="caution-note">※ 実際にお引越しをされるときには、正確な方位を確認しますので必ずご相談ください。</p>
+                </div>
+            </td>
+        </tr>
+        <tr>
+            <!-- 左下：引越し吉日情報 -->
+            <td class="table-cell moving-dates-cell">
+                <div class="info-header">
+                    <div class="info-icon">
+                        <i class="fas fa-home fortune-icon fortune-icon-home"></i>
+                    </div>
+                    <h4 class="info-title">引越し吉日</h4>
+                </div>
+                
+                <p class="info-description">引越しは強く運気に影響します。吉方位で行えるようしっかりとした準備が必要です。</p>
+                
+                <!-- 南東が吉方位の場合の特別メッセージ -->
+                <div class="special-notice">
+                    <p class="special-notice-text">この方位に引越しができると、南東：家庭運・人気運がスピーディーに上がります。</p>
+                </div>
+                
+                <!-- 引越し吉日リスト -->
+                <div class="dates-container">
+                    {% for year_data in moving_table %}
+                        {% include "ninestarkey_report/partials/direction_fortune_table.html" %}
+                    {% endfor %}
+                </div>
+            </td>
+            
+            <!-- 右下：お水取り吉日情報 -->
+            <td class="table-cell water-dates-cell">
+                <div class="info-header">
+                    <div class="info-icon">
+                        <i class="fa-droplet fortune-icon fortune-icon-water"></i>
+                    </div>
+                    <h4 class="info-title">お水取り吉日</h4>
+                </div>
+                
+                <p class="info-description">お水取りは水の気を取り入れて金運や仕事運をアップさせる風水術です。良い方位を選ぶことで、運気の流れを良くします。</p>
+                
+                <!-- お水取り吉日リスト -->
+                <div class="dates-container">
+                    {% for year_data in water_drawing_table %}
+                        {% include "ninestarkey_report/partials/direction_fortune_table.html" %}
+                    {% endfor %}
+                </div>
+            </td>
+        </tr>
+    </table>
+</div>

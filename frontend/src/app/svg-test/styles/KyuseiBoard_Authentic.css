@@ -1,0 +1,445 @@
+@import url('https://fonts.googleapis.com/css2?family=Noto+Sans+JP:wght@300;400;500;700&family=Inter:wght@300;400;500;600;700&display=swap');
+
+.kyusei-authentic-container {
+  position: relative;
+  perspective: 1000px;
+  font-family: 'Noto Sans JP', 'Inter', sans-serif;
+  padding: 20px;
+  border-radius: 50%; /* 円形に戻す */
+  overflow: hidden; /* オーバーフローを隠す */
+}
+
+/* テーマ: Luxury (デフォルト) */
+.kyusei-authentic-container.luxury {
+  background: linear-gradient(135deg, #0F0F23, #1A1A3E, #2D1B69);
+}
+
+/* テーマ: Minimal */
+.kyusei-authentic-container.minimal {
+  background: linear-gradient(135deg, #F8FAFC, #E2E8F0, #CBD5E1);
+}
+
+/* テーマ: Classic */
+.kyusei-authentic-container.classic {
+  background: linear-gradient(135deg, #0F0F23, #1A1A3E, #2D1B69);
+}
+
+/* 背景グラデーション: Classic */
+.kyusei-authentic-container.bg-classic {
+  background: linear-gradient(135deg, #343481, #24245f, #2D1B69) !important;
+}
+
+.kyusei-board-authentic {
+  position: relative;
+  width: calc(100% - 40px);
+  height: calc(100% - 40px); /* 高さも幅と同じに */
+  margin: 20px; /* 均等なマージン */
+  border-radius: 50%;
+  backdrop-filter: blur(20px);
+  box-shadow: 
+    0 0 60px rgba(135, 206, 250, 0.4),
+    inset 0 0 60px rgba(255, 255, 255, 0.1),
+    0 20px 40px rgba(135, 206, 250, 0.2);
+  border: 1px solid rgba(135, 206, 250, 0.3);
+  aspect-ratio: 1; /* 完全な正方形（円形）を保持 */
+}
+
+/* Luxury テーマ */
+.luxury .kyusei-board-authentic {
+  background: rgba(255, 255, 255, 0.05);
+}
+
+/* Minimal テーマ */
+.minimal .kyusei-board-authentic {
+  background: rgba(255, 255, 255, 0.8);
+  box-shadow: 
+    0 0 40px rgba(100, 116, 139, 0.2),
+    inset 0 0 40px rgba(255, 255, 255, 0.1),
+    0 10px 25px rgba(0, 0, 0, 0.1);
+  border: 1px solid rgba(100, 116, 139, 0.2);
+}
+
+/* Classic テーマ */
+.classic .kyusei-board-authentic {
+  background: rgba(255, 255, 255, 0.05);
+  box-shadow: 
+    0 0 60px rgba(212, 175, 55, 0.3),
+    inset 0 0 60px rgba(255, 255, 255, 0.1),
+    0 20px 40px rgba(0, 0, 0, 0.4);
+  border: 1px solid rgba(212, 175, 55, 0.2);
+}
+
+.center-star-authentic {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  width: 100px;
+  height: 100px;
+  border-radius: 50%;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  box-shadow: 
+    0 0 30px rgba(135, 206, 250, 0.5),
+    inset 0 0 20px rgba(255, 255, 255, 0.3);
+  z-index: 10;
+  cursor: pointer;
+  transition: all 0.3s ease;
+}
+
+.star-name-center {
+  font-size: 14px;
+  font-weight: 700;
+  color: #1A1A3E;
+  line-height: 1.2;
+  text-align: center;
+}
+
+.direction-ring-authentic {
+  position: absolute;
+  width: 70%;
+  height: 70%;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  border: 2px solid rgba(212, 175, 55, 0.3);
+  border-radius: 50%;
+}
+
+.star-element-authentic {
+  width: calc(var(--board-size, 600px) * 0.14); /* サイズの14%に増加（元は12.5%） */
+  height: calc(var(--board-size, 600px) * 0.1); /* サイズの10%に縮小 */
+  background: rgba(255, 255, 255, 0.1);
+  border-radius: calc(var(--board-size, 600px) * 0.02); /* サイズの2% */
+  backdrop-filter: blur(10px);
+  border: 1px solid rgba(135, 206, 250, 0.3);
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  text-align: center;
+  transition: all 0.3s ease;
+  cursor: pointer;
+  z-index: 5;
+  padding: calc(var(--board-size, 600px) * 0.005); /* パディングも縮小 */
+}
+
+.star-element-authentic:hover,
+.star-element-authentic.hovered,
+.star-element-authentic.force-glow {
+  background: rgba(135, 206, 250, 0.2);
+  box-shadow: 0 10px 25px rgba(135, 206, 250, 0.4);
+}
+
+.star-name {
+  font-size: calc(var(--board-size, 600px) * 0.022); /* サイズの2.2%に増加（元は1.8%） */
+  font-weight: 600;
+  margin-bottom: calc(var(--board-size, 600px) * 0.005); /* サイズの0.5% */
+  color: #F9FAFB; /* 白系にデフォルト設定 */
+  white-space: nowrap; /* 改行を防ぐ */
+  letter-spacing: 0.5px; /* 文字間隔を少し広げる */
+}
+
+/* 外側の方位ラベル */
+.outer-direction-labels {
+  position: absolute;
+  width: 100%;
+  height: 100%;
+  top: 0;
+  left: 0;
+  pointer-events: none; /* クリックを無効化 */
+}
+
+.outer-direction-label {
+  font-size: calc(var(--board-size, 600px) * 0.023); /* サイズの2.3% */
+  font-weight: 600;
+  color: #F3F4F6; /* 白系に変更 */
+  text-align: center;
+  text-shadow: 0 1px 3px rgba(0, 0, 0, 0.5); /* 黒い影で視認性向上 */
+  z-index: 3;
+  width: calc(var(--board-size, 600px) * 0.05); /* サイズの5% */
+  height: calc(var(--board-size, 600px) * 0.033); /* サイズの3.3% */
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  white-space: nowrap; /* 改行を防ぐ */
+}
+
+.zodiac {
+  font-size: 11px; /* より読みやすいサイズに */
+  font-weight: 500; /* 少し太くして視認性向上 */
+  color: #E5E7EB; /* 薄い白系に変更 */
+  line-height: 1.2;
+}
+
+/* テーマ別テキストカラー */
+.luxury .star-name {
+  color: #F9FAFB; /* 白系に変更 */
+}
+
+.minimal .star-name {
+  color: #1F2937;
+}
+
+.minimal .zodiac {
+  color: #4B5563; /* より濃い色で読みやすく */
+}
+
+.classic .star-name {
+  color: #F9FAFB; /* 白系に変更 */
+}
+
+.classic .zodiac {
+  color: #E5E7EB; /* 薄い白系に変更 */
+}
+
+/* テーマ別外側方位ラベル */
+.luxury .outer-direction-label {
+  color: #F3F4F6; /* 白系に変更 */
+  text-shadow: 0 1px 3px rgba(0, 0, 0, 0.5); /* 黒い影で視認性向上 */
+}
+
+.minimal .outer-direction-label {
+  color: #374151;
+  text-shadow: 0 0 5px rgba(55, 65, 81, 0.3);
+}
+
+.classic .outer-direction-label {
+  color: #F3F4F6; /* 白系に変更 */
+  text-shadow: 0 1px 3px rgba(0, 0, 0, 0.5); /* 黒い影で視認性向上 */
+}
+
+/* 九星気学の正確な方位線 */
+.compass-lines-authentic {
+  position: absolute;
+  width: 100%;
+  height: 100%;
+  top: 0;
+  left: 0;
+}
+
+.compass-line-main {
+  position: absolute;
+  left: 50%;
+  top: 0%; /* 最外周から開始 */
+  width: 0.5px; /* より細く */
+  height: 50%; /* 中心まで届くように */
+  background: linear-gradient(to bottom, 
+    transparent 0%, 
+    rgba(212, 175, 55, 0.05) 5%,
+    rgba(212, 175, 55, 0.2) 15%,
+    rgba(212, 175, 55, 0.4) 25%, 
+    rgba(212, 175, 55, 0.7) 35%, 
+    rgba(212, 175, 55, 0.9) 45%,
+    rgba(212, 175, 55, 0.7) 55%,
+    rgba(212, 175, 55, 0.4) 70%,
+    rgba(212, 175, 55, 0.1) 90%,
+    transparent 100%);
+  transform-origin: bottom center; /* 下端（中心）を基点に回転 */
+  z-index: 2;
+  filter: drop-shadow(0 0 2px rgba(212, 175, 55, 0.4)); /* 光の効果 */
+}
+
+/* 光線の先端を鋭くするための疑似要素 */
+.compass-line-main::after {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 50%;
+  transform: translateX(-50%);
+  width: 0.2px; /* さらに細く */
+  height: 15%; /* 先端部分を短く */
+  background: linear-gradient(to bottom, 
+    rgba(212, 175, 55, 0.3) 0%,
+    rgba(212, 175, 55, 0.1) 30%,
+    rgba(212, 175, 55, 0.02) 70%,
+    transparent 100%);
+  filter: blur(0.3px); /* より鋭く */
+}
+
+.glow-effect {
+  position: absolute;
+  width: 100%;
+  height: 100%;
+  border-radius: 50%;
+  background: radial-gradient(circle, rgba(212, 175, 55, 0.1) 0%, transparent 70%);
+}
+
+/* クラシックテーマ専用の星要素スタイル */
+.classic .star-element-authentic {
+  background: rgba(255, 255, 255, 0.1);
+  border: 1px solid rgba(212, 175, 55, 0.2);
+}
+
+.classic .star-element-authentic:hover,
+.classic .star-element-authentic.hovered,
+.classic .star-element-authentic.force-glow {
+  background: rgba(212, 175, 55, 0.2);
+  box-shadow: 0 10px 25px rgba(212, 175, 55, 0.4);
+}
+
+/* クラシックテーマの中央星 */
+.classic .center-star-authentic {
+  box-shadow: 
+    0 0 30px rgba(212, 175, 55, 0.6),
+    inset 0 0 20px rgba(255, 255, 255, 0.3);
+}
+
+/* 背景グラデーション: Classic用のテキストカラー */
+.bg-classic .star-name {
+  color: #F9FAFB !important; /* 白系 */
+}
+
+.bg-classic .zodiac {
+  color: #E5E7EB !important; /* 薄い白系 */
+}
+
+.bg-classic .outer-direction-label {
+  color: #F3F4F6 !important; /* 白系 */
+  text-shadow: 0 1px 3px rgba(0, 0, 0, 0.5) !important; /* 黒い影で視認性向上 */
+}
+
+/* 背景グラデーション: 青空色用のテキストカラー */
+.bg-dark-purple .star-name {
+  color: #1E3A8A !important; /* 濃い青色 */
+  text-shadow: 0 1px 2px rgba(255, 255, 255, 0.3) !important; /* 白い影で視認性向上 */
+}
+
+.bg-dark-purple .zodiac {
+  color: #1E40AF !important; /* 濃い青色 */
+  text-shadow: 0 1px 2px rgba(255, 255, 255, 0.3) !important;
+}
+
+.bg-dark-purple .outer-direction-label {
+  color: #1E3A8A !important; /* 濃い青色 */
+  text-shadow: 0 1px 2px rgba(255, 255, 255, 0.3) !important; /* 白い影で視認性向上 */
+}
+
+/* 干支ラベル（中心寄り） */
+.zodiac-labels {
+  position: absolute;
+  width: 100%;
+  height: 100%;
+  top: 0;
+  left: 0;
+  pointer-events: none; /* クリックを無効化 */
+}
+
+.zodiac-label {
+  font-size: calc(var(--board-size, 600px) * 0.018); /* サイズの1.8% */
+  font-weight: 500;
+  color: #E5E7EB; /* 薄い白系 */
+  text-align: center;
+  text-shadow: 0 1px 3px rgba(0, 0, 0, 0.5);
+  z-index: 4;
+  width: calc(var(--board-size, 600px) * 0.05); /* サイズの5% */
+  height: calc(var(--board-size, 600px) * 0.033); /* サイズの3.3% */
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  line-height: 1.2;
+  white-space: nowrap; /* 改行を防ぐ */
+}
+
+/* 干支ラベルの回転 */
+.zodiac-label[data-angle="45"] { /* 北東 */
+  transform: rotate(45deg);
+}
+
+.zodiac-label[data-angle="90"] { /* 東 */
+  transform: rotate(90deg);
+}
+
+.zodiac-label[data-angle="135"] { /* 南東 */
+  transform: rotate(135deg);
+}
+
+.zodiac-label[data-angle="180"] { /* 南 */
+  transform: rotate(180deg);
+}
+
+.zodiac-label[data-angle="225"] { /* 南西 */
+  transform: rotate(225deg);
+}
+
+.zodiac-label[data-angle="270"] { /* 西 */
+  transform: rotate(270deg);
+}
+
+.zodiac-label[data-angle="315"] { /* 北西 */
+  transform: rotate(315deg);
+}
+
+.zodiac-label[data-angle="0"] { /* 北 */
+  transform: rotate(0deg);
+}
+
+/* 背景グラデーション: Classic用の干支ラベル */
+.bg-classic .zodiac-label {
+  color: #E5E7EB !important; /* 薄い白系 */
+  text-shadow: 0 1px 3px rgba(0, 0, 0, 0.5) !important;
+}
+
+/* 背景グラデーション: 青空色用の干支ラベル */
+.bg-dark-purple .zodiac-label {
+  color: #1E40AF !important; /* 濃い青色 */
+  text-shadow: 0 1px 2px rgba(255, 255, 255, 0.3) !important;
+}
+
+/* コンパクトモード（鑑定結果用） */
+.kyusei-authentic-container.compact-mode {
+  padding: 5px; /* さらに縮小 */
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+.compact-mode .kyusei-board-authentic {
+  margin: 5px; /* さらに縮小 */
+  position: relative;
+  box-shadow: 
+    0 0 30px rgba(135, 206, 250, 0.3), /* エフェクトを控えめに */
+    inset 0 0 30px rgba(255, 255, 255, 0.1),
+    0 10px 20px rgba(135, 206, 250, 0.15);
+}
+
+.compact-mode .center-star-authentic {
+  width: 70px; /* 90pxからさらに縮小 */
+  height: 70px;
+  box-shadow: 
+    0 0 20px rgba(135, 206, 250, 0.4), /* エフェクトを控えめに */
+    inset 0 0 15px rgba(255, 255, 255, 0.3);
+}
+
+.compact-mode .star-name-center {
+  font-size: 11px; /* 13pxから縮小 */
+}
+
+.compact-mode .star-name {
+  font-size: calc(var(--board-size, 600px) * 0.028) !important; /* 2.8%に増加 */
+  }
+  
+.compact-mode .outer-direction-label {
+  font-size: calc(var(--board-size, 600px) * 0.029) !important; /* 2.9%に増加 */
+}
+
+.compact-mode .zodiac-label {
+  font-size: calc(var(--board-size, 600px) * 0.024) !important; /* 2.4%に増加 */
+  }
+  
+.compact-mode .compass-lines-authentic {
+  opacity: 0.7; /* 方位線を薄く */
+}
+
+.compact-mode .glow-effect {
+  opacity: 0.5; /* グロー効果を控えめに */
+}
+
+/* コンパクトモードでのホバー効果を無効化 */
+.compact-mode .star-element-authentic:hover,
+.compact-mode .star-element-authentic.hovered {
+  background: rgba(255, 255, 255, 0.1) !important;
+  box-shadow: none !important;
+} 

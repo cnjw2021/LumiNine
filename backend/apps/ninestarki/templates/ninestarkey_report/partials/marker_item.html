@@ -1,0 +1,17 @@
+{# expects: marker_class, pos, marker_type, lucky #}
+<style>
+    .{{ marker_class }} { top: {{ pos.top }}; left: {{ pos.left }}; transform: translate({{ pos.tx }},{{ pos.ty }}); }
+</style>
+{% if marker_type == 'badge' %}
+    <div class="direction-marker direction-badge {{ 'direction-green' if lucky else 'direction-red' }} {{ marker_class }}">
+        {{ '吉' if lucky else '凶' }}
+    </div>
+{% else %}
+    <div class="direction-marker {{ 'lucky-marker' if lucky else 'unlucky-marker' }} {{ marker_class }}">
+        {% if lucky %}
+            <span class="marker-icon marker-lucky">★</span>
+        {% else %}
+            <span class="marker-icon marker-unlucky">⚠</span>
+        {% endif %}
+    </div>
+{% endif %}

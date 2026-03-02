@@ -1,0 +1,72 @@
+<div class="main-star-section">
+    <h2 class="main-star-title">基本鑑定結果</h2>
+    
+    <!-- 上部カード用テーブル -->
+    <table class="star-table">
+        <tr>
+            <td>
+                <div class="card">
+                    <div class="star-type">本命星</div>
+                    <div class="star-number color-{{ result.main_star.star_number }}">
+                        {{ result.main_star.star_number }}
+                    </div>
+                    <div class="star-name bg-color-{{ result.main_star.star_number }}">
+                        {{ result.main_star.name_jp }}
+                    </div>
+                </div>
+            </td>
+            <td>
+                <div class="card">
+                    <div class="star-type">月命星</div>
+                    <div class="star-number color-{{ result.month_star.star_number }}">
+                        {{ result.month_star.star_number }}
+                    </div>
+                    <div class="star-name bg-color-{{ result.month_star.star_number }}">
+                        {{ result.month_star.name_jp }}
+                    </div>
+                </div>
+            </td>
+            <td>
+                <div class="card">
+                    <div class="star-type">日命星</div>
+                    <div class="star-number color-{{ result.day_star.star_number }}">
+                        {{ result.day_star.star_number }}
+                    </div>
+                    <div class="star-name bg-color-{{ result.day_star.star_number }}">
+                        {{ result.day_star.name_jp }}
+                    </div>
+                </div>
+            </td>
+        </tr>
+    </table>
+    
+    <!-- 本命星の詳細セクション -->
+    <div class="section-title">
+        本命星（性格・運命の流れ）
+    </div>
+
+    <!-- 本命星の詳細説明 -->
+    <div class="main-star-info-container">
+        <h3 class="main-star-info-heading">
+            本命星とは
+        </h3>
+        <p class="main-star-info-text">
+            九星気学において本命星は最も重要な星です。あなたの生まれ年から算出され、生涯を通じて変わることのない基本的な運命の流れや性格の傾向を表します。本命星は、あなたが持って生まれた根本的な資質、才能、運命のパターンを示しています。
+        </p>
+        
+        <h3 class="main-star-info-heading main-star-info-heading--spaced">
+            本命星の活かし方
+        </h3>
+        <p class="main-star-info-text main-star-info-text--tight">
+            本命星の特性を理解することで、あなた自身の強みと弱みを知ることができます。強みを活かし、弱みを補う意識を持つことで、より充実した人生を送ることができるでしょう。また、本命星は職業選択や人間関係においても重要な指針となります。自分の星の性質に合った環境で活動することで、より力を発揮できるはずです。
+        </p>
+    </div>
+
+    <!-- 詳細表示用テーブル -->
+    <div class="main-star-info-container">
+        {% set star = result.main_star %}
+        {% set svg_url = svg_by_center[star.star_number] %}
+        {% set keywords_source = star.keywords %}
+        {% include 'ninestarkey_report/partials/star_detail_table.html' %}
+    </div>
+</div> 
