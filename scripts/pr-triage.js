@@ -36,10 +36,24 @@ if (!PR || isNaN(PR)) {
     process.exit(1);
 }
 
-const getFlag = (flag, defaultVal = null) => {
+/**
+ * 값이 필요한 플래그 (--foo bar) 를 파싱한다.
+ * 값이 없거나 다음 토큰이 '--'로 시작하면 defaultVal 을 반환한다.
+ * requireValue=true 일 때 값이 없으면 오류 메시지를 출력하고 프로세스를 종료한다.
+ */
+const getFlag = (flag, defaultVal = null, requireValue = false) => {
     const idx = args.indexOf(flag);
     if (idx === -1) return defaultVal;
-    return args[idx + 1] !== undefined ? args[idx + 1] : true;
+    const next = args[idx + 1];
+    if (next === undefined || next.startsWith('--')) {
+        if (requireValue) {
+            console.error(`❌ ${flag} 옵션에 값이 필요합니다.`);
+            console.error('사용법: node scripts/pr-triage.js <PR 번호> [옵션]');
+            process.exit(1);
+        }
+        return defaultVal;
+    }
+    return next;
 };
 
 const limitAutoFix = parseInt(getFlag('--limit-auto-fix', '5'), 10);
@@ -47,7 +61,7 @@ const offsetAutoFix = parseInt(getFlag('--offset-auto-fix', '0'), 10);
 const emitReplyBatch = args.includes('--emit-reply-batch');
 const emitManualReplyBatch = args.includes('--emit-manual-reply-batch');
 const includeResolved = args.includes('--include-resolved');
-const handledUrlsPath = getFlag('--handled-urls');
+const handledUrlsPath = getFlag('--handled-urls', null);
 
 // ── 설정 ──────────────────────────────────────────────────
 const PR_REVIEW_DIR = '.pr-review';

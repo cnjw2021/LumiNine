@@ -175,14 +175,15 @@ mutation {
         logEntry.status = 'failed';
         logEntry.error = errMsg.slice(0, 500);
         failed.push(item);
-
-        if (!continueOnError) {
-            console.error('\n중단합니다 (--continue-on-error 없음)');
-            break;
-        }
+    } finally {
+        // 성공/실패 모두 로그에 기록 (break 전 마지막 항목도 포함)
+        logEntries.push(logEntry);
     }
 
-    logEntries.push(logEntry);
+    if (logEntry.status === 'failed' && !continueOnError) {
+        console.error('\n중단합니다 (--continue-on-error 없음)');
+        break;
+    }
 }
 
 // ── 로그 기록 ─────────────────────────────────────────────

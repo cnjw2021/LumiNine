@@ -114,8 +114,13 @@ class MonthlyBoardDomainService:
         year_stem_index = get_year_stem_index_from_zodiac(year_zodiac)
 
         # 2. target_date 가 속하는 절월(節月) 결정
+        # 절기 기준 연도(節年): 1월은 立春 이전이므로 전년도로 귀속
+        lookup_year = target_date.year
+        if target_date.month == 1:
+            lookup_year -= 1
+
         setsu_month_index, period_start, period_end = self._determine_setsu_month(
-            target_date, target_date.year
+            target_date, lookup_year
         )
 
         # 3. 월반 중궁성 산출 (역행 공식)
@@ -195,14 +200,24 @@ class MonthlyBoardDomainService:
 
         matched_term = all_terms[matched_idx]
 
-        # 절월 인덱스 = 해당 연도(lookup_year)의 절기 시퀀스에서 몇 번째인지 (1-indexed)
-        # 연도별 절기 12개를 solar_terms_date 순으로 재정렬해 순위를 결정한다
-        curr_year_sorted = sorted(terms_curr_year, key=lambda t: t.solar_terms_date)
-        # matched_term 이 curr_year 에 없으면(전해/다음해 절기) 가장 가까운 것으로 폴백
-        if matched_term in curr_year_sorted:
-            setsu_month_index = curr_year_sorted.index(matched_term) + 1
+        # 절월 인덱스 = AuspiciousCalendarService.get_solar_terms_for_year() 기준과 동일하게
+        # lookup_year 의 2~12월 절기 + 다음 해의 1월 절기(小寒)로 시퀀스를 구성한다.
+        # 이렇게 하면 1=立春(2월) … 12=小寒(다음해 1월)가 정확히 대응된다.
+        curr_year_terms_for_setsu = [
+            t for t in terms_curr_year if t.solar_terms_date.month != 1
+        ]
+        next_year_jan_terms_for_setsu = [
+            t for t in terms_next_year if t.solar_terms_date.month == 1
+        ]
+        setsu_terms_sequence = sorted(
+            [*curr_year_terms_for_setsu, *next_year_jan_terms_for_setsu],
+            key=lambda t: t.solar_terms_date,
+        )
+
+        if matched_term in setsu_terms_sequence:
+            setsu_month_index = setsu_terms_sequence.index(matched_term) + 1
         else:
-            # prev_year 최후 절기 → 12월 (丑月)에 해당
+            # 시퀀스에 속하지 않는 경우 → 전년도 마지막 절기(丑月=12)로 폴백
             setsu_month_index = 12
 
         # setsu_month_index 를 1~12 로 클램프

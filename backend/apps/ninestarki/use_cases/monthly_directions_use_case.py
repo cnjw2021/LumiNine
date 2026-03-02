@@ -15,7 +15,6 @@ from injector import inject
 
 from apps.ninestarki.domain.services.year_star_domain_service import YearStarDomainService
 from apps.ninestarki.domain.services.monthly_board_domain_service import MonthlyBoardDomainService
-from apps.ninestarki.domain.services.direction_rule_engine import DirectionRuleEngine
 from core.utils.logger import get_logger
 
 logger = get_logger(__name__)
@@ -27,7 +26,6 @@ class MonthlyDirectionsUseCase:
     Args:
         year_star_service: 연반 중궁성 / 연간지 정보 제공
         monthly_board_service: 월반 편성 도메인 서비스
-        direction_engine: 길흉방위 판별 엔진 (연·월 공통 재사용)
     """
 
     @inject
@@ -35,11 +33,10 @@ class MonthlyDirectionsUseCase:
         self,
         year_star_service: YearStarDomainService,
         monthly_board_service: MonthlyBoardDomainService,
-        direction_engine: DirectionRuleEngine,
     ) -> None:
         self._year_star_service = year_star_service
         self._monthly_board = monthly_board_service
-        self._direction_engine = direction_engine
+
 
     def execute(
         self,

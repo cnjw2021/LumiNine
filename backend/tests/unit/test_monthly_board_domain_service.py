@@ -202,27 +202,32 @@ class TestGetYearStemIndex:
 # ══════════════════════════════════════════════════════
 
 def _make_solar_terms_repo() -> _StubSolarTermsRepo:
-    """Year 2026 / 2025 stub 절기 데이터를 생성한다.
+    """Year 2024~2027 stub 절기 데이터를 생성한다.
 
-    setsu_month_index 1=寅月(立春) 부터 12=丑月(小寒) 순으로 절입일을 월 5일로 설정한다.
-    (실제 절입일은 DB 에 따라 다르지만 로직 검증 목적의 픽스처)
+    실제 SolarTermsRepository 구조와 동일하게:
+      - 해당 연도의 그레고리력 2~12월 절기 (month 2=立春 … month 12=大雪)
+      - 다음해 1월 절기 (month 1=小寒)
+    로 구성한다. (AuspiciousCalendarService.get_solar_terms_for_year() 기준)
     """
+    from datetime import timedelta
+
     terms = []
     for year in [2024, 2025, 2026, 2027]:
-        for month in range(1, 13):
-            # 简化: 각 절월을 해당 연도의 m번째 절월을 2월 4일부터 순서대로 배치
-            import calendar
-            # 절월 1=寅月: 2/4, 2=卯月: 3/6, ... 실제와 달라도 순서만 맞으면 된다
-            day_of_year_offset = (month - 1) * 30
-            from datetime import timedelta
-            base = date(year, 2, 4) + timedelta(days=day_of_year_offset)
-            # Adjust for dates exceeding December
-            while base.year > year:
-                base -= timedelta(days=1)
-
+        # 2~12월: 각 월 4일을 절입일로 설정
+        for month in range(2, 13):
+            solar_date = date(year, month, 4)
             zt = "甲子" if year == 2026 else "乙丑" if year == 2025 else "癸卯"
-            terms.append(_StubSolarTerm(year, month, base, zodiac=zt, star_number=month))
+            terms.append(_StubSolarTerm(year, month, solar_date, zodiac=zt, star_number=month))
+        # 다음해 1월(小寒) 절기를 당해 연도 레코드로는 넣지 않는다 (next_year 의 것)
+
+    # next_year 의 1월 절기(小寒) → setsu_index=12 에 해당
+    for year in [2025, 2026, 2027, 2028]:
+        solar_date = date(year, 1, 5)
+        zt = "甲子" if year == 2026 else "乙丑" if year == 2025 else "癸卯"
+        terms.append(_StubSolarTerm(year, 1, solar_date, zodiac=zt, star_number=1))
+
     return _StubSolarTermsRepo(terms)
+
 
 
 class TestMonthlyBoardDomainService:
