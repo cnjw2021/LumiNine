@@ -15,6 +15,11 @@ from injector import inject
 
 from apps.ninestarki.domain.services.year_star_domain_service import YearStarDomainService
 from apps.ninestarki.domain.services.interfaces.monthly_board_service_interface import IMonthlyBoardDomainService
+from apps.ninestarki.domain.exceptions import (
+    YearInfoNotFoundError,
+    MonthlyBoardCalculationError,
+    SetsuMonthNotFoundError,
+)
 from core.utils.logger import get_logger
 
 logger = get_logger(__name__)
@@ -72,12 +77,18 @@ class MonthlyDirectionsUseCase:
         # ── 1. 연반 정보 취득 ──────────────────────────
         year_info = self._year_star_service.get_year_star_info(target_year)
         if not year_info:
-            raise ValueError(f"연반 정보를 찾을 수 없습니다. year={target_year}")
+            raise YearInfoNotFoundError(
+                f"연반 정보를 찾을 수 없습니다. year={target_year}",
+                details=f"solar_starts_data에 year={target_year} 데이터가 없습니다.",
+            )
 
         year_center_star: int = year_info["star_number"]
         year_zodiac: str = year_info.get("zodiac", "")
         if not year_zodiac:
-            raise ValueError(f"연간지(年干支) 정보가 없습니다. year={target_year}")
+            raise YearInfoNotFoundError(
+                f"연간지(年干支) 정보가 없습니다. year={target_year}",
+                details="solar_starts_data.zodiac 컬럼을 확인하세요.",
+            )
 
         # ── 2. 대상 절월(節月) 범위 결정 ──────────────
         # target_month 가 지정된 경우: 해당 월의 대표 날짜로 1절월만 조회
@@ -132,11 +143,22 @@ class MonthlyDirectionsUseCase:
                 logger.warning(
                     "setsu_index=%d の月盤編成でエラー: %s", setsu_index, exc, exc_info=True
                 )
+                # 단일 월 조회인 경우에는 예외를 그대로 상위로 전파하여
+                # 호출자가 명시적으로 실패를 인지할 수 있게 한다.
+                if target_month is not None:
+                    raise MonthlyBoardCalculationError(
+                        f"절월 {setsu_index} 의 월반 편성 중 오류가 발생했습니다.",
+                        details=str(exc),
+                    ) from exc
+                # 연간 일괄 조회인 경우에만 해당 월을 건너뛰고 나머지 월을 계속 처리한다.
                 continue
 
-        # ── 5. 결과 검증 (지적 사항 [M3] 대응) ────────
+        # ── 5. 결과 검증 ──────────────────────────────
         if target_month is not None and not monthly_boards:
-            raise ValueError(f"지정한 절월({target_month})의 데이터를 산출할 수 없습니다. (절입일 누락 등)")
+            raise SetsuMonthNotFoundError(
+                f"지정한 절월({target_month})의 데이터를 산출할 수 없습니다.",
+                details="절입일이 DB에 존재하지 않거나 데이터 누락이 있습니다.",
+            )
 
         return {
             "main_star": main_star,

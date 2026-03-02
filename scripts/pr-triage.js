@@ -186,7 +186,7 @@ const copilotThreads = allThreads.filter(t =>
 console.log(`✅ 전체 스레드: ${allThreads.length}, Copilot 지적: ${copilotThreads.length}`);
 
 // ── triage 분류 ───────────────────────────────────────────
-// 우선순위: suggestion 코드블록 → auto-fixable > design > manual
+// 우선순위: suggestion 코드블록 → auto-fixable 키워드 → design 키워드 → manual
 const AUTO_FIX_KEYWORDS = [
     '제거', '삭제', '수정', 'import', '추가', 'suggestion', '변경',
     'replace', 'remove', 'fix', 'add', 'update', 'rename',
@@ -201,19 +201,24 @@ const DESIGN_KEYWORDS = [
 
 function classify(thread) {
     const body = thread.comments.nodes[0].body;
+    console.log(`  Checking thread at ${thread.path}:${thread.line} - Body snippet: ${body.slice(0, 50).replace(/\n/g, ' ')}...`);
     const bodyLower = body.toLowerCase();
     const url = thread.comments.nodes[0].url;
-    if (handledUrls.has(url)) return 'handled';
+    if (handledUrls.has(url)) return { category: 'handled', reason: 'handled_url' };
     // suggestion 코드블록이 있으면 무조건 auto-fixable
-    if (body.includes('```suggestion')) return 'auto-fixable';
-    // design 키워드가 있으면 design review
-    if (DESIGN_KEYWORDS.some(k => bodyLower.includes(k.toLowerCase()))) return 'design';
-    // 나머지 auto-fix 키워드
-    if (AUTO_FIX_KEYWORDS.some(k => bodyLower.includes(k.toLowerCase()))) return 'auto-fixable';
-    return 'manual';
+    if (body.includes('```suggestion')) return { category: 'auto-fixable', reason: 'suggestion_codeblock' };
+    // auto-fix 키워드가 design 키워드보다 우선
+    if (AUTO_FIX_KEYWORDS.some(k => bodyLower.includes(k.toLowerCase()))) return { category: 'auto-fixable', reason: 'autofix_keyword' };
+    // design 키워드
+    if (DESIGN_KEYWORDS.some(k => bodyLower.includes(k.toLowerCase()))) return { category: 'design', reason: 'design_keyword' };
+    return { category: 'manual', reason: 'default_manual' };
 }
 
-const classified = copilotThreads.map(t => ({ ...t, _category: classify(t) }));
+const classified = copilotThreads.map(t => {
+    const cat = classify(t);
+    console.log(`    Categorized as: ${cat.category} (${cat.reason})`);
+    return { ...t, _category: cat.category, _reason: cat.reason };
+});
 const autoFixable = classified.filter(t => t._category === 'auto-fixable');
 const manual = classified.filter(t => t._category === 'manual');
 const design = classified.filter(t => t._category === 'design');

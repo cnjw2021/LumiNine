@@ -1,16 +1,15 @@
 """月盤データのAPIルート"""
 
-from typing import Any, Optional
 from flask import Blueprint, jsonify, request
 from flask_jwt_extended import jwt_required
 from core.database import db
 from apps.ninestarki.domain.repositories.monthly_directions_repository_interface import IMonthlyDirectionsRepository
 from apps.ninestarki.use_cases.monthly_directions_use_case import MonthlyDirectionsUseCase
+from apps.ninestarki.domain.exceptions import NineStarKiError
 from core.models.star_groups import StarGroup
 from flask_injector import inject
 from core.auth.auth_utils import permission_required
 from core.utils.logger import get_logger
-from datetime import date
 
 logger = get_logger(__name__)
 
@@ -350,9 +349,11 @@ def create_monthly_bp():
         except ValueError as e:
             logger.warning("monthly-board API ValueError: %s", e)
             return jsonify({'error': str(e)}), 422
+        except NineStarKiError as e:
+            logger.warning("monthly-board API NineStarKiError: %s (code=%s)", e, e.code)
+            return jsonify(e.to_dict()), e.status
         except Exception as e:
             logger.error("monthly-board API エラー: %s", e, exc_info=True)
             return jsonify({'error': '内部エラーが発生しました。'}), 500
 
     return monthly_bp
- 

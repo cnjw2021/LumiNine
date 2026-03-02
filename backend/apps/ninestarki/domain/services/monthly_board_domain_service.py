@@ -16,6 +16,7 @@ from injector import inject
 
 from apps.ninestarki.domain.repositories.solar_terms_repository_interface import ISolarTermsRepository
 from apps.ninestarki.domain.repositories.star_grid_pattern_repository_interface import IStarGridPatternRepository
+from apps.ninestarki.domain.exceptions import SetsuMonthNotFoundError
 from core.utils.logger import get_logger
 
 logger = get_logger(__name__)
@@ -156,9 +157,9 @@ class MonthlyBoardDomainService:
         terms_next_year = self._solar_terms_repo.get_yearly_terms(lookup_year + 1)
 
         if not terms_curr_year:
-            raise ValueError(
-                f"절기 데이터를 찾을 수 없습니다. year={lookup_year}. "
-                "DB에 solar_terms 데이터를 확인해 주세요."
+            raise SetsuMonthNotFoundError(
+                f"절기 데이터를 찾을 수 없습니다. year={lookup_year}",
+                details="DB에 solar_terms 데이터를 확인해 주세요.",
             )
 
         # 절월 시퀀스: lookup_year 의 2~12월 + 다음해 1월(小寒) — solar_terms_date 오름차순
@@ -187,8 +188,8 @@ class MonthlyBoardDomainService:
                 matched_term = prev_year_jan[-1]
                 matched_pos = None  # 시퀀스 外
             else:
-                raise ValueError(
-                    f"target_date={target_date} に対応する절기を찾을 수 없습니다."
+                raise SetsuMonthNotFoundError(
+                    f"target_date={target_date} に対応する절기を찾을 수 없습니다.",
                 )
 
         # 위치 기반 setsu_month_index (1-indexed)
@@ -202,7 +203,28 @@ class MonthlyBoardDomainService:
         if matched_pos is not None and matched_pos + 1 < len(setsu_sequence):
             period_end = setsu_sequence[matched_pos + 1].solar_terms_date - timedelta(days=1)
         else:
-            period_end = matched_term.solar_terms_date + timedelta(days=29)  # 폴백
+            # setsu_sequence 에서 다음 절기를 찾지 못한 경우:
+            # 절월 인덱스를 기반으로 다음 절입일을 조회하여 종료일을 계산한다.
+            if setsu_month_index == 12:
+                # matched_term.solar_terms_date는 (year + 1)년 1월의 小寒
+                setsu_year = matched_term.solar_terms_date.year - 1
+            else:
+                setsu_year = matched_term.solar_terms_date.year
+
+            # 다음 절월 인덱스와 절년 계산
+            if setsu_month_index == 12:
+                next_setsuyear = setsu_year + 1
+                next_index = 1  # 丑月 다음은 寅月(立春)
+            else:
+                next_setsuyear = setsu_year
+                next_index = setsu_month_index + 1
+
+            next_start = self.get_period_start_for_setsu(next_setsuyear, next_index)
+            if next_start is not None:
+                period_end = next_start - timedelta(days=1)
+            else:
+                # DB에 다음 절입일이 없을 때의 최후 폴백 (기존 동작 보존)
+                period_end = matched_term.solar_terms_date + timedelta(days=29)
 
         return matched_term, setsu_month_index, period_end
 

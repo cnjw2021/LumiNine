@@ -1,7 +1,7 @@
 """カレンダー関連のユーティリティ関数
 
 方位判定で使用される干支・方位変換ロジックを提供する。
-月反中宮星・月干支・日干支・年計算は solar_terms_data / solar_starts_data /
+月盤中宮星・月干支・日干支・年計算は solar_terms_data / solar_starts_data /
 daily_astrology_data の CSV 事前構築データから直接取得するため、
 ここには数式ベースの再計算ロジックを置かない。
 """
