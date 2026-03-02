@@ -114,9 +114,7 @@ const succeeded = [];
 const failed = [];
 const logEntries = [];
 
-function ghExec(cmd) {
-    return execSync(cmd, { encoding: 'utf-8', stdio: ['pipe', 'pipe', 'pipe'] });
-}
+
 
 function ghGraphqlMutation(query, variables) {
     const args = ['api', 'graphql', '-f', `query=${query}`];

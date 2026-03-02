@@ -203,7 +203,6 @@ class AppModule(Module):
         binder.bind(ListSolarTermsUseCase, to=ListSolarTermsUseCase, scope=singleton)
         binder.bind(UpdateSolarTermUseCase, to=UpdateSolarTermUseCase, scope=singleton)
         binder.bind(AnnualDirectionsDomainService, to=AnnualDirectionsDomainService, scope=singleton)
-        binder.bind(MonthlyBoardDomainService, to=MonthlyBoardDomainService, scope=singleton)
         binder.bind(IMonthlyBoardDomainService, to=MonthlyBoardDomainService, scope=singleton)
         binder.bind(YearStarDomainService, to=YearStarDomainService, scope=singleton)
         binder.bind(MonthlyDirectionsUseCase, to=MonthlyDirectionsUseCase, scope=singleton)
