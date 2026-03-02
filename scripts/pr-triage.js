@@ -58,8 +58,20 @@ const getFlag = (flag, defaultVal = null, requireValue = false) => {
     return next;
 };
 
-const limitAutoFix = parseInt(getFlag('--limit-auto-fix', '5'), 10);
-const offsetAutoFix = parseInt(getFlag('--offset-auto-fix', '0'), 10);
+const limitAutoFixStr = getFlag('--limit-auto-fix', '5');
+const limitAutoFix = parseInt(limitAutoFixStr, 10);
+if (!Number.isFinite(limitAutoFix) || !Number.isInteger(limitAutoFix)) {
+    console.error('❌ --limit-auto-fix 옵션은 정수 값을 필요로 합니다.');
+    console.error('사용법: node scripts/pr-triage.js <PR 번호> [옵션]');
+    process.exit(1);
+}
+const offsetAutoFixStr = getFlag('--offset-auto-fix', '0');
+const offsetAutoFix = parseInt(offsetAutoFixStr, 10);
+if (!Number.isFinite(offsetAutoFix) || !Number.isInteger(offsetAutoFix)) {
+    console.error('❌ --offset-auto-fix 옵션은 정수 값을 필요로 합니다.');
+    console.error('사용법: node scripts/pr-triage.js <PR 번호> [옵션]');
+    process.exit(1);
+}
 const emitReplyBatch = args.includes('--emit-reply-batch');
 const emitManualReplyBatch = args.includes('--emit-manual-reply-batch');
 const includeResolved = args.includes('--include-resolved');

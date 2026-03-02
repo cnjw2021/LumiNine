@@ -267,7 +267,8 @@ pr-triage-manual-fix:
 	  $(if $(OFFSET),--offset-auto-fix $(OFFSET),) \
 	  --limit-auto-fix $(or $(BATCH),$(PR_BATCH_LIMIT)) \
 	  --emit-manual-reply-batch \
-	  --include-resolved
+	  --include-resolved \
+	  --handled-urls $(PR_REVIEW_DIR)/handled_comment_urls.json
 
 pr-reply-batch:
 	@if [ -z "$(PR)" ]; then echo "사용법: make pr-reply-batch PR=<번호>"; exit 1; fi

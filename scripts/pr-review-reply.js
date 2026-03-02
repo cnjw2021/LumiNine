@@ -30,7 +30,7 @@
  *   - Node.js 18+
  */
 
-const { execSync } = require('child_process');
+const { execSync, execFileSync } = require('child_process');
 const fs = require('fs');
 const path = require('path');
 
@@ -118,6 +118,14 @@ function ghExec(cmd) {
     return execSync(cmd, { encoding: 'utf-8', stdio: ['pipe', 'pipe', 'pipe'] });
 }
 
+function ghGraphqlMutation(query, variables) {
+    const args = ['api', 'graphql', '-f', `query=${query}`];
+    for (const [key, value] of Object.entries(variables)) {
+        args.push('-f', `${key}=${value}`);
+    }
+    return execFileSync('gh', args, { encoding: 'utf-8', stdio: ['pipe', 'pipe', 'pipe'] });
+}
+
 for (const item of batch) {
     const { thread_id, comment_id, comment_url, path: filePath, action, reply_body } = item;
 
@@ -150,15 +158,15 @@ for (const item of batch) {
             const finalReplyBody = reply_body + hashFooter;
 
             const replyMutation = `
-mutation {
+mutation($id: ID!, $body: String!) {
   addPullRequestReviewThreadReply(input: {
-    pullRequestReviewThreadId: "${thread_id}"
-    body: ${JSON.stringify(finalReplyBody)}
+    pullRequestReviewThreadId: $id
+    body: $body
   }) {
     comment { id url }
   }
 }`;
-            ghExec(`gh api graphql -f query='${replyMutation.replace(/'/g, "'\\''")}'`);
+            ghGraphqlMutation(replyMutation, { id: thread_id, body: finalReplyBody });
             console.log(`  ✅ reply 등록 완료`);
         }
 
@@ -166,12 +174,12 @@ mutation {
         // 2) resolve (action === 'reply_and_resolve')
         if (action === 'reply_and_resolve') {
             const resolveMutation = `
-mutation {
-  resolveReviewThread(input: { threadId: "${thread_id}" }) {
+mutation($id: ID!) {
+  resolveReviewThread(input: { threadId: $id }) {
     thread { id isResolved }
   }
 }`;
-            ghExec(`gh api graphql -f query='${resolveMutation.replace(/'/g, "'\\''")}'`);
+            ghGraphqlMutation(resolveMutation, { id: thread_id });
             console.log(`  ✅ thread resolve 완료`);
         }
 
