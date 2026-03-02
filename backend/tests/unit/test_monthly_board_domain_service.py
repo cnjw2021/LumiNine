@@ -8,11 +8,6 @@ from __future__ import annotations
 import pytest
 from datetime import date
 
-from core.utils.calendar_utils import (
-    get_monthly_center_star,
-    get_monthly_kanshi,
-    get_year_stem_index_from_zodiac,
-)
 from apps.ninestarki.domain.services.monthly_board_domain_service import (
     MonthlyBoardDomainService,
     MonthlyBoardResult,
@@ -85,116 +80,6 @@ class _StubStarGridPatternRepo:
         return _StubGridPattern(center_star)
 
 
-# ══════════════════════════════════════════════════════
-# Tests — calendar_utils: get_monthly_center_star
-# ══════════════════════════════════════════════════════
-
-class TestGetMonthlyCenterStar:
-    """月盤中宮星算出ロジックの検証 (設計書 §2-2 に基づく)."""
-
-    # ── 上元グループ (1,4,7) → 1月(寅月) = 8 ──────────
-    @pytest.mark.parametrize("year_star", [1, 4, 7])
-    def test_upper_group_month1_is_8(self, year_star):
-        assert get_monthly_center_star(year_star, 1) == 8
-
-    # ── 中元グループ (2,5,8) → 1月(寅月) = 5 ──────────
-    @pytest.mark.parametrize("year_star", [2, 5, 8])
-    def test_mid_group_month1_is_5(self, year_star):
-        assert get_monthly_center_star(year_star, 1) == 5
-
-    # ── 下元グループ (3,6,9) → 1月(寅月) = 2 ──────────
-    @pytest.mark.parametrize("year_star", [3, 6, 9])
-    def test_low_group_month1_is_2(self, year_star):
-        assert get_monthly_center_star(year_star, 1) == 2
-
-    # ── 設計書 例示: 年盤中宮=4(上元) の全12ヶ月 ───────
-    def test_upper_group_all_12_months_year_star_4(self):
-        """設計書の例示 (年反中宮=4) と照合."""
-        expected = {1: 8, 2: 7, 3: 6, 4: 5, 5: 4, 6: 3, 7: 2, 8: 1, 9: 9, 10: 8, 11: 7, 12: 6}
-        for m, exp in expected.items():
-            assert get_monthly_center_star(4, m) == exp, f"month={m} failed"
-
-    # ── 1~9 範囲の循環検証 ─────────────────────────────
-    def test_result_always_in_1_to_9(self):
-        for year_star in range(1, 10):
-            for month in range(1, 13):
-                result = get_monthly_center_star(year_star, month)
-                assert 1 <= result <= 9, f"out of range: year={year_star} month={month} result={result}"
-
-    # ── 入力バリデーション ─────────────────────────────
-    def test_invalid_year_center_star_raises(self):
-        with pytest.raises(ValueError):
-            get_monthly_center_star(0, 1)
-
-    def test_invalid_setsu_month_index_raises(self):
-        with pytest.raises(ValueError):
-            get_monthly_center_star(5, 13)
-
-
-# ══════════════════════════════════════════════════════
-# Tests — calendar_utils: get_monthly_kanshi
-# ══════════════════════════════════════════════════════
-
-class TestGetMonthlyKanshi:
-    """月干支算出ロジックの検証 (五虎遁 §3 に基づく)."""
-
-    # ── 甲年(index=0) の1月(寅月) → 天干=丙 ───────────
-    def test_kinen_month1_is_hinoe_tora(self):
-        stem, branch = get_monthly_kanshi(0, 1)  # 甲年, 寅月
-        assert stem == "丙"
-        assert branch == "寅"
-
-    # ── 乙年(index=1) の1月(寅月) → 天干=戊 ───────────
-    def test_otunen_month1_is_tsuchinoe_tora(self):
-        stem, branch = get_monthly_kanshi(1, 1)
-        assert stem == "戊"
-        assert branch == "寅"
-
-    # ── 己年(index=5) は甲年と同じ丙から始まる ──────────
-    def test_kinen_and_kinen_same_start(self):
-        s0, b0 = get_monthly_kanshi(0, 1)
-        s5, b5 = get_monthly_kanshi(5, 1)
-        assert s0 == s5  # 甲=己 → 丙
-        assert b0 == b5
-
-    # ── 天干は10周期で循環する ───────────────────────────
-    def test_stem_cycles_through_10(self):
-        # 天干は10種なので, 月インデックス 1 と 11 は同じ天干になる
-        stem_m1, _ = get_monthly_kanshi(0, 1)
-        stem_m11, _ = get_monthly_kanshi(0, 11)
-        assert stem_m1 == stem_m11, f"month=1 ({stem_m1}) should equal month=11 ({stem_m11})"
-
-    # ── 地支は月インデックスに固定 ──────────────────────
-    def test_branch_fixed_to_month_index(self):
-        expected_branches = ["寅","卯","辰","巳","午","未","申","酉","戌","亥","子","丑"]
-        for m in range(1, 13):
-            _, branch = get_monthly_kanshi(0, m)
-            assert branch == expected_branches[m - 1], f"month={m}"
-
-    # ── 入力バリデーション ─────────────────────────────
-    def test_invalid_year_stem_raises(self):
-        with pytest.raises(ValueError):
-            get_monthly_kanshi(10, 1)
-
-    def test_invalid_month_index_raises(self):
-        with pytest.raises(ValueError):
-            get_monthly_kanshi(0, 0)
-
-
-# ══════════════════════════════════════════════════════
-# Tests — calendar_utils: get_year_stem_index_from_zodiac
-# ══════════════════════════════════════════════════════
-
-class TestGetYearStemIndex:
-    def test_koshi_is_0(self):
-        assert get_year_stem_index_from_zodiac("甲子") == 0
-
-    def test_otunouushi_is_1(self):
-        assert get_year_stem_index_from_zodiac("乙丑") == 1
-
-    def test_invalid_stem_raises(self):
-        with pytest.raises(ValueError):
-            get_year_stem_index_from_zodiac("X子")
 
 
 # ══════════════════════════════════════════════════════

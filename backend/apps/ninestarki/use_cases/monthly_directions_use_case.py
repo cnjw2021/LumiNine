@@ -2,8 +2,8 @@
 
 처리 흐름:
 1. YearStarDomainService → 연반 중궁성 + 연간지 취득
-2. MonthlyBoardDomainService → 절월(節月) 결정 + 월반 편성
-3. DirectionRuleEngine (기존 재사용) → 길흉방위 판정
+2. MonthlyBoardDomainService → 절월(節月) 결정 + 월반 편성 (solar_terms_data 직접 조회)
+3. StarGridPattern.get_fortune_status() → 길흉방위 판정
 4. 응답 dict 반환
 """
 from __future__ import annotations

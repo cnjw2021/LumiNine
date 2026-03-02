@@ -3,7 +3,8 @@
 설계 원칙 (Clean Architecture):
 - 이 모듈은 Domain 레이어에 속하며, FastAPI·SQLAlchemy 등 인프라 구체 클래스에 의존하지 않는다.
 - 외부 의존은 repository 인터페이스(ISolarTermsRepository, IStarGridPatternRepository)를 통해서만 접근한다.
-- calendar_utils 는 순수 산술 연산이므로 Core 유틸로서 Domain이 의존한다.
+- solar_terms_data CSV 에 star_number(월반 중궁성)와 zodiac(월간지)가 사전 구축되어 있으므로
+  수식 계산 로직 없이 DB 조회 결과를 직접 사용한다.
 """
 from __future__ import annotations
 
@@ -67,8 +68,8 @@ class MonthlyBoardResult:
 class MonthlyBoardDomainService:
     """월반(月盤) 편성 파이프라인을 총괄하는 도메인 서비스.
 
-    연반 중궁성과 연간지를 입력받아 지정 날짜에 해당하는 절월(節月)을 결정하고,
-    `get_monthly_center_star` / `get_monthly_kanshi` 를 통해 월반을 편성한다.
+    solar_terms_data 에 사전 구축된 star_number(월반 중궁성)와 zodiac(월간지)를
+    직접 사용하여 지정 날짜에 해당하는 절월(節月)을 결정하고 월반을 편성한다.
 
     의존성은 생성자 주입(injector) 방식으로 공급된다.
     """
