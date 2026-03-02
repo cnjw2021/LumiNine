@@ -142,27 +142,29 @@ class MonthlyBoardDomainService:
             period_end=period_end,
         )
 
-    # ──────────────────────────────
-    # Private helpers
-    # ──────────────────────────────
-
     def _determine_setsu_month(
         self, target_date: date, lookup_year: int
     ) -> tuple[int, date, date]:
         """target_date 가 속하는 절월(節月) 인덱스와 기간(시작일/종료일)을 返す.
 
-        절입일은 ISolarTermsRepository 경유로 DB에서 취득한다.
-        절입일 이전이면 이전 절월에 속한다.
+        【설계 주의】
+        DB의 SolarTerm.month 는 그레고리력 월(1월=1, 2월=2…)이며,
+        절월 인덱스(寅月=1, 卯月=2 … 丑月=12)와 직접 대응하지 않는다.
+        따라서 절월 인덱스는 solar_terms_date 순으로 정렬 후 0-based 위치 + 1 로 산출한다.
+
+        절기 시퀀스 순서 (절월 인덱스 기준):
+          idx=1 (寅月) ← 立春 (약 2월)
+          idx=2 (卯月) ← 啓蟄 (약 3월)
+          …
+          idx=11 (子月) ← 大雪 (약 12월)
+          idx=12 (丑月) ← 小寒 (약 다음해 1월)
 
         Returns:
             (setsu_month_index, period_start_date, period_end_date)
 
         Raises:
-            ValueError: 해당 연도 전후 절기 데이터가 DB에 없는 경우
+            ValueError: 해당 연도 절기 데이터가 DB에 없는 경우
         """
-        # 당해 연도 + 전해 연도의 절기를 취득해 절입일 경계 리스트를 구성한다.
-        # 節月 인덱스 1(寅月)는 立春(2月절기) 부터 시작, 12(丑月)는 小寒(1月절기)까지이므로
-        # 이전 연도의 12월 절기(小寒)도 필요하다.
         terms_prev_year = self._solar_terms_repo.get_yearly_terms(lookup_year - 1)
         terms_curr_year = self._solar_terms_repo.get_yearly_terms(lookup_year)
         terms_next_year = self._solar_terms_repo.get_yearly_terms(lookup_year + 1)
@@ -173,33 +175,80 @@ class MonthlyBoardDomainService:
                 "DB에 solar_terms 데이터를 확인해 주세요."
             )
 
-        # 月 → 절입일 매핑 (연도별로 month=1~12 가 각각 存在)
-        # SolarTerm.month 는 節月 인덱스와 같은 의미
+        # solar_terms_date 기준으로 정렬 — SolarTerm.month(그레고리력) 기준이 아님
         all_terms = sorted(
             [*terms_prev_year, *terms_curr_year, *terms_next_year],
-            key=lambda t: (t.year, t.month),
+            key=lambda t: t.solar_terms_date,
         )
 
-        # target_date 직전(또는 당일)의 절기를 찾아 절월 인덱스를 결정
-        matched_term = None
-        for term in reversed(all_terms):
+        # target_date 직전(또는 당일)의 절기를 찾는다
+        matched_idx: Optional[int] = None
+        for i, term in enumerate(reversed(all_terms)):
             if term.solar_terms_date <= target_date:
-                matched_term = term
+                matched_idx = len(all_terms) - 1 - i
                 break
 
-        if matched_term is None:
+        if matched_idx is None:
             raise ValueError(
                 f"target_date={target_date} に対応する절월을 찾을 수 없습니다。"
             )
 
-        setsu_month_index = matched_term.month  # 1~12
+        matched_term = all_terms[matched_idx]
+
+        # 절월 인덱스 = 해당 연도(lookup_year)의 절기 시퀀스에서 몇 번째인지 (1-indexed)
+        # 연도별 절기 12개를 solar_terms_date 순으로 재정렬해 순위를 결정한다
+        curr_year_sorted = sorted(terms_curr_year, key=lambda t: t.solar_terms_date)
+        # matched_term 이 curr_year 에 없으면(전해/다음해 절기) 가장 가까운 것으로 폴백
+        if matched_term in curr_year_sorted:
+            setsu_month_index = curr_year_sorted.index(matched_term) + 1
+        else:
+            # prev_year 최후 절기 → 12월 (丑月)에 해당
+            setsu_month_index = 12
+
+        # setsu_month_index 를 1~12 로 클램프
+        setsu_month_index = max(1, min(12, setsu_month_index))
 
         # 다음 절월의 절입일 - 1 을 종료일로 한다
-        next_idx = all_terms.index(matched_term) + 1
+        next_idx = matched_idx + 1
         if next_idx < len(all_terms):
-            next_term = all_terms[next_idx]
-            period_end = next_term.solar_terms_date - timedelta(days=1)
+            period_end = all_terms[next_idx].solar_terms_date - timedelta(days=1)
         else:
             period_end = matched_term.solar_terms_date + timedelta(days=29)  # 폴백
 
         return setsu_month_index, matched_term.solar_terms_date, period_end
+
+    def get_period_start_for_setsu(self, year: int, setsu_index: int) -> Optional[date]:
+        """절월 인덱스(1=寅月…12=丑月)에 해당하는 절입일(date)을 반환한다.
+
+        UseCase 에서 getattr() 없이 직접 접근할 수 있도록 제공하는 퍼블릭 헬퍼.
+
+        설월 인덱스 → 그레고리력 (연, 월) 대응:
+          1(寅月) → (year, 2)   立春
+          2(卯月) → (year, 3)   啓蟄
+          …
+          11(子月) → (year, 12) 大雪
+          12(丑月) → (year+1, 1) 小寒
+
+        Args:
+            year: 조회 연도 (節月 기준 해당 연도)
+            setsu_index: 절월 인덱스 (1~12)
+
+        Returns:
+            절입일 date, 또는 DB에 없는 경우 None
+        """
+        if not 1 <= setsu_index <= 12:
+            logger.warning("get_period_start_for_setsu: invalid setsu_index=%s", setsu_index)
+            return None
+
+        # 절월 인덱스 → (year, gregorian_month) 변환
+        if setsu_index == 12:
+            term_year, term_month = year + 1, 1   # 丑月=小寒: 다음해 1월
+        else:
+            term_year, term_month = year, setsu_index + 1  # 寅月=立春: 해당년 2월 …
+
+        term = self._solar_terms_repo.get_term_by_month(term_year, term_month)
+        if term is None and setsu_index == 12:
+            # 丑月 폴백: DB에서 연도 경계가 다를 경우 당해 1월 시도
+            term = self._solar_terms_repo.get_term_by_month(year, 1)
+
+        return term.solar_terms_date if term else None

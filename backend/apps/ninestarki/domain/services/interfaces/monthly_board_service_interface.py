@@ -3,16 +3,23 @@ from __future__ import annotations
 
 from abc import ABC, abstractmethod
 from datetime import date
-from typing import Protocol
+from typing import TYPE_CHECKING, Optional
+
+if TYPE_CHECKING:
+    from apps.ninestarki.domain.services.monthly_board_domain_service import MonthlyBoardResult
 
 
-class IMonthlyBoardDomainService(Protocol):
+class IMonthlyBoardDomainService(ABC):
     """월반(月盤) 편성(組立) 서비스의 도메인 포트.
 
-    구체적인 구현은 Infrastructure 레이어(또는 서비스 레이어)에 위치하며,
+    구체적인 구현은 Domain 레이어(MonthlyBoardDomainService)에 위치하며,
     이 인터페이스를 통해 Use Case 레이어에서 의존성을 역전시킨다.
+
+    런타임 DI(Injector)는 ABC 기반 바인딩을 사용하므로,
+    이 모듈은 프로젝트 표준(ABC + @abstractmethod)에 맞춰 정의한다.
     """
 
+    @abstractmethod
     def get_monthly_board(
         self,
         target_date: date,
@@ -29,9 +36,15 @@ class IMonthlyBoardDomainService(Protocol):
         Returns:
             MonthlyBoardResult 인스턴스
         """
-        ...
 
+    @abstractmethod
+    def get_period_start_for_setsu(self, year: int, setsu_index: int) -> Optional[date]:
+        """절월 인덱스(1=寅月…12=丑月)에 해당하는 절입일을 반환한다.
 
-# 순환 임포트를 피하기 위해 TYPE_CHECKING 블록 없이 직접 import 가능하도록
-# MonthlyBoardResult는 monthly_board_domain_service 모듈에 정의한다.
-from apps.ninestarki.domain.services.monthly_board_domain_service import MonthlyBoardResult  # noqa: E402, F401
+        Args:
+            year: 조회 연도
+            setsu_index: 절월 인덱스 (1~12)
+
+        Returns:
+            절입일 date, 또는 DB에 없는 경우 None
+        """

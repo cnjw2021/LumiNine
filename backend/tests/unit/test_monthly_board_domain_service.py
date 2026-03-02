@@ -218,7 +218,8 @@ def _make_solar_terms_repo() -> _StubSolarTermsRepo:
             base = date(year, 2, 4) + timedelta(days=day_of_year_offset)
             # Adjust for dates exceeding December
             while base.year > year:
-                base = base.replace(day=base.day - 1)
+                base -= timedelta(days=1)
+
             zt = "甲子" if year == 2026 else "乙丑" if year == 2025 else "癸卯"
             terms.append(_StubSolarTerm(year, month, base, zodiac=zt, star_number=month))
     return _StubSolarTermsRepo(terms)

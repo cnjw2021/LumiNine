@@ -155,21 +155,15 @@ class MonthlyDirectionsUseCase:
     def _resolve_setsu_month_start(self, year: int, setsu_index: int) -> Optional[date]:
         """절월(節月) 인덱스에 해당하는 절입일(date)을 취득한다.
 
-        節月インデックスとDBのmonth列の対応関係:
-          setsu_index=1(寅月) ← solar_terms.month=1 (立春)
-          setsu_index=2(卯月) ← solar_terms.month=2 (啓蟄)
-          ...
-          setsu_index=12(丑月) ← solar_terms.month=12 (小寒)
-        """
-        # MonthlyBoardDomainService 는 ISolarTermsRepository を持つが UseCase からは直接は触れない。
-        # _monthly_board が内部的に SolarTermsRepo を保持しているため、
-        # ここでは YearStarDomainService が持つ SolarTermsRepo 経由で取得する。
-        solar_terms_repo = getattr(self._year_star_service, "solar_terms_repo", None)
-        if solar_terms_repo is None:
-            return None
+        MonthlyBoardDomainService.get_period_start_for_setsu() 경유로 접근하므로
+        캡슐화를 유지한다. (getattr() 등의 내부 속성 직접 접근은 사용하지 않음)
 
-        term = solar_terms_repo.get_term_by_month(year, setsu_index)
-        if term is None:
-            # 丑月(setsu_index=12) は小寒の年がずれる場合がある
-            term = solar_terms_repo.get_term_by_month(year - 1, setsu_index)
-        return term.solar_terms_date if term else None
+        Args:
+            year: 조회 연도
+            setsu_index: 절월 인덱스 (1=寅月/立春 … 12=丑月/小寒)
+
+        Returns:
+            절입일, 또는 DB에 데이터가 없는 경우 None
+        """
+        return self._monthly_board.get_period_start_for_setsu(year, setsu_index)
+
