@@ -194,7 +194,7 @@ _GOKOTON_MAP: dict[int, int] = {
 }
 
 # 年盤中宮グループ → 1月(寅月)の月盤中宮星
-_GROUP_START_STAR: dict[frozenset, int] = {
+_GROUP_START_STAR: dict[frozenset[int], int] = {
     frozenset({1, 4, 7}): 8,  # 上元
     frozenset({2, 5, 8}): 5,  # 中元
     frozenset({3, 6, 9}): 2,  # 下元

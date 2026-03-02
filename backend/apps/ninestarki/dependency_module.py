@@ -54,6 +54,7 @@ from apps.ninestarki.infrastructure.persistence.star_grid_pattern_repository imp
 from apps.ninestarki.domain.repositories.monthly_directions_repository_interface import IMonthlyDirectionsRepository
 from apps.ninestarki.infrastructure.persistence.monthly_directions_repository import MonthlyDirectionsRepository
 from apps.ninestarki.domain.services.monthly_board_domain_service import MonthlyBoardDomainService
+from apps.ninestarki.domain.services.interfaces.monthly_board_service_interface import IMonthlyBoardDomainService
 from apps.ninestarki.domain.services.year_star_domain_service import YearStarDomainService
 from apps.ninestarki.use_cases.monthly_directions_use_case import MonthlyDirectionsUseCase
 
@@ -203,5 +204,6 @@ class AppModule(Module):
         binder.bind(UpdateSolarTermUseCase, to=UpdateSolarTermUseCase, scope=singleton)
         binder.bind(AnnualDirectionsDomainService, to=AnnualDirectionsDomainService, scope=singleton)
         binder.bind(MonthlyBoardDomainService, to=MonthlyBoardDomainService, scope=singleton)
+        binder.bind(IMonthlyBoardDomainService, to=MonthlyBoardDomainService, scope=singleton)
         binder.bind(YearStarDomainService, to=YearStarDomainService, scope=singleton)
         binder.bind(MonthlyDirectionsUseCase, to=MonthlyDirectionsUseCase, scope=singleton)

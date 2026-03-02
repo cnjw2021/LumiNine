@@ -36,13 +36,22 @@ const path = require('path');
 
 // ── CLI 파싱 ──────────────────────────────────────────────
 const args = process.argv.slice(2);
-const getFlag = (flag, defaultVal = null) => {
+const getFlag = (flag, defaultVal = null, requireValue = false) => {
     const idx = args.indexOf(flag);
     if (idx === -1) return defaultVal;
-    return args[idx + 1] !== undefined ? args[idx + 1] : defaultVal;
+    const next = args[idx + 1];
+    if (next === undefined || next.startsWith('--')) {
+        if (requireValue) {
+            console.error(`❌ ${flag} 옵션에는 값이 필요합니다.`);
+            console.error('사용법: node scripts/pr-review-reply.js --batch-file <path> [옵션]');
+            process.exit(1);
+        }
+        return defaultVal;
+    }
+    return next;
 };
 
-const batchFilePath = getFlag('--batch-file');
+const batchFilePath = getFlag('--batch-file', null, true);
 const continueOnError = args.includes('--continue-on-error');
 const failedBatchOut = getFlag('--failed-batch-out');
 const logFilePath = getFlag('--log-file');
@@ -52,6 +61,7 @@ if (!batchFilePath) {
     console.error('❌ --batch-file 옵션이 필요합니다.');
     process.exit(1);
 }
+
 
 if (!fs.existsSync(batchFilePath)) {
     console.error(`❌ 배치 파일을 찾을 수 없습니다: ${batchFilePath}`);

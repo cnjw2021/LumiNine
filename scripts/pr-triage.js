@@ -63,9 +63,10 @@ const emitManualReplyBatch = args.includes('--emit-manual-reply-batch');
 const includeResolved = args.includes('--include-resolved');
 const handledUrlsPath = getFlag('--handled-urls', null);
 
-// ── 설정 ──────────────────────────────────────────────────
-const PR_REVIEW_DIR = '.pr-review';
+const prReviewDirFromFlag = getFlag('--pr-review-dir', null);
+const PR_REVIEW_DIR = prReviewDirFromFlag || process.env.PR_REVIEW_DIR || '.pr-review';
 fs.mkdirSync(PR_REVIEW_DIR, { recursive: true });
+
 
 // ── handled URLs 로드 ─────────────────────────────────────
 let handledUrls = new Set();
@@ -76,12 +77,47 @@ if (handledUrlsPath && fs.existsSync(handledUrlsPath)) {
     } catch { /* ignore */ }
 }
 
+// ── 저장소 owner/name 결정 ────────────────────────────────
+// 우선순위: 1) --repo OWNER/REPO CLI 옵션
+//           2) GITHUB_REPOSITORY 환경변수 (GitHub Actions)
+//           3) gh repo view --json owner,name 자동 조회
+const repoArg = getFlag('--repo', null);
+let repoOwner = null;
+let repoName = null;
+
+if (repoArg) {
+    const parts = repoArg.split('/');
+    if (parts.length === 2 && parts[0] && parts[1]) {
+        repoOwner = parts[0]; repoName = parts[1];
+    } else {
+        console.error('❌ --repo 옵션은 "OWNER/REPO" 형식이어야 합니다.');
+        process.exit(1);
+    }
+} else if (process.env.GITHUB_REPOSITORY) {
+    const parts = process.env.GITHUB_REPOSITORY.split('/');
+    if (parts.length === 2) { repoOwner = parts[0]; repoName = parts[1]; }
+}
+
+if (!repoOwner || !repoName) {
+    try {
+        const out = execSync('gh repo view --json owner,name', { encoding: 'utf8' });
+        const info = JSON.parse(out);
+        repoOwner = (info.owner && (info.owner.login || info.owner)) || repoOwner;
+        repoName = info.name || repoName;
+    } catch (e) {
+        console.error('❌ 현재 리포지토리를 자동으로 조회하지 못했습니다.');
+        console.error('   --repo OWNER/REPO 옵션 또는 GITHUB_REPOSITORY 환경변수를 설정해 주세요.');
+        process.exit(1);
+    }
+}
+
 // ── GraphQL: PR 리뷰 스레드 조회 ─────────────────────────
 console.log(`\n🔍 PR #${PR} Copilot 리뷰 코멘트 조회 중...`);
 
 const query = `
 {
-  repository(owner: "cnjw2021", name: "LumiNine") {
+  repository(owner: "${repoOwner}", name: "${repoName}") {
+
     pullRequest(number: ${PR}) {
       title
       reviewThreads(first: 50) {

@@ -139,7 +139,7 @@ class TestGetMonthlyKanshi:
     """月干支算出ロジックの検証 (五虎遁 §3 に基づく)."""
 
     # ── 甲年(index=0) の1月(寅月) → 天干=丙 ───────────
-    def test_kinen_month1_is_hinoto_tora(self):
+    def test_kinen_month1_is_hinoe_tora(self):
         stem, branch = get_monthly_kanshi(0, 1)  # 甲年, 寅月
         assert stem == "丙"
         assert branch == "寅"
@@ -209,8 +209,6 @@ def _make_solar_terms_repo() -> _StubSolarTermsRepo:
       - 다음해 1월 절기 (month 1=小寒)
     로 구성한다. (AuspiciousCalendarService.get_solar_terms_for_year() 기준)
     """
-    from datetime import timedelta
-
     terms = []
     for year in [2024, 2025, 2026, 2027]:
         # 2~12월: 각 월 4일을 절입일로 설정
@@ -227,6 +225,7 @@ def _make_solar_terms_repo() -> _StubSolarTermsRepo:
         terms.append(_StubSolarTerm(year, 1, solar_date, zodiac=zt, star_number=1))
 
     return _StubSolarTermsRepo(terms)
+
 
 
 

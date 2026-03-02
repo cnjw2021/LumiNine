@@ -14,7 +14,7 @@ from typing import Any, Dict, Optional
 from injector import inject
 
 from apps.ninestarki.domain.services.year_star_domain_service import YearStarDomainService
-from apps.ninestarki.domain.services.monthly_board_domain_service import MonthlyBoardDomainService
+from apps.ninestarki.domain.services.interfaces.monthly_board_service_interface import IMonthlyBoardDomainService
 from core.utils.logger import get_logger
 
 logger = get_logger(__name__)
@@ -25,18 +25,17 @@ class MonthlyDirectionsUseCase:
 
     Args:
         year_star_service: 연반 중궁성 / 연간지 정보 제공
-        monthly_board_service: 월반 편성 도메인 서비스
+        monthly_board_service: 월반 편성 도메인 포트 (IMonthlyBoardDomainService)
     """
 
     @inject
     def __init__(
         self,
         year_star_service: YearStarDomainService,
-        monthly_board_service: MonthlyBoardDomainService,
+        monthly_board_service: IMonthlyBoardDomainService,
     ) -> None:
         self._year_star_service = year_star_service
         self._monthly_board = monthly_board_service
-
 
     def execute(
         self,
