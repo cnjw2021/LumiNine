@@ -17,6 +17,7 @@ from injector import inject
 from apps.ninestarki.domain.repositories.solar_terms_repository_interface import ISolarTermsRepository
 from apps.ninestarki.domain.repositories.star_grid_pattern_repository_interface import IStarGridPatternRepository
 from apps.ninestarki.domain.exceptions import SetsuMonthNotFoundError
+from apps.ninestarki.domain.services.interfaces.monthly_board_service_interface import IMonthlyBoardDomainService
 from core.utils.logger import get_logger
 
 logger = get_logger(__name__)
@@ -66,7 +67,7 @@ class MonthlyBoardResult:
 # Domain Service
 # ──────────────────────────────────────────────
 
-class MonthlyBoardDomainService:
+class MonthlyBoardDomainService(IMonthlyBoardDomainService):
     """월반(月盤) 편성 파이프라인을 총괄하는 도메인 서비스.
 
     solar_terms_data 에 사전 구축된 star_number(월반 중궁성)와 zodiac(월간지)를
