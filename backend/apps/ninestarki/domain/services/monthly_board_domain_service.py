@@ -233,7 +233,7 @@ class MonthlyBoardDomainService:
 
         UseCase 에서 getattr() 없이 직접 접근할 수 있도록 제공하는 퍼블릭 헬퍼.
 
-        설월 인덱스 → 그레고리력 (연, 월) 대응:
+        절월 인덱스 → 그레고리력 (연, 월) 대응:
           1(寅月) → (year, 2)   立春
           2(卯月) → (year, 3)   啓蟄
           …

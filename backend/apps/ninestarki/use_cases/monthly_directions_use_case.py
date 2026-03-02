@@ -19,6 +19,7 @@ from apps.ninestarki.domain.exceptions import (
     YearInfoNotFoundError,
     MonthlyBoardCalculationError,
     SetsuMonthNotFoundError,
+    NineStarKiError,
 )
 from core.utils.logger import get_logger
 
@@ -139,7 +140,7 @@ class MonthlyDirectionsUseCase:
                     "directions": fortune_status,
                 }
 
-            except Exception as exc:
+            except NineStarKiError as exc:
                 logger.warning(
                     "setsu_index=%d の月盤編成でエラー: %s", setsu_index, exc, exc_info=True
                 )
