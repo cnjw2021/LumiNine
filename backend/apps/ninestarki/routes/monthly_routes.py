@@ -320,8 +320,8 @@ def create_monthly_bp():
             year = request.args.get('year', type=int)
             month_index = request.args.get('month_index', type=int)
 
-            # 명시적으로 방지: 구형 파라미터(month) 혼용 방지
-            if request.args.get('month') is not None and month_index is None:
+            # 구형 파라미터인 'month'가 어떤 형태로든 전달되면 요청을 거절한다.
+            if request.args.get('month') is not None:
                 return jsonify({'error': "파라미터 체계가 변경되었습니다. 'month' 대신 'month_index'를 사용해주세요."}), 400
 
             # ── 필수 파라미터 검증 ─────────────────────────────
