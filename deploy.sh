@@ -53,7 +53,7 @@ echo ""
 # --------------------------------------------------
 # SSL 인증서 및 보안 파일 확인/복구
 # --------------------------------------------------
-DOMAIN="831shop.site"
+DOMAIN="[My Domain]"
 
 # 1. Nginx 기본 보안 파일 복구 (init-ssl.sh가 중간에 끊겼을 때 대비)
 if [ ! -f "certbot/conf/options-ssl-nginx.conf" ]; then
