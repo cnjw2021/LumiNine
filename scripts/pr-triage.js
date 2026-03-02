@@ -26,7 +26,7 @@
  *   - Node.js 18+
  */
 
-const { execSync } = require('child_process');
+const { execSync, execFileSync } = require('child_process');
 const fs = require('fs');
 const path = require('path');
 
