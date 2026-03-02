@@ -8,7 +8,9 @@
 ## 📂 주요 파일별 역할
 - `src/app/`: Next.js App Router 구조의 페이지 컴포넌트들 보관. `page.tsx` (개별 페이지), `layout.tsx` (공통 레이아웃).
 - `src/components/`: 재사용 가능한 UI 컴포넌트 (ex: Button, Input, Modal, 九星盤 시각화 등 UI 조각들).
+- `src/contexts/` & `src/stores/`: 전역 상태 관리 (React Context API 및 Zustand 등).
 - `src/hooks/`: 컴포넌트 로직의 재사용을 위한 Custom React Hooks (예: API 호출 훅, 폼 관리 훅).
+- `src/lib/`: 외부 라이브러리 초기화 및 공통 인스턴스 설정 코드.
 - `src/types/`: TypeScript 타입 정의 모음 (API 응답 스키마, 주요 모델 타입).
 - `src/utils/`: 데이터 포맷팅이나 공통 헬퍼 함수들의 집합.
 - `next.config.js` / `eslint.config.mjs`: Next.js 설정 및 ESLint 규칙 파일.

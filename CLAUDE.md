@@ -7,9 +7,9 @@
   - Frontend: Next.js, TypeScript, Mantine UI
   - Database: MySQL 8.0, Redis (for Task Queue)
   - PDF 생성: WeasyPrint (Worker Queue 경유)
-  - Infrastructure: Docker, Docker Compose, Nginx, Certbot (HTTPS)
+  - Infrastructure: Docker, Docker Compose, Nginx, Certbot (HTTPS), New Relic (Monitoring)
 - **Deployment Environment (배포 환경)**:
-  - ConoHa VPS 위에 Docker Compose를 이용한 컨테이너 기반 배포 (운영환경용 `docker-compose.yml`, 개발환경용 `docker-compose.dev.yml`)
+  - Docker Compose를 이용한 컨테이너 기반 배포 (`docker-compose.yml`, `docker-compose.dev.yml`, `docker-compose.prod.yml`)
   - Nginx 리버스 프록시 및 Certbot을 통한 SSL 자동 갱신 지원 환경
 
 ## 🔐 인증 흐름 (Authentication Flow)
@@ -24,8 +24,9 @@
 
 - **구성기학 기본 계산**: `/api/nine-star/calculate` (생년월일 기반 본명성, 월명성 등 계산 및 감정)
 - **상성(궁합) 감정**: `/api/nine-star/compatibility` (두 사람의 별을 기반으로 상성 결과 반환)
-- **월반/연반(방위) 차트**: `/api/nine-star/monthly-chart`, `/api/monthly/directions` (월별 길방위/흉방위 계산)
+- **월반/연반(방위) 차트**: `/api/nine-star/monthly-chart`, `/api/monthly/directions` (월별 길방위/흉방위 계산 및 길흉방 산출 로직)
 - **운세 및 가이던스**: `/api/star-life-guidance` (별자리별 삶의 지침 및 운세 제공)
+- **파워스톤 매핑**: (본명성/월명성 및 필요 기운에 따른 맞춤형 파워스톤(원석) 매핑 및 추천 로직 추가 예정)
 
 ## 📁 디렉토리별 역할 1줄 요약
 
@@ -35,6 +36,7 @@
 - `nginx/`: Nginx 웹 서버 및 리버스 프록시 설정 파일
 - `certbot/`: SSL/TLS 인증서 발급 및 갱신 설정
 - `docs/`: 프로젝트 관련 문서 보관
+- `Makefile`, `deploy.sh`, `init-ssl.sh`: CI/CD 배포 관리를 위한 스크립트 모음
 
 ## 🗄 DB 테이블과 관계 요약
 

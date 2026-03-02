@@ -14,6 +14,9 @@
   - `apps/ninestarki/use_cases/`: 애플리케이션 서비스 로직 (비즈니스 흐름 제어).
   - `apps/ninestarki/infrastructure/`: 리포지토리의 구체적인 구현 및 외부 API/DB 연동.
   - `apps/ninestarki/presentation/` & `routes/`: API 엔드포인트(FastAPI Router) 및 Pydantic Request/Response 스키마.
+  - `apps/ninestarki/services/`: 외부 연동 및 부가적인 도메인 서비스를 관장.
+  - `apps/ninestarki/templates/` & `static/`: 생성 결과물(PDF 등)을 위한 HTML 템플릿과 정적 자원.
+  - `apps/ninestarki/constants/` & `utils/`: 도메인 내에서 공통으로 사용되는 상수 및 헬퍼 함수.
 - `db_manage.py`: 데이터베이스 초기화(init) 및 리셋(reset) 등을 수행하기 위한 유틸리티 스크립트.
 
 ## 📦 외부 의존성
@@ -27,3 +30,8 @@
 1. **Clean Architecture 준수**: `use_cases` 나 `domain` 레이어에 `FastAPI`나 `SQLAlchemy` 같은 특정 인프라 코드가 직접적으로 침투하지 않도록 유의하세요.
 2. **DB 스키마 변경**: 모델을 변경할 경우, 데이터베이스의 마이그레이션 전략이나 초기화 SQL(`mysql/init/`)을 함께 고려하세요. (현재 ORM 변경과 별개로 순수 SQL로 테이블이 생성되는 구조입니다).
 3. **환경에 따른 설정 분리**: 개발 환경에서만 동작하는 로직이 본번 환경에 포함되지 않도록 `core/config.py`의 `BaseConfig`, `DevelopmentConfig`, `ProductionConfig`의 구조를 잘 활용하세요.
+
+## 🚀 향후 확장 계획 (Upcoming Extensions)
+- **월반(月盤) 길흉방위 판별 로직 추가**: 연단위 방위 판별 로직을 확장하여 절입일 기준 월단위 길흉방위 판별 기능 개발.
+- **파워스톤 매칭 시스템**: 본명성(기본석), 월운석, 호신석으로 이루어진 3-Layer 파워스톤 추천 로직 적용.
+- **상세 설계서 참조**: 위 두 기능의 알고리즘 및 오행 상생상극 매칭 규칙은 [월단위 길방위 및 파워스톤 매칭 설계서](../docs/monthly-direction-with-powerstone.md) 문서를 참고하여 구현할 예정입니다.
