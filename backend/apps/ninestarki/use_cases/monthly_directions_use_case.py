@@ -142,16 +142,24 @@ class MonthlyDirectionsUseCase:
 
             except NineStarKiError as exc:
                 logger.warning(
-                    "setsu_index=%d の月盤編成でエラー: %s", setsu_index, exc, exc_info=True
+                    "setsu_index=%d の月盤編成でドメインエラー: %s", setsu_index, exc
                 )
-                # 단일 월 조회인 경우에는 예외를 그대로 상위로 전파하여
-                # 호출자가 명시적으로 실패를 인지할 수 있게 한다.
+                # 도메인 에러(SetsuMonthNotFoundError 등)는 단일 조회 시 그대로 상위 전파(422 처리를 위함)
+                if target_month is not None:
+                    raise exc
+                # 연간 일괄 조회인 경우 건너뜀
+                continue
+
+            except Exception as exc:
+                logger.warning(
+                    "setsu_index=%d の月盤編成で予期せぬエラー: %s", setsu_index, exc, exc_info=True
+                )
+                # 예상치 못한 일반 형태의 Exception만 MonthlyBoardCalculationError(500)로 래핑
                 if target_month is not None:
                     raise MonthlyBoardCalculationError(
                         f"절월 {setsu_index} 의 월반 편성 중 오류가 발생했습니다.",
                         details=str(exc),
                     ) from exc
-                # 연간 일괄 조회인 경우에만 해당 월을 건너뛰고 나머지 월을 계속 처리한다.
                 continue
 
         # ── 5. 결과 검증 ──────────────────────────────
