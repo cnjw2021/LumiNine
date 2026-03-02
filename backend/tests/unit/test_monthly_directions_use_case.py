@@ -175,6 +175,6 @@ class TestMonthlyDirectionsUseCaseMissingYearInfo:
             monthly_board_service=_StubMonthlyBoardService(),
         )
 
-    def test_raises_value_error_when_year_info_missing(self, use_case):
+    def test_raises_year_info_not_found_error_when_year_info_missing(self, use_case):
         with pytest.raises(YearInfoNotFoundError, match="연반 정보"):
             use_case.execute(main_star=4, month_star=7, target_year=2026, target_month=1)
