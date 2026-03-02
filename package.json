@@ -1,0 +1,11 @@
+{
+    "name": "luminne-dev-tools",
+    "version": "1.0.0",
+    "description": "Developer tooling scripts for LumiNine: PR triage, review reply automation",
+    "private": true,
+    "scripts": {
+        "pr:triage": "node scripts/pr-triage.js",
+        "pr:review-reply": "node scripts/pr-review-reply.js"
+    },
+    "dependencies": {}
+}

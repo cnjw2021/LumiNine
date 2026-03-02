@@ -4,6 +4,8 @@ from flask import Blueprint, jsonify, request
 from flask_jwt_extended import jwt_required
 from core.database import db
 from apps.ninestarki.domain.repositories.monthly_directions_repository_interface import IMonthlyDirectionsRepository
+from apps.ninestarki.use_cases.monthly_directions_use_case import MonthlyDirectionsUseCase
+from apps.ninestarki.domain.exceptions import NineStarKiError
 from core.models.star_groups import StarGroup
 from flask_injector import inject
 from core.auth.auth_utils import permission_required
@@ -272,5 +274,87 @@ def create_monthly_bp():
             db.session.rollback()
             logger.error(f"月盤データ一括インポートエラー: {str(e)}")
             return jsonify({'error': str(e)}), 500
-            
-    return monthly_bp 
+
+    # ─────────────────────────────────────────────────────────────
+    # 新エンドポイント: 연/월 기준 동적 월반 방위 산출 (Phase 1 기반 로직)
+    # ─────────────────────────────────────────────────────────────
+    @monthly_bp.route('/monthly-board', methods=['GET'])
+    @jwt_required()
+    @inject
+    def get_monthly_board(use_case: MonthlyDirectionsUseCase):
+        """연/월 기준 월반(月盤) 방위 길흉 결과를 반환하는 API.
+
+        Query Parameters:
+            main_star (int, 필수): 사용자 본명성 (1~9)
+            month_star (int, 필수): 사용자 월명성 (1~9)
+            year (int, 필수): 조회 연도 (예: 2026)
+            month_index (int, 選択): 조회 절월 인덱스 (1=寅月/立春 … 12=丑月/小寒). 
+                None の場合、該当年の全節月について月盤方位を算出する。
+
+        Returns:
+            200 OK: {
+                "main_star": int,
+                "month_star": int,
+                "target_year": int,
+                "year_center_star": int,
+                "year_zodiac": str,
+                "monthly_boards": {
+                    "setsu_month_1": {
+                        "setsu_month_index": int,
+                        "center_star": int,
+                        "month_zodiac": str,
+                        "period_start": str,
+                        "period_end": str,
+                        "directions": { ... }
+                    },
+                    ...
+                }
+            }
+            400 Bad Request: 필수 파라미터 누락
+            422 Unprocessable Entity: 파라미터 값이 범위 밖
+            500 Internal Server Error
+        """
+        try:
+            main_star = request.args.get('main_star', type=int)
+            month_star = request.args.get('month_star', type=int)
+            year = request.args.get('year', type=int)
+            month_index = request.args.get('month_index', type=int)
+
+            # 구형 파라미터인 'month'가 어떤 형태로든 전달되면 요청을 거절한다.
+            if request.args.get('month') is not None:
+                return jsonify({'error': "파라미터 체계가 변경되었습니다. 'month' 대신 'month_index'를 사용해주세요."}), 400
+
+            # ── 필수 파라미터 검증 ─────────────────────────────
+            missing = [k for k, v in {'main_star': main_star, 'month_star': month_star, 'year': year}.items() if v is None]
+            if missing:
+                return jsonify({'error': f'필수 파라미터 누락: {", ".join(missing)}'}), 400
+
+            # ── 범위 검증 ──────────────────────────────────────
+            if not 1 <= main_star <= 9:
+                return jsonify({'error': 'main_star は 1~9 の範囲で指定してください'}), 422
+            if not 1 <= month_star <= 9:
+                return jsonify({'error': 'month_star は 1~9 の範囲で指定してください'}), 422
+            if month_index is not None and not 1 <= month_index <= 12:
+                return jsonify({'error': 'month_index は 1~12 の範囲で指定してください'}), 422
+
+            # ── 유즈케이스 실행 ────────────────────────────────
+            result = use_case.execute(
+                main_star=main_star,
+                month_star=month_star,
+                target_year=year,
+                target_month=month_index,
+            )
+
+            return jsonify(result), 200
+
+        except ValueError as e:
+            logger.warning("monthly-board API ValueError: %s", e)
+            return jsonify({'error': str(e)}), 422
+        except NineStarKiError as e:
+            logger.warning("monthly-board API NineStarKiError: %s (code=%s)", e, e.code)
+            return jsonify(e.to_dict()), e.status
+        except Exception as e:
+            logger.error("monthly-board API エラー: %s", e, exc_info=True)
+            return jsonify({'error': '内部エラーが発生しました。'}), 500
+
+    return monthly_bp
