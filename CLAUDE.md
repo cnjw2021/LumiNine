@@ -52,6 +52,7 @@
 - **Frontend (TypeScript)**: `eslint`와 `prettier` (`eslint-config-next`) 규칙을 준수. 가급적 App Router 패턴의 Server Component와 Client Component(`"use client"`)를 명확히 분리하여 사용. Custom hooks 및 Mantine UI 컴포넌트 활용.
 - **DB**: MySQL DDL/DML은 `mysql/` 디렉토리에서 버전 관리
 - **공통**: 변수명/함수명은 영어, 주석은 한국어 OK
+- **📌 코드 리뷰 가이드라인**: 과거 리뷰에서 반복된 실수를 방지하기 위한 체크리스트 → [docs/CODE_REVIEW_GUIDELINES.md](docs/CODE_REVIEW_GUIDELINES.md) 를 코드 작성 전 반드시 참조
 
 ## 🔐 환경변수 목록
 
