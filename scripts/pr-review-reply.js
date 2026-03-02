@@ -88,7 +88,16 @@ if (!repoInfo) {
 }
 const { owner, repo, pr: PR } = repoInfo;
 
-// ── 처리 루프 ─────────────────────────────────────────────
+// ── 현재 git 커밋 해시 취득 ──────────────────────────────
+let commitHash = '';
+try {
+    commitHash = execSync('git rev-parse --short HEAD', { encoding: 'utf-8' }).trim();
+    console.log(`📌 대응 커밋 해시: ${commitHash}`);
+} catch {
+    console.warn('⚠️  git commit hash 취득 실패. reply에 해시 미포함.');
+}
+
+
 console.log(`\n🚀 PR #${PR} 리뷰 reply 배치 처리 시작 (${batch.length}건)\n`);
 
 const succeeded = [];
@@ -124,11 +133,17 @@ for (const item of batch) {
     try {
         // 1) reply 작성
         if (reply_body) {
+            // 커밋 해시 footer 자동 추가
+            const hashFooter = commitHash
+                ? `\n\n> 📌 대응 커밋: \`${commitHash}\``
+                : '';
+            const finalReplyBody = reply_body + hashFooter;
+
             const replyMutation = `
 mutation {
   addPullRequestReviewThreadReply(input: {
     pullRequestReviewThreadId: "${thread_id}"
-    body: ${JSON.stringify(reply_body)}
+    body: ${JSON.stringify(finalReplyBody)}
   }) {
     comment { id url }
   }
@@ -136,6 +151,7 @@ mutation {
             ghExec(`gh api graphql -f query='${replyMutation.replace(/'/g, "'\\''")}'`);
             console.log(`  ✅ reply 등록 완료`);
         }
+
 
         // 2) resolve (action === 'reply_and_resolve')
         if (action === 'reply_and_resolve') {
