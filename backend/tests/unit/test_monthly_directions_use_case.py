@@ -73,13 +73,17 @@ class _StubMonthlyBoardService:
         return date(year, max(1, min(12, setsu_index + 1)), 4)
 
     def get_monthly_board(self, target_date: date) -> MonthlyBoardResult:
-        # setsu_index 역산 로직 정밀화:
-        # - 1월 1~4일: 전년 12월(丑月, setsu_index=12)에 속함 (간략화된 Stub 규칙)
-        # - 그 외: month-1
+        # setsu_index 역산 로직 (도메인 규칙에 맞춘 단순화 버전):
+        # - 12월 大雪(setsu=11) 기간은 다음 해 1/4까지 이어짐
+        # - 1월 1~4일: 전년 12월(子月, setsu_index=11)에 속함
+        # - 1월 5일 이후: 小寒(setsu_index=12) 시작
+        # - 그 외 달: 단순히 month-1 로 매핑 (테스트용 Stub 규칙)
         if target_date.month == 1 and target_date.day < 5:
+            idx = 11
+        elif target_date.month == 1:
             idx = 12
         else:
-            idx = target_date.month - 1 if target_date.month > 1 else 12
+            idx = target_date.month - 1
         return _make_board_result(idx)
 
 
