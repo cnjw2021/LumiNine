@@ -93,7 +93,16 @@ def _make_solar_terms_repo() -> _StubSolarTermsRepo:
         for month in range(2, 13):
             solar_date = date(year, month, 4)
             zt = "甲子" if year == 2026 else "乙丑" if year == 2025 else "癸卯"
-            terms.append(_StubSolarTerm(year, month, solar_date, zodiac=zt, star_number=month))
+            # star_number はドメイン不変条件に合わせて 1~9 にマッピングする
+            terms.append(
+                _StubSolarTerm(
+                    year,
+                    month,
+                    solar_date,
+                    zodiac=zt,
+                    star_number=((month - 1) % 9) + 1,
+                )
+            )
         # 다음해 1월(小寒) 절기를 당해 연도 레코드로는 넣지 않는다 (next_year 의 것)
 
     # next_year 의 1월 절기(小寒) → setsu_index=12 에 해당

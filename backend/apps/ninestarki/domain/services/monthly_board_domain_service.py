@@ -195,7 +195,8 @@ class MonthlyBoardDomainService(IMonthlyBoardDomainService):
                 matched_pos = None  # 시퀀스 外
             else:
                 raise SetsuMonthNotFoundError(
-                    f"target_date={target_date} に対応する절기を찾을 수 없습니다.",
+                    f"절기 데이터를 찾을 수 없습니다. target_date={target_date}",
+                    details="DB의 solar_terms 테이블에 해당 날짜 이전/당일 절기가 존재하는지 확인해 주세요.",
                 )
 
         # 위치 기반 setsu_month_index (1-indexed)
