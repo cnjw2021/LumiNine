@@ -1,5 +1,0 @@
-5	OPEN	Phase 5: UnivaPay 정기결제(구독) 및 결제 파사드 모듈 구현		2026-03-02T04:10:15Z
-4	OPEN	Phase 4: API & 프론트엔드 연동 (Presentation)		2026-03-02T03:10:02Z
-3	OPEN	Phase 3: DB 설계 및 인프라 구현 (Data Layer)		2026-03-02T03:09:40Z
-2	OPEN	Phase 2: 매칭 엔진 코어 개발 (Core Engine)		2026-03-02T03:09:16Z
-1	OPEN	Phase 1: 기반 시스템 구축 (Foundation)		2026-03-02T03:08:58Z

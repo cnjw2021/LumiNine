@@ -60,15 +60,15 @@ const getFlag = (flag, defaultVal = null, requireValue = false) => {
 
 const limitAutoFixStr = getFlag('--limit-auto-fix', '5');
 const limitAutoFix = parseInt(limitAutoFixStr, 10);
-if (!Number.isFinite(limitAutoFix) || !Number.isInteger(limitAutoFix)) {
-    console.error('❌ --limit-auto-fix 옵션은 정수 값을 필요로 합니다.');
+if (!Number.isFinite(limitAutoFix) || !Number.isInteger(limitAutoFix) || limitAutoFix < 1) {
+    console.error('❌ --limit-auto-fix 옵션은 1 이상의 정수 값을 필요로 합니다.');
     console.error('사용법: node scripts/pr-triage.js <PR 번호> [옵션]');
     process.exit(1);
 }
 const offsetAutoFixStr = getFlag('--offset-auto-fix', '0');
 const offsetAutoFix = parseInt(offsetAutoFixStr, 10);
-if (!Number.isFinite(offsetAutoFix) || !Number.isInteger(offsetAutoFix)) {
-    console.error('❌ --offset-auto-fix 옵션은 정수 값을 필요로 합니다.');
+if (!Number.isFinite(offsetAutoFix) || !Number.isInteger(offsetAutoFix) || offsetAutoFix < 0) {
+    console.error('❌ --offset-auto-fix 옵션은 0 이상의 정수 값을 필요로 합니다.');
     console.error('사용법: node scripts/pr-triage.js <PR 번호> [옵션]');
     process.exit(1);
 }
