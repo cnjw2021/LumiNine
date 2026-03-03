@@ -306,9 +306,9 @@ batchAutoFix.forEach((t, i) => {
 fs.writeFileSync(checklistPath, checklist, 'utf-8');
 console.log(`📋 autofix-checklist.md 생성: ${checklistPath}`);
 
-// ── reply-batch.json (auto-fixable) ──────────────────────
+// ── reply-batch.json (auto-fixable — 전체 포함) ──────────
 if (emitReplyBatch) {
-    const batch = batchAutoFix.map(t => {
+    const batch = autoFixable.map(t => {
         const c = t.comments.nodes[0];
         return {
             thread_id: t.id,
