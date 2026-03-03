@@ -3,7 +3,7 @@
 -- -----------------------------------------------
 -- 一白水星の属性データ
 -- -----------------------------------------------
-INSERT INTO `star_attributes` (`star_number`, `attribute_type`, `attribute_value`, `description`, `created_at`, `updated_at`) VALUES
+INSERT IGNORE INTO `star_attributes` (`star_number`, `attribute_type`, `attribute_value`, `description`, `created_at`, `updated_at`) VALUES
 -- 色
 (1, 'color', '白・黒・藍色・青', '一白水星に関連する色', NOW(), NOW()),
 
@@ -44,7 +44,7 @@ INSERT INTO `star_attributes` (`star_number`, `attribute_type`, `attribute_value
 -- -----------------------------------------------
 -- 二黒土星の属性データ
 -- -----------------------------------------------
-INSERT INTO `star_attributes` (`star_number`, `attribute_type`, `attribute_value`, `description`, `created_at`, `updated_at`) VALUES
+INSERT IGNORE INTO `star_attributes` (`star_number`, `attribute_type`, `attribute_value`, `description`, `created_at`, `updated_at`) VALUES
 -- 色
 (2, 'color', '黒・濃茶・暗色', '二黒土星に関連する色', NOW(), NOW()),
 
@@ -83,7 +83,7 @@ INSERT INTO `star_attributes` (`star_number`, `attribute_type`, `attribute_value
 -- -----------------------------------------------
 -- 三碧木星の属性データ
 -- -----------------------------------------------
-INSERT INTO `star_attributes` (`star_number`, `attribute_type`, `attribute_value`, `description`, `created_at`, `updated_at`) VALUES
+INSERT IGNORE INTO `star_attributes` (`star_number`, `attribute_type`, `attribute_value`, `description`, `created_at`, `updated_at`) VALUES
 -- 色
 (3, 'color', '青・緑・若草色', '三碧木星に関連する色', NOW(), NOW()),
 
@@ -122,7 +122,7 @@ INSERT INTO `star_attributes` (`star_number`, `attribute_type`, `attribute_value
 -- -----------------------------------------------
 -- 四緑木星の属性データ
 -- -----------------------------------------------
-INSERT INTO `star_attributes` (`star_number`, `attribute_type`, `attribute_value`, `description`, `created_at`, `updated_at`) VALUES
+INSERT IGNORE INTO `star_attributes` (`star_number`, `attribute_type`, `attribute_value`, `description`, `created_at`, `updated_at`) VALUES
 -- 色
 (4, 'color', '緑・青緑・若葉色', '四緑木星に関連する色', NOW(), NOW()),
 

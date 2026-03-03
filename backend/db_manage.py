@@ -76,9 +76,11 @@ def execute_sql_file(cursor, file_path):
         raise
 
 
-def seed_database(cursor):
-    """SQL および CSV ファイルで初期データを埋め込みます。"""
-    logger.info("データシードを開始します...")
+def seed_database(cursor, target_tables=None):
+    """SQL および CSV ファイルで初期データを埋め込みます。
+    target_tables が指定された場合は、該当するCSVデータのみをロードします。
+    """
+    logger.info(f"データシードを開始します... {'(Target: ' + ', '.join(target_tables) + ')' if target_tables else '(All)'}")
     
     data_sql_files = [
         '100_stars.sql', '103_stellar_cycles.sql', '200_star_attributes.sql',
@@ -89,12 +91,13 @@ def seed_database(cursor):
         '900_system_data.sql',
     ]
     
+    # SQLファイルは INSERT IGNORE や ON DUPLICATE KEY UPDATE で冪等性が保たれている前提で実行
     for sql_file in data_sql_files:
         sql_file_path = os.path.join('mysql', 'init', sql_file)
         execute_sql_file(cursor, sql_file_path)
 
     logger.info("CSV データをロードします...")
-    load_all_csv_data()
+    load_all_csv_data(target_tables=target_tables)
     logger.info("データシードが完了しました。")
 
 def _get_existing_tables(cursor) -> set:
@@ -145,7 +148,8 @@ def run_init():
             # 増分適用: 既存DBに不足テーブルがある場合
             logger.warning("不足テーブル検出: %s — DDL+シードを増分適用します。", missing)
             execute_sql_file(cursor, os.path.join('mysql', 'init', '000_create_tables.sql'))
-            seed_database(cursor)
+            # 不足しているテーブルのみをターゲットにシードを実行
+            seed_database(cursor, target_tables=missing)
             conn.commit()
         else:
             logger.info("テーブルは既に存在します。データシードはスキップします。")
