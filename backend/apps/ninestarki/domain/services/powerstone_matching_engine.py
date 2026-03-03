@@ -55,6 +55,13 @@ _THREAT_SEVERITY: Dict[str, int] = {
     "month_star_opposite": 9,   # 月命的殺 (direction-fortune source alias)
 }
 
+# ── alias → canonical 一規化マップ (MessageCatalog キー解決用) ────
+_THREAT_ALIAS_MAP: Dict[str, str] = {
+    "compatibility_matrix": "bad_star",
+    "main_star_opposite": "main_opposite",
+    "month_star_opposite": "month_opposite",
+}
+
 
 class PowerStoneMatchingEngine(IPowerStoneMatchingEngine):
     """3-Layer 파워스톤 매칭 엔진.
@@ -248,13 +255,17 @@ class PowerStoneMatchingEngine(IPowerStoneMatchingEngine):
         worst_severity = 999
 
         for name, info in directions.items():
+            # L3는 비길방위(흔살 있는 방위)만 스쪽
+            if info.get("is_auspicious") is True:
+                continue
             marks = info.get("marks", [])
             for mark in marks:
                 mark_code = mark if isinstance(mark, str) else mark.get("code", "")
                 severity = _THREAT_SEVERITY.get(mark_code, 999)
                 if severity < worst_severity:
                     worst_severity = severity
-                    worst_threat = mark_code
+                    # alias → canonical 정규화
+                    worst_threat = _THREAT_ALIAS_MAP.get(mark_code, mark_code)
                     worst_direction = name
                 elif severity == worst_severity:
                     # 동순위 → 방위 우선순위
@@ -262,7 +273,7 @@ class PowerStoneMatchingEngine(IPowerStoneMatchingEngine):
                         worst_direction, 99
                     ):
                         worst_direction = name
-                        worst_threat = mark_code
+                        worst_threat = _THREAT_ALIAS_MAP.get(mark_code, mark_code)
 
         if not worst_threat:
             raise PowerStoneMatchingError(

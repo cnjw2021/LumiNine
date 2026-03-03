@@ -240,8 +240,8 @@ class TestLayer3ProtectionStone:
             marks={"north": [alias_code]},
         )
         result = engine.recommend(main_star=1, directions=directions)
-        # alias 코드가 reason_params 에 threat 키로 포함 (threat.{alias_code})
-        assert result.protection_stone.reason_params["threat"] == f"threat.{alias_code}"
+        # alias 코드는 엔진에서 canonical 코드로 정규화되어 threat.{canonical_code} 로 노출된다.
+        assert result.protection_stone.reason_params["threat"] == f"threat.{canonical_code}"
 
     def test_alias_severity_ordering(self, engine: PowerStoneMatchingEngine):
         """five_yellow(1) > compatibility_matrix(7) 우선순위 정상 동작."""
