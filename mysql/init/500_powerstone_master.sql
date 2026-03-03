@@ -15,6 +15,6 @@ CREATE TABLE IF NOT EXISTS `powerstone_master` (
   `updated_at`  TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP COMMENT '更新日時',
   UNIQUE KEY `uq_stone_id` (`stone_id`) COMMENT 'ストーンIDの一意制約',
   INDEX `idx_gogyo` (`gogyo`),
-  INDEX `idx_base_star` (`base_star`),
+  UNIQUE KEY `uq_base_star` (`base_star`),
   INDEX `idx_is_primary` (`is_primary`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci COMMENT='パワーストーンマスター';

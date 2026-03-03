@@ -1,7 +1,7 @@
 """パワーストーンマスターモデル."""
 from datetime import datetime, timezone
 
-from sqlalchemy import Column, Integer, String, Boolean, DateTime
+from sqlalchemy import Column, Integer, String, Boolean, DateTime, Index, UniqueConstraint
 
 from core.database import db
 
@@ -14,6 +14,11 @@ class PowerStoneMaster(db.Model):
     """
 
     __tablename__ = 'powerstone_master'
+    __table_args__ = (
+        Index('idx_gogyo', 'gogyo'),
+        Index('idx_is_primary', 'is_primary'),
+        UniqueConstraint('base_star', name='uq_base_star'),
+    )
 
     id = Column(Integer, primary_key=True, autoincrement=True)
     stone_id = Column(String(30), unique=True, nullable=False)
