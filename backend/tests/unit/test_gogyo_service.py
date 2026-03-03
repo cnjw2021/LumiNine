@@ -156,3 +156,10 @@ class TestGetRelation:
     def test_sokoku_reverse(self, svc: GogyoService, a: Gogyo, b: Gogyo):
         """b가 a를 극해도 상극."""
         assert svc.get_relation(a, b) == GogyoRelation.SOKOKU
+
+    def test_invalid_input_raises(self, svc: GogyoService):
+        """Gogyo 가 아닌 값 입력 시 INVALID_GOGYO 예외."""
+        with pytest.raises(PowerStoneMatchingError) as exc_info:
+            svc.get_relation("木", Gogyo.FIRE)
+        assert exc_info.value.code == "INVALID_GOGYO"
+        assert exc_info.value.status == 422

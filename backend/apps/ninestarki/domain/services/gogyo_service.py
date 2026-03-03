@@ -75,6 +75,14 @@ class GogyoService(IGogyoService):
 
     def get_relation(self, a: Gogyo, b: Gogyo) -> GogyoRelation:
         """두 오행 간 관계(상생/상극/비화) 판별."""
+        for val in (a, b):
+            if not isinstance(val, Gogyo):
+                raise PowerStoneMatchingError(
+                    f"유효하지 않은 오행입니다: {val}",
+                    code="INVALID_GOGYO",
+                    status=422,
+                )
+
         if a == b:
             return GogyoRelation.HIWA
 
