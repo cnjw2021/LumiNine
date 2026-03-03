@@ -92,6 +92,7 @@ def seed_database(cursor):
         '210_star_grid_patterns.sql', '300_monthly_directions.sql',
         '310_star_number_group.sql', '320_pattern_switch_dates.sql',
         '400_monthly_star_readings.sql', '410_daily_star_readings.sql',
+        '510_powerstone_seed.sql',
         '900_system_data.sql',
     ]
     
