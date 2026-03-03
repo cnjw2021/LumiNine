@@ -100,7 +100,7 @@ const PowerStoneCard: React.FC<PowerStoneCardProps> = ({ powerStones }) => {
                 ✨ 今月のパワーストーン
             </Text>
 
-            <Group gap="xs" grow align="stretch" style={{ flexWrap: 'nowrap' }}>
+            <Group gap="xs" grow align="stretch" wrap="nowrap">
                 <StoneItem stone={powerStones.base_stone} />
                 <StoneItem stone={powerStones.monthly_stone} />
                 <StoneItem stone={powerStones.protection_stone} />
