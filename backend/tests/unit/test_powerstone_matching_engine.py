@@ -145,7 +145,7 @@ class TestLayer2MonthlyStone:
             marks={"north": ["five_yellow"]},
         )
         result = engine.recommend(main_star=9, directions=directions)
-        assert result.monthly_stone.reason_params["direction"] == "east"
+        assert result.monthly_stone.reason_params["direction"] == "direction.east"
 
     def test_direction_priority_tiebreak(self, engine: PowerStoneMatchingEngine):
         """동순위 상성일 때 방위 고정 우선순위로 선택."""
@@ -157,7 +157,7 @@ class TestLayer2MonthlyStone:
             marks={"north": ["five_yellow"]},
         )
         result = engine.recommend(main_star=1, directions=directions)
-        assert result.monthly_stone.reason_params["direction"] == "east"
+        assert result.monthly_stone.reason_params["direction"] == "direction.east"
 
     def test_monthly_reason_params(self, engine: PowerStoneMatchingEngine):
         """월운석 reason_params 에 direction, element 포함."""
@@ -185,8 +185,8 @@ class TestLayer3ProtectionStone:
             },
         )
         result = engine.recommend(main_star=1, directions=directions)
-        assert result.protection_stone.reason_params["threat"] == "five_yellow"
-        assert result.protection_stone.reason_params["direction"] == "east"
+        assert result.protection_stone.reason_params["threat"] == "threat.five_yellow"
+        assert result.protection_stone.reason_params["direction"] == "direction.east"
 
     def test_protection_uses_counter_gogyo(self, engine: PowerStoneMatchingEngine):
         """호신석은 흉살 방위의 상극 오행 스톤."""

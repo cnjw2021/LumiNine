@@ -102,7 +102,10 @@ class PowerStoneMatchingEngine(IPowerStoneMatchingEngine):
             layer="base",
             gogyo=stone.gogyo,
             reason_key="reason.base",
-            reason_params={},
+            reason_params={
+                "star_name": str(main_star),
+                "meaning": stone.gogyo.value,
+            },
         )
 
     # ═══════════════════════════════════════════════════
@@ -146,8 +149,8 @@ class PowerStoneMatchingEngine(IPowerStoneMatchingEngine):
             gogyo=direction_gogyo,
             reason_key="reason.monthly",
             reason_params={
-                "direction": best_direction,
-                "element": direction_gogyo.value,
+                "direction": f"direction.{best_direction}",
+                "element": f"gogyo.{direction_gogyo.value}",
             },
             direction=best_direction,
         )
@@ -182,10 +185,10 @@ class PowerStoneMatchingEngine(IPowerStoneMatchingEngine):
             gogyo=counter_gogyo,
             reason_key="reason.protection",
             reason_params={
-                "threat": worst_threat,
-                "direction": worst_direction,
-                "threat_element": direction_gogyo.value,
-                "counter_element": counter_gogyo.value,
+                "threat": f"threat.{worst_threat}",
+                "direction": f"direction.{worst_direction}",
+                "threat_element": f"gogyo.{direction_gogyo.value}",
+                "counter_element": f"gogyo.{counter_gogyo.value}",
             },
             direction=worst_direction,
             threat_mark=worst_threat,
