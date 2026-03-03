@@ -106,6 +106,13 @@ export default function DirectionFortune({ mainStar, monthStar, title, targetYea
                     />
                 </Grid.Col>
             </Grid>
+
+            {/* パワーストーン推薦カード */}
+            {powerStones && (
+                <Box mt="md">
+                    <PowerStoneCard powerStones={powerStones} />
+                </Box>
+            )}
         </Paper>
     );
 }

@@ -3,7 +3,7 @@
 -- -----------------------------------------------
 -- 一白水星の属性データ
 -- -----------------------------------------------
-INSERT INTO `star_attributes` (`star_number`, `attribute_type`, `attribute_value`, `description`, `created_at`, `updated_at`) VALUES
+INSERT IGNORE INTO `star_attributes` (`star_number`, `attribute_type`, `attribute_value`, `description`, `created_at`, `updated_at`) VALUES
 -- 色
 (1, 'color', '白・黒・藍色・青', '一白水星に関連する色', NOW(), NOW()),
 
@@ -44,7 +44,7 @@ INSERT INTO `star_attributes` (`star_number`, `attribute_type`, `attribute_value
 -- -----------------------------------------------
 -- 二黒土星の属性データ
 -- -----------------------------------------------
-INSERT INTO `star_attributes` (`star_number`, `attribute_type`, `attribute_value`, `description`, `created_at`, `updated_at`) VALUES
+INSERT IGNORE INTO `star_attributes` (`star_number`, `attribute_type`, `attribute_value`, `description`, `created_at`, `updated_at`) VALUES
 -- 色
 (2, 'color', '黒・濃茶・暗色', '二黒土星に関連する色', NOW(), NOW()),
 
@@ -83,7 +83,7 @@ INSERT INTO `star_attributes` (`star_number`, `attribute_type`, `attribute_value
 -- -----------------------------------------------
 -- 三碧木星の属性データ
 -- -----------------------------------------------
-INSERT INTO `star_attributes` (`star_number`, `attribute_type`, `attribute_value`, `description`, `created_at`, `updated_at`) VALUES
+INSERT IGNORE INTO `star_attributes` (`star_number`, `attribute_type`, `attribute_value`, `description`, `created_at`, `updated_at`) VALUES
 -- 色
 (3, 'color', '青・緑・若草色', '三碧木星に関連する色', NOW(), NOW()),
 
@@ -122,7 +122,7 @@ INSERT INTO `star_attributes` (`star_number`, `attribute_type`, `attribute_value
 -- -----------------------------------------------
 -- 四緑木星の属性データ
 -- -----------------------------------------------
-INSERT INTO `star_attributes` (`star_number`, `attribute_type`, `attribute_value`, `description`, `created_at`, `updated_at`) VALUES
+INSERT IGNORE INTO `star_attributes` (`star_number`, `attribute_type`, `attribute_value`, `description`, `created_at`, `updated_at`) VALUES
 -- 色
 (4, 'color', '緑・青緑・若葉色', '四緑木星に関連する色', NOW(), NOW()),
 
@@ -162,7 +162,7 @@ INSERT INTO `star_attributes` (`star_number`, `attribute_type`, `attribute_value
 -- -----------------------------------------------
 -- 五黄土星の属性データ
 -- -----------------------------------------------
-INSERT INTO `star_attributes` (`star_number`, `attribute_type`, `attribute_value`, `description`, `created_at`, `updated_at`) VALUES
+INSERT IGNORE INTO `star_attributes` (`star_number`, `attribute_type`, `attribute_value`, `description`, `created_at`, `updated_at`) VALUES
 -- 色
 (5, 'color', '黄色・山吹色・茶色', '五黄土星に関連する色', NOW(), NOW()),
 
@@ -201,7 +201,7 @@ INSERT INTO `star_attributes` (`star_number`, `attribute_type`, `attribute_value
 -- -----------------------------------------------
 -- 六白金星の属性データ（画像からの情報）
 -- -----------------------------------------------
-INSERT INTO `star_attributes` (`star_number`, `attribute_type`, `attribute_value`, `description`, `created_at`, `updated_at`) VALUES
+INSERT IGNORE INTO `star_attributes` (`star_number`, `attribute_type`, `attribute_value`, `description`, `created_at`, `updated_at`) VALUES
 -- 色
 (6, 'color', '金・銀・白・メタリック', '六白金星に関連する色', NOW(), NOW()),
 
@@ -244,7 +244,7 @@ INSERT INTO `star_attributes` (`star_number`, `attribute_type`, `attribute_value
 -- -----------------------------------------------
 -- 七赤金星の属性データ
 -- -----------------------------------------------
-INSERT INTO `star_attributes` (`star_number`, `attribute_type`, `attribute_value`, `description`, `created_at`, `updated_at`) VALUES
+INSERT IGNORE INTO `star_attributes` (`star_number`, `attribute_type`, `attribute_value`, `description`, `created_at`, `updated_at`) VALUES
 -- 色
 (7, 'color', '赤・金・銅色', '七赤金星に関連する色', NOW(), NOW()),
 
@@ -284,7 +284,7 @@ INSERT INTO `star_attributes` (`star_number`, `attribute_type`, `attribute_value
 -- -----------------------------------------------
 -- 八白土星の属性データ
 -- -----------------------------------------------
-INSERT INTO `star_attributes` (`star_number`, `attribute_type`, `attribute_value`, `description`, `created_at`, `updated_at`) VALUES
+INSERT IGNORE INTO `star_attributes` (`star_number`, `attribute_type`, `attribute_value`, `description`, `created_at`, `updated_at`) VALUES
 -- 色
 (8, 'color', '白・ベージュ・薄茶色', '八白土星に関連する色', NOW(), NOW()),
 
@@ -323,7 +323,7 @@ INSERT INTO `star_attributes` (`star_number`, `attribute_type`, `attribute_value
 -- -----------------------------------------------
 -- 九紫火星の属性データ
 -- -----------------------------------------------
-INSERT INTO `star_attributes` (`star_number`, `attribute_type`, `attribute_value`, `description`, `created_at`, `updated_at`) VALUES
+INSERT IGNORE INTO `star_attributes` (`star_number`, `attribute_type`, `attribute_value`, `description`, `created_at`, `updated_at`) VALUES
 -- 色
 (9, 'color', '赤・紫・ピンク・濃紅色', '九紫火星に関連する色', NOW(), NOW()),
 

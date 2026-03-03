@@ -280,11 +280,11 @@ def load_user_account_data(connection=None):
         print(f"エラーが発生しました: {e}")
         raise
 
-def load_all_csv_data():
-    """すべてのCSVデータをロードする関数"""
+def load_all_csv_data(target_tables=None):
+    """すべてのCSVデータをロードする関数（target_tablesが指定された場合は、そのテーブルのみを対象とする）"""
     try:
         load_dotenv()
-        print("すべてのCSVデータのロードを開始します...")
+        print(f"CSVデータのロードを開始します... {'(Target: ' + ', '.join(target_tables) + ')' if target_tables else '(All)'}")
         # FILE権限付きコネクションを1回だけ生成
         connection = get_mysql_connection(require_file_privilege=True)
         try:
@@ -306,32 +306,44 @@ def load_all_csv_data():
                 'pattern_switch_dates.csv': 'pattern_switch_dates',
             }
             
+            # target_tables が指定されている場合はフィルタリング
+            if target_tables:
+                filtered_mapping = {}
+                for csv_file, table_name in csv_table_mapping.items():
+                    if table_name in target_tables:
+                        filtered_mapping[csv_file] = table_name
+                csv_table_mapping = filtered_mapping
+
+            results = {}
             # 基本的なCSVファイルをロード
-            results = load_multiple_csv_files(
-                connection,
-                csv_table_mapping,
-                truncate_tables=True,
-                use_load_data_infile=True
-            )
+            if csv_table_mapping:
+                results = load_multiple_csv_files(
+                    connection,
+                    csv_table_mapping,
+                    truncate_tables=True,
+                    use_load_data_infile=True
+                )
             
             # compatibility_masterの9つのファイルを個別にロード
-            # 新しいコネクションを作成（前のload_multiple_csv_filesでクローズされているため）
-            compatibility_connection = get_mysql_connection(require_file_privilege=True)
-            try:
-                compatibility_rows = load_compatibility_master_data(compatibility_connection)
-                results['compatibility_master'] = compatibility_rows
-            finally:
-                if compatibility_connection is not None and compatibility_connection.is_connected():
-                    compatibility_connection.close()
+            if not target_tables or 'compatibility_master' in target_tables:
+                # 新しいコネクションを作成（前のload_multiple_csv_filesでクローズされているため）
+                compatibility_connection = get_mysql_connection(require_file_privilege=True)
+                try:
+                    compatibility_rows = load_compatibility_master_data(compatibility_connection)
+                    results['compatibility_master'] = compatibility_rows
+                finally:
+                    if compatibility_connection is not None and compatibility_connection.is_connected():
+                        compatibility_connection.close()
             
             # user_accountデータを個別にロード（truncateしない）
-            user_connection = get_mysql_connection(require_file_privilege=True)
-            try:
-                user_rows = load_user_account_data(user_connection)
-                results['users'] = user_rows
-            finally:
-                if user_connection is not None and user_connection.is_connected():
-                    user_connection.close()
+            if not target_tables or 'users' in target_tables:
+                user_connection = get_mysql_connection(require_file_privilege=True)
+                try:
+                    user_rows = load_user_account_data(user_connection)
+                    results['users'] = user_rows
+                finally:
+                    if user_connection is not None and user_connection.is_connected():
+                        user_connection.close()
             
             for table, count in results.items():
                 print(f"{table}テーブルに{count}行のデータをロードしました")

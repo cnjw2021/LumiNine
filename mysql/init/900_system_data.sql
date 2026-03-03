@@ -1,5 +1,5 @@
 -- システム設定の初期データ
-INSERT INTO `system_config` (`key`, `value`, `description`, `created_at`, `updated_at`) VALUES
+INSERT IGNORE INTO `system_config` (`key`, `value`, `description`, `created_at`, `updated_at`) VALUES
 ('site_name', '九星気学占い', 'サイト名', NOW(), NOW()),
 ('site_description', '九星気学に基づいた運勢占いサイト', 'サイトの説明', NOW(), NOW()),
 ('admin_email', 'admin@example.com', '管理者メールアドレス', NOW(), NOW()),
@@ -7,10 +7,14 @@ INSERT INTO `system_config` (`key`, `value`, `description`, `created_at`, `updat
 ('maintenance_mode', 'false', 'メンテナンスモード（true/false）', NOW(), NOW());
 
 -- 管理者アカウント制限
-INSERT INTO `admin_account_limit` (`max_accounts`, `created_at`, `updated_at`) VALUES (10, NOW(), NOW());
+INSERT INTO `admin_account_limit` (`id`, `max_accounts`, `created_at`, `updated_at`)
+VALUES (1, 10, NOW(), NOW())
+ON DUPLICATE KEY UPDATE
+  `max_accounts` = VALUES(`max_accounts`),
+  `updated_at` = VALUES(`updated_at`);
 
 -- 権限の初期データ
-INSERT INTO `permissions` (`name`, `description`, `category`, `created_at`, `updated_at`) VALUES
+INSERT IGNORE INTO `permissions` (`name`, `description`, `category`, `created_at`, `updated_at`) VALUES
 ('user_read', 'ユーザー情報の閲覧', 'ユーザー管理', NOW(), NOW()),
 ('user_create', 'ユーザーの作成', 'ユーザー管理', NOW(), NOW()),
 ('user_update', 'ユーザー情報の更新', 'ユーザー管理', NOW(), NOW()),

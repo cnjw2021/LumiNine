@@ -25,6 +25,7 @@ export const useDirectionFortuneData = (mainStar: number, monthStar: number, tar
 
         const fetchData = async () => {
             setLoading(true);
+            setPowerStones(null);  // リセットして古いデータの誤表示を防止
             try {
                 const year = targetYear || new Date().getFullYear();
 
@@ -50,35 +51,23 @@ export const useDirectionFortuneData = (mainStar: number, monthStar: number, tar
                     setWaterDrawingTable(auspiciousDatesResponse.data.water_drawing_table || []);
                 }
 
-                // 4. パワーストーン推薦データを取得（monthly-board API）
+                // 4. 月盤（パワーストーン含む）を取得
                 try {
-                    const monthlyBoardResponse = await api.get(
+                    const monthlyBoardRes = await api.get(
                         `/monthly/monthly-board?main_star=${mainStar}&month_star=${monthStar}&year=${year}`
                     );
-                    if (monthlyBoardResponse.data?.monthly_boards) {
-                        const boards = monthlyBoardResponse.data.monthly_boards;
-                        const today = new Date();
-                        // 현재 날짜가 속하는 절월의 power_stones를 찾는다
-                        let foundStones: PowerStones | null = null;
-                        for (const board of Object.values(boards) as Array<{
-                            period_start?: string;
-                            period_end?: string;
-                            power_stones?: PowerStones | null;
-                        }>) {
-                            if (board.period_start && board.period_end) {
-                                const start = new Date(board.period_start);
-                                const end = new Date(board.period_end);
-                                if (today >= start && today < end && board.power_stones) {
-                                    foundStones = board.power_stones;
-                                    break;
-                                }
-                            }
-                        }
-                        setPowerStones(foundStones);
+                    if (monthlyBoardRes.data?.monthly_boards) {
+                        // 現在の節月を date 範囲で特定
+                        const today = new Date().toISOString().slice(0, 10);
+                        const boards = monthlyBoardRes.data.monthly_boards as Record<string, { period_start?: string; period_end?: string; power_stones?: PowerStones }>;
+                        const currentBoard = Object.values(boards).find(
+                            (b) => b.period_start && b.period_end && b.period_start <= today && today < b.period_end
+                        );
+                        setPowerStones(currentBoard?.power_stones ?? null);
                     }
-                } catch (stoneError) {
-                    console.warn('パワーストーンデータの取得に失敗しました:', stoneError);
-                    // パワーストーンはオプショナルなので、失敗しても他の機能に影響しない
+                } catch (stoneErr) {
+                    // パワーストーン取得失敗は方位データに影響させない
+                    console.warn('パワーストーンデータの取得に失敗:', stoneErr);
                 }
             } catch (error) {
                 console.error("方位運データの取得中にエラーが発生しました:", error);
