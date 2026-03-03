@@ -13,7 +13,7 @@ CREATE TABLE IF NOT EXISTS `stellar_cycles` (
   UNIQUE KEY `year_unique` (`year`) COMMENT '年の一意制約'
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci COMMENT='九星気学の周期情報';
 
-INSERT INTO stellar_cycles 
+INSERT IGNORE INTO stellar_cycles 
 (year, first_ascending_phase_date, first_ascending_phase_time, first_descending_phase_date, first_descending_phase_time, second_ascending_phase_date, second_ascending_phase_time, created_at, updated_at) 
 VALUES 
 (1967, NULL, NULL, '1967-06-29', '00:00:00', '1967-12-26', '00:00:00', NOW(), NOW()),

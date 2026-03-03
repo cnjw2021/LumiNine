@@ -17,7 +17,7 @@ logger = get_logger(__name__)
 
 def create_monthly_bp():
     """月盤データのBlueprint作成"""
-    monthly_bp = Blueprint('monthly', __name__)
+    monthly_bp = Blueprint('monthly', __name__, url_prefix='/api/monthly')
     
     @monthly_bp.route('/directions', methods=['GET'])
     @inject

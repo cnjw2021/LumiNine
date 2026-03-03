@@ -1,5 +1,6 @@
 from datetime import timedelta
 from typing import List, Optional
+from injector import inject
 
 from apps.ninestarki.domain.repositories.nine_star_repository_interface import INineStarRepository
 from apps.ninestarki.domain.repositories.star_grid_pattern_repository_interface import IStarGridPatternRepository
@@ -13,6 +14,7 @@ class YearStarDomainService:
     """
     年の中宮(九星盤の中央の星)とそれに関連する情報を扱うドメインサービス.
     """
+    @inject
     def __init__(self, nine_star_repo: INineStarRepository, solar_terms_repo: ISolarTermsRepository, solar_starts_repo: ISolarStartsRepository, star_grid_repo: IStarGridPatternRepository):
         self.nine_star_repo = nine_star_repo
         self.solar_terms_repo = solar_terms_repo

@@ -404,3 +404,41 @@ CREATE TABLE IF NOT EXISTS `user_permissions` (
   FOREIGN KEY (`permission_id`) REFERENCES `permissions` (`id`) ON DELETE CASCADE,
   UNIQUE KEY `user_permission` (`user_id`, `permission_id`) COMMENT 'ユーザーと権限の組み合わせの一意制約'
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+
+-- パワーストーンマスターテーブル
+CREATE TABLE IF NOT EXISTS `powerstone_master` (
+  `id`          INT AUTO_INCREMENT PRIMARY KEY COMMENT 'ID',
+  `stone_id`    VARCHAR(30)  NOT NULL COMMENT 'ストーン識別子 (例: aquamarine, garnet)',
+  `name_ja`     VARCHAR(50)  NOT NULL COMMENT '日本語名',
+  `name_ko`     VARCHAR(50)  NOT NULL COMMENT '韓国語名',
+  `name_en`     VARCHAR(50)  NOT NULL COMMENT '英語名',
+  `gogyo`       VARCHAR(5)   NOT NULL COMMENT '五行 (水/木/火/土/金)',
+  `is_primary`  BOOLEAN      NOT NULL DEFAULT FALSE COMMENT '主石フラグ (TRUE=主石, FALSE=副石)',
+  `image_url`   VARCHAR(255) NULL COMMENT 'ストーン画像URL',
+  `base_star`   INT          NULL COMMENT '基本石の場合の本命星番号 (1~9)。NULL=基本石ではない',
+  `created_at`  TIMESTAMP DEFAULT CURRENT_TIMESTAMP COMMENT '作成日時',
+  `updated_at`  TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP COMMENT '更新日時',
+  UNIQUE KEY `uq_stone_id` (`stone_id`) COMMENT 'ストーンIDの一意制約',
+  INDEX `idx_gogyo` (`gogyo`),
+  UNIQUE KEY `uq_base_star` (`base_star`),
+  INDEX `idx_is_primary` (`is_primary`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci COMMENT='パワーストーンマスター';
+
+-- 推薦履歴テーブル
+CREATE TABLE IF NOT EXISTS `recommendation_history` (
+  `id`                  INT AUTO_INCREMENT PRIMARY KEY COMMENT 'ID',
+  `user_id`             INT          NOT NULL COMMENT 'ユーザーID',
+  `main_star`           INT          NOT NULL COMMENT '本命星 (1~9)',
+  `target_year`         INT          NOT NULL COMMENT '対象年度',
+  `target_month`        INT          NOT NULL COMMENT '対象節月インデックス (1~12)',
+  `base_stone_id`       VARCHAR(30)  NOT NULL COMMENT '基本石ストーンID',
+  `monthly_stone_id`    VARCHAR(30)  NOT NULL COMMENT '月運石ストーンID',
+  `protection_stone_id` VARCHAR(30)  NOT NULL COMMENT '護身石ストーンID',
+  `locale`              VARCHAR(5)   NOT NULL DEFAULT 'ja' COMMENT '応答ロケール',
+  `created_at`          TIMESTAMP DEFAULT CURRENT_TIMESTAMP COMMENT '作成日時',
+  FOREIGN KEY (`user_id`) REFERENCES `users` (`id`) ON DELETE CASCADE,
+  FOREIGN KEY (`base_stone_id`) REFERENCES `powerstone_master` (`stone_id`),
+  FOREIGN KEY (`monthly_stone_id`) REFERENCES `powerstone_master` (`stone_id`),
+  FOREIGN KEY (`protection_stone_id`) REFERENCES `powerstone_master` (`stone_id`),
+  UNIQUE KEY `uq_user_period` (`user_id`, `target_year`, `target_month`) COMMENT 'ユーザー×年月の一意制約'
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci COMMENT='パワーストーン推薦履歴';
