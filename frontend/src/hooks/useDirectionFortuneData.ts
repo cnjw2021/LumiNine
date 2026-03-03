@@ -2,7 +2,7 @@
 
 import { useState, useEffect } from 'react';
 import api from '@/utils/api';
-import { DirectionFortuneStatus, MovingDateInfo, WaterDrawingDateInfo, AuspiciousTableData } from '@/types/directionFortune';
+import { DirectionFortuneStatus, MovingDateInfo, WaterDrawingDateInfo, AuspiciousTableData, PowerStones } from '@/types/directionFortune';
 
 export const useDirectionFortuneData = (mainStar: number, monthStar: number, targetYear?: number) => {
     const [loading, setLoading] = useState(true);
@@ -15,6 +15,7 @@ export const useDirectionFortuneData = (mainStar: number, monthStar: number, tar
     const [waterDrawingDates, setWaterDrawingDates] = useState<WaterDrawingDateInfo[]>([]);
     const [movingTable, setMovingTable] = useState<AuspiciousTableData>([]);
     const [waterDrawingTable, setWaterDrawingTable] = useState<AuspiciousTableData>([]);
+    const [powerStones, setPowerStones] = useState<PowerStones | null>(null);
 
     useEffect(() => {
         if (!mainStar || !monthStar) {
@@ -26,7 +27,7 @@ export const useDirectionFortuneData = (mainStar: number, monthStar: number, tar
             setLoading(true);
             try {
                 const year = targetYear || new Date().getFullYear();
-                
+
                 // 1. 年運星、干支、立春情報などを一括で取得
                 const yearInfoResponse = await api.get(`/nine-star/year-star?year=${year}`);
                 if (yearInfoResponse.data) {
@@ -48,6 +49,27 @@ export const useDirectionFortuneData = (mainStar: number, monthStar: number, tar
                     setMovingTable(auspiciousDatesResponse.data.moving_table || []);
                     setWaterDrawingTable(auspiciousDatesResponse.data.water_drawing_table || []);
                 }
+
+                // 4. 月盤（パワーストーン含む）を取得
+                try {
+                    const monthlyBoardRes = await api.get(
+                        `/monthly-board?main_star=${mainStar}&month_star=${monthStar}&year=${year}`
+                    );
+                    if (monthlyBoardRes.data?.monthly_boards) {
+                        // 現在の節月を date 範囲で特定
+                        const today = new Date().toISOString().slice(0, 10);
+                        const boards = monthlyBoardRes.data.monthly_boards;
+                        const currentBoard = Object.values(boards).find(
+                            (b: any) => b.period_start && b.period_end && b.period_start <= today && today < b.period_end
+                        ) as any;
+                        if (currentBoard?.power_stones) {
+                            setPowerStones(currentBoard.power_stones);
+                        }
+                    }
+                } catch (stoneErr) {
+                    // パワーストーン取得失敗は方位データに影響させない
+                    console.warn('パワーストーンデータの取得に失敗:', stoneErr);
+                }
             } catch (error) {
                 console.error("方位運データの取得中にエラーが発生しました:", error);
             } finally {
@@ -58,5 +80,5 @@ export const useDirectionFortuneData = (mainStar: number, monthStar: number, tar
         fetchData();
     }, [mainStar, monthStar, targetYear]);
 
-    return { loading, directionFortuneStatus, yearlyStar, zodiac, springStartDate, springEndDate, movingDates, waterDrawingDates, movingTable, waterDrawingTable };
+    return { loading, directionFortuneStatus, yearlyStar, zodiac, springStartDate, springEndDate, movingDates, waterDrawingDates, movingTable, waterDrawingTable, powerStones };
 };
