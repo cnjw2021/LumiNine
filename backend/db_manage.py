@@ -76,23 +76,34 @@ def execute_sql_file(cursor, file_path):
         raise
 
 
+# SQLシードファイルとそのファイルが挿入するテーブルのマッピング
+# target_tables 指定時に不要なファイルの実行をスキップするために使用
+_SQL_SEED_FILE_TABLE_MAP = {
+    '100_stars.sql': {'stars'},
+    '103_stellar_cycles.sql': {'stellar_cycles'},
+    '200_star_attributes.sql': {'star_attributes'},
+    '210_star_grid_patterns.sql': {'star_grid_patterns'},
+    '300_monthly_directions.sql': {'monthly_directions'},
+    '310_star_number_group.sql': {'star_groups'},
+    '320_pattern_switch_dates.sql': {'pattern_switch_dates'},
+    '400_monthly_star_readings.sql': {'monthly_star_readings'},
+    '410_daily_star_readings.sql': {'daily_star_readings'},
+    '510_powerstone_seed.sql': {'powerstone_master'},
+    '900_system_data.sql': {'system_config', 'admin_account_limit', 'permissions'},
+}
+
+
 def seed_database(cursor, target_tables=None):
     """SQL および CSV ファイルで初期データを埋め込みます。
-    target_tables が指定された場合は、該当するCSVデータのみをロードします。
+    target_tables が指定された場合は、該当するテーブルに関連するSQLファイルとCSVデータのみをロードします。
     """
     logger.info(f"データシードを開始します... {'(Target: ' + ', '.join(target_tables) + ')' if target_tables else '(All)'}")
-    
-    data_sql_files = [
-        '100_stars.sql', '103_stellar_cycles.sql', '200_star_attributes.sql',
-        '210_star_grid_patterns.sql', '300_monthly_directions.sql',
-        '310_star_number_group.sql', '320_pattern_switch_dates.sql',
-        '400_monthly_star_readings.sql', '410_daily_star_readings.sql',
-        '510_powerstone_seed.sql',
-        '900_system_data.sql',
-    ]
-    
-    # SQLファイルは INSERT IGNORE や ON DUPLICATE KEY UPDATE で冪等性が保たれている前提で実行
-    for sql_file in data_sql_files:
+
+    for sql_file, tables in _SQL_SEED_FILE_TABLE_MAP.items():
+        # target_tables が指定されている場合、対象テーブルに関連するファイルのみ実行
+        if target_tables and not tables & target_tables:
+            logger.debug("スキップ: %s (対象テーブルに該当なし)", sql_file)
+            continue
         sql_file_path = os.path.join('mysql', 'init', sql_file)
         execute_sql_file(cursor, sql_file_path)
 
@@ -105,7 +116,7 @@ def _get_existing_tables(cursor) -> set:
     cursor.execute("SHOW TABLES")
     return {row[0] for row in cursor.fetchall()}
 
-# 000_create_tables.sql に定義されている全テーブルのリスト
+# 000_create_tables.sql およびシードSQLファイルに定義されている全テーブルのリスト
 # 新しいテーブルを追加した場合はここにも追加してください
 _EXPECTED_TABLES = {
     'stars', 'solar_starts', 'solar_terms', 'daily_astrology',
@@ -119,6 +130,8 @@ _EXPECTED_TABLES = {
     'hourly_star_zodiacs', 'system_config', 'admin_account_limit',
     'permissions', 'users', 'user_permissions',
     'powerstone_master', 'recommendation_history',
+    # シードSQL内で CREATE TABLE IF NOT EXISTS されるテーブル
+    'stellar_cycles', 'pattern_switch_dates',
 }
 
 def run_init():

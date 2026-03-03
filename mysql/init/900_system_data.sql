@@ -7,7 +7,11 @@ INSERT IGNORE INTO `system_config` (`key`, `value`, `description`, `created_at`,
 ('maintenance_mode', 'false', 'メンテナンスモード（true/false）', NOW(), NOW());
 
 -- 管理者アカウント制限
-INSERT IGNORE INTO `admin_account_limit` (`max_accounts`, `created_at`, `updated_at`) VALUES (10, NOW(), NOW());
+INSERT INTO `admin_account_limit` (`id`, `max_accounts`, `created_at`, `updated_at`)
+VALUES (1, 10, NOW(), NOW())
+ON DUPLICATE KEY UPDATE
+  `max_accounts` = VALUES(`max_accounts`),
+  `updated_at` = VALUES(`updated_at`);
 
 -- 権限の初期データ
 INSERT IGNORE INTO `permissions` (`name`, `description`, `category`, `created_at`, `updated_at`) VALUES
