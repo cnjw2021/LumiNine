@@ -4,7 +4,7 @@
     "layer.protection": "호신석",
     "reason.base": "{star_name}의 본명석. {meaning}",
     "reason.monthly": "이달 최적 길방위 {direction}({element})의 에너지를 받는 돌",
-    "reason.protection": "이달 가장 강한 흉살 {threat}이(가) {direction}({threat_element})에 위치. {counter_element}의 힘으로 흉기를 억제",
+    "reason.protection": "이달 가장 강한 흉살 {threat}이(가) {direction}({threat_element})에 위치. {counter_element}의 힘으로 흉한 기운을 억제",
     "gogyo.木": "목",
     "gogyo.火": "화",
     "gogyo.土": "토",

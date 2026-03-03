@@ -48,8 +48,8 @@ class MessageCatalog(IMessageCatalog):
         """메시지 키 + locale → 번역된 문자열 반환.
 
         1. 요청 locale 번들에서 키 조회
-        2. 없으면 ja fallback
-        3. 그래도 없으면 키 자체 반환
+        2. 요청 locale 에 메시지가 없고, locale != "ja" 인 경우 ja 번들에서 키 조회 (ja fallback)
+        3. 위 조건에 해당하지 않거나, ja fallback 에서도 없으면 키 자체 반환
         4. params 가 있으면 플레이스홀더 치환
 
         Args:
