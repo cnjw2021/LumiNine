@@ -58,6 +58,17 @@ from apps.ninestarki.domain.services.interfaces.monthly_board_service_interface 
 from apps.ninestarki.domain.services.year_star_domain_service import YearStarDomainService
 from apps.ninestarki.use_cases.monthly_directions_use_case import MonthlyDirectionsUseCase
 
+# Phase 2: PowerStone Matching Engine
+from apps.ninestarki.domain.services.interfaces.gogyo_service_interface import IGogyoService
+from apps.ninestarki.domain.services.gogyo_service import GogyoService
+from apps.ninestarki.domain.services.interfaces.powerstone_matching_engine_interface import IPowerStoneMatchingEngine
+from apps.ninestarki.domain.services.powerstone_matching_engine import PowerStoneMatchingEngine
+from apps.ninestarki.domain.repositories.powerstone_repository_interface import IPowerStoneRepository
+from apps.ninestarki.infrastructure.persistence.powerstone_repository import PowerStoneRepository
+from apps.ninestarki.use_cases.interfaces.message_catalog_interface import IMessageCatalog
+from apps.ninestarki.infrastructure.services.message_catalog import MessageCatalog
+from apps.ninestarki.use_cases.powerstone_recommendation_use_case import PowerStoneRecommendationUseCase
+
 # Permission UseCase
 from apps.ninestarki.use_cases.permission_use_case import PermissionUseCase
 
@@ -206,3 +217,10 @@ class AppModule(Module):
         binder.bind(IMonthlyBoardDomainService, to=MonthlyBoardDomainService, scope=singleton)
         binder.bind(YearStarDomainService, to=YearStarDomainService, scope=singleton)
         binder.bind(MonthlyDirectionsUseCase, to=MonthlyDirectionsUseCase, scope=singleton)
+
+        # Phase 2: PowerStone Matching Engine DI バインディング
+        binder.bind(IGogyoService, to=GogyoService, scope=singleton)
+        binder.bind(IPowerStoneMatchingEngine, to=PowerStoneMatchingEngine, scope=singleton)
+        binder.bind(IPowerStoneRepository, to=PowerStoneRepository, scope=singleton)
+        binder.bind(IMessageCatalog, to=MessageCatalog, scope=singleton)
+        binder.bind(PowerStoneRecommendationUseCase, to=PowerStoneRecommendationUseCase, scope=singleton)
