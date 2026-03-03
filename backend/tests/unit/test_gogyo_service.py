@@ -75,6 +75,7 @@ class TestDirectionToGogyo:
         with pytest.raises(PowerStoneMatchingError) as exc_info:
             svc.direction_to_gogyo(invalid_direction)
         assert exc_info.value.code == "UNKNOWN_DIRECTION"
+        assert exc_info.value.status == 422
 
 
 # ══════════════════════════════════════════════════════

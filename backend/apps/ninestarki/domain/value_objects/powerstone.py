@@ -38,7 +38,13 @@ class PowerStone:
 
 @dataclass(frozen=True)
 class StoneRecommendation:
-    """단일 레이어의 추천 결과. reason_key 를 통해 다국어 사유 지원."""
+    """단일 레이어의 추천 결과. reason_key 를 통해 다국어 사유 지원.
+
+    Note:
+        frozen=True 이지만, reason_params (Dict) 자체는 mutable 하다.
+        PowerStone.names 와 동일한 한계이며, 현 단계에서는 도메인 내부
+        생성·소비 패턴이므로 frozen 으로 충분하다.
+    """
 
     stone: PowerStone
     layer: str                                          # "base" | "monthly" | "protection"
