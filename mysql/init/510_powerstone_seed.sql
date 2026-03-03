@@ -1,7 +1,7 @@
 -- パワーストーン シードデータ
 -- powerstone_catalog.json からの移行データ (20件 + star_base_stones 9件)
 
-INSERT INTO `powerstone_master` (`stone_id`, `name_ja`, `name_ko`, `name_en`, `gogyo`, `is_primary`, `base_star`) VALUES
+INSERT IGNORE INTO `powerstone_master` (`stone_id`, `name_ja`, `name_ko`, `name_en`, `gogyo`, `is_primary`, `base_star`) VALUES
 -- 水 (Water)
 ('aquamarine',    'アクアマリン',       '아쿠아마린',      'Aquamarine',     '水', TRUE,  1),
 ('lapis_lazuli',  'ラピスラズリ',       '라피스 라줄리',   'Lapis Lazuli',   '水', FALSE, NULL),

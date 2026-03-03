@@ -1,12 +1,9 @@
 from datetime import datetime, timezone, timedelta
-from sqlalchemy import Column, Integer, String, DateTime, Date, Time, Index
+from sqlalchemy import Column, Integer, String, DateTime, Date, Time
 from core.database import db
 
 class SolarTerms(db.Model):
     __tablename__ = 'solar_terms'
-    __table_args__ = (
-        Index('idx_solar_terms_year_month', 'year', 'month'),
-    )
 
     id = Column(Integer, primary_key=True, autoincrement=True)
     year = Column(Integer, nullable=False)

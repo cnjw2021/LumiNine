@@ -13,6 +13,8 @@ CREATE TABLE IF NOT EXISTS `recommendation_history` (
   `locale`              VARCHAR(5)   NOT NULL DEFAULT 'ja' COMMENT '応答ロケール',
   `created_at`          TIMESTAMP DEFAULT CURRENT_TIMESTAMP COMMENT '作成日時',
   FOREIGN KEY (`user_id`) REFERENCES `users` (`id`) ON DELETE CASCADE,
-  INDEX `idx_user_year_month` (`user_id`, `target_year`, `target_month`),
+  FOREIGN KEY (`base_stone_id`) REFERENCES `powerstone_master` (`stone_id`),
+  FOREIGN KEY (`monthly_stone_id`) REFERENCES `powerstone_master` (`stone_id`),
+  FOREIGN KEY (`protection_stone_id`) REFERENCES `powerstone_master` (`stone_id`),
   UNIQUE KEY `uq_user_period` (`user_id`, `target_year`, `target_month`) COMMENT 'ユーザー×年月の一意制約'
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci COMMENT='パワーストーン推薦履歴';
