@@ -66,7 +66,7 @@ class PowerStoneRepository(IPowerStoneRepository):
             raise PowerStoneMatchingError(
                 f"해당 오행의 주석을 찾을 수 없습니다: {gogyo}",
                 code="PRIMARY_STONE_NOT_FOUND",
-                status=404,
+                status=500,
             )
         return stone
 
