@@ -222,6 +222,39 @@ class TestLayer3ProtectionStone:
             engine.recommend(main_star=1, directions=directions)
         assert exc_info.value.code == "NO_THREAT_FOUND"
 
+    @pytest.mark.parametrize("alias_code, canonical_code, severity", [
+        ("compatibility_matrix", "bad_star", 7),
+        ("main_star_opposite", "main_opposite", 8),
+        ("month_star_opposite", "month_opposite", 9),
+    ])
+    def test_direction_fortune_alias_codes(
+        self,
+        engine: PowerStoneMatchingEngine,
+        alias_code: str,
+        canonical_code: str,
+        severity: int,
+    ):
+        """direction-fortune 소스의 alias 코드가 올바르게 인식된다."""
+        directions = _make_directions(
+            auspicious={"south": True},
+            marks={"north": [alias_code]},
+        )
+        result = engine.recommend(main_star=1, directions=directions)
+        # alias 코드가 reason_params 에 threat 키로 포함 (threat.{alias_code})
+        assert result.protection_stone.reason_params["threat"] == f"threat.{alias_code}"
+
+    def test_alias_severity_ordering(self, engine: PowerStoneMatchingEngine):
+        """five_yellow(1) > compatibility_matrix(7) 우선순위 정상 동작."""
+        directions = _make_directions(
+            auspicious={"south": True},
+            marks={
+                "north": ["compatibility_matrix"],
+                "east": ["five_yellow"],
+            },
+        )
+        result = engine.recommend(main_star=1, directions=directions)
+        assert result.protection_stone.reason_params["threat"] == "threat.five_yellow"
+
 
 # ══════════════════════════════════════════════════════
 # 중복 회피

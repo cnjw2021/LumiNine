@@ -48,8 +48,11 @@ _THREAT_SEVERITY: Dict[str, int] = {
     "water_fire": 5,        # 水火殺
     "opposite_zodiac": 6,   # 破
     "bad_star": 7,          # 凶方星
+    "compatibility_matrix": 7,  # 凶方星 (direction-fortune source alias)
     "main_opposite": 8,     # 本命的殺
+    "main_star_opposite": 8,    # 本命的殺 (direction-fortune source alias)
     "month_opposite": 9,    # 月命的殺
+    "month_star_opposite": 9,   # 月命的殺 (direction-fortune source alias)
 }
 
 
@@ -104,7 +107,7 @@ class PowerStoneMatchingEngine(IPowerStoneMatchingEngine):
             reason_key="reason.base",
             reason_params={
                 "star_name": str(main_star),
-                "meaning": stone.gogyo.value,
+                "meaning": f"gogyo.{stone.gogyo.value}",
             },
         )
 
