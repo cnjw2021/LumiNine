@@ -9,8 +9,8 @@ const GOGYO_THEME: Record<string, { bg: string; border: string; badge: string; l
     '水': { bg: 'linear-gradient(135deg, rgba(30,136,229,0.10) 0%, rgba(30,136,229,0.04) 100%)', border: 'rgba(30,136,229,0.35)', badge: 'blue', label: '水 (Water)' },
     '木': { bg: 'linear-gradient(135deg, rgba(67,160,71,0.10)  0%, rgba(67,160,71,0.04)  100%)', border: 'rgba(67,160,71,0.35)', badge: 'green', label: '木 (Wood)' },
     '火': { bg: 'linear-gradient(135deg, rgba(229,57,53,0.10)  0%, rgba(229,57,53,0.04)  100%)', border: 'rgba(229,57,53,0.35)', badge: 'red', label: '火 (Fire)' },
-    '土': { bg: 'linear-gradient(135deg, rgba(249,168,37,0.10) 0%, rgba(249,168,37,0.04) 100%)', border: 'rgba(249,168,37,0.35)', badge: 'yellow', label: '土 (Earth)' },
-    '金': { bg: 'linear-gradient(135deg, rgba(120,144,156,0.10) 0%, rgba(120,144,156,0.04) 100%)', border: 'rgba(120,144,156,0.35)', badge: 'gray', label: '金 (Metal)' },
+    '土': { bg: 'linear-gradient(135deg, rgba(249,168,37,0.10) 0%, rgba(249,168,37,0.04) 100%)', border: 'rgba(249,168,37,0.35)', badge: 'gray', label: '土 (Earth)' },
+    '金': { bg: 'linear-gradient(135deg, rgba(120,144,156,0.10) 0%, rgba(120,144,156,0.04) 100%)', border: 'rgba(120,144,156,0.35)', badge: 'yellow', label: '金 (Metal)' },
 };
 
 const LAYER_META: Record<string, { icon: string; label: string; sublabel: string }> = {
