@@ -5,7 +5,9 @@ from flask_jwt_extended import jwt_required
 from core.database import db
 from apps.ninestarki.domain.repositories.monthly_directions_repository_interface import IMonthlyDirectionsRepository
 from apps.ninestarki.use_cases.monthly_directions_use_case import MonthlyDirectionsUseCase
-from apps.ninestarki.domain.exceptions import NineStarKiError
+from apps.ninestarki.use_cases.powerstone_recommendation_use_case import PowerStoneRecommendationUseCase
+from apps.ninestarki.domain.exceptions import NineStarKiError, NoAuspiciousDirectionError
+from apps.ninestarki.domain.value_objects.locale import Locale
 from core.models.star_groups import StarGroup
 from flask_injector import inject
 from core.auth.auth_utils import permission_required
@@ -281,7 +283,10 @@ def create_monthly_bp():
     @monthly_bp.route('/monthly-board', methods=['GET'])
     @jwt_required()
     @inject
-    def get_monthly_board(use_case: MonthlyDirectionsUseCase):
+    def get_monthly_board(
+        use_case: MonthlyDirectionsUseCase,
+        stone_use_case: PowerStoneRecommendationUseCase,
+    ):
         """연/월 기준 월반(月盤) 방위 길흉 결과를 반환하는 API.
 
         Query Parameters:
@@ -290,6 +295,7 @@ def create_monthly_bp():
             year (int, 필수): 조회 연도 (예: 2026)
             month_index (int, 選択): 조회 절월 인덱스 (1=寅月/立春 … 12=丑月/小寒). 
                 None の場合、該当年の全節月について月盤方位を算出する。
+            lang (str, 選択): 응답 언어 코드 (ja/ko/en). 기본값: ja.
 
         Returns:
             200 OK: {
@@ -305,7 +311,12 @@ def create_monthly_bp():
                         "month_zodiac": str,
                         "period_start": str,
                         "period_end": str,
-                        "directions": { ... }
+                        "directions": { ... },
+                        "power_stones": {            # nullable — 길방위 없는 경우 null
+                            "base_stone": { ... },
+                            "monthly_stone": { ... },
+                            "protection_stone": { ... }
+                        } | null
                     },
                     ...
                 }
@@ -319,6 +330,14 @@ def create_monthly_bp():
             month_star = request.args.get('month_star', type=int)
             year = request.args.get('year', type=int)
             month_index = request.args.get('month_index', type=int)
+
+            # ── lang 파라미터 파싱 (기본값: ja) ────────────────
+            lang_raw = request.args.get('lang', 'ja')
+            try:
+                locale = Locale(lang_raw)
+            except ValueError:
+                locale = Locale.JA
+            locale_str: str = locale.value
 
             # 구형 파라미터인 'month'가 어떤 형태로든 전달되면 요청을 거절한다.
             if request.args.get('month') is not None:
@@ -344,6 +363,24 @@ def create_monthly_bp():
                 target_year=year,
                 target_month=month_index,
             )
+
+            # ── 파워스톤 추천 추가 ────────────────────────────
+            for key, board in result.get('monthly_boards', {}).items():
+                directions = board.get('directions', {})
+                if directions:
+                    try:
+                        board['power_stones'] = stone_use_case.execute(
+                            main_star=main_star,
+                            directions=directions,
+                            locale=locale_str,
+                        )
+                    except NoAuspiciousDirectionError:
+                        logger.info(
+                            "monthly-board %s: 길방위 없음 → power_stones=null", key,
+                        )
+                        board['power_stones'] = None
+                else:
+                    board['power_stones'] = None
 
             return jsonify(result), 200
 

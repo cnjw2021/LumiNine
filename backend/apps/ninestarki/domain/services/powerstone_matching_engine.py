@@ -11,6 +11,8 @@ from __future__ import annotations
 
 from typing import Any, Dict, List, Set, Tuple
 
+from injector import inject
+
 from apps.ninestarki.domain.exceptions import (
     NoAuspiciousDirectionError,
     PowerStoneMatchingError,
@@ -69,6 +71,7 @@ class PowerStoneMatchingEngine(IPowerStoneMatchingEngine):
     DI를 통해 GogyoService, PowerStoneRepository 를 주입받는다.
     """
 
+    @inject
     def __init__(
         self,
         gogyo_service: IGogyoService,

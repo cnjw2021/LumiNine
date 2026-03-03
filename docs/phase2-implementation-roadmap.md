@@ -10,10 +10,10 @@
 
 | PR | 제목 | 상태 | 비고 |
 |----|------|------|------|
-| **PR-A** | Value Objects + GogyoService | ⬜ 미착수 | 의존성 없음 |
-| **PR-B** | 스톤 데이터 + Repository + MessageCatalog | ⬜ 미착수 | PR-A 이후 |
-| **PR-C** | PowerStoneMatchingEngine (3-Layer 엔진) | ⬜ 미착수 | PR-A, PR-B 이후 |
-| **PR-D** | UseCase + Route 연동 + DI 바인딩 | ⬜ 미착수 | PR-C 이후 |
+| **PR-A** | Value Objects + GogyoService | 🔀 머지 완료 | 의존성 없음 |
+| **PR-B** | 스톤 데이터 + Repository + MessageCatalog | 🔀 머지 완료 | PR-A 이후 |
+| **PR-C** | PowerStoneMatchingEngine (3-Layer 엔진) | 🔀 머지 완료 | PR-A, PR-B 이후 |
+| **PR-D** | UseCase + Route 연동 + DI 바인딩 | 🔄 진행 중 | PR-C 이후 |
 
 > 상태: ⬜ 미착수 / 🔄 진행 중 / ✅ 완료 / 🔀 머지 완료
 
