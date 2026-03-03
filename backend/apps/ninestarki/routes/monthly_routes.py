@@ -312,11 +312,11 @@ def create_monthly_bp():
                         "period_start": str,
                         "period_end": str,
                         "directions": { ... },
-                        "power_stones": {
+                        "power_stones": {            # nullable — 길방위 없는 경우 null
                             "base_stone": { ... },
                             "monthly_stone": { ... },
                             "protection_stone": { ... }
-                        }
+                        } | null
                     },
                     ...
                 }
