@@ -529,7 +529,7 @@ PowerStoneMatchingEngine                    Route Handler
                                               └─ → "今月の最良吉方位・南(火)のエネルギーを取り込む石"
 ```
 
-> **핵심**: 도메인은 direction을 "S" 같은 코드로만 다루고, locale별 표시명("南"/"남"/"South")으로의 변환은 `MessageCatalog`이 `direction.S` 키를 resolve하여 처리한다.
+> **핵심**: 도메인은 direction을 "south" 같은 문자열 코드로만 다루고, locale별 표시명("南"/"남"/"South")으로의 변환은 `MessageCatalog`이 `direction.south` 키를 resolve하여 처리한다.
 
 ---
 
