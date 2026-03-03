@@ -145,7 +145,7 @@ class TestLayer2MonthlyStone:
             marks={"north": ["five_yellow"]},
         )
         result = engine.recommend(main_star=9, directions=directions)
-        assert result.monthly_stone.reason_params["direction"] == "direction.east"
+        assert result.monthly_stone.reason_params["direction_key"] == "direction.east"
 
     def test_direction_priority_tiebreak(self, engine: PowerStoneMatchingEngine):
         """동순위 상성일 때 방위 고정 우선순위로 선택."""
@@ -157,7 +157,7 @@ class TestLayer2MonthlyStone:
             marks={"north": ["five_yellow"]},
         )
         result = engine.recommend(main_star=1, directions=directions)
-        assert result.monthly_stone.reason_params["direction"] == "direction.east"
+        assert result.monthly_stone.reason_params["direction_key"] == "direction.east"
 
     def test_monthly_reason_params(self, engine: PowerStoneMatchingEngine):
         """월운석 reason_params 에 direction, element 포함."""
@@ -166,8 +166,8 @@ class TestLayer2MonthlyStone:
             marks={"north": ["five_yellow"]},
         )
         result = engine.recommend(main_star=1, directions=directions)
-        assert "direction" in result.monthly_stone.reason_params
-        assert "element" in result.monthly_stone.reason_params
+        assert "direction_key" in result.monthly_stone.reason_params
+        assert "element_key" in result.monthly_stone.reason_params
 
 
 # ══════════════════════════════════════════════════════
@@ -185,8 +185,8 @@ class TestLayer3ProtectionStone:
             },
         )
         result = engine.recommend(main_star=1, directions=directions)
-        assert result.protection_stone.reason_params["threat"] == "threat.five_yellow"
-        assert result.protection_stone.reason_params["direction"] == "direction.east"
+        assert result.protection_stone.reason_params["threat_key"] == "threat.five_yellow"
+        assert result.protection_stone.reason_params["direction_key"] == "direction.east"
 
     def test_protection_uses_counter_gogyo(self, engine: PowerStoneMatchingEngine):
         """호신석은 흉살 방위의 상극 오행 스톤."""
@@ -207,10 +207,10 @@ class TestLayer3ProtectionStone:
         )
         result = engine.recommend(main_star=1, directions=directions)
         params = result.protection_stone.reason_params
-        assert "threat" in params
-        assert "direction" in params
-        assert "threat_element" in params
-        assert "counter_element" in params
+        assert "threat_key" in params
+        assert "direction_key" in params
+        assert "threat_element_key" in params
+        assert "counter_element_key" in params
 
     def test_no_threats_raises(self, engine: PowerStoneMatchingEngine):
         """흉살이 없으면 PowerStoneMatchingError."""
@@ -240,7 +240,7 @@ class TestLayer3ProtectionStone:
         )
         result = engine.recommend(main_star=1, directions=directions)
         # alias 코드는 엔진에서 canonical 코드로 정규화되어 threat.{canonical_code} 로 노출된다.
-        assert result.protection_stone.reason_params["threat"] == f"threat.{canonical_code}"
+        assert result.protection_stone.reason_params["threat_key"] == f"threat.{canonical_code}"
 
     def test_alias_severity_ordering(self, engine: PowerStoneMatchingEngine):
         """five_yellow(1) > compatibility_matrix(7) 우선순위 정상 동작."""
@@ -252,23 +252,23 @@ class TestLayer3ProtectionStone:
             },
         )
         result = engine.recommend(main_star=1, directions=directions)
-        assert result.protection_stone.reason_params["threat"] == "threat.five_yellow"
+        assert result.protection_stone.reason_params["threat_key"] == "threat.five_yellow"
 
     def test_neutral_direction_excluded_from_l3(self, engine: PowerStoneMatchingEngine):
-        """중립(is_auspicious=None) 방위는 L3 흔살 스캔에서 제외된다."""
+        """중립(is_auspicious=None) 방위는 L3 흉살 스캔에서 제외된다."""
         directions = _make_directions(
             auspicious={"south": True},
             marks={
                 "east": ["compatibility_matrix"],  # 이 방위를 neutral 으로 설정
-                "north": ["dark_sword"],             # 이 방위는 False(=흔)
+                "north": ["dark_sword"],             # 이 방위는 False(=흉)
             },
         )
         # east 방위를 neutral(None)로 덮어쓰기
         directions["east"]["is_auspicious"] = None
         result = engine.recommend(main_star=1, directions=directions)
         # neutral 된 east 는 제외, north 의 dark_sword 가 선택됨
-        assert result.protection_stone.reason_params["threat"] == "threat.dark_sword"
-        assert result.protection_stone.reason_params["direction"] == "direction.north"
+        assert result.protection_stone.reason_params["threat_key"] == "threat.dark_sword"
+        assert result.protection_stone.reason_params["direction_key"] == "direction.north"
 
 
 # ══════════════════════════════════════════════════════
