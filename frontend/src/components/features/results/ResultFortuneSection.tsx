@@ -223,14 +223,14 @@ const ResultFortuneSection: React.FC<ResultFortuneSectionProps> = ({ mainStar, m
         </Paper>
       )} */}
 
-      {/* <Card shadow="sm" p="md" withBorder>
+      <Card shadow="sm" p="md" withBorder>
         <DirectionFortune
           mainStar={mainStar}
           monthStar={monthStar}
           title={`${targetYear}年`}
           targetYear={targetYear}
         />
-      </Card> */}
+      </Card>
 
       {/* パワーストーン推薦 — DirectionFortuneから完全に独立 */}
       <PowerStoneSection

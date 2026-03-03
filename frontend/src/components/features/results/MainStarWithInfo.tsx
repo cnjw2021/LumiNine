@@ -27,7 +27,7 @@ interface MainStarWithInfoProps {
 /**
  * 本命星のSVG画像と基本情報を同時に表示するコンポーネント
  */
-const MainStarWithInfo: React.FC<MainStarWithInfoProps> = ({ 
+const MainStarWithInfo: React.FC<MainStarWithInfoProps> = ({
   star,
   title = '本命星(基本性格・運命の流れ)',
   isMonthStar = false,
@@ -54,7 +54,7 @@ const MainStarWithInfo: React.FC<MainStarWithInfoProps> = ({
   // 五行の色とスタイルを取得
   const getElementStyle = (element?: string): { color: string, bgColor: string, symbol: string } => {
     if (!element) return { color: '#6c757d', bgColor: '#f8f9fa', symbol: '?' };
-    
+
     switch (element) {
       case '金': return { color: '#d4af37', bgColor: 'rgba(251, 211, 141, 0.2)', symbol: '◯' };
       case '木': return { color: '#228b22', bgColor: 'rgba(144, 238, 144, 0.2)', symbol: '▱' };
@@ -91,11 +91,11 @@ const MainStarWithInfo: React.FC<MainStarWithInfoProps> = ({
   };
 
   return (
-    <Paper 
-      shadow="sm" 
+    <Paper
+      shadow="sm"
       p={0}
       radius="md"
-      style={{ 
+      style={{
         background: 'linear-gradient(to bottom right, rgba(255,255,255,0.98), rgba(245,247,250,0.9))',
         backdropFilter: 'blur(12px)',
         border: '1px solid rgba(209, 213, 219, 0.5)',
@@ -109,11 +109,11 @@ const MainStarWithInfo: React.FC<MainStarWithInfoProps> = ({
     >
       {/* メインコンテンツ */}
       <Box style={{ position: 'relative', zIndex: 1, width: '100%', padding: 0 }}>
-        <Title 
-          order={2} 
-          mb={{ base: 'xs', sm: 'sm' }} 
-          ta="center" 
-          style={{ 
+        <Title
+          order={2}
+          mb={{ base: 'xs', sm: 'sm' }}
+          ta="center"
+          style={{
             color: '#2d3748',
             fontSize: 'clamp(0.9rem, 2.5vw, 1.4rem)',
             fontWeight: 700,
@@ -132,13 +132,13 @@ const MainStarWithInfo: React.FC<MainStarWithInfoProps> = ({
         >
           {title}
         </Title>
-        
+
         {/* SVGと詳細情報のコンテナ */}
-        <Card 
-          shadow="xs" 
+        <Card
+          shadow="xs"
           p="md"
           radius={0}
-          style={{ 
+          style={{
             background: commonGradient,
             backdropFilter: 'blur(8px)',
             border: 0,
@@ -152,49 +152,49 @@ const MainStarWithInfo: React.FC<MainStarWithInfoProps> = ({
           <Grid gutter={{ base: 'md', sm: 'lg' }} align="center">
             {/* SVG画像（左側） */}
             <Grid.Col span={{ base: 12, md: 5 }} order={{ base: 1, md: 1 }}>
-                <Card 
-                  p={0}
-                  radius="sm" 
-                  style={{
-                    background: 'transparent',
-                    border: 'none',
-                    boxShadow: 'none',
-                    position: 'relative',
-                    overflow: 'visible',
-                    display: 'flex',
-                    justifyContent: 'center',
-                    alignItems: 'center',
-                    width: '100%',
-                    height: '320px',
-                    padding: '0'
-                  }}
-                >
-                  {/* 九星盤表示 */}
-                  <div style={{
-                    display: 'flex',
-                    justifyContent: 'center',
-                    alignItems: 'center',
-                    width: '320px',
-                    height: '320px',
-                    position: 'relative'
-                  }}>
-                    <KyuseiBoard_Compact
-                      centerStar={star.name_jp}
-                      size={320}
-                      theme="classic"
-                      backgroundGradient="classic"
-                    />
-                  </div>
-                </Card>
+              <Card
+                p={0}
+                radius="sm"
+                style={{
+                  background: 'transparent',
+                  border: 'none',
+                  boxShadow: 'none',
+                  position: 'relative',
+                  overflow: 'visible',
+                  display: 'flex',
+                  justifyContent: 'center',
+                  alignItems: 'center',
+                  width: '100%',
+                  height: '320px',
+                  padding: '0'
+                }}
+              >
+                {/* 九星盤表示 */}
+                <div style={{
+                  display: 'flex',
+                  justifyContent: 'center',
+                  alignItems: 'center',
+                  width: '320px',
+                  height: '320px',
+                  position: 'relative'
+                }}>
+                  <KyuseiBoard_Compact
+                    centerStar={star.name_jp}
+                    size={320}
+                    theme="classic"
+                    backgroundGradient="classic"
+                  />
+                </div>
+              </Card>
             </Grid.Col>
-            
+
             {/* 詳細情報（右側） */}
             <Grid.Col span={{ base: 12, md: 7 }} order={{ base: 2, md: 2 }}>
               <Box py={{ base: 'xs' }} px={{ base: 'xs' }}>
                 {/* 本命星情報 */}
-                <Card 
+                <Card
                   p={{ base: 'md', sm: 'md' }}
-                  radius="md" 
+                  radius="md"
                   style={{
                     background: `linear-gradient(135deg, ${starColor}08, ${starColor}15)`,
                     border: `1px solid ${starColor}25`,
@@ -206,12 +206,12 @@ const MainStarWithInfo: React.FC<MainStarWithInfoProps> = ({
                 >
                   <Stack gap="md" style={{ position: 'relative', zIndex: 1 }}>
                     <Group justify="center" align="center" gap="md">
-                      <Badge 
-                        size="lg" 
+                      <Badge
+                        size="lg"
                         radius="md"
-                        color={starColor} 
+                        color={starColor}
                         variant="filled"
-                        style={{ 
+                        style={{
                           fontSize: '1.8rem',
                           padding: '0.2rem 0.6rem',
                           fontWeight: 700,
@@ -226,13 +226,13 @@ const MainStarWithInfo: React.FC<MainStarWithInfoProps> = ({
                       >
                         {star.number}
                       </Badge>
-                      
-                      <Badge 
+
+                      <Badge
                         color={elementStyle.color}
                         size="lg"
                         radius="md"
                         variant="outline"
-                        style={{ 
+                        style={{
                           padding: '0.25rem 0.6rem',
                           fontSize: '1rem',
                           fontWeight: 500,
@@ -244,12 +244,12 @@ const MainStarWithInfo: React.FC<MainStarWithInfoProps> = ({
                         五行：{star.element}
                       </Badge>
                     </Group>
-                    
-                    <Text 
-                      fw={600} 
-                      ta="center" 
-                      size="lg" 
-                      style={{ 
+
+                    <Text
+                      fw={600}
+                      ta="center"
+                      size="lg"
+                      style={{
                         color: `${starColor}`,
                         fontSize: '1.3rem',
                         letterSpacing: '0.04em',
@@ -259,22 +259,22 @@ const MainStarWithInfo: React.FC<MainStarWithInfoProps> = ({
                       {star.name_jp}
                     </Text>
                   </Stack>
-                  
+
                   {/* キーワード */}
                   <Box style={{ position: 'relative', zIndex: 1 }}>
                     <Group gap="xs" mt="sm" style={{ flexWrap: 'wrap', justifyContent: 'center' }}>
                       {starKeywords.map((keyword, index) => (
-                        <Badge 
-                          key={index} 
+                        <Badge
+                          key={index}
                           color={starColor}
                           size="md"
                           radius="sm"
                           variant="light"
-                          style={{ 
+                          style={{
                             fontSize: '0.75rem',
                             fontWeight: 500,
                             opacity: 0.95,
-                            padding: '0.3rem 0.6rem', 
+                            padding: '0.3rem 0.6rem',
                             margin: '0.15rem 0.1rem',
                             color: '#333'
                           }}
@@ -289,13 +289,13 @@ const MainStarWithInfo: React.FC<MainStarWithInfoProps> = ({
             </Grid.Col>
           </Grid>
         </Card>
-        
+
         {/* 基本情報・鑑定結果（SVGの下） */}
-        <Card 
-          shadow="md" 
+        {/* <Card
+          shadow="md"
           p={{ base: 'md', sm: 'lg' }}
           radius={0}
-          style={{ 
+          style={{
             background: commonGradient,
             border: 0,
             borderTop: `1px solid ${elementStyle.color}30`,
@@ -306,8 +306,8 @@ const MainStarWithInfo: React.FC<MainStarWithInfoProps> = ({
             padding: '20px'
           }}
         >
-          <Title order={3} mb="sm" style={{ 
-            color: '#2d3748', 
+          <Title order={3} mb="sm" style={{
+            color: '#2d3748',
             borderBottom: `2px solid ${elementStyle.color}30`,
             paddingBottom: '10px',
             fontSize: 'clamp(1rem, 2.2vw, 1.2rem)',
@@ -319,11 +319,11 @@ const MainStarWithInfo: React.FC<MainStarWithInfoProps> = ({
             {getInfoSectionTitle()}
             {star.title ? `（${star.title}）` : ''}
           </Title>
-          
-          <Text 
-            size="sm" 
+
+          <Text
+            size="sm"
             className="paragraph-text"
-            style={{ 
+            style={{
               whiteSpace: 'pre-wrap',
               lineHeight: '1.8',
               color: '#2d3748',
@@ -334,16 +334,15 @@ const MainStarWithInfo: React.FC<MainStarWithInfoProps> = ({
           >
             {star.description}
           </Text>
-          
-          {/* アドバイスがある場合のみ表示 */}
+
           {star.advice && (
             <>
               <Divider my="lg" />
               <Text fw={600} mb="sm" style={{ color: '#4a5568' }}>アドバイス</Text>
-              <Text 
+              <Text
                 size="sm"
                 className="paragraph-text"
-                style={{ 
+                style={{
                   whiteSpace: 'pre-wrap',
                   lineHeight: '1.8',
                   color: '#2d3748',
@@ -356,7 +355,7 @@ const MainStarWithInfo: React.FC<MainStarWithInfoProps> = ({
               </Text>
             </>
           )}
-        </Card>
+        </Card> */}
       </Box>
     </Paper>
   );

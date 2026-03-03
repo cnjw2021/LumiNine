@@ -514,10 +514,10 @@ export default function Result({ resultData, onReset, compatibilityData }: Resul
       {/* <FiveElementsCycle size={500} /> */}
 
       {/* ほかのセクションの後、本命星と月命星のガイダンス情報（新規追加）*/}
-      <StarLifeGuidance
+      {/* <StarLifeGuidance
         mainStar={main_star.star_number}
         monthStar={month_star.star_number}
-      />
+      /> */}
 
       {/* 鑑定結果セクション */}
       <ResultFortuneSection
