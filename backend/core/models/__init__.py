@@ -20,6 +20,10 @@ from .zodiac_group_member import ZodiacGroupMember
 
 from .pattern_switch_date import PatternSwitchDate
 
+# Phase 3: PowerStone Data Layer
+from .powerstone_master import PowerStoneMaster
+from .recommendation_history import RecommendationHistory
+
 # 全てのモデルをエクスポート
 __all__ = [
     'AdminAccountLimit',
@@ -39,5 +43,7 @@ __all__ = [
     'HourlyStarZodiac',
     'ZodiacGroup',
     'ZodiacGroupMember',
-    'PatternSwitchDate'
+    'PatternSwitchDate',
+    'PowerStoneMaster',
+    'RecommendationHistory',
 ] 

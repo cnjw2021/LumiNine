@@ -34,7 +34,8 @@ CREATE TABLE IF NOT EXISTS `solar_terms` (
   `star_number` INT NOT NULL COMMENT '九星番号',
   `created_at` TIMESTAMP DEFAULT CURRENT_TIMESTAMP COMMENT '作成日時',
   `updated_at` TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP COMMENT '更新日時',
-  UNIQUE KEY `year_month` (`year`, `month`) COMMENT '年月の一意制約'
+  UNIQUE KEY `year_month` (`year`, `month`) COMMENT '年月の一意制約',
+  INDEX `idx_solar_terms_year_month` (`year`, `month`)
  ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci; 
 
  -- 日付ごとの干支と九星の情報を保存するテーブル
