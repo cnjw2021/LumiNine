@@ -270,6 +270,19 @@ class TestLayer3ProtectionStone:
         assert result.protection_stone.reason_params["threat_key"] == "threat.dark_sword"
         assert result.protection_stone.reason_params["direction_key"] == "direction.north"
 
+    def test_unknown_sentinel_mark_skipped(self, engine: PowerStoneMatchingEngine):
+        """미등록 sentinel mark(no_dark_sword_center_five 등)는 무시된다."""
+        directions = _make_directions(
+            auspicious={"south": True},
+            marks={
+                "east": ["no_dark_sword_center_five"],  # 미등록 코드
+                "north": ["dark_sword"],                 # 등록된 코드
+            },
+        )
+        result = engine.recommend(main_star=1, directions=directions)
+        # 미등록 east 는 무시, north 의 dark_sword 가 선택됨
+        assert result.protection_stone.reason_params["threat_key"] == "threat.dark_sword"
+
 
 # ══════════════════════════════════════════════════════
 # 중복 회피

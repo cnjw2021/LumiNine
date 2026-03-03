@@ -261,7 +261,9 @@ class PowerStoneMatchingEngine(IPowerStoneMatchingEngine):
             marks = info.get("marks", [])
             for mark in marks:
                 mark_code = mark if isinstance(mark, str) else mark.get("code", "")
-                severity = _THREAT_SEVERITY.get(mark_code, 999)
+                if mark_code not in _THREAT_SEVERITY:
+                    continue  # 미등록 sentinel mark 무시
+                severity = _THREAT_SEVERITY[mark_code]
                 if severity < worst_severity:
                     worst_severity = severity
                     # alias → canonical 정규화
