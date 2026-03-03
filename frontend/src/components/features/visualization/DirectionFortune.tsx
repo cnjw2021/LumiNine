@@ -4,7 +4,6 @@ import { Grid, Paper, Loader, Center, Card, Title, Text, Box } from '@mantine/co
 import { useDirectionFortuneData } from '@/hooks/useDirectionFortuneData';
 import DirectionBoard from './DirectionBoard';
 import AuspiciousDatesDisplay from './AuspiciousDatesDisplay';
-import PowerStoneCard from './PowerStoneCard';
 
 interface DirectionFortuneProps {
     mainStar: number;
@@ -25,8 +24,7 @@ export default function DirectionFortune({ mainStar, monthStar, title, targetYea
         movingDates,
         waterDrawingDates,
         movingTable,
-        waterDrawingTable,
-        powerStones
+        waterDrawingTable
     } = useDirectionFortuneData(mainStar, monthStar, targetYear);
 
     // ローディング中の表示
@@ -103,13 +101,6 @@ export default function DirectionFortune({ mainStar, monthStar, title, targetYea
                     />
                 </Grid.Col>
             </Grid>
-
-            {/* パワーストーン推薦カード */}
-            {powerStones && (
-                <Box mt="md">
-                    <PowerStoneCard powerStones={powerStones} />
-                </Box>
-            )}
         </Paper>
     );
 }

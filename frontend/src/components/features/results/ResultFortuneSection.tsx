@@ -5,7 +5,7 @@ import { Paper, Title, Text, Box, Grid, Stack, Loader, Card } from '@mantine/cor
 import api from '@/utils/api';
 import DirectionFortune from '../visualization/DirectionFortune';
 import AnnualFortune from '../visualization/AnnualDirectionsGrid';
-import { PeriodFortuneBoard } from '../visualization';
+import { PeriodFortuneBoard, PowerStoneSection } from '../visualization';
 
 interface StarData {
   number: number;
@@ -223,14 +223,21 @@ const ResultFortuneSection: React.FC<ResultFortuneSectionProps> = ({ mainStar, m
         </Paper>
       )} */}
 
-      <Card shadow="sm" p="md" withBorder>
+      {/* <Card shadow="sm" p="md" withBorder>
         <DirectionFortune
           mainStar={mainStar}
           monthStar={monthStar}
           title={`${targetYear}年`}
           targetYear={targetYear}
         />
-      </Card>
+      </Card> */}
+
+      {/* パワーストーン推薦 — DirectionFortuneから完全に独立 */}
+      <PowerStoneSection
+        mainStar={mainStar}
+        monthStar={monthStar}
+        targetYear={targetYear}
+      />
 
       {/* 年間吉方位情報表示（一時的に表示させない） */}
       {targetYear === 0 && yearlyData.length > 0 && (
