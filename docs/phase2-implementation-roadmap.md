@@ -66,16 +66,16 @@
   - [ ] 土: citrine(주), tigers_eye, yellow_jasper, smoky_quartz
   - [ ] 金: clear_quartz(주), moonstone, rose_quartz, pearl
   - [ ] `star_base_stones` 매핑 (본명성 1~9 → stone id)
-- [ ] `domain/services/interfaces/powerstone_repository_interface.py` — `IPowerStoneRepository` ABC
-- [ ] `infrastructure/powerstone_repository.py` — `PowerStoneRepository` (JSON 로드)
+- [ ] `domain/repositories/powerstone_repository_interface.py` — `IPowerStoneRepository` ABC
+- [ ] `infrastructure/persistence/powerstone_repository.py` — `PowerStoneRepository` (JSON 로드)
   - [ ] `get_primary_by_gogyo()`
   - [ ] `get_secondaries_by_gogyo()`
   - [ ] `get_base_stone_for_star()`
-- [ ] `data/messages/ja.json` — 일본어 메시지 번들 (기본)
-- [ ] `data/messages/ko.json` — 한국어 메시지 번들
-- [ ] `data/messages/en.json` — 영어 메시지 번들
-- [ ] `domain/services/interfaces/message_catalog_interface.py` — `IMessageCatalog` ABC
-- [ ] `infrastructure/message_catalog.py` — `MessageCatalog` (JSON 로드 + resolve)
+- [ ] `data/messages/ja.json` — 일본어 메시지 번들 (기본) + threat.\ 키 포함
+- [ ] `data/messages/ko.json` — 한국어 메시지 번들 + threat.\ 키 포함
+- [ ] `data/messages/en.json` — 영어 메시지 번들 + threat.\ 키 포함
+- [ ] `use_cases/interfaces/message_catalog_interface.py` — `IMessageCatalog` ABC
+- [ ] `infrastructure/services/message_catalog.py` — `MessageCatalog` (JSON 로드 + resolve)
   - [ ] `resolve(key, locale, params)` — 키 조회 + 플레이스홀더 치환
   - [ ] fallback: 미지원 locale → ja
 
@@ -106,7 +106,7 @@
   - [ ] `_layer1_base_stone()` — 본명성 → 오행 → 기본석
   - [ ] `_layer2_monthly_stone()` — 최적 길방위 선택 알고리즘
     - [ ] 길방위 필터링 (is_auspicious)
-    - [ ] 상성 우선순위 정렬 (GOOD > NEUTRAL)
+    - [ ] 상성 우선순위 정렬 (GOOD > HIWA)
     - [ ] 동순위 방위 고정 우선순위 (S > E > SE > ...)
   - [ ] `_layer3_protection_stone()` — 최악 흉살 선택 알고리즘
     - [ ] 흉살 위험도 순위 (五黄殺 > 暗剣殺 > ...)
@@ -144,8 +144,8 @@
   - [ ] `IMessageCatalog` → `MessageCatalog` 바인딩
   - [ ] `PowerStoneRecommendationUseCase` 바인딩
 - [ ] `routes/monthly_routes.py` [MODIFY]
-  - [ ] `?lang=` 쿼리 파라미터 파싱 (기본값: `ja`)
-  - [ ] 기존 directions 응답에 `power_stones` 필드 추가
+  - [ ] `?lang=` 쿼리 파라미터 파싱 (기본값: `ja`) + `Locale` Enum 검증
+  - [ ] 기존 directions 응답에 `power_stones` 필드 추가 (엔드포인트: `/monthly/monthly-board`)
   - [ ] locale별 스톤 이름, reason 텍스트 렌더링
 
 ### 테스트

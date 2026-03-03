@@ -30,16 +30,17 @@
 ## 2. 아키텍처 레이어 구조
 
 ```
-┌─────────────────────────────────────────────────────────────────┐
-│ Presentation Layer (routes/)                                     │
-│   monthly_routes.py  ← 기존 /monthly/directions 에 power_stones 필드 추가 │
-└────────────────────────────┬────────────────────────────────────┘
+┌─────────────────────────────────────────────────────────────────────────────┐
+│ Presentation Layer (presentation/ + routes/)                                │
+│   routes/monthly_routes.py            [Controller] 기존 /monthly/monthly-board 연계 │
+│   presentation/                       [Presenter] 응답 포맷팅 담당         │
+└────────────────────────────┬────────────────────────────────────────────────┘
                              │ depends on
-┌────────────────────────────▼────────────────────────────────────┐
-│ Application Layer (use_cases/)                                    │
-│   PowerStoneRecommendationUseCase  [NEW]                         │
-│   MonthlyDirectionsUseCase         [기존 — 연계]                  │
-└────────────────────────────┬────────────────────────────────────┘
+┌────────────────────────────▼────────────────────────────────────────────────┐
+│ Application Layer (use_cases/)                                              │
+│   PowerStoneRecommendationUseCase  [NEW]                                    │
+│   MonthlyDirectionsUseCase         [기존 — /monthly/monthly-board 에서 사용] │
+└────────────────────────────┬────────────────────────────────────────────────┘
                              │ depends on (interfaces only)
 ┌────────────────────────────▼────────────────────────────────────┐
 │ Domain Layer (domain/)                                            │
@@ -51,7 +52,9 @@
 │  services/interfaces/                                             │
 │    IGogyoService                      [NEW]                       │
 │    IPowerStoneMatchingEngine          [NEW]                       │
-│    IPowerStoneRepository              [NEW]                       │
+│                                                                   │
+│  repositories/                                                     │
+│    IPowerStoneRepository              [NEW] (기존 컨벤션 준수)      │
 │                                                                   │
 │  value_objects/                                                    │
 │    Locale (Enum)                      [NEW] ja·ko·en               │
@@ -66,10 +69,10 @@
 └────────────────────────────┬────────────────────────────────────┘
                              │ depends on (interfaces only)
 ┌────────────────────────────▼────────────────────────────────────┐
-│ Infrastructure Layer (infrastructure/)                             │
-│   PowerStoneRepository               [NEW] JSON 기반 정적 데이터     │
-│   MessageCatalog                     [NEW] i18n 메시지 카탈로그      │
-└─────────────────────────────────────────────────────────────────┘
+│ Infrastructure Layer (infrastructure/)                                      │
+│   persistence/PowerStoneRepository   [NEW] JSON 기반 정적 데이터              │
+│   services/MessageCatalog            [NEW] i18n 메시지 카탈로그                │
+└─────────────────────────────────────────────────────────────────────────────┘
 ```
 
 ### 의존성 흐름 (DIP 준수)
@@ -141,7 +144,7 @@ class PowerStone:
     is_primary: bool                 # 해당 오행의 주석 여부
 
     def get_name(self, locale: str = "ja") -> str:
-        """지정 locale의 이름 반환. fallback: ja → en → 첫 번째 값."""
+        """지정 locale의 이름 반환. fallback: locale → ja → 첫 번째 값."""
         return self.names.get(locale) or self.names.get("ja") or next(iter(self.names.values()))
 ```
 
@@ -328,7 +331,7 @@ class IPowerStoneMatchingEngine(ABC):
 ```
 
 ```python
-# domain/services/interfaces/powerstone_repository_interface.py
+# domain/repositories/powerstone_repository_interface.py  ← 기존 컨벤션 위치
 class IPowerStoneRepository(ABC):
     @abstractmethod
     def get_primary_by_gogyo(self, gogyo: Gogyo) -> PowerStone: ...
@@ -339,13 +342,15 @@ class IPowerStoneRepository(ABC):
 ```
 
 ```python
-# domain/services/interfaces/message_catalog_interface.py
+# use_cases/interfaces/message_catalog_interface.py  ← i18n 렌더링은 표현 계층 성격
 class IMessageCatalog(ABC):
     @abstractmethod
     def resolve(self, key: str, locale: str = "ja", params: Dict[str, str] = None) -> str:
         """메시지 키 + locale → 번역된 문자열 반환."""
         ...
 ```
+
+> **배치 근거**: `IPowerStoneRepository`는 도메인 데이터 접근이므로 `domain/repositories/`에 배치 (기존 `monthly_directions_repository_interface.py` 등과 동일). `IMessageCatalog`는 i18n 렌더링(외부 시스템 성격)이므로 `use_cases/interfaces/`에 배치 (기존 `pdf_generator_interface.py` 등과 동일, `infrastructure/readme.txt` 원칙 준수).
 
 ---
 
@@ -401,16 +406,20 @@ backend/apps/ninestarki/
 │   │   ├── powerstone_matching_engine.py  [NEW] 3-Layer 매칭 엔진
 │   │   └── interfaces/
 │   │       ├── gogyo_service_interface.py           [NEW]
-│   │       ├── powerstone_matching_engine_interface.py [NEW]
-│   │       ├── powerstone_repository_interface.py   [NEW]
-│   │       └── message_catalog_interface.py         [NEW]
-│   ├── repositories/                [기존]
+│   │       └── powerstone_matching_engine_interface.py [NEW]
+│   ├── repositories/
+│   │   └── powerstone_repository_interface.py  [NEW] 기존 컨벤션 위치
 │   └── exceptions.py               [MODIFY] 2개 예외 추가
 ├── infrastructure/
-│   ├── powerstone_repository.py     [NEW] JSON 기반 정적 데이터 구현체
-│   └── message_catalog.py           [NEW] JSON 기반 i18n 메시지 카탈로그 구현체
+│   ├── persistence/
+│   │   └── powerstone_repository.py [NEW] JSON 기반 정적 데이터 구현체
+│   └── services/
+│       └── message_catalog.py       [NEW] JSON 기반 i18n 메시지 카탈로그 구현체
 ├── use_cases/
+│   ├── interfaces/
+│   │   └── message_catalog_interface.py  [NEW] i18n 렌더링 인터페이스
 │   └── powerstone_recommendation_use_case.py  [NEW]
+├── presentation/                    [기존]
 ├── routes/
 │   └── monthly_routes.py            [MODIFY] power_stones 필드 + locale 파라미터
 ├── dependency_module.py             [MODIFY] DI 바인딩 추가
@@ -469,7 +478,12 @@ backend/apps/ninestarki/
   "reason.protection": "今月最大の凶殺・{threat}が{direction}({threat_element})に位置。{counter_element}の力で凶気を抑制",
   "gogyo.木": "木", "gogyo.火": "火", "gogyo.土": "土", "gogyo.金": "金", "gogyo.水": "水",
   "direction.N": "北", "direction.S": "南", "direction.E": "東", "direction.W": "西",
-  "direction.NE": "北東", "direction.NW": "北西", "direction.SE": "南東", "direction.SW": "南西"
+  "direction.NE": "北東", "direction.NW": "北西", "direction.SE": "南東", "direction.SW": "南西",
+  "threat.five_yellow": "五黄殺", "threat.dark_sword": "暗剣殺",
+  "threat.main_star": "本命殺", "threat.month_star": "月命殺",
+  "threat.water_fire": "水火殺", "threat.opposite_zodiac": "破",
+  "threat.bad_star": "凶方星", "threat.main_opposite": "本命的殺",
+  "threat.month_opposite": "月命的殺"
 }
 ```
 
@@ -484,7 +498,12 @@ backend/apps/ninestarki/
   "reason.protection": "이달 가장 강한 흉살 {threat}이(가) {direction}({threat_element})에 위치. {counter_element}의 힘으로 흉기를 억제",
   "gogyo.木": "목", "gogyo.火": "화", "gogyo.土": "토", "gogyo.金": "금", "gogyo.水": "수",
   "direction.N": "북", "direction.S": "남", "direction.E": "동", "direction.W": "서",
-  "direction.NE": "북동", "direction.NW": "북서", "direction.SE": "남동", "direction.SW": "남서"
+  "direction.NE": "북동", "direction.NW": "북서", "direction.SE": "남동", "direction.SW": "남서",
+  "threat.five_yellow": "오황살", "threat.dark_sword": "암검살",
+  "threat.main_star": "본명살", "threat.month_star": "월명살",
+  "threat.water_fire": "수화살", "threat.opposite_zodiac": "파",
+  "threat.bad_star": "흉방성", "threat.main_opposite": "본명적살",
+  "threat.month_opposite": "월명적살"
 }
 ```
 
@@ -503,7 +522,7 @@ PowerStoneMatchingEngine                    Route Handler
                                               ├─ locale = request.args.get("lang", "ja")
                                               ├─ message_catalog.resolve(
                                               │    key="reason.monthly",
-                                              │    locale="ja",
+                                              │    locale=locale,
                                               │    params={"direction": "南", "element": "火"}
                                               │  )
                                               └─ → "今月の最良吉方位・南(火)のエネルギーを取り込む石"
