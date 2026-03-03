@@ -14,4 +14,5 @@ export { default as StarPositionContainer } from './visualization/StarPositionCo
 export { default as DirectionFortune } from './visualization/DirectionFortune';
 export { default as AnnualDirectionsGrid } from './visualization/AnnualDirectionsGrid';
 export { default as PeriodFortuneBoard } from './visualization/PeriodFortuneBoard';
-export { default as StarsDataDisplay } from './visualization/StarsDataDisplay'; 
+export { default as StarsDataDisplay } from './visualization/StarsDataDisplay';
+export { default as PowerStoneSection } from './visualization/PowerStoneSection'; 
