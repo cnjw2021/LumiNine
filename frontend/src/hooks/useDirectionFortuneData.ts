@@ -25,6 +25,7 @@ export const useDirectionFortuneData = (mainStar: number, monthStar: number, tar
 
         const fetchData = async () => {
             setLoading(true);
+            setPowerStones(null);  // リセットして古いデータの誤表示を防止
             try {
                 const year = targetYear || new Date().getFullYear();
 
@@ -58,13 +59,11 @@ export const useDirectionFortuneData = (mainStar: number, monthStar: number, tar
                     if (monthlyBoardRes.data?.monthly_boards) {
                         // 現在の節月を date 範囲で特定
                         const today = new Date().toISOString().slice(0, 10);
-                        const boards = monthlyBoardRes.data.monthly_boards;
+                        const boards = monthlyBoardRes.data.monthly_boards as Record<string, { period_start?: string; period_end?: string; power_stones?: PowerStones }>;
                         const currentBoard = Object.values(boards).find(
-                            (b: any) => b.period_start && b.period_end && b.period_start <= today && today < b.period_end
-                        ) as any;
-                        if (currentBoard?.power_stones) {
-                            setPowerStones(currentBoard.power_stones);
-                        }
+                            (b) => b.period_start && b.period_end && b.period_start <= today && today < b.period_end
+                        );
+                        setPowerStones(currentBoard?.power_stones ?? null);
                     }
                 } catch (stoneErr) {
                     // パワーストーン取得失敗は方位データに影響させない
