@@ -95,6 +95,13 @@ class TestGetCounterGogyo:
     def test_counter_gogyo(self, svc: GogyoService, target: Gogyo, counter: Gogyo):
         assert svc.get_counter_gogyo(target) == counter
 
+    def test_invalid_gogyo_raises(self, svc: GogyoService):
+        """잘못된 타입/값 입력 시 INVALID_GOGYO 예외를 유지하는지 확인."""
+        with pytest.raises(PowerStoneMatchingError) as exc_info:
+            svc.get_counter_gogyo("invalid")
+        assert exc_info.value.code == "INVALID_GOGYO"
+        assert exc_info.value.status == 422
+
 
 # ══════════════════════════════════════════════════════
 # get_relation

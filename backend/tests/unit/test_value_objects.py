@@ -106,6 +106,13 @@ class TestPowerStone:
         with pytest.raises(AttributeError):
             emerald.id = "ruby"  # type: ignore[misc]
 
+    def test_get_name_no_ja_fallback_to_first(self):
+        """ja 키가 없으면 첫 번째 값으로 fallback."""
+        stone = PowerStone(id="ruby", names={"en": "Ruby"}, gogyo=Gogyo.FIRE, is_primary=True)
+        assert stone.get_name("ko") == "Ruby"   # ko 없고 ja 없으므로 첫 번째 값
+        assert stone.get_name("ja") == "Ruby"    # ja 없으므로 첫 번째 값
+        assert stone.get_name() == "Ruby"        # 기본값 ja도 없으므로 첫 번째 값
+
     def test_empty_names_raises(self):
         """names가 비어있으면 ValueError."""
         with pytest.raises(ValueError, match="최소 1개"):
