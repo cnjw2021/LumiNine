@@ -14,12 +14,22 @@ from apps.ninestarki.domain.value_objects.gogyo import Gogyo
 
 @dataclass(frozen=True)
 class PowerStone:
-    """단일 파워스톤 정보 (불변). 이름은 locale별로 보유."""
+    """단일 파워스톤 정보 (불변). 이름은 locale별로 보유.
+
+    Note:
+        frozen=True 이지만, names (Dict) 자체는 mutable 하다.
+        완전한 불변성이 필요하면 MappingProxyType 등으로 래핑할 수 있으나,
+        현 단계에서는 도메인 내부에서만 생성·소비하므로 frozen 으로 충분하다.
+    """
 
     id: str                         # "emerald", "garnet" 등 고유 식별자
     names: Dict[str, str]           # {"ja": "エメラルド", "ko": "에메랄드", "en": "Emerald"}
     gogyo: Gogyo                    # 대응 오행
     is_primary: bool                # 해당 오행의 주석 여부
+
+    def __post_init__(self) -> None:
+        if not self.names:
+            raise ValueError("PowerStone.names 는 최소 1개의 locale 이름을 포함해야 합니다.")
 
     def get_name(self, locale: str = "ja") -> str:
         """지정 locale의 이름 반환. fallback: locale → ja → 첫 번째 값."""

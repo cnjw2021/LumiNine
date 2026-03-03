@@ -85,7 +85,7 @@ def stone_ja_only() -> PowerStone:
 class TestPowerStone:
     def test_get_name_exact_locale(self, emerald: PowerStone):
         assert emerald.get_name("ja") == "エメラルド"
-        assert emerald.get_name("ko") == "에メ랄드" or emerald.get_name("ko") == "에메랄드"
+        assert emerald.get_name("ko") == "에메랄드"
         assert emerald.get_name("en") == "Emerald"
 
     def test_get_name_fallback_to_ja(self, emerald: PowerStone):
@@ -105,6 +105,11 @@ class TestPowerStone:
         """frozen dataclass → 속성 변경 불가."""
         with pytest.raises(AttributeError):
             emerald.id = "ruby"  # type: ignore[misc]
+
+    def test_empty_names_raises(self):
+        """names가 비어있으면 ValueError."""
+        with pytest.raises(ValueError, match="최소 1개"):
+            PowerStone(id="invalid", names={}, gogyo=Gogyo.WOOD, is_primary=False)
 
 
 # ══════════════════════════════════════════════════════

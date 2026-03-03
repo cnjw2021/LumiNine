@@ -87,4 +87,11 @@ class GogyoService(IGogyoService):
 
     def get_counter_gogyo(self, target: Gogyo) -> Gogyo:
         """주어진 오행을 극하는(억제하는) 오행 반환."""
-        return self.SOKOKU_TABLE[target]
+        counter = self.SOKOKU_TABLE.get(target)
+        if counter is None:
+            raise PowerStoneMatchingError(
+                f"유효하지 않은 오행입니다: {target}",
+                code="INVALID_GOGYO",
+                status=422,
+            )
+        return counter
