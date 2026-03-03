@@ -21,10 +21,28 @@ const LAYER_META: Record<string, { icon: string; label: string; sublabel: string
 
 const DEFAULT_THEME = { bg: 'rgba(240,240,240,0.3)', border: 'rgba(200,200,200,0.4)', badge: 'gray', label: '?' };
 
+// ── ローカライズされた layer → 内部コード ──────────────────
+const LAYER_LABEL_TO_KEY: Record<string, string> = {
+    '基本石': 'base', '기본석': 'base', 'Base Stone': 'base', 'base': 'base',
+    '月運石': 'monthly', '월운석': 'monthly', 'Monthly Stone': 'monthly', 'monthly': 'monthly',
+    '護身石': 'protection', '호신석': 'protection', 'Protection Stone': 'protection', 'protection': 'protection',
+};
+
+// ── ローカライズされた gogyo → 正規コード ─────────────────
+const GOGYO_NORMALIZE: Record<string, string> = {
+    '水': '水', 'Water': '水', '수': '水',
+    '木': '木', 'Wood': '木', '목': '木',
+    '火': '火', 'Fire': '火', '화': '火',
+    '土': '土', 'Earth': '土', '토': '土',
+    '金': '金', 'Metal': '金', '금': '金',
+};
+
 // ── 個別ストーンアイテム ─────────────────────────────────
 const StoneItem: React.FC<{ stone: StoneRecommendation }> = ({ stone }) => {
-    const theme = GOGYO_THEME[stone.gogyo] || DEFAULT_THEME;
-    const meta = LAYER_META[stone.layer] || { icon: '✦', label: stone.layer, sublabel: '' };
+    const gogyoKey = GOGYO_NORMALIZE[stone.gogyo] || stone.gogyo;
+    const theme = GOGYO_THEME[gogyoKey] || DEFAULT_THEME;
+    const layerKey = LAYER_LABEL_TO_KEY[stone.layer] || stone.layer;
+    const meta = LAYER_META[layerKey] || { icon: '✦', label: stone.layer, sublabel: '' };
 
     return (
         <Box style={{

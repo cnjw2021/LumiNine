@@ -1,3 +1,5 @@
+'use client';
+
 import React from 'react';
 import { Card, Text, Box, Tooltip, Group } from '@mantine/core';
 import Image from 'next/image';

@@ -45,8 +45,10 @@ export type AuspiciousTableData = AuspiciousTableYear[];
 export interface StoneRecommendation {
   stone_id: string;
   stone_name: string;
-  layer: string;       // "base" | "monthly" | "protection"
-  gogyo: string;       // "水" | "木" | "火" | "土" | "金"
+  /** Localized layer label (e.g. "基本石", "기본석", "Base Stone") */
+  layer: string;
+  /** Localized 五行 label (e.g. "水", "수", "Water") */
+  gogyo: string;
   reason: string;
 }
 
