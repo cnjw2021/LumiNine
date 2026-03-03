@@ -32,7 +32,7 @@
 ```
 ┌─────────────────────────────────────────────────────────────────┐
 │ Presentation Layer (routes/)                                     │
-│   monthly_routes.py  ← 기존 /monthly/directions 에 stones 필드 추가 │
+│   monthly_routes.py  ← 기존 /monthly/directions 에 power_stones 필드 추가 │
 └────────────────────────────┬────────────────────────────────────┘
                              │ depends on
 ┌────────────────────────────▼────────────────────────────────────┐
@@ -271,7 +271,7 @@ class PowerStoneMatchingEngine(IPowerStoneMatchingEngine):
         ...
 ```
 
-#### Layer 2 최적 길방위 선택 알고리즘 (설계서 §4-1)
+#### Layer 2 최적 길방위 선택 알고리즘 (설계서 §4-2)
 
 ```
 입력: directions (방위별 길흉 판정 결과)
@@ -279,14 +279,14 @@ class PowerStoneMatchingEngine(IPowerStoneMatchingEngine):
 1. is_auspicious == True 인 방위 필터링
   ↓
 2. 본명성과의 상성으로 정렬
-   - GOOD(상생) > NEUTRAL(비화) > 기타
+   - GOOD(상생) > HIWA(比和) > 기타
   ↓
 3. 동순위 → 방위 고정 우선순위: S > E > SE > SW > N > W > NE > NW
   ↓
 4. 1순위 방위의 오행 → 월운석 오행으로 확정
 ```
 
-#### Layer 3 최악 흉살 선택 알고리즘 (설계서 §5)
+#### Layer 3 최악 흉살 선택 알고리즘 (설계서 §4-2)
 
 ```
 입력: directions (방위별 흉살 marks)
@@ -351,23 +351,23 @@ class IMessageCatalog(ABC):
 
 ## 6. 예외 클래스 추가 (기존 계층 확장)
 
-예외 `message`는 **개발자/로그용 영어 고정** — 클라이언트 표시 메시지는 `code`를 키로 프론트엔드에서 i18n 처리한다.
+예외 `message` 기본값은 기존 코드베이스 컨벤션(한국어)을 따른다. 클라이언트에는 `code`를 키로 프론트엔드에서 locale별 i18n 처리한다.
 
 ```python
 # domain/exceptions.py  [MODIFY]
 
 class PowerStoneMatchingError(NineStarKiError):
     """파워스톤 매칭 과정에서 발생하는 오류."""
-    def __init__(self, message="Power stone matching failed", *, details=None):
+    def __init__(self, message="파워스톤 매칭 오류가 발생했습니다.", *, details=None):
         super().__init__(message, code="POWERSTONE_MATCHING_ERROR", status=500, details=details)
 
 class NoAuspiciousDirectionError(NineStarKiError):
     """길방위가 하나도 없어 월운석을 결정할 수 없는 경우."""
-    def __init__(self, message="No auspicious direction found", *, details=None):
+    def __init__(self, message="길방위를 찾을 수 없습니다.", *, details=None):
         super().__init__(message, code="NO_AUSPICIOUS_DIRECTION", status=422, details=details)
 ```
 
-> **i18n 원칙**: 예외 `message`는 서버 로그·디버깅용이므로 영어로 통일한다. 클라이언트 화면 메시지는 `code`(예: `NO_AUSPICIOUS_DIRECTION`)를 프론트엔드 i18n 번들의 키로 사용하여 locale별로 번역한다.
+> **에러 응답 정책**: 예외 `message` 기본값은 기존 `NineStarKiError` 하위 클래스와 동일하게 **한국어**로 유지한다 (CODE_REVIEW_GUIDELINES §E4 준수). 다국어 에러 메시지가 필요한 경우 클라이언트에서 `code`를 키로 i18n 번들을 통해 locale별로 표시한다.
 
 ---
 
@@ -382,7 +382,7 @@ binder.bind(IMessageCatalog, to=MessageCatalog, scope=singleton)
 binder.bind(PowerStoneRecommendationUseCase, to=PowerStoneRecommendationUseCase, scope=singleton)
 ```
 
-> ⚠️ **CODE_REVIEW_GUIDELINES §D2 준수**: 인터페이스 키로만 바인딩, 구상 클래스 직접 바인딩 금지.
+> ⚠️ **CODE_REVIEW_GUIDELINES §D2 준수**: **도메인 서비스/리포지토리**는 인터페이스 키로만 바인딩하고, 구상 클래스를 직접 키로 쓰지 않는다. UseCase는 현재 정책상 구상 클래스 키로 바인딩하되, 필요 시 별도 인터페이스를 도입한다.
 
 ---
 
@@ -408,11 +408,11 @@ backend/apps/ninestarki/
 │   └── exceptions.py               [MODIFY] 2개 예외 추가
 ├── infrastructure/
 │   ├── powerstone_repository.py     [NEW] JSON 기반 정적 데이터 구현체
-│   └── message_catalog.py           [NEW] JSON 기반 i18n 메시지 카탈로그
+│   └── message_catalog.py           [NEW] JSON 기반 i18n 메시지 카탈로그 구현체
 ├── use_cases/
 │   └── powerstone_recommendation_use_case.py  [NEW]
 ├── routes/
-│   └── monthly_routes.py            [MODIFY] stones 필드 + locale 파라미터
+│   └── monthly_routes.py            [MODIFY] power_stones 필드 + locale 파라미터
 ├── dependency_module.py             [MODIFY] DI 바인딩 추가
 └── data/
     ├── powerstone_catalog.json      [NEW] 스톤 마스터 데이터 (다국어 name)
