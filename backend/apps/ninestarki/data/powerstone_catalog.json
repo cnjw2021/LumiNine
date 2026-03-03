@@ -1,0 +1,215 @@
+{
+    "stones": [
+        {
+            "id": "aquamarine",
+            "names": {
+                "ja": "アクアマリン",
+                "ko": "아쿠아마린",
+                "en": "Aquamarine"
+            },
+            "gogyo": "水",
+            "is_primary": true
+        },
+        {
+            "id": "lapis_lazuli",
+            "names": {
+                "ja": "ラピスラズリ",
+                "ko": "라피스 라줄리",
+                "en": "Lapis Lazuli"
+            },
+            "gogyo": "水",
+            "is_primary": false
+        },
+        {
+            "id": "blue_topaz",
+            "names": {
+                "ja": "ブルートパーズ",
+                "ko": "블루 토파즈",
+                "en": "Blue Topaz"
+            },
+            "gogyo": "水",
+            "is_primary": false
+        },
+        {
+            "id": "onyx",
+            "names": {
+                "ja": "オニキス",
+                "ko": "오닉스",
+                "en": "Onyx"
+            },
+            "gogyo": "水",
+            "is_primary": false
+        },
+        {
+            "id": "emerald",
+            "names": {
+                "ja": "エメラルド",
+                "ko": "에메랄드",
+                "en": "Emerald"
+            },
+            "gogyo": "木",
+            "is_primary": true
+        },
+        {
+            "id": "peridot",
+            "names": {
+                "ja": "ペリドット",
+                "ko": "페리도트",
+                "en": "Peridot"
+            },
+            "gogyo": "木",
+            "is_primary": false
+        },
+        {
+            "id": "aventurine",
+            "names": {
+                "ja": "アベンチュリン",
+                "ko": "아벤츄린",
+                "en": "Aventurine"
+            },
+            "gogyo": "木",
+            "is_primary": false
+        },
+        {
+            "id": "jade",
+            "names": {
+                "ja": "翡翠",
+                "ko": "비취",
+                "en": "Jade"
+            },
+            "gogyo": "木",
+            "is_primary": false
+        },
+        {
+            "id": "garnet",
+            "names": {
+                "ja": "ガーネット",
+                "ko": "가넷",
+                "en": "Garnet"
+            },
+            "gogyo": "火",
+            "is_primary": true
+        },
+        {
+            "id": "carnelian",
+            "names": {
+                "ja": "カーネリアン",
+                "ko": "카넬리안",
+                "en": "Carnelian"
+            },
+            "gogyo": "火",
+            "is_primary": false
+        },
+        {
+            "id": "ruby",
+            "names": {
+                "ja": "ルビー",
+                "ko": "루비",
+                "en": "Ruby"
+            },
+            "gogyo": "火",
+            "is_primary": false
+        },
+        {
+            "id": "amethyst",
+            "names": {
+                "ja": "アメジスト",
+                "ko": "자수정",
+                "en": "Amethyst"
+            },
+            "gogyo": "火",
+            "is_primary": false
+        },
+        {
+            "id": "citrine",
+            "names": {
+                "ja": "シトリン",
+                "ko": "시트린",
+                "en": "Citrine"
+            },
+            "gogyo": "土",
+            "is_primary": true
+        },
+        {
+            "id": "tigers_eye",
+            "names": {
+                "ja": "タイガーアイ",
+                "ko": "타이거 아이",
+                "en": "Tiger's Eye"
+            },
+            "gogyo": "土",
+            "is_primary": false
+        },
+        {
+            "id": "yellow_jasper",
+            "names": {
+                "ja": "イエロージャスパー",
+                "ko": "옐로 재스퍼",
+                "en": "Yellow Jasper"
+            },
+            "gogyo": "土",
+            "is_primary": false
+        },
+        {
+            "id": "smoky_quartz",
+            "names": {
+                "ja": "スモーキークォーツ",
+                "ko": "스모키 쿼츠",
+                "en": "Smoky Quartz"
+            },
+            "gogyo": "土",
+            "is_primary": false
+        },
+        {
+            "id": "clear_quartz",
+            "names": {
+                "ja": "水晶",
+                "ko": "수정",
+                "en": "Clear Quartz"
+            },
+            "gogyo": "金",
+            "is_primary": true
+        },
+        {
+            "id": "moonstone",
+            "names": {
+                "ja": "ムーンストーン",
+                "ko": "문스톤",
+                "en": "Moonstone"
+            },
+            "gogyo": "金",
+            "is_primary": false
+        },
+        {
+            "id": "rose_quartz",
+            "names": {
+                "ja": "ローズクォーツ",
+                "ko": "로즈 쿼츠",
+                "en": "Rose Quartz"
+            },
+            "gogyo": "金",
+            "is_primary": false
+        },
+        {
+            "id": "pearl",
+            "names": {
+                "ja": "パール",
+                "ko": "진주",
+                "en": "Pearl"
+            },
+            "gogyo": "金",
+            "is_primary": false
+        }
+    ],
+    "star_base_stones": {
+        "1": "aquamarine",
+        "2": "citrine",
+        "3": "emerald",
+        "4": "peridot",
+        "5": "tigers_eye",
+        "6": "clear_quartz",
+        "7": "rose_quartz",
+        "8": "smoky_quartz",
+        "9": "garnet"
+    }
+}
