@@ -3,7 +3,8 @@
 > **Issue**: #2 — Phase 2: 매칭 엔진 코어 개발 (Core Engine)  
 > **작성일**: 2026-03-03  
 > **참조 문서**: [월단위 길방위·파워스톤 매칭 설계서](monthly-direction-with-powerstone.md)  
-> **적용 원칙**: SRP, SSoT, OCP, DIP, DRY, ISP
+> **적용 원칙**: SRP, SSoT, OCP, DIP, DRY, ISP  
+> **기본 언어**: 日本語 (ja) — 확장: 한국어 (ko), English (en)
 
 ---
 
@@ -18,6 +19,11 @@
 | **L3** | 호신석 (護身石) | 최악 흉방위 → 상극 오행 | 매월 변동 |
 
 최종 출력은 **항상 서로 다른 3개의 파워스톤**, 중복 회피 알고리즘을 포함한다.
+
+### i18n 목표
+- **기본 언어**: 일본어 (`ja`) — 서비스의 주요 타깃 시장
+- **확장 대상**: 한국어 (`ko`), 영어 (`en`)
+- **원칙**: 도메인 로직은 언어 무관(language-agnostic), 텍스트 렌더링은 Presentation Layer에서 locale 파라미터로 결정
 
 ---
 
@@ -48,9 +54,10 @@
 │    IPowerStoneRepository              [NEW]                       │
 │                                                                   │
 │  value_objects/                                                    │
+│    Locale (Enum)                      [NEW] ja·ko·en               │
 │    Gogyo (Enum)                       [NEW] 木·火·土·金·水         │
 │    GogyoRelation (Enum)               [NEW] 相生·相剋·比和         │
-│    PowerStone (Frozen Dataclass)      [NEW]                       │
+│    PowerStone (Frozen Dataclass)      [NEW] 다국어 name 포함       │
 │    StoneRecommendation (Frozen DC)    [NEW]                       │
 │    PowerStoneResult (Frozen DC)       [NEW] 3-Layer 결과 VO        │
 │                                                                   │
@@ -60,7 +67,8 @@
                              │ depends on (interfaces only)
 ┌────────────────────────────▼────────────────────────────────────┐
 │ Infrastructure Layer (infrastructure/)                             │
-│   PowerStoneRepository               [NEW] JSON/CSV 기반 정적 데이터 │
+│   PowerStoneRepository               [NEW] JSON 기반 정적 데이터     │
+│   MessageCatalog                     [NEW] i18n 메시지 카탈로그      │
 └─────────────────────────────────────────────────────────────────┘
 ```
 
@@ -86,6 +94,19 @@ graph TD
 
 ## 3. Value Objects (불변 도메인 모델)
 
+### 3-0. `Locale` (지원 언어 Enum)
+
+```python
+# domain/value_objects/locale.py
+class Locale(str, Enum):
+    """지원 언어 — API 요청 시 Accept-Language 또는 ?lang= 파라미터로 결정."""
+    JA = "ja"   # 日本語 (기본값)
+    KO = "ko"   # 한국어
+    EN = "en"   # English
+```
+
+> **설계 결정**: `Locale`은 Value Object로 도메인 레이어에 위치하되, 도메인 로직 자체에는 영향을 주지 않는다. `Locale`이 소비되는 지점은 **Presentation Layer**(라우트)와 **Infrastructure Layer**(메시지 카탈로그)이다.
+
 ### 3-1. `Gogyo` (오행 Enum) — SSoT
 
 ```python
@@ -108,18 +129,20 @@ class GogyoRelation(str, Enum):
     HIWA   = "比和"  # 같은 오행
 ```
 
-### 3-3. `PowerStone` (파워스톤 VO)
+### 3-3. `PowerStone` (파워스톤 VO) — 다국어 이름 포함
 
 ```python
 @dataclass(frozen=True)
 class PowerStone:
-    """단일 파워스톤 정보 (불변)."""
-    id: str               # "emerald", "garnet" 등 고유 식별자
-    name_ko: str           # "에메랄드"
-    name_ja: str           # "エメラルド"
-    name_en: str           # "Emerald"
-    gogyo: Gogyo           # 대응 오행
-    is_primary: bool       # 해당 오행의 주석 여부
+    """단일 파워스톤 정보 (불변). 이름은 locale별로 보유."""
+    id: str                          # "emerald", "garnet" 등 고유 식별자
+    names: Dict[str, str]            # {"ja": "エメラルド", "ko": "에메랄드", "en": "Emerald"}
+    gogyo: Gogyo                     # 대응 오행
+    is_primary: bool                 # 해당 오행의 주석 여부
+
+    def get_name(self, locale: str = "ja") -> str:
+        """지정 locale의 이름 반환. fallback: ja → en → 첫 번째 값."""
+        return self.names.get(locale) or self.names.get("ja") or next(iter(self.names.values()))
 ```
 
 ### 3-4. `StoneRecommendation` (레이어별 추천 결과 VO)
@@ -127,14 +150,17 @@ class PowerStone:
 ```python
 @dataclass(frozen=True)
 class StoneRecommendation:
-    """단일 레이어의 추천 결과."""
+    """단일 레이어의 추천 결과. reason_key 를 통해 다국어 사유 지원."""
     stone: PowerStone
-    layer: str             # "基本石" | "月運石" | "護身石"
-    gogyo: Gogyo           # 매칭에 사용된 오행
-    reason: str            # 추천 사유 (한국어)
-    direction: Optional[str] = None   # 관련 방위 (L2/L3)
-    threat_mark: Optional[str] = None # 관련 흉살 (L3)
+    layer: str                         # "base" | "monthly" | "protection"
+    gogyo: Gogyo                       # 매칭에 사용된 오행
+    reason_key: str                    # 메시지 카탈로그 키 (예: "reason.base.wood")
+    reason_params: Dict[str, str] = field(default_factory=dict)  # 플레이스홀더 치환값
+    direction: Optional[str] = None    # 관련 방위 (L2/L3)
+    threat_mark: Optional[str] = None  # 관련 흉살 (L3)
 ```
+
+> **i18n 설계 포인트**: 도메인 레이어는 **`reason_key`**(메시지 키)만 생성한다. 실제 번역 문자열로의 변환은 Presentation Layer에서 `MessageCatalog.resolve(key, locale, params)` 호출로 수행한다. 이로써 도메인 로직은 완전히 **language-agnostic** 하게 유지된다.
 
 ### 3-5. `PowerStoneResult` (최종 3-Layer 결과 VO)
 
@@ -209,7 +235,7 @@ class PowerStoneMatchingEngine(IPowerStoneMatchingEngine):
     def recommend(
         self,
         main_star: int,
-        directions: Dict[str, Any],   # MonthlyDirections 결과
+        directions: Dict[str, Any],   # MonthlyDirections 결과 (locale 무관)
     ) -> PowerStoneResult:
         """3-Layer 추천 실행 (퍼사드 메서드)."""
         used_ids: Set[str] = set()
@@ -312,23 +338,36 @@ class IPowerStoneRepository(ABC):
     def get_base_stone_for_star(self, star_number: int) -> PowerStone: ...
 ```
 
+```python
+# domain/services/interfaces/message_catalog_interface.py
+class IMessageCatalog(ABC):
+    @abstractmethod
+    def resolve(self, key: str, locale: str = "ja", params: Dict[str, str] = None) -> str:
+        """메시지 키 + locale → 번역된 문자열 반환."""
+        ...
+```
+
 ---
 
 ## 6. 예외 클래스 추가 (기존 계층 확장)
+
+예외 `message`는 **개발자/로그용 영어 고정** — 클라이언트 표시 메시지는 `code`를 키로 프론트엔드에서 i18n 처리한다.
 
 ```python
 # domain/exceptions.py  [MODIFY]
 
 class PowerStoneMatchingError(NineStarKiError):
     """파워스톤 매칭 과정에서 발생하는 오류."""
-    def __init__(self, message="파워스톤 매칭 오류", *, details=None):
+    def __init__(self, message="Power stone matching failed", *, details=None):
         super().__init__(message, code="POWERSTONE_MATCHING_ERROR", status=500, details=details)
 
 class NoAuspiciousDirectionError(NineStarKiError):
     """길방위가 하나도 없어 월운석을 결정할 수 없는 경우."""
-    def __init__(self, message="길방위를 찾을 수 없습니다.", *, details=None):
+    def __init__(self, message="No auspicious direction found", *, details=None):
         super().__init__(message, code="NO_AUSPICIOUS_DIRECTION", status=422, details=details)
 ```
+
+> **i18n 원칙**: 예외 `message`는 서버 로그·디버깅용이므로 영어로 통일한다. 클라이언트 화면 메시지는 `code`(예: `NO_AUSPICIOUS_DIRECTION`)를 프론트엔드 i18n 번들의 키로 사용하여 locale별로 번역한다.
 
 ---
 
@@ -339,6 +378,7 @@ class NoAuspiciousDirectionError(NineStarKiError):
 binder.bind(IGogyoService, to=GogyoService, scope=singleton)
 binder.bind(IPowerStoneMatchingEngine, to=PowerStoneMatchingEngine, scope=singleton)
 binder.bind(IPowerStoneRepository, to=PowerStoneRepository, scope=singleton)
+binder.bind(IMessageCatalog, to=MessageCatalog, scope=singleton)
 binder.bind(PowerStoneRecommendationUseCase, to=PowerStoneRecommendationUseCase, scope=singleton)
 ```
 
@@ -353,6 +393,7 @@ backend/apps/ninestarki/
 ├── domain/
 │   ├── value_objects/               [NEW 디렉토리]
 │   │   ├── __init__.py
+│   │   ├── locale.py                ← Locale Enum (ja, ko, en)
 │   │   ├── gogyo.py                 ← Gogyo, GogyoRelation Enum
 │   │   └── powerstone.py           ← PowerStone, StoneRecommendation, PowerStoneResult
 │   ├── services/
@@ -361,42 +402,44 @@ backend/apps/ninestarki/
 │   │   └── interfaces/
 │   │       ├── gogyo_service_interface.py           [NEW]
 │   │       ├── powerstone_matching_engine_interface.py [NEW]
-│   │       └── powerstone_repository_interface.py   [NEW]
+│   │       ├── powerstone_repository_interface.py   [NEW]
+│   │       └── message_catalog_interface.py         [NEW]
 │   ├── repositories/                [기존]
 │   └── exceptions.py               [MODIFY] 2개 예외 추가
 ├── infrastructure/
-│   └── powerstone_repository.py     [NEW] JSON 기반 정적 데이터 구현체
+│   ├── powerstone_repository.py     [NEW] JSON 기반 정적 데이터 구현체
+│   └── message_catalog.py           [NEW] JSON 기반 i18n 메시지 카탈로그
 ├── use_cases/
 │   └── powerstone_recommendation_use_case.py  [NEW]
 ├── routes/
-│   └── monthly_routes.py            [MODIFY] stones 필드 추가
+│   └── monthly_routes.py            [MODIFY] stones 필드 + locale 파라미터
 ├── dependency_module.py             [MODIFY] DI 바인딩 추가
 └── data/
-    └── powerstone_catalog.json      [NEW] 스톤 마스터 데이터
+    ├── powerstone_catalog.json      [NEW] 스톤 마스터 데이터 (다국어 name)
+    └── messages/                    [NEW 디렉토리] i18n 메시지 번들
+        ├── ja.json                  ← 기본 언어
+        ├── ko.json
+        └── en.json
 ```
 
 ---
 
-## 9. 데이터 설계 — `powerstone_catalog.json`
+## 9. 데이터 설계
 
-정적 JSON 파일로 스톤 마스터 데이터를 관리한다 (DB 테이블 불필요).
+### 9-1. `powerstone_catalog.json` — 스톤 마스터 데이터 (다국어)
 
 ```json
 {
   "stones": [
     {
       "id": "aquamarine",
-      "name_ko": "아쿠아마린",
-      "name_ja": "アクアマリン",
-      "name_en": "Aquamarine",
+      "names": { "ja": "アクアマリン", "ko": "아쿠아마린", "en": "Aquamarine" },
       "gogyo": "水",
       "is_primary": true
     },
     {
       "id": "lapis_lazuli",
-      "name_ko": "라피스라즐리",
-      "name_ja": "ラピスラズリ",
-      "name_en": "Lapis Lazuli",
+      "names": { "ja": "ラピスラズリ", "ko": "라피스라즐리", "en": "Lapis Lazuli" },
       "gogyo": "水",
       "is_primary": false
     }
@@ -409,7 +452,64 @@ backend/apps/ninestarki/
 }
 ```
 
-> **SSoT**: 스톤-오행 매핑, 본명성-기본석 매핑 모두 이 파일이 단일 원천.
+> **SSoT**: 스톤-오행 매핑, 본명성-기본석 매핑, 다국어 이름 모두 이 파일이 단일 원천.
+
+### 9-2. `messages/{locale}.json` — i18n 메시지 번들
+
+각 locale별 메시지 파일. `reason_key`와 UI 표시 텍스트를 매핑한다.
+
+**`messages/ja.json`** (기본 언어):
+```json
+{
+  "layer.base": "基本石",
+  "layer.monthly": "月運石",
+  "layer.protection": "護身石",
+  "reason.base": "{star_name}の本命石。{meaning}",
+  "reason.monthly": "今月の最良吉方位・{direction}({element})のエネルギーを取り込む石",
+  "reason.protection": "今月最大の凶殺・{threat}が{direction}({threat_element})に位置。{counter_element}の力で凶気を抑制",
+  "gogyo.木": "木", "gogyo.火": "火", "gogyo.土": "土", "gogyo.金": "金", "gogyo.水": "水",
+  "direction.N": "北", "direction.S": "南", "direction.E": "東", "direction.W": "西",
+  "direction.NE": "北東", "direction.NW": "北西", "direction.SE": "南東", "direction.SW": "南西"
+}
+```
+
+**`messages/ko.json`**:
+```json
+{
+  "layer.base": "기본석",
+  "layer.monthly": "월운석",
+  "layer.protection": "호신석",
+  "reason.base": "{star_name}의 본명석. {meaning}",
+  "reason.monthly": "이달 최적 길방위 {direction}({element})의 에너지를 받는 돌",
+  "reason.protection": "이달 가장 강한 흉살 {threat}이(가) {direction}({threat_element})에 위치. {counter_element}의 힘으로 흉기를 억제",
+  "gogyo.木": "목", "gogyo.火": "화", "gogyo.土": "토", "gogyo.金": "금", "gogyo.水": "수",
+  "direction.N": "북", "direction.S": "남", "direction.E": "동", "direction.W": "서",
+  "direction.NE": "북동", "direction.NW": "북서", "direction.SE": "남동", "direction.SW": "남서"
+}
+```
+
+### 9-3. i18n 처리 흐름
+
+```
+[Domain Layer]                              [Presentation Layer]
+PowerStoneMatchingEngine                    Route Handler
+  │                                           │
+  ├─ reason_key = "reason.monthly"           │
+  ├─ reason_params = {                        │
+  │    "direction": "S",                      │
+  │    "element": "火"                        │
+  │  }                                        │
+  └─ StoneRecommendation ──────────────────➤ │
+                                              ├─ locale = request.args.get("lang", "ja")
+                                              ├─ message_catalog.resolve(
+                                              │    key="reason.monthly",
+                                              │    locale="ja",
+                                              │    params={"direction": "南", "element": "火"}
+                                              │  )
+                                              └─ → "今月の最良吉方位・南(火)のエネルギーを取り込む石"
+```
+
+> **핵심**: 도메인은 direction을 "S" 같은 코드로만 다루고, locale별 표시명("南"/"남"/"South")으로의 변환은 `MessageCatalog`이 `direction.S` 키를 resolve하여 처리한다.
 
 ---
 
@@ -437,6 +537,12 @@ backend/apps/ninestarki/
 - L3: 五黄殺 > 暗剣殺 우선순위 확인
 - 중복: L1=에메랄드(木), L2 후보도 木(주석=에메랄드) → 부석 대체 확인
 - 중복: L1·L2·L3 에서 3개 전부 같은 오행 → 부석[0], 부석[1] 순차 대체
+
+[MessageCatalog / i18n]
+- resolve: ja/ko/en 각 locale에서 올바른 문자열 반환
+- resolve: 미지원 locale → ja (기본값) fallback
+- resolve: params 치환 ({direction} → "南") 동작 확인
+- PowerStone.get_name: locale별 이름 반환 + fallback 체인 확인
 ```
 
 ---
@@ -445,29 +551,32 @@ backend/apps/ninestarki/
 
 | 원칙 | 적용 | 설계 근거 |
 |------|------|----------|
-| **SRP** | `GogyoService`(오행 로직) ↔ `PowerStoneMatchingEngine`(매칭 전략) 분리 | 단일 책임 |
-| **OCP** | Layer별 private 메서드 분리 → Layer 4 추가 시 기존 코드 수정 불필요 | 확장 개방 |
+| **SRP** | `GogyoService`(오행) ↔ `PowerStoneMatchingEngine`(매칭) ↔ `MessageCatalog`(번역) 분리 | 단일 책임 |
+| **OCP** | Layer별 private 메서드 분리 → Layer 4 추가 시 기존 코드 수정 불필요. 새 locale 추가 시 JSON 파일만 추가 | 확장 개방 |
 | **DIP** | 유즈케이스/도메인 서비스는 인터페이스(I~)에만 의존 | 의존성 역전 |
-| **ISP** | 인터페이스별 최소 메서드만 노출 (예: `IGogyoService` 4개 메서드) | 인터페이스 분리 |
+| **ISP** | 인터페이스별 최소 메서드만 노출 (예: `IGogyoService` 4개, `IMessageCatalog` 1개 메서드) | 인터페이스 분리 |
 | **DRY** | 오행 매핑·상극 테이블은 `GogyoService` 에 SSoT 로 단일 정의 | 반복 제거 |
-| **SSoT** | 스톤 데이터 → `powerstone_catalog.json`, 오행 매핑 → `GogyoService` | 단일 진실 원천 |
+| **SSoT** | 스톤 데이터 → `powerstone_catalog.json`, 오행 매핑 → `GogyoService`, 번역 → `messages/{locale}.json` | 단일 진실 원천 |
 
 ---
 
 ## 12. 구현 순서 (의존성 기반)
 
 ```
-Step 1: Value Objects (gogyo.py, powerstone.py)
+Step 1: Value Objects (locale.py, gogyo.py, powerstone.py)
     ↓    ── 의존성 없음, 단독 테스트 가능
 Step 2: GogyoService + IGogyoService + 단위 테스트
     ↓    ── Value Objects 에만 의존
 Step 3: powerstone_catalog.json + PowerStoneRepository + IPowerStoneRepository
     ↓    ── Value Objects 에만 의존
-Step 4: PowerStoneMatchingEngine + IPowerStoneMatchingEngine + 단위 테스트
+Step 4: messages/*.json + MessageCatalog + IMessageCatalog + 단위 테스트
+    ↓    ── Locale VO 에만 의존
+Step 5: PowerStoneMatchingEngine + IPowerStoneMatchingEngine + 단위 테스트
     ↓    ── GogyoService, PowerStoneRepository 인터페이스에 의존
-Step 5: 예외 클래스 추가 (exceptions.py)
+Step 6: 예외 클래스 추가 (exceptions.py)
     ↓
-Step 6: PowerStoneRecommendationUseCase + 통합 테스트
+Step 7: PowerStoneRecommendationUseCase + 통합 테스트
     ↓
-Step 7: DI 바인딩 + 라우트 연동 (dependency_module.py, monthly_routes.py)
+Step 8: DI 바인딩 + 라우트 연동 (dependency_module.py, monthly_routes.py)
+         ── 라우트에서 ?lang= 파라미터 파싱 + MessageCatalog 호출
 ```
