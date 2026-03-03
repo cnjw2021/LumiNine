@@ -75,13 +75,6 @@ def execute_sql_file(cursor, file_path):
         logger.error(f"SQLファイル '{file_path}'実行中にエラーが発生しました: {e}")
         raise
 
-def check_if_tables_exist(cursor):
-    """テーブルが1つでも存在するかどうかを確認します。"""
-    try:
-        cursor.execute("SHOW TABLES")
-        return len(cursor.fetchall()) > 0
-    except Exception:
-        return False
 
 def seed_database(cursor):
     """SQL および CSV ファイルで初期データを埋め込みます。"""
@@ -104,24 +97,58 @@ def seed_database(cursor):
     load_all_csv_data()
     logger.info("データシードが完了しました。")
 
+def _get_existing_tables(cursor) -> set:
+    """現在のデータベースに存在するテーブル名の集合を返します。"""
+    cursor.execute("SHOW TABLES")
+    return {row[0] for row in cursor.fetchall()}
+
+# 000_create_tables.sql に定義されている全テーブルのリスト
+# 新しいテーブルを追加した場合はここにも追加してください
+_EXPECTED_TABLES = {
+    'stars', 'solar_starts', 'solar_terms', 'daily_astrology',
+    'star_attributes', 'main_star_acquired_fortune_message',
+    'month_star_acquired_fortune_message', 'star_life_guidance',
+    'monthly_star_readings', 'daily_star_readings', 'star_groups',
+    'star_grid_patterns', 'star_compatibility_matrix', 'monthly_directions',
+    'moving_auspicious_dates', 'compatibility_master',
+    'compatibility_symbol_pattern_master', 'compatibility_symbol_master',
+    'compatibility_readings_master', 'zodiac_groups', 'zodiac_group_members',
+    'hourly_star_zodiacs', 'system_config', 'admin_account_limit',
+    'permissions', 'users', 'user_permissions',
+    'powerstone_master', 'recommendation_history',
+}
+
 def run_init():
     """
     [役割 変更]
     DB 初期化はMySQL コンテナが担当しますが、ボリュームの問題等でテーブルがない場合は
-    安全のためにテーブル作成と初期データシードを実行します。その後、スーパーユーザー作成を担当します。
+    安全のためにテーブル作成と初期データシードを実行します。
+    既存DBで一部テーブルが不足している場合は、DDL (CREATE TABLE IF NOT EXISTS) と
+    シードを増分適用します。その後、スーパーユーザー作成を担当します。
     """
     logger.info("DB init script started: Checking database state...")
     
     conn = get_mysql_connection()
     cursor = conn.cursor()
     
-    if not check_if_tables_exist(cursor):
+    existing = _get_existing_tables(cursor)
+
+    if not existing:
+        # 完全初期化: テーブルもデータもない
         logger.warning("テーブルが存在しません。テーブルの作成とデータのシードを開始します...")
         execute_sql_file(cursor, os.path.join('mysql', 'init', '000_create_tables.sql'))
-        seed_database(cursor) # SQL 及び CSV データ
+        seed_database(cursor)
         conn.commit()
     else:
-        logger.info("テーブルは既に存在します。データシードはスキップします。")
+        missing = _EXPECTED_TABLES - existing
+        if missing:
+            # 増分適用: 既存DBに不足テーブルがある場合
+            logger.warning("不足テーブル検出: %s — DDL+シードを増分適用します。", missing)
+            execute_sql_file(cursor, os.path.join('mysql', 'init', '000_create_tables.sql'))
+            seed_database(cursor)
+            conn.commit()
+        else:
+            logger.info("テーブルは既に存在します。データシードはスキップします。")
         
     cursor.close()
     conn.close()
