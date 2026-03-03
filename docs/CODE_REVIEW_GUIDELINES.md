@@ -243,7 +243,7 @@ execSync(`gh api graphql -f query='mutation { ... threadId: "${id}" }'`);
 
 | # | 항목 |
 |---|------|
-| CA1 | **안쪽 계층이 바깥 계층을 import하지 않는가?** `domain/` → ✅ 순수 Python만 사용, ❌ Flask/SQLAlchemy/외부 라이브러리 import 금지 |
+| CA1 | **안쪽 계층이 바깥 계층을 import하지 않는가?** `domain/` → ✅ 순수 Python만 사용, ❌ FastAPI/SQLAlchemy/외부 라이브러리 import 금지 |
 | CA2 | `domain/services/`에서 `infrastructure/` 또는 `routes/`의 모듈을 직접 참조하지 않는가? |
 | CA3 | `use_cases/`에서 `routes/`를 import하지 않는가? |
 | CA4 | 데이터베이스 세부사항(SQL, ORM 모델)이 **`infrastructure/` 계층에만 존재**하는가? |
@@ -299,14 +299,14 @@ execSync(`gh api graphql -f query='mutation { ... threadId: "${id}" }'`);
 > 커밋 전 빠르게 훑어보는 최소 점검 항목입니다.
 
 ```
-□ 예외 → 도메인 예외 + status/code/details 명시 (E1~E5)
-□ 네이밍 → 역할 명확, 매직 넘버 제거, 단일 책임 (N1~N5)
-□ 입력 검증 → 타입/범위/null/엣지 케이스 방어 (V1~V5)
-□ 보안 → 파라미터 바인딩, execFileSync, 민감 정보 미노출 (S1~S2, L5)
-□ 의존성 규칙 → 안쪽→바깥 import 금지 (CA1~CA4)
-□ 인터페이스 → ABC 정의 → 구현 상속 → DI 등록 (CA5~CA12)
-□ Use Case → 단일 책임, HTTP 무관, DTO 입출력 (CA13~CA16)
-□ 계층 역할 → 비즈니스=domain, DB=infra, HTTP=routes (CA17~CA20)
-□ 테스트 → Stub 도메인 준수, 외부 의존 없이 실행 (CA21~CA23, T1~T3)
-□ 코드 위생 → Dead Code 제거, 미사용 import 정리 (H1~H4)
+□ 예외 → 도메인 예외 + status/code/details 명시 (§1: E1~E5)
+□ 네이밍 → 역할 명확, 매직 넘버 제거, 단일 책임 (§7-1: N1~N5)
+□ 입력 검증 → 타입/범위/null/엣지 케이스 방어 (§7-2: V1~V5)
+□ 보안 → 파라미터 바인딩, execFileSync, 민감 정보 미노출 (§6: S1~S2, §7-3: L5)
+□ 의존성 규칙 → 안쪽→바깥 import 금지 (§8-1: CA1~CA4)
+□ 인터페이스 → ABC 정의 → 구현 상속 → DI 등록 (§8-2~3: CA5~CA12)
+□ Use Case → 단일 책임, HTTP 무관, DTO 입출력 (§8-4: CA13~CA16)
+□ 계층 역할 → 비즈니스=domain, DB=infra, HTTP=routes (§8-5: CA17~CA20)
+□ 테스트 → Stub 도메인 준수, 외부 의존 없이 실행 (§8-6: CA21~CA23, §4: T1~T3)
+□ 코드 위생 → Dead Code 제거, 미사용 import 정리 (§5: H1~H4)
 ```
