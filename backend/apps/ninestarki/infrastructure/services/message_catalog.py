@@ -60,14 +60,17 @@ class MessageCatalog(IMessageCatalog):
         Returns:
             치환 완료된 번역 문자열
         """
-        # locale 번들 → ja fallback → 키 자체
-        bundle = self._bundles.get(locale, self._bundles.get(_DEFAULT_LOCALE, {}))
+        # locale 번들에서 먼저 조회, 필요 시에만 ja 번들로 fallback
+        bundle = self._bundles.get(locale, {})
         template = bundle.get(key)
 
-        if template is None:
+        if template is None and locale != _DEFAULT_LOCALE:
             # ja fallback 시도
             ja_bundle = self._bundles.get(_DEFAULT_LOCALE, {})
             template = ja_bundle.get(key, key)
+
+        if template is None:
+            template = key
 
         # 플레이스홀더 치환
         if params:

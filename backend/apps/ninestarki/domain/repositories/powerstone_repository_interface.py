@@ -27,6 +27,10 @@ class IPowerStoneRepository(ABC):
 
         Returns:
             해당 오행의 주석 PowerStone
+
+        Raises:
+            PowerStoneMatchingError: 해당 오행의 주석이 존재하지 않는 경우
+                (code: ``PRIMARY_STONE_NOT_FOUND``).
         """
 
     @abstractmethod
@@ -49,4 +53,10 @@ class IPowerStoneRepository(ABC):
 
         Returns:
             해당 본명성의 기본석 PowerStone
+
+        Raises:
+            PowerStoneMatchingError: 본명성 번호가 1~9 범위를 벗어난 경우
+                (code: ``INVALID_STAR_NUMBER``), 또는 카탈로그 데이터
+                무결성 문제로 해당 본명성의 기본석을 찾을 수 없는 경우
+                (code: ``BASE_STONE_NOT_FOUND``).
         """

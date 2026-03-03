@@ -52,7 +52,11 @@ class TestBasicResolve:
 
     def test_ja_gogyo(self, catalog: MessageCatalog):
         assert catalog.resolve("gogyo.木", "ja") == "木"
+
+    def test_ko_gogyo(self, catalog: MessageCatalog):
         assert catalog.resolve("gogyo.火", "ko") == "화"
+
+    def test_en_gogyo(self, catalog: MessageCatalog):
         assert catalog.resolve("gogyo.水", "en") == "Water"
 
 
