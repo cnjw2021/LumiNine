@@ -30,7 +30,9 @@ def repo() -> PowerStoneRepository:
 class TestCatalogLoad:
     def test_total_stone_count(self, repo: PowerStoneRepository):
         """카탈로그에 20종 스톤이 로드되어야 한다."""
-        assert len(repo._stones) == 20
+        primary_count = len(list(Gogyo))
+        secondary_count = sum(len(repo.get_secondaries_by_gogyo(g)) for g in Gogyo)
+        assert primary_count + secondary_count == 20
 
     def test_all_five_gogyo_have_primary(self, repo: PowerStoneRepository):
         """모든 5개 오행에 주석이 할당되어야 한다."""
