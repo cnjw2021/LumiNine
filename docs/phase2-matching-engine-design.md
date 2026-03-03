@@ -196,10 +196,10 @@ class GogyoService(IGogyoService):
     }
 
     DIRECTION_TO_GOGYO: Final[Dict[str, Gogyo]] = {
-        "N": Gogyo.WATER, "NE": Gogyo.EARTH,
-        "E": Gogyo.WOOD,  "SE": Gogyo.WOOD,
-        "S": Gogyo.FIRE,  "SW": Gogyo.EARTH,
-        "W": Gogyo.METAL, "NW": Gogyo.METAL,
+        "north": Gogyo.WATER, "northeast": Gogyo.EARTH,
+        "east": Gogyo.WOOD,  "southeast": Gogyo.WOOD,
+        "south": Gogyo.FIRE,  "southwest": Gogyo.EARTH,
+        "west": Gogyo.METAL, "northwest": Gogyo.METAL,
     }
 
     # ── 상극 테이블 (SSoT) ──────────────────────
@@ -284,7 +284,7 @@ class PowerStoneMatchingEngine(IPowerStoneMatchingEngine):
 2. 본명성과의 상성으로 정렬
    - GOOD(상생) > HIWA(比和) > 기타
   ↓
-3. 동순위 → 방위 고정 우선순위: S > E > SE > SW > N > W > NE > NW
+3. 동순위 → 방위 고정 우선순위: south > east > southeast > southwest > north > west > northeast > northwest
   ↓
 4. 1순위 방위의 오행 → 월운석 오행으로 확정
 ```
@@ -477,8 +477,8 @@ backend/apps/ninestarki/
   "reason.monthly": "今月の最良吉方位・{direction}({element})のエネルギーを取り込む石",
   "reason.protection": "今月最大の凶殺・{threat}が{direction}({threat_element})に位置。{counter_element}の力で凶気を抑制",
   "gogyo.木": "木", "gogyo.火": "火", "gogyo.土": "土", "gogyo.金": "金", "gogyo.水": "水",
-  "direction.N": "北", "direction.S": "南", "direction.E": "東", "direction.W": "西",
-  "direction.NE": "北東", "direction.NW": "北西", "direction.SE": "南東", "direction.SW": "南西",
+  "direction.north": "北", "direction.south": "南", "direction.east": "東", "direction.west": "西",
+  "direction.northeast": "北東", "direction.northwest": "北西", "direction.southeast": "南東", "direction.southwest": "南西",
   "threat.five_yellow": "五黄殺", "threat.dark_sword": "暗剣殺",
   "threat.main_star": "本命殺", "threat.month_star": "月命殺",
   "threat.water_fire": "水火殺", "threat.opposite_zodiac": "破",
@@ -497,8 +497,8 @@ backend/apps/ninestarki/
   "reason.monthly": "이달 최적 길방위 {direction}({element})의 에너지를 받는 돌",
   "reason.protection": "이달 가장 강한 흉살 {threat}이(가) {direction}({threat_element})에 위치. {counter_element}의 힘으로 흉기를 억제",
   "gogyo.木": "목", "gogyo.火": "화", "gogyo.土": "토", "gogyo.金": "금", "gogyo.水": "수",
-  "direction.N": "북", "direction.S": "남", "direction.E": "동", "direction.W": "서",
-  "direction.NE": "북동", "direction.NW": "북서", "direction.SE": "남동", "direction.SW": "남서",
+  "direction.north": "북", "direction.south": "남", "direction.east": "동", "direction.west": "서",
+  "direction.northeast": "북동", "direction.northwest": "북서", "direction.southeast": "남동", "direction.southwest": "남서",
   "threat.five_yellow": "오황살", "threat.dark_sword": "암검살",
   "threat.main_star": "본명살", "threat.month_star": "월명살",
   "threat.water_fire": "수화살", "threat.opposite_zodiac": "파",
@@ -515,11 +515,12 @@ PowerStoneMatchingEngine                    Route Handler
   │                                           │
   ├─ reason_key = "reason.monthly"           │
   ├─ reason_params = {                        │
-  │    "direction": "S",                      │
+  │    "direction": "south",                  │
   │    "element": "火"                        │
   │  }                                        │
   └─ StoneRecommendation ──────────────────➤ │
                                               ├─ locale = request.args.get("lang", "ja")
+                                              ├─ direction表示名 = message_catalog.resolve("direction.south", locale)
                                               ├─ message_catalog.resolve(
                                               │    key="reason.monthly",
                                               │    locale=locale,
