@@ -48,3 +48,25 @@ class MonthlyBoardCalculationError(NineStarKiError):
 
     def __init__(self, message: str = "월반 편성 오류가 발생했습니다.", *, details: Optional[str] = None):
         super().__init__(message, code="MONTHLY_BOARD_CALC_ERROR", status=500, details=details)
+
+
+class PowerStoneMatchingError(NineStarKiError):
+    """파워스톤 매칭 엔진에서 발생하는 일반 오류 (잘못된 입력 등)."""
+
+    def __init__(
+        self,
+        message: str = "파워스톤 매칭 오류가 발생했습니다.",
+        *,
+        code: str = "POWERSTONE_MATCHING_ERROR",
+        status: int = 500,
+        details: Optional[str] = None,
+    ):
+        super().__init__(message, code=code, status=status, details=details)
+
+
+class NoAuspiciousDirectionError(NineStarKiError):
+    """길방위가 하나도 없어 월운석을 결정할 수 없는 경우."""
+
+    def __init__(self, message: str = "길방위를 찾을 수 없습니다.", *, details: Optional[str] = None):
+        super().__init__(message, code="NO_AUSPICIOUS_DIRECTION", status=422, details=details)
+
