@@ -71,9 +71,9 @@
   - [ ] `get_primary_by_gogyo()`
   - [ ] `get_secondaries_by_gogyo()`
   - [ ] `get_base_stone_for_star()`
-- [ ] `data/messages/ja.json` — 일본어 메시지 번들 (기본) + threat.\ 키 포함
-- [ ] `data/messages/ko.json` — 한국어 메시지 번들 + threat.\ 키 포함
-- [ ] `data/messages/en.json` — 영어 메시지 번들 + threat.\ 키 포함
+- [ ] `data/messages/ja.json` — 일본어 메시지 번들 (기본) + `threat.<mark_code>` 키 포함
+- [ ] `data/messages/ko.json` — 한국어 메시지 번들 + `threat.<mark_code>` 키 포함
+- [ ] `data/messages/en.json` — 영어 메시지 번들 + `threat.<mark_code>` 키 포함
 - [ ] `use_cases/interfaces/message_catalog_interface.py` — `IMessageCatalog` ABC
 - [ ] `infrastructure/services/message_catalog.py` — `MessageCatalog` (JSON 로드 + resolve)
   - [ ] `resolve(key, locale, params)` — 키 조회 + 플레이스홀더 치환

@@ -222,7 +222,7 @@ class GogyoService(IGogyoService):
 ### 4-2. `PowerStoneMatchingEngine` — 3-Layer 매칭 엔진 (OCP)
 
 > **책임**: 길흉방위 판정 결과와 오행 서비스를 조합하여 3개의 스톤을 결정.  
-> **OCP**: 각 Layer 는 독립 private 메서드로 분리 → Layer 4(일운석) 추가 시 기존 로직 변경 불필요.
+> **OCP**: 각 Layer 는 독립 private 메서드로 분리 → Layer 4(일운석) 추가 시 기존 Layer 로직 변경을 최소화(퍼사드/결과 VO 확장 위주).
 
 ```python
 # domain/services/powerstone_matching_engine.py
@@ -345,7 +345,7 @@ class IPowerStoneRepository(ABC):
 # use_cases/interfaces/message_catalog_interface.py  ← i18n 렌더링은 표현 계층 성격
 class IMessageCatalog(ABC):
     @abstractmethod
-    def resolve(self, key: str, locale: str = "ja", params: Dict[str, str] = None) -> str:
+    def resolve(self, key: str, locale: str = "ja", params: Optional[Dict[str, str]] = None) -> str:
         """메시지 키 + locale → 번역된 문자열 반환."""
         ...
 ```

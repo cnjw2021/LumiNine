@@ -307,6 +307,9 @@ fs.writeFileSync(checklistPath, checklist, 'utf-8');
 console.log(`📋 autofix-checklist.md 생성: ${checklistPath}`);
 
 // ── reply-batch.json (auto-fixable — 전체 포함) ──────────
+// NOTE: reply-batch 는 --limit-auto-fix 과 무관하게 **전체** autoFixable 을 포함한다.
+//       체크리스트(autofix-checklist.md)만 배치 단위로 분할되며,
+//       reply 는 실제 수정/반영 완료 후 일괄 전송하므로 전체 대상이어야 한다.
 if (emitReplyBatch) {
     const batch = autoFixable.map(t => {
         const c = t.comments.nodes[0];
