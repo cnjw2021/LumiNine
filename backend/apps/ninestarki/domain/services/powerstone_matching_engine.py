@@ -55,7 +55,7 @@ _THREAT_SEVERITY: Dict[str, int] = {
     "month_star_opposite": 9,   # 月命的殺 (direction-fortune source alias)
 }
 
-# ── alias → canonical 一規化マップ (MessageCatalog キー解決用) ────
+# ── alias → canonical 正規化マップ (MessageCatalog キー解決用) ────
 _THREAT_ALIAS_MAP: Dict[str, str] = {
     "compatibility_matrix": "bad_star",
     "main_star_opposite": "main_opposite",
@@ -255,8 +255,8 @@ class PowerStoneMatchingEngine(IPowerStoneMatchingEngine):
         worst_severity = 999
 
         for name, info in directions.items():
-            # L3는 비길방위(흔살 있는 방위)만 스쪽
-            if info.get("is_auspicious") is True:
+            # L3는 비길방위(흔살 있는 방위)만 스캔: is_auspicious 가 False 인 방위만 대상
+            if info.get("is_auspicious") is not False:
                 continue
             marks = info.get("marks", [])
             for mark in marks:

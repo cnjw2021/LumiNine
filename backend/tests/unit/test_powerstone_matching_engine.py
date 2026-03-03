@@ -222,19 +222,18 @@ class TestLayer3ProtectionStone:
             engine.recommend(main_star=1, directions=directions)
         assert exc_info.value.code == "NO_THREAT_FOUND"
 
-    @pytest.mark.parametrize("alias_code, canonical_code, severity", [
-        ("compatibility_matrix", "bad_star", 7),
-        ("main_star_opposite", "main_opposite", 8),
-        ("month_star_opposite", "month_opposite", 9),
+    @pytest.mark.parametrize("alias_code, canonical_code", [
+        ("compatibility_matrix", "bad_star"),
+        ("main_star_opposite", "main_opposite"),
+        ("month_star_opposite", "month_opposite"),
     ])
     def test_direction_fortune_alias_codes(
         self,
         engine: PowerStoneMatchingEngine,
         alias_code: str,
         canonical_code: str,
-        severity: int,
     ):
-        """direction-fortune 소스의 alias 코드가 올바르게 인식된다."""
+        """direction-fortune 소스의 alias 코드가 canonical 코드로 정규화된다."""
         directions = _make_directions(
             auspicious={"south": True},
             marks={"north": [alias_code]},
@@ -254,6 +253,22 @@ class TestLayer3ProtectionStone:
         )
         result = engine.recommend(main_star=1, directions=directions)
         assert result.protection_stone.reason_params["threat"] == "threat.five_yellow"
+
+    def test_neutral_direction_excluded_from_l3(self, engine: PowerStoneMatchingEngine):
+        """중립(is_auspicious=None) 방위는 L3 흔살 스캔에서 제외된다."""
+        directions = _make_directions(
+            auspicious={"south": True},
+            marks={
+                "east": ["compatibility_matrix"],  # 이 방위를 neutral 으로 설정
+                "north": ["dark_sword"],             # 이 방위는 False(=흔)
+            },
+        )
+        # east 방위를 neutral(None)로 덮어쓰기
+        directions["east"]["is_auspicious"] = None
+        result = engine.recommend(main_star=1, directions=directions)
+        # neutral 된 east 는 제외, north 의 dark_sword 가 선택됨
+        assert result.protection_stone.reason_params["threat"] == "threat.dark_sword"
+        assert result.protection_stone.reason_params["direction"] == "direction.north"
 
 
 # ══════════════════════════════════════════════════════
