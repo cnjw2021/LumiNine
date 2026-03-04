@@ -85,10 +85,14 @@ class NumerologyPowerStoneRepository(INumerologyPowerStoneRepository):
 
     def get_mapping(self, number: int) -> Dict:
         """Life Path Number 에 대한 4-Layer 매핑 반환 (방어적 복사)."""
+        if not isinstance(number, int) or number < 1 or number > 9:
+            raise ValueError(
+                f"유효하지 않은 Life Path Number: {number} (1~9 범위)"
+            )
         mapping = self._mappings.get(number)
         if mapping is None:
             raise ValueError(
-                f"유효하지 않은 Life Path Number: {number} (1~9 범위)"
+                f"Life Path Number {number} 에 대한 매핑 데이터가 로드되지 않았습니다."
             )
         # 싱글톤 상태 보호를 위해 방어적 복사 반환
         return copy.deepcopy(mapping)
