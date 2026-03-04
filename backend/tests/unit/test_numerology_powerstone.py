@@ -55,6 +55,10 @@ class TestNumerologyStone:
         with pytest.raises(ValueError, match="최소 1개"):
             NumerologyStone(id="x", names={}, description={"ja": "test"})
 
+    def test_empty_description_raises(self):
+        with pytest.raises(ValueError, match="최소 1개"):
+            NumerologyStone(id="x", names={"ja": "テスト"}, description={})
+
 
 # ══════════════════════════════════════════════════════════
 # Repository Tests

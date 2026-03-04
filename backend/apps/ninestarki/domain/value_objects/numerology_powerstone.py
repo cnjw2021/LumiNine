@@ -25,6 +25,8 @@ class NumerologyStone:
     def __post_init__(self) -> None:
         if not self.names:
             raise ValueError("NumerologyStone.names 는 최소 1개의 locale 이름을 포함해야 합니다.")
+        if not self.description:
+            raise ValueError("NumerologyStone.description 은 최소 1개의 locale 설명을 포함해야 합니다.")
 
     def get_name(self, locale: str = "ja") -> str:
         """지정 locale의 이름 반환. fallback: locale → ja → 첫 번째 값."""

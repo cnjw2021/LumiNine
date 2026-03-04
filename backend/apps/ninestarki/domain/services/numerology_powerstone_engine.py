@@ -1,12 +1,14 @@
-"""NumerologyPowerStoneEngine — 수비술 기반 4-Layer 파워스톤 매칭 엔진.
+"""NumerologyPowerStoneEngine — 수비술 기반 파워스톤 매칭 엔진.
 
-4단계 추천 알고리즘:
-  Layer 1 — 전체운: 지배 행성 대표석
-  Layer 2 — 건강운: 숫자 × 태양(Sun) 보완석
-  Layer 3 — 재물운: 숫자 × 목성(Jupiter) 보완석
-  Layer 4 — 연애운: 숫자 × 금성(Venus) 보완석
+6-Layer 파워스톤 시스템 중 수비술 기반 4개 레이어를 담당한다:
+  L1 — 전체운: 지배 행성 대표석
+  L2 — 건강운: 숫자 × 태양(Sun) 보완석
+  L3 — 재물운: 숫자 × 목성(Jupiter) 보완석
+  L4 — 연애운: 숫자 × 금성(Venus) 보완석
 
-기존 PowerStoneMatchingEngine (구성기학 기반 L5/L6) 과는 독립적으로 동작한다.
+나머지 2개 레이어(L5 월운석, L6 호신석)는 기존 PowerStoneMatchingEngine
+(구성기학 기반)이 담당한다. 두 엔진은 독립적으로 동작하며,
+API 레이어에서 결합된다.
 """
 from __future__ import annotations
 
@@ -41,13 +43,11 @@ class NumerologyPowerStoneEngine:
     def recommend(
         self,
         life_path_number: int,
-        locale: str = "ja",
     ) -> NumerologyPowerStoneResult:
-        """4-Layer 수비술 파워스톤 추천 실행.
+        """수비술 파워스톤 추천 실행 (locale 비의존 VO 반환).
 
         Args:
             life_path_number: 사용자 Life Path Number (1~9)
-            locale: 응답 언어 코드 (기본값: ``"ja"``)
 
         Returns:
             NumerologyPowerStoneResult (overall, health, wealth, love)
@@ -56,8 +56,8 @@ class NumerologyPowerStoneEngine:
             ValueError: 잘못된 Life Path Number
         """
         logger.info(
-            "NumerologyPowerStoneEngine.recommend: lpn=%d locale=%s",
-            life_path_number, locale,
+            "NumerologyPowerStoneEngine.recommend: lpn=%d",
+            life_path_number,
         )
 
         mapping = self._repo.get_mapping(life_path_number)
@@ -98,7 +98,7 @@ class NumerologyPowerStoneEngine:
         Returns:
             API 응답용 dict
         """
-        result = self.recommend(life_path_number, locale)
+        result = self.recommend(life_path_number)
 
         def _render(rec: NumerologyStoneRecommendation) -> Dict[str, Any]:
             return {
