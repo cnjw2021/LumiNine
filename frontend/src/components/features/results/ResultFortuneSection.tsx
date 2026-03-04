@@ -237,6 +237,7 @@ const ResultFortuneSection: React.FC<ResultFortuneSectionProps> = ({ mainStar, m
         mainStar={mainStar}
         monthStar={monthStar}
         targetYear={targetYear}
+        birthDate={birthdate}
       />
 
       {/* 年間吉方位情報表示（一時的に表示させない） */}
