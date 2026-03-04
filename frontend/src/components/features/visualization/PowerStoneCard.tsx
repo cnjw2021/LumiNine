@@ -4,7 +4,6 @@ import React from 'react';
 import { Card, Text, Box, Group, Badge, Divider, SimpleGrid } from '@mantine/core';
 import {
     GogyoStone,
-    NumerologyStone,
     PowerStones,
     SixLayerPowerStones,
     StoneRecommendation,

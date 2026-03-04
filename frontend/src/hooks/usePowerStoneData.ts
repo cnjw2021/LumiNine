@@ -51,7 +51,7 @@ export const usePowerStoneData = (
                     const today = new Date().toISOString().slice(0, 10);
                     const boards = res.data.monthly_boards as Record<
                         string,
-                        { period_start?: string; period_end?: string; power_stones?: PowerStones | SixLayerPowerStones }
+                        { period_start?: string; period_end?: string; power_stones?: PowerStones | SixLayerPowerStones | null }
                     >;
                     const currentBoard = Object.values(boards).find(
                         (b) => b.period_start && b.period_end && b.period_start <= today && today < b.period_end
