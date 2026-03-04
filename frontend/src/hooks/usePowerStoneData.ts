@@ -4,13 +4,6 @@ import { useState, useEffect } from 'react';
 import api from '@/utils/api';
 import { PowerStones, SixLayerPowerStones } from '@/types/directionFortune';
 
-/** Type guard: 6-Layer response has `overall_stone` key */
-export function isSixLayer(
-    stones: PowerStones | SixLayerPowerStones,
-): stones is SixLayerPowerStones {
-    return 'overall_stone' in stones;
-}
-
 /**
  * パワーストーン推薦データを独立して取得するフック。
  * monthly-board API から現在の節月に該当する power_stones を取得する。
@@ -45,9 +38,10 @@ export const usePowerStoneData = (
                 const year = targetYear || new Date().getFullYear();
                 let url = `/monthly/monthly-board?main_star=${mainStar}&month_star=${monthStar}&year=${year}`;
 
-                // birth_date がある場合 6-Layer 応答を要求
-                if (birthDate) {
-                    const normalized = birthDate.replace(/\//g, '-');
+                // birth_date がある場合 6-Layer 応答を要求（空白のみは除外）
+                const trimmedBirthDate = birthDate?.trim();
+                if (trimmedBirthDate) {
+                    const normalized = trimmedBirthDate.replace(/\//g, '-');
                     url += `&birth_date=${encodeURIComponent(normalized)}`;
                 }
 

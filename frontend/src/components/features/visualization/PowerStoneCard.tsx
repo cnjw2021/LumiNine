@@ -1,9 +1,16 @@
 'use client';
 
 import React from 'react';
-import { Card, Text, Box, Group, Badge, Divider, SimpleGrid, Stack } from '@mantine/core';
-import { PowerStones, SixLayerPowerStones, StoneRecommendation } from '@/types/directionFortune';
-import { isSixLayer } from '@/hooks/usePowerStoneData';
+import { Card, Text, Box, Group, Badge, Divider, SimpleGrid } from '@mantine/core';
+import {
+    GogyoStone,
+    NumerologyStone,
+    PowerStones,
+    SixLayerPowerStones,
+    StoneRecommendation,
+    isSixLayer,
+    isGogyoStone,
+} from '@/types/directionFortune';
 
 // ── 오행(五行) 색상 맵 ──────────────────────────────────
 const GOGYO_THEME: Record<string, { bg: string; border: string; badge: string; label: string }> = {
@@ -51,9 +58,9 @@ const GOGYO_NORMALIZE: Record<string, string> = {
 // ══════════════════════════════════════════════════════════
 // 3-Layer 個別ストーンアイテム（既存互換）
 // ══════════════════════════════════════════════════════════
-const StoneItem3: React.FC<{ stone: StoneRecommendation }> = ({ stone }) => {
-    const gogyoKey = GOGYO_NORMALIZE[stone.gogyo || ''] || stone.gogyo;
-    const theme = GOGYO_THEME[gogyoKey || ''] || DEFAULT_THEME;
+const StoneItem3: React.FC<{ stone: GogyoStone }> = ({ stone }) => {
+    const gogyoKey = GOGYO_NORMALIZE[stone.gogyo] || stone.gogyo;
+    const theme = GOGYO_THEME[gogyoKey] || DEFAULT_THEME;
     const layerKey = LAYER_LABEL_TO_KEY[stone.layer] || stone.layer;
     const meta = LAYER_META_3[layerKey] || { icon: '✦', label: stone.layer, sublabel: '' };
 
@@ -83,30 +90,27 @@ const StoneItem3: React.FC<{ stone: StoneRecommendation }> = ({ stone }) => {
                 <Text fw={600} size="sm" style={{ flex: 1, lineHeight: 1.3 }} lineClamp={1}>
                     {stone.stone_name}
                 </Text>
-                {stone.gogyo && (
-                    <Badge size="xs" variant="light" color={theme.badge} style={{ flexShrink: 0 }}>
-                        {stone.gogyo}
-                    </Badge>
-                )}
+                <Badge size="xs" variant="light" color={theme.badge} style={{ flexShrink: 0 }}>
+                    {stone.gogyo}
+                </Badge>
             </Group>
 
-            {stone.reason && (
-                <Text size="xs" c="dimmed" style={{ lineHeight: 1.4 }} lineClamp={3}>
-                    {stone.reason}
-                </Text>
-            )}
+            <Text size="xs" c="dimmed" style={{ lineHeight: 1.4 }} lineClamp={3}>
+                {stone.reason}
+            </Text>
         </Box>
     );
 };
 
 // ══════════════════════════════════════════════════════════
-// 6-Layer 수비술ストーンカード
+// 6-Layer ストーンカード（수비술・구성기학 共用）
 // ══════════════════════════════════════════════════════════
-const NumerologyStoneItem: React.FC<{
+const SixLayerStoneItem: React.FC<{
     stone: StoneRecommendation;
     layerKey: string;
 }> = ({ stone, layerKey }) => {
     const meta = LAYER_META_6[layerKey] || { icon: '✦', label: stone.layer, sublabel: '', color: '#6b7280' };
+    const gogyo = isGogyoStone(stone);
 
     return (
         <Box style={{
@@ -138,21 +142,19 @@ const NumerologyStoneItem: React.FC<{
             </Text>
 
             {/* description (수비술) or reason (구성기학) */}
-            {(stone.description || stone.reason) && (
-                <Text size="xs" c="dimmed" style={{ lineHeight: 1.4 }} lineClamp={2}>
-                    {stone.description || stone.reason}
-                </Text>
-            )}
+            <Text size="xs" c="dimmed" style={{ lineHeight: 1.4 }} lineClamp={2}>
+                {gogyo ? stone.reason : stone.description}
+            </Text>
 
             {/* 五行バッジ（구성기학 stones） */}
-            {stone.gogyo && (
+            {gogyo && (
                 <Badge size="xs" variant="light" color={GOGYO_THEME[GOGYO_NORMALIZE[stone.gogyo] || '']?.badge || 'gray'} style={{ alignSelf: 'flex-start' }}>
                     {stone.gogyo}
                 </Badge>
             )}
 
             {/* サブストーン（수비술 stones） */}
-            {stone.secondary && (
+            {!gogyo && stone.secondary && (
                 <Box style={{
                     marginTop: 'auto',
                     padding: '6px 8px',
@@ -210,10 +212,10 @@ const PowerStoneCard: React.FC<PowerStoneCardProps> = ({ powerStones }) => {
                     🔮 数秘術ストーン（一生の守護石）
                 </Text>
                 <SimpleGrid cols={{ base: 2, sm: 2 }} spacing="xs" mb="sm">
-                    <NumerologyStoneItem stone={powerStones.overall_stone} layerKey="overall" />
-                    <NumerologyStoneItem stone={powerStones.health_stone} layerKey="health" />
-                    <NumerologyStoneItem stone={powerStones.wealth_stone} layerKey="wealth" />
-                    <NumerologyStoneItem stone={powerStones.love_stone} layerKey="love" />
+                    <SixLayerStoneItem stone={powerStones.overall_stone} layerKey="overall" />
+                    <SixLayerStoneItem stone={powerStones.health_stone} layerKey="health" />
+                    <SixLayerStoneItem stone={powerStones.wealth_stone} layerKey="wealth" />
+                    <SixLayerStoneItem stone={powerStones.love_stone} layerKey="love" />
                 </SimpleGrid>
 
                 {/* 구성기학 2-Layer */}
@@ -221,8 +223,8 @@ const PowerStoneCard: React.FC<PowerStoneCardProps> = ({ powerStones }) => {
                     📅 今月のストーン（方位エネルギー）
                 </Text>
                 <SimpleGrid cols={{ base: 2, sm: 2 }} spacing="xs">
-                    <NumerologyStoneItem stone={powerStones.monthly_stone} layerKey="monthly" />
-                    <NumerologyStoneItem stone={powerStones.protection_stone} layerKey="protection" />
+                    <SixLayerStoneItem stone={powerStones.monthly_stone} layerKey="monthly" />
+                    <SixLayerStoneItem stone={powerStones.protection_stone} layerKey="protection" />
                 </SimpleGrid>
             </Card>
         );
