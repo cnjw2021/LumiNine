@@ -1,0 +1,451 @@
+{
+    "meta": {
+        "version": "1.0.0",
+        "description": "수비술 기반 파워스톤 카탈로그 (전체운/건강운/재물운/연애운)",
+        "mapping_principle": {
+            "overall": "수비술 숫자 → 지배 행성 → 대표석",
+            "health": "수비술 숫자 × 태양(Sun) → 생명력 보완석",
+            "wealth": "수비술 숫자 × 목성(Jupiter) → 풍요 보완석",
+            "love": "수비술 숫자 × 금성(Venus) → 사랑 보완석"
+        }
+    },
+    "stones": {
+        "ruby": {
+            "names": {
+                "ja": "ルビー",
+                "ko": "루비",
+                "en": "Ruby"
+            },
+            "description": {
+                "ja": "情熱と活力の石。太陽のエネルギーを宿す。",
+                "ko": "열정과 활력의 돌. 태양의 에너지를 품는다.",
+                "en": "Stone of passion and vitality. Embodies the energy of the Sun."
+            }
+        },
+        "garnet": {
+            "names": {
+                "ja": "ガーネット",
+                "ko": "가넷",
+                "en": "Garnet"
+            },
+            "description": {
+                "ja": "実りと忍耐の石。深い赤が生命力を象徴。",
+                "ko": "결실과 인내의 돌. 깊은 붉은색이 생명력을 상징.",
+                "en": "Stone of fruition and perseverance. Deep red symbolizes vitality."
+            }
+        },
+        "moonstone": {
+            "names": {
+                "ja": "ムーンストーン",
+                "ko": "문스톤",
+                "en": "Moonstone"
+            },
+            "description": {
+                "ja": "直感と感受性の石。月の光のように穏やかなエネルギー。",
+                "ko": "직감과 감수성의 돌. 달빛처럼 온화한 에너지.",
+                "en": "Stone of intuition and sensitivity. Gentle energy like moonlight."
+            }
+        },
+        "pearl": {
+            "names": {
+                "ja": "パール",
+                "ko": "진주",
+                "en": "Pearl"
+            },
+            "description": {
+                "ja": "純粋と保護の石。母なる海の知恵を象徴。",
+                "ko": "순수와 보호의 돌. 어머니 바다의 지혜를 상징.",
+                "en": "Stone of purity and protection. Symbolizes the wisdom of the sea."
+            }
+        },
+        "citrine": {
+            "names": {
+                "ja": "シトリン",
+                "ko": "시트린",
+                "en": "Citrine"
+            },
+            "description": {
+                "ja": "繁栄と成功の石。太陽の光を凝縮した黄金色。",
+                "ko": "번영과 성공의 돌. 태양빛을 응축한 황금빛.",
+                "en": "Stone of prosperity and success. Golden color condensing sunlight."
+            }
+        },
+        "amethyst": {
+            "names": {
+                "ja": "アメジスト",
+                "ko": "자수정",
+                "en": "Amethyst"
+            },
+            "description": {
+                "ja": "知恵と霊性の石。精神の安定と浄化をもたらす。",
+                "ko": "지혜와 영성의 돌. 정신의 안정과 정화를 가져온다.",
+                "en": "Stone of wisdom and spirituality. Brings mental stability and purification."
+            }
+        },
+        "green_aventurine": {
+            "names": {
+                "ja": "グリーンアベンチュリン",
+                "ko": "그린 아벤츄린",
+                "en": "Green Aventurine"
+            },
+            "description": {
+                "ja": "幸運と癒しの石。心身のバランスを整える。",
+                "ko": "행운과 치유의 돌. 심신의 균형을 잡아준다.",
+                "en": "Stone of luck and healing. Balances mind and body."
+            }
+        },
+        "emerald": {
+            "names": {
+                "ja": "エメラルド",
+                "ko": "에메랄드",
+                "en": "Emerald"
+            },
+            "description": {
+                "ja": "叡智とコミュニケーションの石。水星の知的エネルギー。",
+                "ko": "예지와 소통의 돌. 수성의 지적 에너지.",
+                "en": "Stone of wisdom and communication. Mercury's intellectual energy."
+            }
+        },
+        "peridot": {
+            "names": {
+                "ja": "ペリドット",
+                "ko": "페리도트",
+                "en": "Peridot"
+            },
+            "description": {
+                "ja": "希望と前進の石。太陽の石とも呼ばれる明るいエネルギー。",
+                "ko": "희망과 전진의 돌. 태양의 돌이라고도 불리는 밝은 에너지.",
+                "en": "Stone of hope and progress. Bright energy also known as the Sun Stone."
+            }
+        },
+        "rose_quartz": {
+            "names": {
+                "ja": "ローズクォーツ",
+                "ko": "로즈 쿼츠",
+                "en": "Rose Quartz"
+            },
+            "description": {
+                "ja": "愛と美の石。金星のエネルギーを宿し、恋愛運を高める。",
+                "ko": "사랑과 아름다움의 돌. 금성의 에너지를 품어 연애운을 높인다.",
+                "en": "Stone of love and beauty. Embodies Venus energy, enhancing romantic fortune."
+            }
+        },
+        "turquoise": {
+            "names": {
+                "ja": "ターコイズ",
+                "ko": "터키석",
+                "en": "Turquoise"
+            },
+            "description": {
+                "ja": "友情と幸福の石。旅の守護石としても知られる。",
+                "ko": "우정과 행복의 돌. 여행의 수호석으로도 알려져 있다.",
+                "en": "Stone of friendship and happiness. Known as a traveler's guardian stone."
+            }
+        },
+        "lapis_lazuli": {
+            "names": {
+                "ja": "ラピスラズリ",
+                "ko": "라피스라줄리",
+                "en": "Lapis Lazuli"
+            },
+            "description": {
+                "ja": "真実と内なる視野の石。ケートゥの神秘的エネルギー。",
+                "ko": "진실과 내면의 시야의 돌. 켓투의 신비적 에너지.",
+                "en": "Stone of truth and inner vision. Ketu's mystical energy."
+            }
+        },
+        "onyx": {
+            "names": {
+                "ja": "オニキス",
+                "ko": "오닉스",
+                "en": "Onyx"
+            },
+            "description": {
+                "ja": "忍耐と規律の石。土星の安定したエネルギー。",
+                "ko": "인내와 규율의 돌. 토성의 안정된 에너지.",
+                "en": "Stone of endurance and discipline. Saturn's stable energy."
+            }
+        },
+        "blue_sapphire": {
+            "names": {
+                "ja": "ブルーサファイア",
+                "ko": "블루 사파이어",
+                "en": "Blue Sapphire"
+            },
+            "description": {
+                "ja": "叡智と真理の石。土星の深い教訓を象徴。",
+                "ko": "예지와 진리의 돌. 토성의 깊은 교훈을 상징.",
+                "en": "Stone of wisdom and truth. Symbolizes Saturn's deep lessons."
+            }
+        },
+        "carnelian": {
+            "names": {
+                "ja": "カーネリアン",
+                "ko": "카넬리안",
+                "en": "Carnelian"
+            },
+            "description": {
+                "ja": "勇気と行動力の石。火星の勝利のエネルギー。",
+                "ko": "용기와 행동력의 돌. 화성의 승리 에너지.",
+                "en": "Stone of courage and action. Mars' victorious energy."
+            }
+        },
+        "tiger_eye": {
+            "names": {
+                "ja": "タイガーアイ",
+                "ko": "타이거 아이",
+                "en": "Tiger's Eye"
+            },
+            "description": {
+                "ja": "洞察力と金運の石。富と繁栄を引き寄せる。",
+                "ko": "통찰력과 금전운의 돌. 부와 번영을 끌어당긴다.",
+                "en": "Stone of insight and financial fortune. Attracts wealth and prosperity."
+            }
+        },
+        "red_coral": {
+            "names": {
+                "ja": "レッドコーラル",
+                "ko": "레드 코랄",
+                "en": "Red Coral"
+            },
+            "description": {
+                "ja": "生命力と健康の石。火星の保護エネルギー。",
+                "ko": "생명력과 건강의 돌. 화성의 보호 에너지.",
+                "en": "Stone of vitality and health. Mars' protective energy."
+            }
+        },
+        "yellow_sapphire": {
+            "names": {
+                "ja": "イエローサファイア",
+                "ko": "옐로우 사파이어",
+                "en": "Yellow Sapphire"
+            },
+            "description": {
+                "ja": "幸運と豊穣の石。木星の祝福のエネルギー。",
+                "ko": "행운과 풍요의 돌. 목성의 축복 에너지.",
+                "en": "Stone of fortune and abundance. Jupiter's blessing energy."
+            }
+        },
+        "sunstone": {
+            "names": {
+                "ja": "サンストーン",
+                "ko": "선스톤",
+                "en": "Sunstone"
+            },
+            "description": {
+                "ja": "自信とリーダーシップの石。太陽の輝きを宿す。",
+                "ko": "자신감과 리더십의 돌. 태양의 빛남을 품는다.",
+                "en": "Stone of confidence and leadership. Embodies the radiance of the Sun."
+            }
+        },
+        "diamond": {
+            "names": {
+                "ja": "ダイヤモンド",
+                "ko": "다이아몬드",
+                "en": "Diamond"
+            },
+            "description": {
+                "ja": "永遠と純粋の石。金星の最高の愛のエネルギー。",
+                "ko": "영원과 순수의 돌. 금성의 최고의 사랑 에너지.",
+                "en": "Stone of eternity and purity. Venus' supreme love energy."
+            }
+        },
+        "cats_eye": {
+            "names": {
+                "ja": "キャッツアイ",
+                "ko": "캣츠 아이",
+                "en": "Cat's Eye"
+            },
+            "description": {
+                "ja": "直感と保護の石。ケートゥの守護エネルギー。",
+                "ko": "직감과 보호의 돌. 켓투의 수호 에너지.",
+                "en": "Stone of intuition and protection. Ketu's guardian energy."
+            }
+        },
+        "hessonite": {
+            "names": {
+                "ja": "ヘソナイト",
+                "ko": "헤소나이트",
+                "en": "Hessonite"
+            },
+            "description": {
+                "ja": "浄化と解放の石。ラーフの変容エネルギー。",
+                "ko": "정화와 해방의 돌. 라후의 변용 에너지.",
+                "en": "Stone of purification and liberation. Rahu's transformative energy."
+            }
+        }
+    },
+    "number_mappings": {
+        "1": {
+            "planet": "sun",
+            "overall": {
+                "primary": "ruby",
+                "secondary": "garnet"
+            },
+            "health": {
+                "primary": "sunstone",
+                "secondary": "carnelian"
+            },
+            "wealth": {
+                "primary": "yellow_sapphire",
+                "secondary": "citrine"
+            },
+            "love": {
+                "primary": "diamond",
+                "secondary": "rose_quartz"
+            }
+        },
+        "2": {
+            "planet": "moon",
+            "overall": {
+                "primary": "moonstone",
+                "secondary": "pearl"
+            },
+            "health": {
+                "primary": "pearl",
+                "secondary": "moonstone"
+            },
+            "wealth": {
+                "primary": "yellow_sapphire",
+                "secondary": "citrine"
+            },
+            "love": {
+                "primary": "rose_quartz",
+                "secondary": "diamond"
+            }
+        },
+        "3": {
+            "planet": "jupiter",
+            "overall": {
+                "primary": "citrine",
+                "secondary": "amethyst"
+            },
+            "health": {
+                "primary": "sunstone",
+                "secondary": "ruby"
+            },
+            "wealth": {
+                "primary": "citrine",
+                "secondary": "yellow_sapphire"
+            },
+            "love": {
+                "primary": "rose_quartz",
+                "secondary": "turquoise"
+            }
+        },
+        "4": {
+            "planet": "rahu",
+            "overall": {
+                "primary": "hessonite",
+                "secondary": "green_aventurine"
+            },
+            "health": {
+                "primary": "sunstone",
+                "secondary": "red_coral"
+            },
+            "wealth": {
+                "primary": "yellow_sapphire",
+                "secondary": "tiger_eye"
+            },
+            "love": {
+                "primary": "diamond",
+                "secondary": "rose_quartz"
+            }
+        },
+        "5": {
+            "planet": "mercury",
+            "overall": {
+                "primary": "emerald",
+                "secondary": "peridot"
+            },
+            "health": {
+                "primary": "ruby",
+                "secondary": "sunstone"
+            },
+            "wealth": {
+                "primary": "yellow_sapphire",
+                "secondary": "citrine"
+            },
+            "love": {
+                "primary": "rose_quartz",
+                "secondary": "diamond"
+            }
+        },
+        "6": {
+            "planet": "venus",
+            "overall": {
+                "primary": "rose_quartz",
+                "secondary": "turquoise"
+            },
+            "health": {
+                "primary": "sunstone",
+                "secondary": "ruby"
+            },
+            "wealth": {
+                "primary": "citrine",
+                "secondary": "yellow_sapphire"
+            },
+            "love": {
+                "primary": "diamond",
+                "secondary": "rose_quartz"
+            }
+        },
+        "7": {
+            "planet": "ketu",
+            "overall": {
+                "primary": "cats_eye",
+                "secondary": "lapis_lazuli"
+            },
+            "health": {
+                "primary": "ruby",
+                "secondary": "sunstone"
+            },
+            "wealth": {
+                "primary": "yellow_sapphire",
+                "secondary": "tiger_eye"
+            },
+            "love": {
+                "primary": "rose_quartz",
+                "secondary": "turquoise"
+            }
+        },
+        "8": {
+            "planet": "saturn",
+            "overall": {
+                "primary": "blue_sapphire",
+                "secondary": "onyx"
+            },
+            "health": {
+                "primary": "sunstone",
+                "secondary": "red_coral"
+            },
+            "wealth": {
+                "primary": "yellow_sapphire",
+                "secondary": "citrine"
+            },
+            "love": {
+                "primary": "diamond",
+                "secondary": "rose_quartz"
+            }
+        },
+        "9": {
+            "planet": "mars",
+            "overall": {
+                "primary": "red_coral",
+                "secondary": "carnelian"
+            },
+            "health": {
+                "primary": "ruby",
+                "secondary": "sunstone"
+            },
+            "wealth": {
+                "primary": "citrine",
+                "secondary": "yellow_sapphire"
+            },
+            "love": {
+                "primary": "rose_quartz",
+                "secondary": "diamond"
+            }
+        }
+    }
+}
