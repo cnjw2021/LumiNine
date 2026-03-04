@@ -1,0 +1,560 @@
+{
+    "1": {
+        "planet": "sun",
+        "keywords": {
+            "ja": [
+                "リーダーシップ",
+                "独立心",
+                "創造力",
+                "開拓精神",
+                "自信"
+            ],
+            "ko": [
+                "리더십",
+                "독립심",
+                "창조력",
+                "개척정신",
+                "자신감"
+            ],
+            "en": [
+                "Leadership",
+                "Independence",
+                "Creativity",
+                "Pioneering",
+                "Confidence"
+            ]
+        },
+        "description": {
+            "ja": "太陽の数字。生まれながらのリーダーで、独立心が強く、新しい道を切り開く力を持っています。自信に満ち、目標に向かって力強く進みます。",
+            "ko": "태양의 숫자. 타고난 리더로서 독립심이 강하고, 새로운 길을 개척하는 힘을 가지고 있습니다. 자신감 넘치며 목표를 향해 힘차게 나아갑니다.",
+            "en": "The number of the Sun. A born leader with strong independence and the power to pioneer new paths. Full of confidence, moving powerfully toward goals."
+        },
+        "strengths": {
+            "ja": [
+                "決断力",
+                "行動力",
+                "独創性"
+            ],
+            "ko": [
+                "결단력",
+                "행동력",
+                "독창성"
+            ],
+            "en": [
+                "Decisiveness",
+                "Action-oriented",
+                "Originality"
+            ]
+        },
+        "weaknesses": {
+            "ja": [
+                "頑固",
+                "自己中心的になりやすい"
+            ],
+            "ko": [
+                "완고함",
+                "자기중심적이 되기 쉬움"
+            ],
+            "en": [
+                "Stubbornness",
+                "Tendency toward self-centeredness"
+            ]
+        }
+    },
+    "2": {
+        "planet": "moon",
+        "keywords": {
+            "ja": [
+                "調和",
+                "協力",
+                "直感",
+                "繊細",
+                "共感"
+            ],
+            "ko": [
+                "조화",
+                "협력",
+                "직관",
+                "섬세함",
+                "공감"
+            ],
+            "en": [
+                "Harmony",
+                "Cooperation",
+                "Intuition",
+                "Sensitivity",
+                "Empathy"
+            ]
+        },
+        "description": {
+            "ja": "月の数字。繊細で直感力に優れ、他者との調和を大切にします。協力を通じて力を発揮し、周囲を穏やかに支えます。",
+            "ko": "달의 숫자. 섬세하고 직관력이 뛰어나며, 타인과의 조화를 중요시합니다. 협력을 통해 힘을 발휘하고, 주변을 부드럽게 지지합니다.",
+            "en": "The number of the Moon. Sensitive with excellent intuition, valuing harmony with others. Demonstrates strength through cooperation and gently supports those around."
+        },
+        "strengths": {
+            "ja": [
+                "外交力",
+                "忍耐力",
+                "思いやり"
+            ],
+            "ko": [
+                "외교력",
+                "인내력",
+                "배려심"
+            ],
+            "en": [
+                "Diplomacy",
+                "Patience",
+                "Thoughtfulness"
+            ]
+        },
+        "weaknesses": {
+            "ja": [
+                "優柔不断",
+                "過敏になりやすい"
+            ],
+            "ko": [
+                "우유부단",
+                "과민해지기 쉬움"
+            ],
+            "en": [
+                "Indecisiveness",
+                "Tendency toward oversensitivity"
+            ]
+        }
+    },
+    "3": {
+        "planet": "jupiter",
+        "keywords": {
+            "ja": [
+                "表現力",
+                "楽観",
+                "社交性",
+                "創造性",
+                "喜び"
+            ],
+            "ko": [
+                "표현력",
+                "낙관",
+                "사교성",
+                "창의성",
+                "기쁨"
+            ],
+            "en": [
+                "Expression",
+                "Optimism",
+                "Sociability",
+                "Creativity",
+                "Joy"
+            ]
+        },
+        "description": {
+            "ja": "木星の数字。表現力豊かで社交的、楽観的なエネルギーで周囲を明るくします。創造的な才能に恵まれ、人々に喜びを与えます。",
+            "ko": "목성의 숫자. 표현력이 풍부하고 사교적이며, 낙관적인 에너지로 주변을 밝게 합니다. 창의적 재능이 뛰어나 사람들에게 기쁨을 줍니다.",
+            "en": "The number of Jupiter. Expressive and sociable, brightening surroundings with optimistic energy. Blessed with creative talent, bringing joy to people."
+        },
+        "strengths": {
+            "ja": [
+                "コミュニケーション力",
+                "芸術的センス",
+                "明るさ"
+            ],
+            "ko": [
+                "소통력",
+                "예술적 감각",
+                "밝은 성격"
+            ],
+            "en": [
+                "Communication skills",
+                "Artistic sense",
+                "Brightness"
+            ]
+        },
+        "weaknesses": {
+            "ja": [
+                "散漫",
+                "現実逃避の傾向"
+            ],
+            "ko": [
+                "산만함",
+                "현실 회피 경향"
+            ],
+            "en": [
+                "Scattered focus",
+                "Tendency toward escapism"
+            ]
+        }
+    },
+    "4": {
+        "planet": "rahu",
+        "keywords": {
+            "ja": [
+                "安定",
+                "実務",
+                "忍耐",
+                "建設的",
+                "誠実"
+            ],
+            "ko": [
+                "안정",
+                "실무",
+                "인내",
+                "건설적",
+                "성실"
+            ],
+            "en": [
+                "Stability",
+                "Practicality",
+                "Patience",
+                "Constructive",
+                "Integrity"
+            ]
+        },
+        "description": {
+            "ja": "ラーフの数字。地に足のついた実務能力と忍耐力を持ち、着実に基盤を築きます。安定を求め、誠実に物事を進めます。",
+            "ko": "라후의 숫자. 현실적인 실무 능력과 인내력을 가지고 착실하게 기반을 쌓습니다. 안정을 추구하며 성실하게 일을 진행합니다.",
+            "en": "The number of Rahu. Possesses grounded practical ability and patience, steadily building foundations. Seeks stability and advances matters with integrity."
+        },
+        "strengths": {
+            "ja": [
+                "計画性",
+                "責任感",
+                "組織力"
+            ],
+            "ko": [
+                "계획성",
+                "책임감",
+                "조직력"
+            ],
+            "en": [
+                "Planning ability",
+                "Responsibility",
+                "Organizational skill"
+            ]
+        },
+        "weaknesses": {
+            "ja": [
+                "柔軟性の欠如",
+                "変化への抵抗"
+            ],
+            "ko": [
+                "유연성 부족",
+                "변화에 대한 저항"
+            ],
+            "en": [
+                "Lack of flexibility",
+                "Resistance to change"
+            ]
+        }
+    },
+    "5": {
+        "planet": "mercury",
+        "keywords": {
+            "ja": [
+                "自由",
+                "変化",
+                "冒険",
+                "多才",
+                "適応力"
+            ],
+            "ko": [
+                "자유",
+                "변화",
+                "모험",
+                "다재다능",
+                "적응력"
+            ],
+            "en": [
+                "Freedom",
+                "Change",
+                "Adventure",
+                "Versatility",
+                "Adaptability"
+            ]
+        },
+        "description": {
+            "ja": "水星の数字。自由を愛し、変化と冒険を楽しみます。多才で適応力が高く、新しい経験を通じて成長します。",
+            "ko": "수성의 숫자. 자유를 사랑하고 변화와 모험을 즐깁니다. 다재다능하고 적응력이 높으며, 새로운 경험을 통해 성장합니다.",
+            "en": "The number of Mercury. Loves freedom and enjoys change and adventure. Versatile with high adaptability, growing through new experiences."
+        },
+        "strengths": {
+            "ja": [
+                "好奇心",
+                "機転",
+                "行動力"
+            ],
+            "ko": [
+                "호기심",
+                "재치",
+                "행동력"
+            ],
+            "en": [
+                "Curiosity",
+                "Resourcefulness",
+                "Energy"
+            ]
+        },
+        "weaknesses": {
+            "ja": [
+                "落ち着きのなさ",
+                "一貫性の欠如"
+            ],
+            "ko": [
+                "차분하지 못함",
+                "일관성 부족"
+            ],
+            "en": [
+                "Restlessness",
+                "Lack of consistency"
+            ]
+        }
+    },
+    "6": {
+        "planet": "venus",
+        "keywords": {
+            "ja": [
+                "愛情",
+                "責任",
+                "家庭",
+                "美意識",
+                "奉仕"
+            ],
+            "ko": [
+                "애정",
+                "책임",
+                "가정",
+                "미적 감각",
+                "봉사"
+            ],
+            "en": [
+                "Love",
+                "Responsibility",
+                "Family",
+                "Aesthetics",
+                "Service"
+            ]
+        },
+        "description": {
+            "ja": "金星の数字。深い愛情と責任感で家庭や共同体を支えます。美意識が高く、調和のとれた環境を創り出します。",
+            "ko": "금성의 숫자. 깊은 애정과 책임감으로 가정이나 공동체를 지지합니다. 미적 감각이 뛰어나 조화로운 환경을 만들어냅니다.",
+            "en": "The number of Venus. Supports family and community with deep love and responsibility. High aesthetic sense, creating harmonious environments."
+        },
+        "strengths": {
+            "ja": [
+                "思いやり",
+                "芸術的才能",
+                "家庭愛"
+            ],
+            "ko": [
+                "배려심",
+                "예술적 재능",
+                "가정애"
+            ],
+            "en": [
+                "Compassion",
+                "Artistic talent",
+                "Devotion to family"
+            ]
+        },
+        "weaknesses": {
+            "ja": [
+                "過保護",
+                "自己犠牲的になりやすい"
+            ],
+            "ko": [
+                "과보호",
+                "자기희생적이 되기 쉬움"
+            ],
+            "en": [
+                "Overprotectiveness",
+                "Tendency toward self-sacrifice"
+            ]
+        }
+    },
+    "7": {
+        "planet": "ketu",
+        "keywords": {
+            "ja": [
+                "分析",
+                "内省",
+                "知性",
+                "探求",
+                "精神性"
+            ],
+            "ko": [
+                "분석",
+                "내성",
+                "지성",
+                "탐구",
+                "정신성"
+            ],
+            "en": [
+                "Analysis",
+                "Introspection",
+                "Intelligence",
+                "Exploration",
+                "Spirituality"
+            ]
+        },
+        "description": {
+            "ja": "ケートゥの数字。深い知性と分析力で物事の本質を探求します。内省的で精神性が高く、真理を追い求めます。",
+            "ko": "켓투의 숫자. 깊은 지성과 분석력으로 사물의 본질을 탐구합니다. 내성적이고 정신성이 높으며, 진리를 추구합니다.",
+            "en": "The number of Ketu. Explores the essence of things with deep intelligence and analytical ability. Introspective with high spirituality, seeking truth."
+        },
+        "strengths": {
+            "ja": [
+                "洞察力",
+                "研究能力",
+                "独立した思考"
+            ],
+            "ko": [
+                "통찰력",
+                "연구 능력",
+                "독립적 사고"
+            ],
+            "en": [
+                "Insight",
+                "Research ability",
+                "Independent thinking"
+            ]
+        },
+        "weaknesses": {
+            "ja": [
+                "孤立しやすい",
+                "過度な完璧主義"
+            ],
+            "ko": [
+                "고립되기 쉬움",
+                "과도한 완벽주의"
+            ],
+            "en": [
+                "Tendency toward isolation",
+                "Excessive perfectionism"
+            ]
+        }
+    },
+    "8": {
+        "planet": "saturn",
+        "keywords": {
+            "ja": [
+                "野心",
+                "実現力",
+                "権威",
+                "豊かさ",
+                "努力"
+            ],
+            "ko": [
+                "야망",
+                "실현력",
+                "권위",
+                "풍요",
+                "노력"
+            ],
+            "en": [
+                "Ambition",
+                "Achievement",
+                "Authority",
+                "Abundance",
+                "Effort"
+            ]
+        },
+        "description": {
+            "ja": "土星の数字。強い野心と実現力で目標を達成します。努力を惜しまず、権威と豊かさを手に入れる力を持っています。",
+            "ko": "토성의 숫자. 강한 야망과 실현력으로 목표를 달성합니다. 노력을 아끼지 않으며, 권위와 풍요를 손에 넣는 힘을 가지고 있습니다.",
+            "en": "The number of Saturn. Achieves goals with strong ambition and realization power. Spares no effort, possessing the power to attain authority and abundance."
+        },
+        "strengths": {
+            "ja": [
+                "経営能力",
+                "判断力",
+                "持続力"
+            ],
+            "ko": [
+                "경영 능력",
+                "판단력",
+                "지속력"
+            ],
+            "en": [
+                "Management ability",
+                "Judgment",
+                "Persistence"
+            ]
+        },
+        "weaknesses": {
+            "ja": [
+                "支配的になりやすい",
+                "物質主義的傾向"
+            ],
+            "ko": [
+                "지배적이 되기 쉬움",
+                "물질주의적 경향"
+            ],
+            "en": [
+                "Tendency toward dominance",
+                "Materialistic tendencies"
+            ]
+        }
+    },
+    "9": {
+        "planet": "mars",
+        "keywords": {
+            "ja": [
+                "情熱",
+                "博愛",
+                "理想",
+                "完結",
+                "変革"
+            ],
+            "ko": [
+                "정열",
+                "박애",
+                "이상",
+                "완결",
+                "변혁"
+            ],
+            "en": [
+                "Passion",
+                "Philanthropy",
+                "Idealism",
+                "Completion",
+                "Transformation"
+            ]
+        },
+        "description": {
+            "ja": "火星の数字。強い情熱と博愛精神で世界をより良くしようとします。理想主義的で、大きなビジョンを持って変革を推進します。",
+            "ko": "화성의 숫자. 강한 정열과 박애정신으로 세상을 더 나은 곳으로 만들려 합니다. 이상주의적이며, 큰 비전을 가지고 변혁을 추진합니다.",
+            "en": "The number of Mars. Strives to make the world better with strong passion and philanthropy. Idealistic, driving transformation with a grand vision."
+        },
+        "strengths": {
+            "ja": [
+                "カリスマ性",
+                "包容力",
+                "インスピレーション"
+            ],
+            "ko": [
+                "카리스마",
+                "포용력",
+                "영감"
+            ],
+            "en": [
+                "Charisma",
+                "Inclusiveness",
+                "Inspiration"
+            ]
+        },
+        "weaknesses": {
+            "ja": [
+                "感情的になりやすい",
+                "理想と現実のギャップに苦しむ"
+            ],
+            "ko": [
+                "감정적이 되기 쉬움",
+                "이상과 현실의 갭에 괴로워함"
+            ],
+            "en": [
+                "Tendency toward emotionality",
+                "Struggling with gap between ideals and reality"
+            ]
+        }
+    }
+}

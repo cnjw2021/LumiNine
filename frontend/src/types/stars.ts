@@ -11,6 +11,16 @@ export interface Star {
 }
 
 // 計算結果の型定義
+export interface NumerologyResult {
+  life_path_number: number;
+  planet: string;
+  planet_name: string;
+  keywords: string[];
+  description: string;
+  strengths: string[];
+  weaknesses: string[];
+}
+
 export interface CalculationResult {
   main_star: Star;
   month_star: Star;
@@ -19,6 +29,7 @@ export interface CalculationResult {
   year_star: Star;
   birth_datetime: string;
   target_year: number;
+  numerology?: NumerologyResult;
 }
 
 // 月命星読みの型定義
