@@ -109,14 +109,18 @@ class SixLayerPowerStoneUseCase:
             locale=locale,
         )
 
-        # ── 2. birth_date 없으면 기존 3-Layer 반환 ─────────
-        if not birth_date:
+        # ── 2. birth_date 가 실제로 제공되지 않은 경우(None) 기존 3-Layer 반환 ─
+        if birth_date is None:
             logger.info("SixLayerPowerStoneUseCase: birth_date 미제공 → 3-Layer")
             return gogyo_result
 
         # ── 3. 수비술 계산 + 6-Layer 통합 ─────────────────
         logger.info("SixLayerPowerStoneUseCase: birth_date 제공 → 6-Layer")
-        numerology_result = self.compute_numerology_stones(birth_date, locale)
+        birth_date_normalized = birth_date.strip()
+        numerology_result = self.compute_numerology_stones(
+            birth_date_normalized,
+            locale,
+        )
 
         return self.merge_six_layer(gogyo_result, numerology_result)
 

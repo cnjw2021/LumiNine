@@ -228,7 +228,10 @@ class TestSixLayerPowerStoneUseCase:
 
         # 수비술 호출
         mock_calc.assert_called_once_with("1995-12-25")
-        self.mock_engine.recommend_as_dict.assert_called_once()
+        self.mock_engine.recommend_as_dict.assert_called_once_with(
+            life_path_number=3,
+            locale="ko",
+        )
 
     # ── base_stone 은 6-Layer 에서 제외 ───────────────
 
