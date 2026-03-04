@@ -6,6 +6,7 @@ from core.database import db
 from apps.ninestarki.domain.repositories.monthly_directions_repository_interface import IMonthlyDirectionsRepository
 from apps.ninestarki.use_cases.monthly_directions_use_case import MonthlyDirectionsUseCase
 from apps.ninestarki.use_cases.powerstone_recommendation_use_case import PowerStoneRecommendationUseCase
+from apps.ninestarki.use_cases.six_layer_powerstone_use_case import SixLayerPowerStoneUseCase
 from apps.ninestarki.domain.exceptions import NineStarKiError, NoAuspiciousDirectionError
 from apps.ninestarki.domain.value_objects.locale import Locale
 from core.models.star_groups import StarGroup
@@ -286,6 +287,7 @@ def create_monthly_bp():
     def get_monthly_board(
         use_case: MonthlyDirectionsUseCase,
         stone_use_case: PowerStoneRecommendationUseCase,
+        six_layer_use_case: SixLayerPowerStoneUseCase,
     ):
         """연/월 기준 월반(月盤) 방위 길흉 결과를 반환하는 API.
 
@@ -296,6 +298,7 @@ def create_monthly_bp():
             month_index (int, 選択): 조회 절월 인덱스 (1=寅月/立春 … 12=丑月/小寒). 
                 None の場合、該当年の全節月について月盤方位を算出する。
             lang (str, 選択): 응답 언어 코드 (ja/ko/en). 기본값: ja.
+            birth_date (str, 選択): 생년월일 (YYYY-MM-DD). 제공 시 6-Layer 파워스톤 응답.
 
         Returns:
             200 OK: {
@@ -339,6 +342,9 @@ def create_monthly_bp():
                 locale = Locale.JA
             locale_str: str = locale.value
 
+            # ── birth_date 파라미터 (6-Layer 활성화) ──────
+            birth_date = request.args.get('birth_date', type=str)
+
             # 구형 파라미터인 'month'가 어떤 형태로든 전달되면 요청을 거절한다.
             if request.args.get('month') is not None:
                 return jsonify({'error': "파라미터 체계가 변경되었습니다. 'month' 대신 'month_index'를 사용해주세요."}), 400
@@ -369,11 +375,21 @@ def create_monthly_bp():
                 directions = board.get('directions', {})
                 if directions:
                     try:
-                        board['power_stones'] = stone_use_case.execute(
-                            main_star=main_star,
-                            directions=directions,
-                            locale=locale_str,
-                        )
+                        if birth_date:
+                            # 6-Layer 응답 (수비술 4 + 구성기학 2)
+                            board['power_stones'] = six_layer_use_case.execute(
+                                main_star=main_star,
+                                directions=directions,
+                                locale=locale_str,
+                                birth_date=birth_date,
+                            )
+                        else:
+                            # 기존 3-Layer 응답
+                            board['power_stones'] = stone_use_case.execute(
+                                main_star=main_star,
+                                directions=directions,
+                                locale=locale_str,
+                            )
                     except NoAuspiciousDirectionError:
                         logger.info(
                             "monthly-board %s: 길방위 없음 → power_stones=null", key,

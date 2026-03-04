@@ -78,6 +78,9 @@ from apps.ninestarki.domain.repositories.numerology_powerstone_repository_interf
 from apps.ninestarki.infrastructure.persistence.numerology_powerstone_repository import NumerologyPowerStoneRepository
 from apps.ninestarki.domain.services.numerology_powerstone_engine import NumerologyPowerStoneEngine
 
+# Phase 5-4: 6-Layer UseCase
+from apps.ninestarki.use_cases.six_layer_powerstone_use_case import SixLayerPowerStoneUseCase
+
 # Permission UseCase
 from apps.ninestarki.use_cases.permission_use_case import PermissionUseCase
 
