@@ -47,13 +47,35 @@ export interface StoneRecommendation {
   stone_name: string;
   /** Localized layer label (e.g. "基本石", "기본석", "Base Stone") */
   layer: string;
-  /** Localized 五行 label (e.g. "水", "수", "Water") */
-  gogyo: string;
-  reason: string;
+  /** Localized 五行 label — 구성기학 stones only */
+  gogyo?: string;
+  /** Recommendation reason — 구성기학 stones only */
+  reason?: string;
+  /** Description — 수비술 stones only */
+  description?: string;
+  /** Secondary stone — 수비술 stones only */
+  secondary?: {
+    stone_id: string;
+    stone_name: string;
+    description: string;
+  };
 }
 
+/** 3-Layer response (birth_date not provided) */
 export interface PowerStones {
   base_stone: StoneRecommendation;
   monthly_stone: StoneRecommendation;
   protection_stone: StoneRecommendation;
+}
+
+/** 6-Layer response (birth_date provided) */
+export interface SixLayerPowerStones {
+  overall_stone: StoneRecommendation;
+  health_stone: StoneRecommendation;
+  wealth_stone: StoneRecommendation;
+  love_stone: StoneRecommendation;
+  monthly_stone: StoneRecommendation;
+  protection_stone: StoneRecommendation;
+  life_path_number: number;
+  planet: string;
 }

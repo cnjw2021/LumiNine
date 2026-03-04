@@ -10,15 +10,18 @@ import PowerStoneCard from './PowerStoneCard';
  *
  * DirectionFortune とは分離されており、
  * ResultFortuneSection や任意のページで自由に配置・表示制御が可能。
+ *
+ * birthDate を渡すと 6-Layer 応答を取得しリッチなカードを表示する。
  */
 interface PowerStoneSectionProps {
     mainStar: number;
     monthStar: number;
     targetYear?: number;
+    birthDate?: string;
 }
 
-const PowerStoneSection: React.FC<PowerStoneSectionProps> = ({ mainStar, monthStar, targetYear }) => {
-    const { loading, powerStones, error } = usePowerStoneData(mainStar, monthStar, targetYear);
+const PowerStoneSection: React.FC<PowerStoneSectionProps> = ({ mainStar, monthStar, targetYear, birthDate }) => {
+    const { loading, powerStones, error } = usePowerStoneData(mainStar, monthStar, targetYear, birthDate);
 
     if (loading) {
         return (
