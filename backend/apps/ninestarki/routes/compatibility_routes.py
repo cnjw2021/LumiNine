@@ -6,18 +6,11 @@ import traceback
 from core.utils.logger import get_logger
 from apps.ninestarki.services.compatibility_service import CompatibilityService
 from apps.ninestarki.use_cases.calculate_stars_use_case import CalculateStarsUseCase
-from apps.ninestarki.infrastructure.persistence.nine_star_repository import NineStarRepository
-from apps.ninestarki.infrastructure.persistence.solar_terms_repository import SolarTermsRepository
-from apps.ninestarki.infrastructure.persistence.numerology_reading_repository import NumerologyReadingRepository
 from datetime import datetime
 from core.config import get_config
+from flask_injector import inject
 
 logger = get_logger(__name__)
-
-# モジュールスコープでシングルトン生成（毎リクエストの JSON I/O を回避）
-_calc_use_case = CalculateStarsUseCase(
-    NineStarRepository(), SolarTermsRepository(), NumerologyReadingRepository(),
-)
 
 def create_compatibility_bp():
     """相性鑑定用のブループリントを作成"""
@@ -27,7 +20,8 @@ def create_compatibility_bp():
                                static_url_path='/static')
 
     @compatibility_bp.route('', methods=['POST'])
-    def get_compatibility():
+    @inject
+    def get_compatibility(calculate_stars_use_case: CalculateStarsUseCase):
         """
         二人の本命星と生まれ月から相性鑑定結果を取得するAPI
         
@@ -84,7 +78,7 @@ def create_compatibility_bp():
                     return jsonify({'error': 'main/partnerのbirthdateとgenderが必要です'}), 400
 
                 # 設定から既定の時刻を取得して計算
-                calc = _calc_use_case
+                calc = calculate_stars_use_case
                 main_birth_norm = (datetime.strptime(main_info['birthdate'].replace('/', '-'), '%Y-%m-%d')).strftime('%Y-%m-%d')
                 partner_birth_norm = (datetime.strptime(partner_info['birthdate'].replace('/', '-'), '%Y-%m-%d')).strftime('%Y-%m-%d')
                 cfg = get_config()
