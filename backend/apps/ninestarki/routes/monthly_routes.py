@@ -417,11 +417,23 @@ def create_monthly_bp():
                             board['power_stones'] = gogyo_result
                     except NoAuspiciousDirectionError:
                         logger.info(
-                            "monthly-board %s: 길방위 없음 → power_stones=null", key,
+                            "monthly-board %s: 길방위 없음 → power_stones=%s",
+                            key,
+                            "numerology-only" if numerology_stones else "null",
                         )
-                        board['power_stones'] = None
+                        if numerology_stones:
+                            board['power_stones'] = six_layer_use_case.merge_six_layer_partial(
+                                numerology_stones,
+                            )
+                        else:
+                            board['power_stones'] = None
                 else:
-                    board['power_stones'] = None
+                    if numerology_stones:
+                        board['power_stones'] = six_layer_use_case.merge_six_layer_partial(
+                            numerology_stones,
+                        )
+                    else:
+                        board['power_stones'] = None
 
             return jsonify(result), 200
 
