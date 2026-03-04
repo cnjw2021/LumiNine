@@ -29,6 +29,14 @@ class SixLayerPowerStoneUseCase:
 
     - birth_date 가 없으면 기존 3-Layer (base/monthly/protection) 반환
     - birth_date 가 있으면 6-Layer (수비술 4 + 구성기학 2) 반환
+
+    Note:
+        월별 반복 호출 시 ``compute_numerology_stones()`` 로 수비술 부분을
+        1회만 계산하고, 구성기학(방위 기반) 부분만 월별로 재계산할 수 있다.
+        ``base_stone`` 은 6-Layer 모드에서 사용하지 않지만, 현재
+        ``PowerStoneRecommendationUseCase`` 가 3개를 일괄 계산하므로
+        함께 반환된다. 향후 구성기학 엔진에 경량 경로(월운석+호신석만)를
+        추가하면 불필요한 ``base_stone`` 계산을 제거할 수 있다.
     """
 
     @inject
@@ -39,6 +47,40 @@ class SixLayerPowerStoneUseCase:
     ) -> None:
         self._stone_use_case = stone_use_case
         self._numerology_engine = numerology_engine
+
+    # ──────────────────────────────────────────────────
+    # Public API
+    # ──────────────────────────────────────────────────
+
+    def compute_numerology_stones(
+        self,
+        birth_date: str,
+        locale: str = "ja",
+    ) -> Dict[str, Any]:
+        """수비술 기반 4-Layer 파워스톤을 계산하여 반환.
+
+        월에 독립적인 결과이므로 루프 밖에서 1회만 호출하고
+        결과를 재사용할 수 있다.
+
+        Args:
+            birth_date: 생년월일 (``"YYYY-MM-DD"``)
+            locale: 응답 언어 코드
+
+        Returns:
+            수비술 4-Layer dict + life_path_number, planet 메타 정보.
+
+        Raises:
+            ValueError: birth_date 형식이 잘못된 경우 (그대로 전파)
+        """
+        numerology_number = NumerologyService.calculate_life_path_number(birth_date)
+        life_path = numerology_number.number
+
+        result = self._numerology_engine.recommend_as_dict(
+            life_path_number=life_path,
+            locale=locale,
+        )
+        result["life_path_number"] = life_path
+        return result
 
     def execute(
         self,
@@ -72,43 +114,51 @@ class SixLayerPowerStoneUseCase:
             logger.info("SixLayerPowerStoneUseCase: birth_date 미제공 → 3-Layer")
             return gogyo_result
 
-        # ── 3. 수비술 Life Path Number 계산 ────────────────
+        # ── 3. 수비술 계산 + 6-Layer 통합 ─────────────────
         logger.info("SixLayerPowerStoneUseCase: birth_date 제공 → 6-Layer")
-        numerology_number = NumerologyService.calculate_life_path_number(birth_date)
-        life_path = numerology_number.number
+        numerology_result = self.compute_numerology_stones(birth_date, locale)
 
-        # ── 4. 수비술 기반 4-Layer 추천 ────────────────────
-        numerology_result = self._numerology_engine.recommend_as_dict(
-            life_path_number=life_path,
-            locale=locale,
-        )
+        return self.merge_six_layer(gogyo_result, numerology_result)
 
-        # ── 5. 6-Layer 통합 응답 구성 ─────────────────────
+    def merge_six_layer(
+        self,
+        gogyo_result: Dict[str, Any],
+        numerology_result: Dict[str, Any],
+    ) -> Dict[str, Any]:
+        """구성기학 결과와 수비술 결과를 6-Layer 응답으로 합산.
+
+        Args:
+            gogyo_result: 구성기학 3-Layer 결과 (base/monthly/protection)
+            numerology_result: ``compute_numerology_stones()`` 의 반환값
+
+        Returns:
+            6-Layer 통합 응답 dict.
+        """
         return {
-            "overall_stone": self._format_numerology_layer(
+            "overall_stone": self.format_numerology_layer(
                 numerology_result["overall"],
             ),
-            "health_stone": self._format_numerology_layer(
+            "health_stone": self.format_numerology_layer(
                 numerology_result["health"],
             ),
-            "wealth_stone": self._format_numerology_layer(
+            "wealth_stone": self.format_numerology_layer(
                 numerology_result["wealth"],
             ),
-            "love_stone": self._format_numerology_layer(
+            "love_stone": self.format_numerology_layer(
                 numerology_result["love"],
             ),
             "monthly_stone": gogyo_result["monthly_stone"],
             "protection_stone": gogyo_result["protection_stone"],
-            "life_path_number": life_path,
+            "life_path_number": numerology_result["life_path_number"],
             "planet": numerology_result["planet"],
         }
 
     # ──────────────────────────────────────────────────
-    # Private helpers
+    # Serialization helpers (public — 라우트에서도 사용)
     # ──────────────────────────────────────────────────
 
     @staticmethod
-    def _format_numerology_layer(
+    def format_numerology_layer(
         layer_data: Dict[str, Any],
     ) -> Dict[str, Any]:
         """수비술 레이어 데이터를 API 응답 형식으로 변환."""

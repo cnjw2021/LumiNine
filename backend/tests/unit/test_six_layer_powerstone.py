@@ -190,7 +190,7 @@ class TestSixLayerPowerStoneUseCase:
     def test_format_numerology_layer_structure(self) -> None:
         """수비술 레이어 데이터가 올바른 API 형식으로 변환되는지 검증."""
         layer_data = _make_numerology_result()["overall"]
-        formatted = SixLayerPowerStoneUseCase._format_numerology_layer(
+        formatted = SixLayerPowerStoneUseCase.format_numerology_layer(
             layer_data,
         )
 

@@ -386,16 +386,14 @@ def create_monthly_bp():
             numerology_stones = None
             if birth_date:
                 try:
-                    from apps.ninestarki.domain.services.numerology_service import NumerologyService
-                    numerology_number = NumerologyService.calculate_life_path_number(birth_date)
-                    numerology_stones = six_layer_use_case._numerology_engine.recommend_as_dict(
-                        life_path_number=numerology_number.number,
+                    numerology_stones = six_layer_use_case.compute_numerology_stones(
+                        birth_date=birth_date,
                         locale=locale_str,
                     )
-                    numerology_stones["life_path_number"] = numerology_number.number
-                except Exception as e:
-                    logger.warning("수비술 계산 실패 → 3-Layer fallback: %s", e)
-                    birth_date = None  # fallback to 3-Layer
+                except ValueError:
+                    return jsonify({
+                        'error': 'birth_date 형식이 올바르지 않습니다 (YYYY-MM-DD 필요)',
+                    }), 422
 
             for key, board in result.get('monthly_boards', {}).items():
                 directions = board.get('directions', {})
@@ -408,24 +406,9 @@ def create_monthly_bp():
                         )
                         if numerology_stones:
                             # 6-Layer: 수비술 4 + 구성기학 2
-                            board['power_stones'] = {
-                                "overall_stone": SixLayerPowerStoneUseCase._format_numerology_layer(
-                                    numerology_stones["overall"],
-                                ),
-                                "health_stone": SixLayerPowerStoneUseCase._format_numerology_layer(
-                                    numerology_stones["health"],
-                                ),
-                                "wealth_stone": SixLayerPowerStoneUseCase._format_numerology_layer(
-                                    numerology_stones["wealth"],
-                                ),
-                                "love_stone": SixLayerPowerStoneUseCase._format_numerology_layer(
-                                    numerology_stones["love"],
-                                ),
-                                "monthly_stone": gogyo_result["monthly_stone"],
-                                "protection_stone": gogyo_result["protection_stone"],
-                                "life_path_number": numerology_stones["life_path_number"],
-                                "planet": numerology_stones["planet"],
-                            }
+                            board['power_stones'] = six_layer_use_case.merge_six_layer(
+                                gogyo_result, numerology_stones,
+                            )
                         else:
                             board['power_stones'] = gogyo_result
                     except NoAuspiciousDirectionError:
