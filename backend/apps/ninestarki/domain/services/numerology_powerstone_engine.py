@@ -113,7 +113,6 @@ class NumerologyPowerStoneEngine:
                     "stone_name": rec.secondary.get_name(locale),
                     "description": rec.secondary.get_description(locale),
                 },
-                "planet": rec.planet,
             }
 
         return {

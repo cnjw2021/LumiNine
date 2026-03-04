@@ -16,6 +16,11 @@ class NumerologyStone:
 
     gogyo 기반 PowerStone 과 달리 행성-에너지 기반이므로
     gogyo/is_primary 필드를 갖지 않는다.
+
+    Note:
+        ``frozen=True`` 이지만 ``names``/``description`` 은 dict 이므로
+        내부 mutation 은 차단되지 않는다. 호출측에서 dict 값을
+        변경하지 않도록 주의해야 한다.
     """
 
     id: str                          # "ruby", "moonstone" 등 고유 식별자
