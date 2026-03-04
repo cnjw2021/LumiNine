@@ -46,6 +46,16 @@ class NumerologyPowerStoneRepository(INumerologyPowerStoneRepository):
             num = int(num_str)
             self._mappings[num] = mapping
 
+            # planet 키 존재 및 타입 검증
+            if "planet" not in mapping:
+                raise ValueError(
+                    f"숫자 {num} 의 매핑에 필수 키 'planet' 이 누락되었습니다."
+                )
+            if not isinstance(mapping["planet"], str) or not mapping["planet"]:
+                raise ValueError(
+                    f"숫자 {num} 의 'planet' 값이 비어있거나 문자열이 아닙니다: {mapping.get('planet')!r}"
+                )
+
             # 매핑에 필수 키 존재 및 참조된 stone_id 검증
             for layer in ("overall", "health", "wealth", "love"):
                 if layer not in mapping:
