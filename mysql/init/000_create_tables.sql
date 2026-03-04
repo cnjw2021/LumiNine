@@ -49,12 +49,10 @@ CREATE TABLE IF NOT EXISTS daily_astrology (
     lunar_date VARCHAR(6) NULL COMMENT '旧暦',
     created_at TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP COMMENT '作成日時',
     updated_at TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP COMMENT '更新日時',
-    UNIQUE KEY uk_date (date)
+    UNIQUE KEY uk_date (date),
+    INDEX idx_date (date),
+    INDEX idx_year_month_day (year, month, day)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci COMMENT='日付ごとの干支と九星の情報';
-
--- インデックスの作成
-CREATE INDEX idx_date ON daily_astrology(date);
-CREATE INDEX idx_year_month_day ON daily_astrology(year, month, day);
 
 -- 詳細な属性データテーブル
 CREATE TABLE IF NOT EXISTS `star_attributes` (
