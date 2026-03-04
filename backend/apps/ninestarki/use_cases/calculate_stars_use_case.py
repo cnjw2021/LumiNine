@@ -31,7 +31,7 @@ class CalculateStarsUseCase:
         self.calculator = StarCalculatorService()
         self._numerology_reading_repo = numerology_reading_repo
 
-    def execute(self, birth_datetime_str: str, gender: str, target_year: int) -> dict:
+    def execute(self, birth_datetime_str: str, gender: str, target_year: int, locale: str = "ja") -> dict:
         logger.info(f"Executing CalculateStarsUseCase for {birth_datetime_str}")
         birth_datetime = datetime.strptime(birth_datetime_str, "%Y-%m-%d %H:%M")
 
@@ -63,7 +63,7 @@ class CalculateStarsUseCase:
         # ── 수비술 Life Path Number 계산 ──────────
         numerology_num = NumerologyService.calculate_life_path_number(birth_datetime_str)
         reading = self._numerology_reading_repo.get_reading(
-            numerology_num.number, locale="ja",
+            numerology_num.number, locale=locale,
         )
 
         return {
@@ -77,7 +77,7 @@ class CalculateStarsUseCase:
             "numerology": {
                 "life_path_number": numerology_num.number,
                 "planet": numerology_num.planet.value,
-                "planet_name": numerology_num.get_planet_name("ja"),
+                "planet_name": numerology_num.get_planet_name(locale),
                 "keywords": reading.keywords,
                 "description": reading.description,
                 "strengths": reading.strengths,

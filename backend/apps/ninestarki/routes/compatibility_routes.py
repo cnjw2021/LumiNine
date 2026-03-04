@@ -14,6 +14,11 @@ from core.config import get_config
 
 logger = get_logger(__name__)
 
+# モジュールスコープでシングルトン生成（毎リクエストの JSON I/O を回避）
+_calc_use_case = CalculateStarsUseCase(
+    NineStarRepository(), SolarTermsRepository(), NumerologyReadingRepository(),
+)
+
 def create_compatibility_bp():
     """相性鑑定用のブループリントを作成"""
     compatibility_bp = Blueprint('compatibility', __name__, 
@@ -79,7 +84,7 @@ def create_compatibility_bp():
                     return jsonify({'error': 'main/partnerのbirthdateとgenderが必要です'}), 400
 
                 # 設定から既定の時刻を取得して計算
-                calc = CalculateStarsUseCase(NineStarRepository(), SolarTermsRepository(), NumerologyReadingRepository())
+                calc = _calc_use_case
                 main_birth_norm = (datetime.strptime(main_info['birthdate'].replace('/', '-'), '%Y-%m-%d')).strftime('%Y-%m-%d')
                 partner_birth_norm = (datetime.strptime(partner_info['birthdate'].replace('/', '-'), '%Y-%m-%d')).strftime('%Y-%m-%d')
                 cfg = get_config()
