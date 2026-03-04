@@ -80,60 +80,6 @@ export default function Result({ resultData, onReset, compatibilityData }: Resul
     setBrowserType(detectBrowser());
   }, []);
 
-  // 月命星読みと日命星読みのデータを取得
-  useEffect(() => {
-    if (!result) return;
-
-    const fetchReadingData = async () => {
-      try {
-        const { month_star } = result;
-
-        // 月命星の読みデータを取得
-        const monthReadingResponse = await api.get(`/nine-star/month-star-readings?star_number=${month_star.star_number}`);
-        if (monthReadingResponse.data && monthReadingResponse.data.length > 0) {
-          const monthlyReadingData = monthReadingResponse.data[0];
-          setMonthStarReading(monthlyReadingData);
-          // ストアにも月命星読みデータを保存
-          storeMonthlyStarReading(monthlyReadingData);
-        }
-
-        // 日命星の読みデータを取得（生年月日が有効な場合のみ）
-        if (birthdate) {
-          const formattedBirthdate = birthdate.replace(/\//g, '-'); // YYYY/MM/DD → YYYY-MM-DD
-          const dailyStarResponse = await api.get(`/nine-star/daily-star-reading?birth_date=${formattedBirthdate}`);
-          if (dailyStarResponse.data && dailyStarResponse.data.day_reading) {
-            const dayReadingData = dailyStarResponse.data.day_reading;
-            setDailyStarReading(dayReadingData);
-            // ストアにも日命星読みデータを保存
-            storeDailyStarReading(dayReadingData);
-          }
-        }
-      } catch (err) {
-        console.error('読みデータの取得中にエラーが発生しました:', err);
-      }
-    };
-
-    fetchReadingData();
-  }, [result, birthdate, storeDailyStarReading, storeMonthlyStarReading]);
-
-  // 相性鑑定結果の取得
-  useEffect(() => {
-    // すでにCompatibilityDataが渡されている場合は何もしない
-    if (compatibilityData) return;
-
-    const COMPATIBILITY_STORAGE_KEY = 'ninestarki-compatibility-result-data';
-    // ローカルストレージから相性鑑定結果を取得
-    try {
-      const storedData = localStorage.getItem(COMPATIBILITY_STORAGE_KEY);
-      if (storedData) {
-        const parsedData = JSON.parse(storedData) as CompatibilityData;
-        setLocalCompatibilityData(parsedData);
-      }
-    } catch (err) {
-      console.error('相性鑑定結果の読み込みエラー:', err);
-    }
-  }, [compatibilityData]);
-
   // PDFをダウンロードする関数（Chrome用）
   const handleDownloadPdf = async (templateId: number) => {
     await downloadPdf(templateId, false);
@@ -492,33 +438,6 @@ export default function Result({ resultData, onReset, compatibilityData }: Resul
         isMonthStar={true}
       />
 
-      {/* 日命星のSVGと説明文 */}
-      <MainStarWithInfo
-        star={formatStarForInfo(day_star, dailyStarReading ? {
-          description: dailyStarReading.description,
-          keywords: dailyStarReading.keywords || '',
-          title: dailyStarReading.title,
-          advice: dailyStarReading.advice || ''
-        } : undefined)}
-        title={`日命星\n（行動・思考パターン）`}
-        isDayStar={true}
-      />
-
-      {/* 本命星の属性情報 */}
-      <StarAttributesDisplay
-        mainStar={main_star.star_number}
-        mainStarName={main_star.name_jp}
-      />
-
-      {/* 五行相関図 */}
-      {/* <FiveElementsCycle size={500} /> */}
-
-      {/* ほかのセクションの後、本命星と月命星のガイダンス情報（新規追加）*/}
-      {/* <StarLifeGuidance
-        mainStar={main_star.star_number}
-        monthStar={month_star.star_number}
-      /> */}
-
       {/* 鑑定結果セクション */}
       <ResultFortuneSection
         mainStar={main_star.star_number}
@@ -526,25 +445,6 @@ export default function Result({ resultData, onReset, compatibilityData }: Resul
         targetYear={resultData.targetYear || new Date().getFullYear()}
         birthdate={resultData.birthdate}
       />
-
-      {/* 方位サイト推奨セクション */}
-      {/* <DirectionMapInfo /> */}
-
-      {/* 相性鑑定結果（既存コード）*/}
-      {/* {finalCompatibilityData && (
-        <div 
-          style={{ 
-            marginTop: 20, 
-            padding: '20px', 
-            backgroundColor: 'white',
-            borderRadius: '8px',
-            boxShadow: '0 1px 3px rgba(0,0,0,0.1)',
-            border: '1px solid #e0e0e0'
-          }}
-        >
-          <CompatibilityResult compatibilityData={finalCompatibilityData} />
-        </div>
-      )} */}
 
       {/* テンプレート選択モーダル */}
       <TemplateSelectionModal

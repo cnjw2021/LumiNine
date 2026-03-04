@@ -41,13 +41,13 @@ export const useDirectionFortuneData = (mainStar: number, monthStar: number, tar
                 setDirectionFortuneStatus(fortuneStatusResponse.data);
 
                 // 3. 引越し吉日・水取り吉日を一括で取得
-                const auspiciousDatesResponse = await api.get(`/reports/auspicious-days?year=${year}&mainStar=${mainStar}&monthStar=${monthStar}`);
-                if (auspiciousDatesResponse.data) {
-                    setMovingDates(auspiciousDatesResponse.data.moving_dates || []);
-                    setWaterDrawingDates(auspiciousDatesResponse.data.water_drawing_dates || []);
-                    setMovingTable(auspiciousDatesResponse.data.moving_table || []);
-                    setWaterDrawingTable(auspiciousDatesResponse.data.water_drawing_table || []);
-                }
+                // const auspiciousDatesResponse = await api.get(`/reports/auspicious-days?year=${year}&mainStar=${mainStar}&monthStar=${monthStar}`);
+                // if (auspiciousDatesResponse.data) {
+                //     setMovingDates(auspiciousDatesResponse.data.moving_dates || []);
+                //     setWaterDrawingDates(auspiciousDatesResponse.data.water_drawing_dates || []);
+                //     setMovingTable(auspiciousDatesResponse.data.moving_table || []);
+                //     setWaterDrawingTable(auspiciousDatesResponse.data.water_drawing_table || []);
+                // }
             } catch (error) {
                 console.error("方位運データの取得中にエラーが発生しました:", error);
             } finally {

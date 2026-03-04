@@ -1,10 +1,8 @@
 'use client';
 
 import React, { useEffect, useState } from 'react';
-import { Paper, Title, Text, Box, Grid, Stack, Loader, Card } from '@mantine/core';
+import { Paper, Title, Text, Box, Grid, Stack, Loader } from '@mantine/core';
 import api from '@/utils/api';
-import DirectionFortune from '../visualization/DirectionFortune';
-import AnnualFortune from '../visualization/AnnualDirectionsGrid';
 import { PeriodFortuneBoard, PowerStoneSection } from '../visualization';
 
 interface StarData {
@@ -78,20 +76,6 @@ const ResultFortuneSection: React.FC<ResultFortuneSectionProps> = ({ mainStar, m
         // 方位の吉凶情報を取得（星番号が有効な場合のみ）
         if (mainStar && monthStar && mainStar >= 1 && mainStar <= 9 && monthStar >= 1 && monthStar <= 9) {
           try {
-            // DirectionFortuneコンポーネントはuseDirectionFortuneDataフックを使って自らAPIを呼び出すため、
-            // ここではdirection-fortune APIを呼び出さない
-            // DirectionFortuneコンポーネントにデータを渡さない（undefinedのまま）
-
-            // 年間吉方位情報を取得
-            const annualDirectionsResponse = await api.get(
-              `/nine-star/annual-directions?main_star=${mainStar}&month_star=${monthStar}&target_year=${targetYear || new Date().getFullYear()}`
-            );
-
-            if (annualDirectionsResponse.data) {
-              console.log('API レスポンス (annual-directions):', annualDirectionsResponse.data);
-              setYearlyData(annualDirectionsResponse.data as AnnualFortuneData[]);
-            }
-
             // 時の運気情報を取得
             const monthAcquiredFortuneResponse = await api.get(
               `/nine-star/month-acquired-fortune?main_star=${mainStar}&month_star=${monthStar}&target_year=${targetYear || new Date().getFullYear()}`
@@ -102,15 +86,6 @@ const ResultFortuneSection: React.FC<ResultFortuneSectionProps> = ({ mainStar, m
               setMonthStarData(monthAcquiredFortuneResponse.data as StarData);
             }
 
-            // 3年分の時の運気情報を取得
-            const yearAcquiredFortuneResponse = await api.get(
-              `/nine-star/year-acquired-fortune?main_star=${mainStar}&month_star=${monthStar}&target_year=${targetYear || new Date().getFullYear()}`
-            );
-
-            if (yearAcquiredFortuneResponse.data) {
-              console.log('API レスポンス (year-acquired-fortune):', yearAcquiredFortuneResponse.data);
-              setBirthdayInfo(yearAcquiredFortuneResponse.data as YearAcquiredFortuneData);
-            }
           } catch (err) {
             console.error('方位の吉凶情報の取得に失敗しました:', err);
           }
@@ -149,45 +124,6 @@ const ResultFortuneSection: React.FC<ResultFortuneSectionProps> = ({ mainStar, m
 
   return (
     <Stack gap="xl">
-      {/* 3年分の時の運気情報表示 */}
-      {/* {birthdayInfo && (
-        <Paper shadow="sm" p="md" withBorder>
-          <Stack gap="md">
-            <Title order={3}>{targetYear ?? new Date().getFullYear()}〜{(targetYear ?? new Date().getFullYear()) + 2} 年の運気</Title>
-            <Box>
-              <Grid gutter={{ base: 'sm', sm: 'md' }} align="stretch">
-                {Object.entries(birthdayInfo.directions)
-                  .sort(([a], [b]) => {
-                    // year_2023, year_2024...の形式をソート
-                    const yearA = parseInt(a.split('_')[1]);
-                    const yearB = parseInt(b.split('_')[1]);
-                    return yearA - yearB;
-                  })
-                  .map(([key, periodData]) => {
-                    const periodDataFormat = {
-                      center_star: periodData.star_number,
-                      display_month: `${periodData.year}年 ${periodData.zodiac}`,
-                      display_year: '',
-                      month: 0, // 月データではないので0を設定
-                      year: periodData.year,
-                      zodiac: periodData.zodiac,
-                      directions: periodData.directions,
-                      period_start: periodData.period_start,
-                      period_end: periodData.period_end
-                    };
-
-                    return (
-                      <Grid.Col key={key} span={{ base: 12, sm: 4 }} mb="md">
-                        <PeriodFortuneBoard periodData={periodDataFormat} />
-                      </Grid.Col>
-                    );
-                  })}
-              </Grid>
-            </Box>
-          </Stack>
-        </Paper>
-      )} */}
-
       {/* 月の運気情報表示 */}
       {monthStarData?.annual_directions && (
         <Paper shadow="sm" p="md" withBorder>
@@ -239,48 +175,12 @@ const ResultFortuneSection: React.FC<ResultFortuneSectionProps> = ({ mainStar, m
         </Paper>
       )}
 
-      <Card shadow="sm" p="md" withBorder>
-        <DirectionFortune
-          mainStar={mainStar}
-          monthStar={monthStar}
-          title={`${targetYear}年`}
-          targetYear={targetYear}
-        />
-      </Card>
-
       {/* パワーストーン推薦 — DirectionFortuneから完全に独立 */}
       <PowerStoneSection
         mainStar={mainStar}
         monthStar={monthStar}
         targetYear={targetYear}
       />
-
-      {/* 年間吉方位情報表示（一時的に表示させない） */}
-      {targetYear === 0 && yearlyData.length > 0 && (
-        <Paper shadow="sm" p="md" withBorder>
-          <Stack gap="md">
-            <Title order={3}>年間吉方位情報</Title>
-
-            <Box>
-              <Grid gutter={{ base: 'sm', sm: 'md' }} align="stretch">
-                {yearlyData.map((periodData, index) => {
-                  return (
-                    <Grid.Col key={index} span={{ base: 12, sm: 6, md: 4 }} mb="md">
-                      <AnnualFortune periodData={{
-                        ...periodData,
-                        // 1月の場合は翌年を表示するよう修正
-                        display_month: periodData.month === 1
-                          ? `${periodData.year + 1}年${periodData.month}月 ${periodData.zodiac[1]}`
-                          : `${periodData.display_month} ${periodData.zodiac[1]}`
-                      }} />
-                    </Grid.Col>
-                  );
-                })}
-              </Grid>
-            </Box>
-          </Stack>
-        </Paper>
-      )}
     </Stack>
   );
 };

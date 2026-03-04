@@ -82,24 +82,6 @@ export default function DirectionFortune({ mainStar, monthStar, title, targetYea
                         </Text>
                     </Card>
                 </Grid.Col>
-                {/* <Grid.Col span={{ base: 12, md: 6 }}>
-                    <AuspiciousDatesDisplay
-                        title="引越し吉日"
-                        description="引越しは運気に強く影響します。吉方位での引越しは良い準備が不可欠です。"
-                        dates={movingDates}
-                        tableData={movingTable}
-                        icon="🏠"
-                    />
-                </Grid.Col>
-                <Grid.Col span={{ base: 12, md: 6 }}>
-                    <AuspiciousDatesDisplay
-                        title="お水取り吉日"
-                        description="お水取りは金運や仕事運を上げる風水術。良い方位を選んで運気の流れを良くしましょう。"
-                        dates={waterDrawingDates}
-                        tableData={waterDrawingTable}
-                        icon="💧"
-                    />
-                </Grid.Col> */}
             </Grid>
         </Paper>
     );
