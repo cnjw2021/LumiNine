@@ -107,8 +107,16 @@ class PowerStoneMatchingEngine(IPowerStoneMatchingEngine):
     def _layer1_base_stone(
         self, main_star: int, used: Set[str],
     ) -> StoneRecommendation:
-        """본명성 → 기본석 결정."""
-        stone = self._repo.get_base_stone_for_star(main_star)
+        """본명성 → 기본석 결정 (복수 후보 중 첫 번째 미사용 석 선택)."""
+        stones = self._repo.get_base_stones_for_star(main_star)
+        stone = None
+        for candidate in stones:
+            if candidate.id not in used:
+                stone = candidate
+                break
+        if stone is None:
+            # 모든 기본석이 이미 사용된 경우 (극히 드문 에지 케이스) → 첫 번째 선택
+            stone = stones[0]
         used.add(stone.id)
         return StoneRecommendation(
             stone=stone,

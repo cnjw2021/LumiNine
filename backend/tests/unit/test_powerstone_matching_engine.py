@@ -100,7 +100,7 @@ class TestLayer1BaseStone:
     @pytest.mark.parametrize("star, expected_id", [
         (1, "aquamarine"), (2, "citrine"), (3, "emerald"),
         (4, "peridot"), (5, "tigers_eye"), (6, "clear_quartz"),
-        (7, "rose_quartz"), (8, "smoky_quartz"), (9, "garnet"),
+        (7, "rutilated_quartz"), (8, "smoky_quartz"), (9, "garnet"),
     ])
     def test_base_stone_by_star(
         self, engine: PowerStoneMatchingEngine, star: int, expected_id: str,

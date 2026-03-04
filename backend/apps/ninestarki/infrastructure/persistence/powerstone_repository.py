@@ -53,7 +53,7 @@ class PowerStoneRepository(IPowerStoneRepository):
                 self._secondaries_by_gogyo[gogyo].append(stone)
 
         # ── 본명성-기본석 매핑 ───────────────────────────
-        self._star_base_stones: Dict[int, str] = {
+        self._star_base_stones: Dict[int, List[str]] = {
             int(k): v for k, v in raw["star_base_stones"].items()
         }
 
@@ -74,20 +74,23 @@ class PowerStoneRepository(IPowerStoneRepository):
         """지정 오행의 부석 목록 반환."""
         return list(self._secondaries_by_gogyo.get(gogyo, []))
 
-    def get_base_stone_for_star(self, star_number: int) -> PowerStone:
-        """본명성 번호(1~9) → 기본석 반환."""
-        stone_id = self._star_base_stones.get(star_number)
-        if stone_id is None:
+    def get_base_stones_for_star(self, star_number: int) -> List[PowerStone]:
+        """본명성 번호(1~9) → 기본석 목록 반환."""
+        stone_ids = self._star_base_stones.get(star_number)
+        if stone_ids is None:
             raise PowerStoneMatchingError(
                 f"유효하지 않은 본명성 번호입니다: {star_number} (1~9 범위)",
                 code="INVALID_STAR_NUMBER",
                 status=422,
             )
-        stone = self._stones.get(stone_id)
-        if stone is None:
-            raise PowerStoneMatchingError(
-                f"본명성 {star_number} 의 기본석 '{stone_id}' 을 카탈로그에서 찾을 수 없습니다.",
-                code="BASE_STONE_NOT_FOUND",
-                status=500,
-            )
-        return stone
+        stones: List[PowerStone] = []
+        for stone_id in stone_ids:
+            stone = self._stones.get(stone_id)
+            if stone is None:
+                raise PowerStoneMatchingError(
+                    f"본명성 {star_number} 의 기본석 '{stone_id}' 을 카탈로그에서 찾을 수 없습니다.",
+                    code="BASE_STONE_NOT_FOUND",
+                    status=500,
+                )
+            stones.append(stone)
+        return stones

@@ -45,14 +45,14 @@ class IPowerStoneRepository(ABC):
         """
 
     @abstractmethod
-    def get_base_stone_for_star(self, star_number: int) -> PowerStone:
-        """본명성 번호(1~9) → 기본석 반환.
+    def get_base_stones_for_star(self, star_number: int) -> List[PowerStone]:
+        """본명성 번호(1~9) → 기본석 목록 반환.
 
         Args:
             star_number: 본명성 번호 (1~9)
 
         Returns:
-            해당 본명성의 기본석 PowerStone
+            해당 본명성의 기본석 PowerStone 리스트 (우선순위 순)
 
         Raises:
             PowerStoneMatchingError: 본명성 번호가 1~9 범위를 벗어난 경우

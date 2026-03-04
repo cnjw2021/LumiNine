@@ -31,11 +31,11 @@
             "is_primary": false
         },
         {
-            "id": "onyx",
+            "id": "sodalite",
             "names": {
-                "ja": "オニキス",
-                "ko": "오닉스",
-                "en": "Onyx"
+                "ja": "ソーダライト",
+                "ko": "소달라이트",
+                "en": "Sodalite"
             },
             "gogyo": "水",
             "is_primary": false
@@ -111,11 +111,11 @@
             "is_primary": false
         },
         {
-            "id": "amethyst",
+            "id": "sunstone",
             "names": {
-                "ja": "アメジスト",
-                "ko": "자수정",
-                "en": "Amethyst"
+                "ja": "サンストーン",
+                "ko": "선스톤",
+                "en": "Sunstone"
             },
             "gogyo": "火",
             "is_primary": false
@@ -181,11 +181,11 @@
             "is_primary": false
         },
         {
-            "id": "rose_quartz",
+            "id": "rutilated_quartz",
             "names": {
-                "ja": "ローズクォーツ",
-                "ko": "로즈 쿼츠",
-                "en": "Rose Quartz"
+                "ja": "ルチルクォーツ",
+                "ko": "루틸 쿼츠",
+                "en": "Rutilated Quartz"
             },
             "gogyo": "金",
             "is_primary": false
@@ -202,14 +202,41 @@
         }
     ],
     "star_base_stones": {
-        "1": "aquamarine",
-        "2": "citrine",
-        "3": "emerald",
-        "4": "peridot",
-        "5": "tigers_eye",
-        "6": "clear_quartz",
-        "7": "rose_quartz",
-        "8": "smoky_quartz",
-        "9": "garnet"
+        "1": [
+            "aquamarine",
+            "lapis_lazuli"
+        ],
+        "2": [
+            "citrine",
+            "yellow_jasper"
+        ],
+        "3": [
+            "emerald",
+            "aventurine"
+        ],
+        "4": [
+            "peridot",
+            "jade"
+        ],
+        "5": [
+            "tigers_eye",
+            "smoky_quartz"
+        ],
+        "6": [
+            "clear_quartz",
+            "moonstone"
+        ],
+        "7": [
+            "rutilated_quartz",
+            "clear_quartz"
+        ],
+        "8": [
+            "smoky_quartz",
+            "citrine"
+        ],
+        "9": [
+            "garnet",
+            "sunstone"
+        ]
     }
 }

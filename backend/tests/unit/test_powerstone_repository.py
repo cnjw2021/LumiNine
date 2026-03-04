@@ -3,7 +3,7 @@
 커버리지:
   - 전체 20종 스톤 로드 확인
   - 오행별 주석(1), 부석(3) 분류 정확성
-  - get_base_stone_for_star 1~9 전체 확인
+  - get_base_stones_for_star 1~9 전체 확인 (복수 반환)
   - 범위 밖 입력 → PowerStoneMatchingError 발생 확인
 """
 from __future__ import annotations
@@ -83,7 +83,7 @@ class TestGetPrimaryByGogyo:
 class TestGetSecondariesByGogyo:
     def test_water_secondaries(self, repo: PowerStoneRepository):
         ids = [s.id for s in repo.get_secondaries_by_gogyo(Gogyo.WATER)]
-        assert set(ids) == {"lapis_lazuli", "blue_topaz", "onyx"}
+        assert set(ids) == {"lapis_lazuli", "blue_topaz", "sodalite"}
 
     def test_wood_secondaries(self, repo: PowerStoneRepository):
         ids = [s.id for s in repo.get_secondaries_by_gogyo(Gogyo.WOOD)]
@@ -91,7 +91,7 @@ class TestGetSecondariesByGogyo:
 
     def test_fire_secondaries(self, repo: PowerStoneRepository):
         ids = [s.id for s in repo.get_secondaries_by_gogyo(Gogyo.FIRE)]
-        assert set(ids) == {"carnelian", "ruby", "amethyst"}
+        assert set(ids) == {"carnelian", "ruby", "sunstone"}
 
     def test_earth_secondaries(self, repo: PowerStoneRepository):
         ids = [s.id for s in repo.get_secondaries_by_gogyo(Gogyo.EARTH)]
@@ -99,7 +99,7 @@ class TestGetSecondariesByGogyo:
 
     def test_metal_secondaries(self, repo: PowerStoneRepository):
         ids = [s.id for s in repo.get_secondaries_by_gogyo(Gogyo.METAL)]
-        assert set(ids) == {"moonstone", "rose_quartz", "pearl"}
+        assert set(ids) == {"moonstone", "rutilated_quartz", "pearl"}
 
     def test_returns_new_list(self, repo: PowerStoneRepository):
         """반환된 리스트 수정이 내부 상태에 영향 없어야 한다."""
@@ -109,34 +109,42 @@ class TestGetSecondariesByGogyo:
 
 
 # ══════════════════════════════════════════════════════
-# get_base_stone_for_star
+# get_base_stones_for_star (복수 반환)
 # ══════════════════════════════════════════════════════
 
-class TestGetBaseStoneForStar:
-    @pytest.mark.parametrize("star, expected_id", [
+class TestGetBaseStonesForStar:
+    @pytest.mark.parametrize("star, expected_first_id", [
         (1, "aquamarine"),
         (2, "citrine"),
         (3, "emerald"),
         (4, "peridot"),
         (5, "tigers_eye"),
         (6, "clear_quartz"),
-        (7, "rose_quartz"),
+        (7, "rutilated_quartz"),
         (8, "smoky_quartz"),
         (9, "garnet"),
     ])
-    def test_star_to_base_stone(self, repo: PowerStoneRepository, star: int, expected_id: str):
-        stone = repo.get_base_stone_for_star(star)
-        assert stone.id == expected_id
+    def test_star_to_base_stones_first(self, repo: PowerStoneRepository, star: int, expected_first_id: str):
+        stones = repo.get_base_stones_for_star(star)
+        assert len(stones) >= 1
+        assert stones[0].id == expected_first_id
+
+    def test_star_returns_multiple_stones(self, repo: PowerStoneRepository):
+        """각 별에 2개 이상의 기본석이 반환되어야 한다."""
+        for star in range(1, 10):
+            stones = repo.get_base_stones_for_star(star)
+            assert len(stones) >= 2
 
     @pytest.mark.parametrize("invalid_star", [0, 10, -1, 100])
     def test_invalid_star_raises(self, repo: PowerStoneRepository, invalid_star: int):
         with pytest.raises(PowerStoneMatchingError) as exc_info:
-            repo.get_base_stone_for_star(invalid_star)
+            repo.get_base_stones_for_star(invalid_star)
         assert exc_info.value.code == "INVALID_STAR_NUMBER"
         assert exc_info.value.status == 422
 
-    def test_base_stone_is_powerstone(self, repo: PowerStoneRepository):
-        """반환 타입이 PowerStone 이어야 한다."""
+    def test_base_stones_are_powerstone(self, repo: PowerStoneRepository):
+        """반환 타입이 List[PowerStone] 이어야 한다."""
         for star in range(1, 10):
-            stone = repo.get_base_stone_for_star(star)
-            assert isinstance(stone, PowerStone)
+            stones = repo.get_base_stones_for_star(star)
+            for stone in stones:
+                assert isinstance(stone, PowerStone)
