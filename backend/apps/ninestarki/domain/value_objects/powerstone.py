@@ -61,7 +61,9 @@ class PowerStoneResult:
 
     Note:
         길방위가 없는 경우 ``monthly_stone`` 은 ``None`` 이 된다.
-        Layer 3 (호신석) 은 흉살 방위에서 결정하므로 항상 존재한다.
+        Layer 3 (호신석) 은 흉살 방위에서 결정하므로 정상적으로 결과가
+        생성되는 한 존재한다. 단, 흉살 정보가 전혀 없으면
+        ``PowerStoneMatchingError(code="NO_THREAT_FOUND")`` 가 발생한다.
     """
 
     base_stone: StoneRecommendation                   # L1 기본석

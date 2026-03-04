@@ -415,6 +415,8 @@ def create_monthly_bp():
             for key, board in result.get('monthly_boards', {}).items():
                 directions = board.get('directions', {})
                 if directions:
+                    # NoAuspiciousDirectionError는 엔진 내부에서 처리됨
+                    # → monthly_stone=None 가능, protection_stone은 정상 반환
                     gogyo_result = stone_use_case.execute(
                         main_star=main_star,
                         directions=directions,

@@ -67,7 +67,8 @@ class PowerStoneRecommendationUseCase:
 
         Note:
             길방위가 없으면 ``monthly_stone`` 은 ``None`` 으로 반환된다.
-            ``protection_stone`` 은 흉살 방위에서 독립적으로 결정하므로 항상 존재한다.
+            ``protection_stone`` 은 흉살 방위에서 독립적으로 결정하므로
+            정상적으로 결과가 생성되는 한 존재한다.
         """
         logger.info(
             "PowerStoneRecommendationUseCase.execute: main_star=%d locale=%s",
