@@ -8,8 +8,6 @@ from __future__ import annotations
 from typing import Any, Dict
 from unittest.mock import MagicMock, patch
 
-import pytest
-
 from apps.ninestarki.use_cases.six_layer_powerstone_use_case import (
     SixLayerPowerStoneUseCase,
 )
@@ -50,7 +48,7 @@ def _make_numerology_result() -> Dict[str, Any]:
         "life_path_number": 7,
         "planet": "Ketu",
         "overall": {
-            "layer": "전체운",
+            "layer": "overall",
             "primary": {
                 "stone_id": "cats_eye",
                 "stone_name": "キャッツアイ",
@@ -63,7 +61,7 @@ def _make_numerology_result() -> Dict[str, Any]:
             },
         },
         "health": {
-            "layer": "건강운",
+            "layer": "health",
             "primary": {
                 "stone_id": "moonstone",
                 "stone_name": "ムーンストーン",
@@ -76,7 +74,7 @@ def _make_numerology_result() -> Dict[str, Any]:
             },
         },
         "wealth": {
-            "layer": "재물운",
+            "layer": "wealth",
             "primary": {
                 "stone_id": "tigers_eye",
                 "stone_name": "タイガーズアイ",
@@ -89,7 +87,7 @@ def _make_numerology_result() -> Dict[str, Any]:
             },
         },
         "love": {
-            "layer": "연애운",
+            "layer": "love",
             "primary": {
                 "stone_id": "rose_quartz",
                 "stone_name": "ローズクォーツ",
@@ -193,12 +191,12 @@ class TestSixLayerPowerStoneUseCase:
         """수비술 레이어 데이터가 올바른 API 형식으로 변환되는지 검증."""
         layer_data = _make_numerology_result()["overall"]
         formatted = SixLayerPowerStoneUseCase._format_numerology_layer(
-            layer_data, "ja",
+            layer_data,
         )
 
         assert formatted["stone_id"] == "cats_eye"
         assert formatted["stone_name"] == "キャッツアイ"
-        assert formatted["layer"] == "전체운"
+        assert formatted["layer"] == "overall"
         assert formatted["description"] == "直感を高める"
         assert formatted["secondary"]["stone_id"] == "amethyst"
         assert formatted["secondary"]["stone_name"] == "アメシスト"

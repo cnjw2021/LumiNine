@@ -73,10 +73,7 @@ class SixLayerPowerStoneUseCase:
             return gogyo_result
 
         # ── 3. 수비술 Life Path Number 계산 ────────────────
-        logger.info(
-            "SixLayerPowerStoneUseCase: birth_date=%s → 6-Layer",
-            birth_date,
-        )
+        logger.info("SixLayerPowerStoneUseCase: birth_date 제공 → 6-Layer")
         numerology_number = NumerologyService.calculate_life_path_number(birth_date)
         life_path = numerology_number.number
 
@@ -89,16 +86,16 @@ class SixLayerPowerStoneUseCase:
         # ── 5. 6-Layer 통합 응답 구성 ─────────────────────
         return {
             "overall_stone": self._format_numerology_layer(
-                numerology_result["overall"], locale,
+                numerology_result["overall"],
             ),
             "health_stone": self._format_numerology_layer(
-                numerology_result["health"], locale,
+                numerology_result["health"],
             ),
             "wealth_stone": self._format_numerology_layer(
-                numerology_result["wealth"], locale,
+                numerology_result["wealth"],
             ),
             "love_stone": self._format_numerology_layer(
-                numerology_result["love"], locale,
+                numerology_result["love"],
             ),
             "monthly_stone": gogyo_result["monthly_stone"],
             "protection_stone": gogyo_result["protection_stone"],
@@ -113,7 +110,6 @@ class SixLayerPowerStoneUseCase:
     @staticmethod
     def _format_numerology_layer(
         layer_data: Dict[str, Any],
-        locale: str,
     ) -> Dict[str, Any]:
         """수비술 레이어 데이터를 API 응답 형식으로 변환."""
         primary = layer_data["primary"]

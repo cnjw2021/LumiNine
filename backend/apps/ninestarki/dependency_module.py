@@ -243,3 +243,6 @@ class AppModule(Module):
         # Phase 5-3: Numerology PowerStone DI バインディング
         binder.bind(INumerologyPowerStoneRepository, to=NumerologyPowerStoneRepository, scope=singleton)
         binder.bind(NumerologyPowerStoneEngine, to=NumerologyPowerStoneEngine, scope=singleton)
+
+        # Phase 5-4: 6-Layer UseCase DI バインディング
+        binder.bind(SixLayerPowerStoneUseCase, to=SixLayerPowerStoneUseCase, scope=singleton)

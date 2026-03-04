@@ -371,25 +371,52 @@ def create_monthly_bp():
             )
 
             # ── 파워스톤 추천 추가 ────────────────────────────
+            # 수비술 부분은 월에 불변이므로 루프 밖에서 1회만 계산
+            numerology_stones = None
+            if birth_date:
+                try:
+                    from apps.ninestarki.domain.services.numerology_service import NumerologyService
+                    numerology_number = NumerologyService.calculate_life_path_number(birth_date)
+                    numerology_stones = six_layer_use_case._numerology_engine.recommend_as_dict(
+                        life_path_number=numerology_number.number,
+                        locale=locale_str,
+                    )
+                    numerology_stones["life_path_number"] = numerology_number.number
+                except Exception as e:
+                    logger.warning("수비술 계산 실패 → 3-Layer fallback: %s", e)
+                    birth_date = None  # fallback to 3-Layer
+
             for key, board in result.get('monthly_boards', {}).items():
                 directions = board.get('directions', {})
                 if directions:
                     try:
-                        if birth_date:
-                            # 6-Layer 응답 (수비술 4 + 구성기학 2)
-                            board['power_stones'] = six_layer_use_case.execute(
-                                main_star=main_star,
-                                directions=directions,
-                                locale=locale_str,
-                                birth_date=birth_date,
-                            )
+                        gogyo_result = stone_use_case.execute(
+                            main_star=main_star,
+                            directions=directions,
+                            locale=locale_str,
+                        )
+                        if numerology_stones:
+                            # 6-Layer: 수비술 4 + 구성기학 2
+                            board['power_stones'] = {
+                                "overall_stone": SixLayerPowerStoneUseCase._format_numerology_layer(
+                                    numerology_stones["overall"],
+                                ),
+                                "health_stone": SixLayerPowerStoneUseCase._format_numerology_layer(
+                                    numerology_stones["health"],
+                                ),
+                                "wealth_stone": SixLayerPowerStoneUseCase._format_numerology_layer(
+                                    numerology_stones["wealth"],
+                                ),
+                                "love_stone": SixLayerPowerStoneUseCase._format_numerology_layer(
+                                    numerology_stones["love"],
+                                ),
+                                "monthly_stone": gogyo_result["monthly_stone"],
+                                "protection_stone": gogyo_result["protection_stone"],
+                                "life_path_number": numerology_stones["life_path_number"],
+                                "planet": numerology_stones["planet"],
+                            }
                         else:
-                            # 기존 3-Layer 응답
-                            board['power_stones'] = stone_use_case.execute(
-                                main_star=main_star,
-                                directions=directions,
-                                locale=locale_str,
-                            )
+                            board['power_stones'] = gogyo_result
                     except NoAuspiciousDirectionError:
                         logger.info(
                             "monthly-board %s: 길방위 없음 → power_stones=null", key,
