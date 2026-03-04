@@ -73,6 +73,11 @@ from apps.ninestarki.use_cases.powerstone_recommendation_use_case import PowerSt
 from apps.ninestarki.domain.repositories.numerology_reading_repository_interface import INumerologyReadingRepository
 from apps.ninestarki.infrastructure.persistence.numerology_reading_repository import NumerologyReadingRepository
 
+# Phase 5-3: Numerology PowerStone
+from apps.ninestarki.domain.repositories.numerology_powerstone_repository_interface import INumerologyPowerStoneRepository
+from apps.ninestarki.infrastructure.persistence.numerology_powerstone_repository import NumerologyPowerStoneRepository
+from apps.ninestarki.domain.services.numerology_powerstone_engine import NumerologyPowerStoneEngine
+
 # Permission UseCase
 from apps.ninestarki.use_cases.permission_use_case import PermissionUseCase
 
@@ -231,3 +236,7 @@ class AppModule(Module):
 
         # Phase 5: Numerology DI バインディング
         binder.bind(INumerologyReadingRepository, to=NumerologyReadingRepository, scope=singleton)
+
+        # Phase 5-3: Numerology PowerStone DI バインディング
+        binder.bind(INumerologyPowerStoneRepository, to=NumerologyPowerStoneRepository, scope=singleton)
+        binder.bind(NumerologyPowerStoneEngine, to=NumerologyPowerStoneEngine, scope=singleton)
