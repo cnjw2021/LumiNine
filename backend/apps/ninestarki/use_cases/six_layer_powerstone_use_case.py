@@ -138,24 +138,10 @@ class SixLayerPowerStoneUseCase:
         Returns:
             6-Layer 통합 응답 dict.
         """
-        return {
-            "overall_stone": self.format_numerology_layer(
-                numerology_result["overall"],
-            ),
-            "health_stone": self.format_numerology_layer(
-                numerology_result["health"],
-            ),
-            "wealth_stone": self.format_numerology_layer(
-                numerology_result["wealth"],
-            ),
-            "love_stone": self.format_numerology_layer(
-                numerology_result["love"],
-            ),
-            "monthly_stone": gogyo_result["monthly_stone"],
-            "protection_stone": gogyo_result["protection_stone"],
-            "life_path_number": numerology_result["life_path_number"],
-            "planet": numerology_result["planet"],
-        }
+        base = self._build_numerology_base(numerology_result)
+        base["monthly_stone"] = gogyo_result["monthly_stone"]
+        base["protection_stone"] = gogyo_result["protection_stone"]
+        return base
 
     def merge_six_layer_partial(
         self,
@@ -172,6 +158,20 @@ class SixLayerPowerStoneUseCase:
         Returns:
             6-Layer 응답 dict (monthly_stone, protection_stone = None)
         """
+        base = self._build_numerology_base(numerology_result)
+        base["monthly_stone"] = None
+        base["protection_stone"] = None
+        return base
+
+    def _build_numerology_base(
+        self,
+        numerology_result: Dict[str, Any],
+    ) -> Dict[str, Any]:
+        """수비술 4-Layer + 메타정보를 공통으로 조립하는 헬퍼.
+
+        ``merge_six_layer()`` 과 ``merge_six_layer_partial()`` 에서
+        공유하여 사용한다.
+        """
         return {
             "overall_stone": self.format_numerology_layer(
                 numerology_result["overall"],
@@ -185,8 +185,6 @@ class SixLayerPowerStoneUseCase:
             "love_stone": self.format_numerology_layer(
                 numerology_result["love"],
             ),
-            "monthly_stone": None,
-            "protection_stone": None,
             "life_path_number": numerology_result["life_path_number"],
             "planet": numerology_result["planet"],
         }

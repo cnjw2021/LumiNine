@@ -399,6 +399,12 @@ def create_monthly_bp():
                         'error': 'birth_date 형식이 올바르지 않습니다 (YYYY-MM-DD 또는 YYYY-MM-DD HH:MM 필요)',
                     }), 422
 
+            def _numerology_fallback():
+                """수비술 스톤만 반환하거나 None (중복 제거 헬퍼)."""
+                if numerology_stones:
+                    return six_layer_use_case.merge_six_layer_partial(numerology_stones)
+                return None
+
             for key, board in result.get('monthly_boards', {}).items():
                 directions = board.get('directions', {})
                 if directions:
@@ -421,19 +427,9 @@ def create_monthly_bp():
                             key,
                             "numerology-only" if numerology_stones else "null",
                         )
-                        if numerology_stones:
-                            board['power_stones'] = six_layer_use_case.merge_six_layer_partial(
-                                numerology_stones,
-                            )
-                        else:
-                            board['power_stones'] = None
+                        board['power_stones'] = _numerology_fallback()
                 else:
-                    if numerology_stones:
-                        board['power_stones'] = six_layer_use_case.merge_six_layer_partial(
-                            numerology_stones,
-                        )
-                    else:
-                        board['power_stones'] = None
+                    board['power_stones'] = _numerology_fallback()
 
             return jsonify(result), 200
 
