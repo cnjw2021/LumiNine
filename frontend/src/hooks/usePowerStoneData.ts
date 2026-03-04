@@ -40,7 +40,7 @@ export const usePowerStoneData = (mainStar: number, monthStar: number, targetYea
                         { period_start?: string; period_end?: string; power_stones?: PowerStones }
                     >;
                     const currentBoard = Object.values(boards).find(
-                        (b) => b.period_start && b.period_end && b.period_start <= today && today < b.period_end
+                        (b) => b.period_start && b.period_end && b.period_start <= today && today <= b.period_end
                     );
                     setPowerStones(currentBoard?.power_stones ?? null);
                 }
