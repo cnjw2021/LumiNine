@@ -189,25 +189,41 @@ const ResultFortuneSection: React.FC<ResultFortuneSectionProps> = ({ mainStar, m
       )} */}
 
       {/* 月の運気情報表示 */}
-      {/* {monthStarData?.annual_directions && (
+      {monthStarData?.annual_directions && (
         <Paper shadow="sm" p="md" withBorder>
           <Stack gap="md">
             <Title order={3}>{targetYear}年 月の運気</Title>
             <Box>
               <Grid gutter={{ base: 'sm', sm: 'md' }} align="stretch">
                 {Object.entries(monthStarData.annual_directions)
+                  .filter(([_, data]) => {
+                    const periodData = data as PeriodData;
+                    if (!periodData.period_start || !periodData.period_end) return false;
+
+                    const today = new Date();
+                    today.setHours(0, 0, 0, 0);
+
+                    const startDate = new Date(periodData.period_start);
+                    startDate.setHours(0, 0, 0, 0);
+
+                    const endDate = new Date(periodData.period_end);
+                    endDate.setHours(0, 0, 0, 0);
+
+                    return startDate <= today && today <= endDate;
+                  })
                   .sort(([a], [b]) => {
                     // month_1, month_2...の形式をソート
                     const monthA = parseInt(a.split('_')[1]);
                     const monthB = parseInt(b.split('_')[1]);
-                    
+
                     // 1月は最後に表示するための特別な処理
                     if (monthA === 1) return 1;
                     if (monthB === 1) return -1;
-                    
+
                     return monthA - monthB;
                   })
-                  .map(([key, periodData]) => {
+                  .map(([key, data]) => {
+                    const periodData = data as PeriodData;
                     return (
                       <Grid.Col key={key} span={{ base: 12, sm: 6, md: 4 }} mb="md">
                         <PeriodFortuneBoard periodData={{
@@ -221,7 +237,7 @@ const ResultFortuneSection: React.FC<ResultFortuneSectionProps> = ({ mainStar, m
             </Box>
           </Stack>
         </Paper>
-      )} */}
+      )}
 
       <Card shadow="sm" p="md" withBorder>
         <DirectionFortune
