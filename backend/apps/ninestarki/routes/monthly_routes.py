@@ -355,6 +355,10 @@ def create_monthly_bp():
 
             # ── birth_date 파라미터 (6-Layer 활성화) ──────
             birth_date = request.args.get('birth_date', type=str)
+            if birth_date is not None and not birth_date.strip():
+                return jsonify({
+                    'error': 'birth_date 가 비어 있습니다 (YYYY-MM-DD 필요)',
+                }), 422
 
             # 구형 파라미터인 'month'가 어떤 형태로든 전달되면 요청을 거절한다.
             if request.args.get('month') is not None:
