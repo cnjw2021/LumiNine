@@ -4,9 +4,9 @@ Life Path Number 계산 결과 및 행성 매핑을 위한 데이터 클래스.
 """
 from __future__ import annotations
 
-from dataclasses import dataclass, field
+from dataclasses import dataclass
 from enum import Enum
-from typing import Dict, List, Optional
+from typing import Dict, List
 
 
 class Planet(Enum):

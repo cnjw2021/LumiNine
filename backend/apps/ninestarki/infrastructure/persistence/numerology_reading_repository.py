@@ -41,6 +41,15 @@ class NumerologyReadingRepository(INumerologyReadingRepository):
             )
 
         planet = NUMBER_TO_PLANET[number]
+
+        # JSON データの planet と NUMBER_TO_PLANET の整合性を検証
+        json_planet = data.get("planet", "")
+        if json_planet and json_planet != planet.value:
+            raise ValueError(
+                f"수비술 숫자 {number} 의 planet 불일치: "
+                f"JSON='{json_planet}', expected='{planet.value}'"
+            )
+
         return NumerologyReading(
             number=number,
             planet=planet,

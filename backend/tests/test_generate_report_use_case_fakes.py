@@ -16,6 +16,7 @@ from apps.ninestarki.domain.services.star_life_guidance_service import StarLifeG
 from apps.ninestarki.domain.repositories.star_life_guidance_repository_interface import IStarLifeGuidanceRepository
 from apps.ninestarki.domain.services.direction_marks_domain_service import DirectionMarksDomainService
 from apps.ninestarki.infrastructure.persistence.nine_star_repository import NineStarRepository
+from apps.ninestarki.infrastructure.persistence.numerology_reading_repository import NumerologyReadingRepository
 from apps.ninestarki.services.compatibility_service import CompatibilityService
 from apps.ninestarki.domain.repositories.solar_terms_repository_interface import ISolarTermsRepository
 
@@ -124,7 +125,7 @@ def test_generate_report_use_case_minimal_context(monkeypatch):
         month_fortune_service=MonthFortuneFake(),
         star_attribute_service=StarAttrFake(),
         star_life_guidance_service=StarLifeGuidanceService(StarLifeGuidanceRepoFake()),
-        calculate_stars_use_case=CalculateStarsUseCase(NineStarRepository(), SolarTermsRepoFake()),
+        calculate_stars_use_case=CalculateStarsUseCase(NineStarRepository(), SolarTermsRepoFake(), NumerologyReadingRepository()),
         compatibility_service=CompatibilityService(),
         reading_query_repo=ReadingQueryFake(),
         solar_starts_repo=SolarStartsRepoFake(),

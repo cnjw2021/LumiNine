@@ -7,6 +7,8 @@ from core.utils.logger import get_logger
 from apps.ninestarki.services.compatibility_service import CompatibilityService
 from apps.ninestarki.use_cases.calculate_stars_use_case import CalculateStarsUseCase
 from apps.ninestarki.infrastructure.persistence.nine_star_repository import NineStarRepository
+from apps.ninestarki.infrastructure.persistence.solar_terms_repository import SolarTermsRepository
+from apps.ninestarki.infrastructure.persistence.numerology_reading_repository import NumerologyReadingRepository
 from datetime import datetime
 from core.config import get_config
 
@@ -77,7 +79,7 @@ def create_compatibility_bp():
                     return jsonify({'error': 'main/partnerのbirthdateとgenderが必要です'}), 400
 
                 # 設定から既定の時刻を取得して計算
-                calc = CalculateStarsUseCase(NineStarRepository())
+                calc = CalculateStarsUseCase(NineStarRepository(), SolarTermsRepository(), NumerologyReadingRepository())
                 main_birth_norm = (datetime.strptime(main_info['birthdate'].replace('/', '-'), '%Y-%m-%d')).strftime('%Y-%m-%d')
                 partner_birth_norm = (datetime.strptime(partner_info['birthdate'].replace('/', '-'), '%Y-%m-%d')).strftime('%Y-%m-%d')
                 cfg = get_config()

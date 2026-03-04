@@ -46,8 +46,22 @@ class NumerologyService:
             )
 
         year, month, day = parts
-        digit_sum = sum(int(d) for d in year + month + day)
+        digits = year + month + day
+
+        # 모든 문자가 숫자이며 최소 한 자릿수 이상인지 확인
+        if not digits or not digits.isdigit():
+            raise ValueError(
+                f"생년월일 형식이 올바르지 않습니다: {birth_date} (숫자 YYYY-MM-DD 필요)"
+            )
+
+        digit_sum = sum(int(d) for d in digits)
         life_path = NumerologyService._reduce_to_single_digit(digit_sum)
+
+        # Life Path Number 가 1~9 범위(매핑에 존재)인지 확인
+        if life_path not in NUMBER_TO_PLANET:
+            raise ValueError(
+                f"유효하지 않은 Life Path Number가 계산되었습니다: {life_path}"
+            )
 
         planet = NUMBER_TO_PLANET[life_path]
         return NumerologyNumber(number=life_path, planet=planet)
