@@ -57,8 +57,13 @@ class StoneRecommendation:
 
 @dataclass(frozen=True)
 class PowerStoneResult:
-    """3-Layer 파워스톤 추천 최종 결과."""
+    """3-Layer 파워스톤 추천 최종 결과.
 
-    base_stone: StoneRecommendation       # L1 기본석
-    monthly_stone: StoneRecommendation    # L2 월운석
-    protection_stone: StoneRecommendation  # L3 호신석
+    Note:
+        길방위가 없는 경우 ``monthly_stone`` 은 ``None`` 이 된다.
+        Layer 3 (호신석) 은 흉살 방위에서 결정하므로 항상 존재한다.
+    """
+
+    base_stone: StoneRecommendation                   # L1 기본석
+    monthly_stone: Optional[StoneRecommendation]      # L2 월운석 (길방위 없으면 None)
+    protection_stone: StoneRecommendation              # L3 호신석

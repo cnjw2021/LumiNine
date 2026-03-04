@@ -324,12 +324,15 @@ def create_monthly_bp():
                             #   monthly_stone, protection_stone,
                             #   life_path_number, planet
                             #
-                            # (C) birth_date 제공 + 길방위 없음 → 6-Layer 수비술 전용:
+                            # (C) birth_date 제공 + 길방위 없음(흉방위만) → 6-Layer:
                             #   overall_stone, health_stone, wealth_stone, love_stone,
-                            #   monthly_stone=null, protection_stone=null,
+                            #   monthly_stone=null, protection_stone={...},
                             #   life_path_number, planet
                             #
-                            # (D) birth_date 미제공 + 길방위 없음 → null
+                            # (C') birth_date 미제공 + 길방위 없음(흉방위만) → 3-Layer:
+                            #   base_stone, monthly_stone=null, protection_stone
+                            #
+                            # (D) directions 자체가 비어있음 → null 또는 수비술 전용
                         } | null
                     },
                     ...
@@ -400,19 +403,10 @@ def create_monthly_bp():
                     }), 422
 
             def _numerology_fallback():
-                """월盤 `/monthly-board` 응답에서 `power_stones`의 길방위 없음 동작을 정리한 헬퍼.
+                """월盤 `/monthly-board` 응답에서 `directions`가 비어있을 때의 fallback 헬퍼.
 
-                - 수비술 데이터가 있는 경우: 구성기학 길방위가 없더라도
-                  `merge_six_layer_partial(numerology_stones)` 결과(6-Layer 수비술 전용 객체)를 반환한다.
-                  이 경로에서 Gogyo 기반 레이어인 `monthly_stone` / `protection_stone` 은 항상 `null` 이다.
-                - 수비술 데이터가 없는 경우: `None` 을 반환한다.
-
-                따라서 클라이언트 입장에서는 `power_stones` 필드가
-                - 전체 6-Layer 객체(구성기학 + 수비술),
-                - 구성기학 기반 추천만 담긴 객체,
-                - 길방위 없음 시의 6-Layer 수비술 전용 객체,
-                - 또는 `null`
-                중 하나가 될 수 있음을 전제로 파싱해야 한다.
+                수비술 스톤이 있으면 수비술 4-Layer만 반환, 없으면 None.
+                이 경로에서 `monthly_stone` / `protection_stone` 은 항상 `null` 이다.
                 """
                 if numerology_stones:
                     return six_layer_use_case.merge_six_layer_partial(numerology_stones)
@@ -421,26 +415,18 @@ def create_monthly_bp():
             for key, board in result.get('monthly_boards', {}).items():
                 directions = board.get('directions', {})
                 if directions:
-                    try:
-                        gogyo_result = stone_use_case.execute(
-                            main_star=main_star,
-                            directions=directions,
-                            locale=locale_str,
+                    gogyo_result = stone_use_case.execute(
+                        main_star=main_star,
+                        directions=directions,
+                        locale=locale_str,
+                    )
+                    if numerology_stones:
+                        # 6-Layer: 수비술 4 + 구성기학 2
+                        board['power_stones'] = six_layer_use_case.merge_six_layer(
+                            gogyo_result, numerology_stones,
                         )
-                        if numerology_stones:
-                            # 6-Layer: 수비술 4 + 구성기학 2
-                            board['power_stones'] = six_layer_use_case.merge_six_layer(
-                                gogyo_result, numerology_stones,
-                            )
-                        else:
-                            board['power_stones'] = gogyo_result
-                    except NoAuspiciousDirectionError:
-                        logger.info(
-                            "monthly-board %s: 길방위 없음 → power_stones=%s",
-                            key,
-                            "numerology-only" if numerology_stones else "null",
-                        )
-                        board['power_stones'] = _numerology_fallback()
+                    else:
+                        board['power_stones'] = gogyo_result
                 else:
                     board['power_stones'] = _numerology_fallback()
 

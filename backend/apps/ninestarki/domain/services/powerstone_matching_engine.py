@@ -89,11 +89,22 @@ class PowerStoneMatchingEngine(IPowerStoneMatchingEngine):
         main_star: int,
         directions: Dict[str, Any],
     ) -> PowerStoneResult:
-        """3-Layer 추천 실행."""
+        """3-Layer 추천 실행.
+
+        길방위가 없는 경우 Layer 2 (월운석) 은 ``None`` 으로 설정되지만,
+        Layer 3 (호신석) 은 흉살 방위에서 독립적으로 결정한다.
+        """
         used_ids: Set[str] = set()
 
         base = self._layer1_base_stone(main_star, used_ids)
-        monthly = self._layer2_monthly_stone(main_star, directions, used_ids)
+
+        # Layer 2: 길방위가 없으면 월운석을 결정할 수 없다 → None
+        monthly: StoneRecommendation | None = None
+        try:
+            monthly = self._layer2_monthly_stone(main_star, directions, used_ids)
+        except NoAuspiciousDirectionError:
+            pass  # monthly 는 None 유지, Layer 3 는 독립 실행
+
         protect = self._layer3_protection_stone(directions, used_ids)
 
         return PowerStoneResult(
