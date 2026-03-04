@@ -1,9 +1,10 @@
 'use client';
 
+import React, { useEffect, useState } from 'react';
+
 import ResultFortuneSection from './ResultFortuneSection';
 import MainStarWithInfo from './MainStarWithInfo';
 import TemplateSelectionModal from './TemplateSelectionModal';
-import { useEffect, useState } from 'react';
 import api from '@/utils/api';
 import { useNineStarKiStore } from '@/stores/nineStarKiStore';
 import DirectionMapInfo from './DirectionMapInfo';
@@ -299,127 +300,10 @@ export default function Result({ resultData, onReset, compatibilityData }: Resul
           <p style={{ textAlign: 'center', color: '#666', margin: 0 }}>
             生年月日: {birthdate}
           </p>
-
-          {/* 九星の数字表示セクション */}
-          <div style={{ margin: '20px 0' }}>
-            <div style={{ display: 'grid', gridTemplateColumns: 'repeat(3, 1fr)', gap: '10px' }}>
-              {/* 本命星 */}
-              <div style={{
-                borderRadius: '8px',
-                padding: '10px',
-                backgroundColor: `${getStarColor(main_star.star_number)}10`,
-                border: `2px solid ${getStarColor(main_star.star_number)}80`,
-                textAlign: 'center',
-                position: 'relative',
-                overflow: 'hidden'
-              }}>
-                <p style={{ fontSize: '0.75rem', fontWeight: 600, color: '#666', margin: '0 0 5px 0' }}>本命星</p>
-                <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', flexDirection: 'column', gap: '2px' }}>
-                  <span style={{
-                    fontSize: '2.2rem',
-                    fontWeight: 800,
-                    color: getStarColor(main_star.star_number),
-                    lineHeight: 1,
-                    textShadow: '0px 2px 4px rgba(0,0,0,0.1)',
-                    margin: 0
-                  }}>
-                    {main_star.star_number}
-                  </span>
-                  <span style={{
-                    margin: '2px 0',
-                    fontWeight: 600,
-                    fontSize: '0.6rem',
-                    backgroundColor: getStarColor(main_star.star_number),
-                    color: 'white',
-                    padding: '2px 4px',
-                    borderRadius: '4px',
-                    whiteSpace: 'nowrap',
-                    minWidth: 'auto'
-                  }}>
-                    {main_star.name_jp}
-                  </span>
-                </div>
-              </div>
-
-              {/* 月命星 */}
-              <div style={{
-                borderRadius: '8px',
-                padding: '10px',
-                backgroundColor: `${getStarColor(month_star.star_number)}10`,
-                border: `2px solid ${getStarColor(month_star.star_number)}80`,
-                textAlign: 'center',
-                position: 'relative',
-                overflow: 'hidden'
-              }}>
-                <p style={{ fontSize: '0.75rem', fontWeight: 600, color: '#666', margin: '0 0 5px 0' }}>月命星</p>
-                <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', flexDirection: 'column', gap: '2px' }}>
-                  <span style={{
-                    fontSize: '2.2rem',
-                    fontWeight: 800,
-                    color: getStarColor(month_star.star_number),
-                    lineHeight: 1,
-                    textShadow: '0px 2px 4px rgba(0,0,0,0.1)',
-                    margin: 0
-                  }}>
-                    {month_star.star_number}
-                  </span>
-                  <span style={{
-                    margin: '2px 0',
-                    fontWeight: 600,
-                    fontSize: '0.6rem',
-                    backgroundColor: getStarColor(month_star.star_number),
-                    color: 'white',
-                    padding: '2px 4px',
-                    borderRadius: '4px',
-                    whiteSpace: 'nowrap',
-                    minWidth: 'auto'
-                  }}>
-                    {month_star.name_jp}
-                  </span>
-                </div>
-              </div>
-
-              {/* 日命星 */}
-              <div style={{
-                borderRadius: '8px',
-                padding: '10px',
-                backgroundColor: `${getStarColor(day_star.star_number)}10`,
-                border: `2px solid ${getStarColor(day_star.star_number)}80`,
-                textAlign: 'center',
-                position: 'relative',
-                overflow: 'hidden'
-              }}>
-                <p style={{ fontSize: '0.75rem', fontWeight: 600, color: '#666', margin: '0 0 5px 0' }}>日命星</p>
-                <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', flexDirection: 'column', gap: '2px' }}>
-                  <span style={{
-                    fontSize: '2.2rem',
-                    fontWeight: 800,
-                    color: getStarColor(day_star.star_number),
-                    lineHeight: 1,
-                    textShadow: '0px 2px 4px rgba(0,0,0,0.1)',
-                    margin: 0
-                  }}>
-                    {day_star.star_number}
-                  </span>
-                  <span style={{
-                    margin: '2px 0',
-                    fontWeight: 600,
-                    fontSize: '0.6rem',
-                    backgroundColor: getStarColor(day_star.star_number),
-                    color: 'white',
-                    padding: '2px 4px',
-                    borderRadius: '4px',
-                    whiteSpace: 'nowrap',
-                    minWidth: 'auto'
-                  }}>
-                    {day_star.name_jp}
-                  </span>
-                </div>
-              </div>
-            </div>
-          </div>
         </div>
       </div>
+
+
 
       {/* 本命星のSVGと説明文 */}
       <MainStarWithInfo
