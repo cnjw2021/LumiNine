@@ -315,21 +315,21 @@ def create_monthly_bp():
                         "period_start": str,
                         "period_end": str,
                         "directions": { ... },
-                        "power_stones": {            # nullable — 길방위 없는 경우 null
-                            # birth_date 미제공 시 (3-Layer):
-                            "base_stone": { ... },
-                            "monthly_stone": { ... },
-                            "protection_stone": { ... }
-
-                            # birth_date 제공 시 (6-Layer):
-                            # "overall_stone": { stone_id, stone_name, layer, description, secondary },
-                            # "health_stone":  { stone_id, stone_name, layer, description, secondary },
-                            # "wealth_stone":  { stone_id, stone_name, layer, description, secondary },
-                            # "love_stone":    { stone_id, stone_name, layer, description, secondary },
-                            # "monthly_stone": { stone_id, stone_name, layer, gogyo, reason },
-                            # "protection_stone": { stone_id, stone_name, layer, gogyo, reason },
-                            # "life_path_number": int,
-                            # "planet": str
+                        "power_stones": {
+                            # (A) birth_date 미제공 + 길방위 있음 → 3-Layer:
+                            #   base_stone, monthly_stone, protection_stone
+                            #
+                            # (B) birth_date 제공 + 길방위 있음 → 6-Layer 완전:
+                            #   overall_stone, health_stone, wealth_stone, love_stone,
+                            #   monthly_stone, protection_stone,
+                            #   life_path_number, planet
+                            #
+                            # (C) birth_date 제공 + 길방위 없음 → 6-Layer 수비술 전용:
+                            #   overall_stone, health_stone, wealth_stone, love_stone,
+                            #   monthly_stone=null, protection_stone=null,
+                            #   life_path_number, planet
+                            #
+                            # (D) birth_date 미제공 + 길방위 없음 → null
                         } | null
                     },
                     ...
@@ -404,7 +404,7 @@ def create_monthly_bp():
 
                 - 수비술 데이터가 있는 경우: 구성기학 길방위가 없더라도
                   `merge_six_layer_partial(numerology_stones)` 결과(6-Layer 수비술 전용 객체)를 반환한다.
-                  이 때 Gogyo 기반 레이어인 `monthly_stone` / `protection_stone` 은 `null` 이 될 수 있다.
+                  이 경로에서 Gogyo 기반 레이어인 `monthly_stone` / `protection_stone` 은 항상 `null` 이다.
                 - 수비술 데이터가 없는 경우: `None` 을 반환한다.
 
                 따라서 클라이언트 입장에서는 `power_stones` 필드가
