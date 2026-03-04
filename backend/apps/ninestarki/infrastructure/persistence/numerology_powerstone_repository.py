@@ -46,9 +46,17 @@ class NumerologyPowerStoneRepository(INumerologyPowerStoneRepository):
             num = int(num_str)
             self._mappings[num] = mapping
 
-            # 매핑에 참조된 stone_id 가 카탈로그에 존재하는지 검증
+            # 매핑에 필수 키 존재 및 참조된 stone_id 검증
             for layer in ("overall", "health", "wealth", "love"):
+                if layer not in mapping:
+                    raise ValueError(
+                        f"숫자 {num} 의 매핑에 필수 레이어 '{layer}' 가 누락되었습니다."
+                    )
                 for role in ("primary", "secondary"):
+                    if role not in mapping[layer]:
+                        raise ValueError(
+                            f"숫자 {num} 의 {layer} 레이어에 필수 키 '{role}' 가 누락되었습니다."
+                        )
                     sid = mapping[layer][role]
                     if sid not in self._stones:
                         raise ValueError(
