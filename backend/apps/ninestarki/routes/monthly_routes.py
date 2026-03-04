@@ -400,7 +400,20 @@ def create_monthly_bp():
                     }), 422
 
             def _numerology_fallback():
-                """수비술 스톤만 반환하거나 None (중복 제거 헬퍼)."""
+                """월盤 `/monthly-board` 응답에서 `power_stones`의 길방위 없음 동작을 정리한 헬퍼.
+
+                - 수비술 데이터가 있는 경우: 구성기학 길방위가 없더라도
+                  `merge_six_layer_partial(numerology_stones)` 결과(6-Layer 수비술 전용 객체)를 반환한다.
+                  이 때 Gogyo 기반 레이어인 `monthly_stone` / `protection_stone` 은 `null` 이 될 수 있다.
+                - 수비술 데이터가 없는 경우: `None` 을 반환한다.
+
+                따라서 클라이언트 입장에서는 `power_stones` 필드가
+                - 전체 6-Layer 객체(구성기학 + 수비술),
+                - 구성기학 기반 추천만 담긴 객체,
+                - 길방위 없음 시의 6-Layer 수비술 전용 객체,
+                - 또는 `null`
+                중 하나가 될 수 있음을 전제로 파싱해야 한다.
+                """
                 if numerology_stones:
                     return six_layer_use_case.merge_six_layer_partial(numerology_stones)
                 return None
