@@ -58,7 +58,7 @@ const NumerologyStarInfo: React.FC<NumerologyStarInfoProps> = ({ numerology }) =
                         borderBottom: '1px solid rgba(209, 213, 219, 0.8)'
                     }}
                 >
-                    🌟 数秘術{'\n'}ライフパスナンバー
+                    🌟 数秘術<br />ライフパスナンバー
                 </Title>
 
                 {/* メインコンテンツエリア */}
@@ -205,13 +205,11 @@ const NumerologyStarInfo: React.FC<NumerologyStarInfoProps> = ({ numerology }) =
                             <Text fw={600} mb="xs" style={{ fontSize: '0.8rem', color: '#38a169' }}>
                                 ✦ 強み
                             </Text>
-                            <Stack gap={4}>
+                            <ul style={{ margin: 0, padding: '0 0 0 16px', listStyleType: 'disc' }}>
                                 {numerology.strengths.map((s, i) => (
-                                    <Text key={i} size="xs" style={{ color: '#2f855a', lineHeight: 1.5 }}>
-                                        • {s}
-                                    </Text>
+                                    <li key={i} style={{ fontSize: '0.75rem', color: '#2f855a', lineHeight: 1.5 }}>{s}</li>
                                 ))}
-                            </Stack>
+                            </ul>
                         </Card>
 
                         {/* 注意点 */}
@@ -226,13 +224,11 @@ const NumerologyStarInfo: React.FC<NumerologyStarInfoProps> = ({ numerology }) =
                             <Text fw={600} mb="xs" style={{ fontSize: '0.8rem', color: '#e53e3e' }}>
                                 ✦ 注意点
                             </Text>
-                            <Stack gap={4}>
+                            <ul style={{ margin: 0, padding: '0 0 0 16px', listStyleType: 'disc' }}>
                                 {numerology.weaknesses.map((w, i) => (
-                                    <Text key={i} size="xs" style={{ color: '#c53030', lineHeight: 1.5 }}>
-                                        • {w}
-                                    </Text>
+                                    <li key={i} style={{ fontSize: '0.75rem', color: '#c53030', lineHeight: 1.5 }}>{w}</li>
                                 ))}
-                            </Stack>
+                            </ul>
                         </Card>
                     </div>
                 </Card>
