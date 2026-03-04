@@ -63,7 +63,7 @@ class SixLayerPowerStoneUseCase:
         결과를 재사용할 수 있다.
 
         Args:
-            birth_date: 생년월일 (``"YYYY-MM-DD"``)
+            birth_date: 생년월일 (``"YYYY-MM-DD"`` 또는 ``"YYYY-MM-DD HH:MM"``)
             locale: 응답 언어 코드
 
         Returns:
@@ -95,7 +95,7 @@ class SixLayerPowerStoneUseCase:
             main_star: 사용자 본명성 (1~9)
             directions: 방위별 길흉 판정 결과 dict
             locale: 응답 언어 코드 (기본값: ``"ja"``)
-            birth_date: 생년월일 (``"YYYY-MM-DD"``). 없으면 3-Layer 반환.
+            birth_date: 생년월일 (``"YYYY-MM-DD"`` 또는 ``"YYYY-MM-DD HH:MM"``). 없으면 3-Layer 반환.
 
         Returns:
             API 응답용 dict.
