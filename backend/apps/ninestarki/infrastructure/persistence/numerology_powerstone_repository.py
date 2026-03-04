@@ -4,6 +4,7 @@ SSoT: data/numerology_powerstone_catalog.json
 """
 from __future__ import annotations
 
+import copy
 import json
 from pathlib import Path
 from typing import Dict
@@ -65,10 +66,11 @@ class NumerologyPowerStoneRepository(INumerologyPowerStoneRepository):
         return stone
 
     def get_mapping(self, number: int) -> Dict:
-        """Life Path Number 에 대한 4-Layer 매핑 반환."""
+        """Life Path Number 에 대한 4-Layer 매핑 반환 (방어적 복사)."""
         mapping = self._mappings.get(number)
         if mapping is None:
             raise ValueError(
                 f"유효하지 않은 Life Path Number: {number} (1~9 범위)"
             )
-        return mapping
+        # 싱글톤 상태 보호를 위해 방어적 복사 반환
+        return copy.deepcopy(mapping)
