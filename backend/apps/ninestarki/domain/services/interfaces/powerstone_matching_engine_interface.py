@@ -31,10 +31,9 @@ class IPowerStoneMatchingEngine(ABC):
             directions: MonthlyDirections 결과 (방위별 길흉 판정)
 
         Returns:
-            기본석·월운석·호신석으로 구성된 PowerStoneResult
+            기본석·월운석·호신석으로 구성된 PowerStoneResult.
+            길방위가 없으면 ``monthly_stone`` 은 ``None`` 이 된다.
 
         Raises:
             PowerStoneMatchingError: 매칭 과정에서 오류 발생한 경우
-            NoAuspiciousDirectionError: 길방위가 하나도 없어
-                월운석을 결정할 수 없는 경우
         """

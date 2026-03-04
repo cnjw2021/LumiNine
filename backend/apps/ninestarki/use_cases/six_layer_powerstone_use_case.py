@@ -149,8 +149,8 @@ class SixLayerPowerStoneUseCase:
     ) -> Dict[str, Any]:
         """수비술 4-Layer만으로 6-Layer 응답을 구성 (구성기학 2-Layer는 null).
 
-        길방위가 없어 구성기학 기반 스톤(월운석, 호신석)을 결정할 수 없을 때
-        사용한다. 수비술 기반 4개 스톤은 길방위와 무관하므로 항상 반환 가능하다.
+        ``directions`` 자체가 비어 있어 구성기학 엔진을 실행할 수 없을 때
+        사용한다. 수비술 기반 4개 스톤은 방위 정보와 무관하므로 항상 반환 가능하다.
 
         Args:
             numerology_result: ``compute_numerology_stones()`` 의 반환값
