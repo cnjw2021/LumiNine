@@ -29,7 +29,8 @@ class NumerologyService:
         """생년월일 문자열 → Life Path Number 계산.
 
         Args:
-            birth_date: ``"YYYY-MM-DD"`` 형식의 생년월일
+            birth_date: ``"YYYY-MM-DD"`` 또는 ``"YYYY-MM-DD HH:MM"`` 형식의 생년월일
+                (시간 정보가 포함된 경우 시간 부분은 무시됨)
 
         Returns:
             NumerologyNumber  (1~9 + 대응 행성)

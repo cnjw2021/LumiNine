@@ -603,9 +603,11 @@ export default function Result({ resultData, onReset, compatibilityData }: Resul
               border: '1px solid #c6f6d5',
             }}>
               <p style={{ margin: '0 0 4px 0', fontSize: '0.7rem', fontWeight: 600, color: '#38a169' }}>✦ 強み</p>
-              {result.numerology.strengths.map((s, i) => (
-                <p key={i} style={{ margin: 0, fontSize: '0.75rem', color: '#2f855a', lineHeight: 1.5 }}>• {s}</p>
-              ))}
+              <ul style={{ margin: 0, padding: '0 0 0 16px', listStyleType: 'disc' }}>
+                {result.numerology.strengths.map((s, i) => (
+                  <li key={i} style={{ fontSize: '0.75rem', color: '#2f855a', lineHeight: 1.5 }}>{s}</li>
+                ))}
+              </ul>
             </div>
             <div style={{
               padding: '8px 10px',
@@ -614,9 +616,11 @@ export default function Result({ resultData, onReset, compatibilityData }: Resul
               border: '1px solid #fed7d7',
             }}>
               <p style={{ margin: '0 0 4px 0', fontSize: '0.7rem', fontWeight: 600, color: '#e53e3e' }}>✦ 注意点</p>
-              {result.numerology.weaknesses.map((w, i) => (
-                <p key={i} style={{ margin: 0, fontSize: '0.75rem', color: '#c53030', lineHeight: 1.5 }}>• {w}</p>
-              ))}
+              <ul style={{ margin: 0, padding: '0 0 0 16px', listStyleType: 'disc' }}>
+                {result.numerology.weaknesses.map((w, i) => (
+                  <li key={i} style={{ fontSize: '0.75rem', color: '#c53030', lineHeight: 1.5 }}>{w}</li>
+                ))}
+              </ul>
             </div>
           </div>
         </div>

@@ -57,7 +57,8 @@ class NumerologyNumber:
 
     def get_planet_name(self, locale: str = "ja") -> str:
         """행성 이름의 로캘별 표시 문자열 반환."""
-        return PLANET_NAMES.get(self.planet, {}).get(locale, self.planet.value)
+        names = PLANET_NAMES.get(self.planet, {})
+        return names.get(locale) or names.get("ja") or self.planet.value
 
 
 @dataclass(frozen=True)
