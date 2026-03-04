@@ -46,7 +46,7 @@ def _make_numerology_result() -> Dict[str, Any]:
     """수비술 4-Layer 결과 mock."""
     return {
         "life_path_number": 7,
-        "planet": "Ketu",
+        "planet": "ketu",
         "overall": {
             "layer": "overall",
             "primary": {
@@ -170,7 +170,7 @@ class TestSixLayerPowerStoneUseCase:
 
         # 메타 정보
         assert result["life_path_number"] == 7
-        assert result["planet"] == "Ketu"
+        assert result["planet"] == "ketu"
 
         # 수비술 레이어 형식 확인
         overall = result["overall_stone"]

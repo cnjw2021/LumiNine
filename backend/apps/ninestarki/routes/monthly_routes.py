@@ -298,7 +298,7 @@ def create_monthly_bp():
             month_index (int, 選択): 조회 절월 인덱스 (1=寅月/立春 … 12=丑月/小寒). 
                 None の場合、該当年の全節月について月盤方位を算出する。
             lang (str, 選択): 응답 언어 코드 (ja/ko/en). 기본값: ja.
-            birth_date (str, 選択): 생년월일 (YYYY-MM-DD). 제공 시 6-Layer 파워스톤 응답.
+            birth_date (str, 選択): 생년월일 (YYYY-MM-DD 또는 YYYY-MM-DD HH:MM). 제공 시 6-Layer 파워스톤 응답.
 
         Returns:
             200 OK: {
@@ -357,7 +357,7 @@ def create_monthly_bp():
             birth_date = request.args.get('birth_date', type=str)
             if birth_date is not None and not birth_date.strip():
                 return jsonify({
-                    'error': 'birth_date 가 비어 있습니다 (YYYY-MM-DD 필요)',
+                    'error': 'birth_date 가 비어 있습니다 (YYYY-MM-DD 또는 YYYY-MM-DD HH:MM 필요)',
                 }), 422
 
             # 구형 파라미터인 'month'가 어떤 형태로든 전달되면 요청을 거절한다.
@@ -396,7 +396,7 @@ def create_monthly_bp():
                     )
                 except ValueError:
                     return jsonify({
-                        'error': 'birth_date 형식이 올바르지 않습니다 (YYYY-MM-DD 필요)',
+                        'error': 'birth_date 형식이 올바르지 않습니다 (YYYY-MM-DD 또는 YYYY-MM-DD HH:MM 필요)',
                     }), 422
 
             for key, board in result.get('monthly_boards', {}).items():
