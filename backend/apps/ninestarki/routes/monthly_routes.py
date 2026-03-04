@@ -315,21 +315,24 @@ def create_monthly_bp():
                         "period_start": str,
                         "period_end": str,
                         "directions": { ... },
-                        "power_stones": {            # nullable — 길방위 없는 경우 null
-                            # birth_date 미제공 시 (3-Layer):
-                            "base_stone": { ... },
-                            "monthly_stone": { ... },
-                            "protection_stone": { ... }
-
-                            # birth_date 제공 시 (6-Layer):
-                            # "overall_stone": { stone_id, stone_name, layer, description, secondary },
-                            # "health_stone":  { stone_id, stone_name, layer, description, secondary },
-                            # "wealth_stone":  { stone_id, stone_name, layer, description, secondary },
-                            # "love_stone":    { stone_id, stone_name, layer, description, secondary },
-                            # "monthly_stone": { stone_id, stone_name, layer, gogyo, reason },
-                            # "protection_stone": { stone_id, stone_name, layer, gogyo, reason },
-                            # "life_path_number": int,
-                            # "planet": str
+                        "power_stones": {
+                            # (A) birth_date 미제공 + 길방위 있음 → 3-Layer:
+                            #   base_stone, monthly_stone, protection_stone
+                            #
+                            # (B) birth_date 제공 + 길방위 있음 → 6-Layer 완전:
+                            #   overall_stone, health_stone, wealth_stone, love_stone,
+                            #   monthly_stone, protection_stone,
+                            #   life_path_number, planet
+                            #
+                            # (C) birth_date 제공 + 길방위 없음(흉방위만) → 6-Layer:
+                            #   overall_stone, health_stone, wealth_stone, love_stone,
+                            #   monthly_stone=null, protection_stone={...},
+                            #   life_path_number, planet
+                            #
+                            # (C') birth_date 미제공 + 길방위 없음(흉방위만) → 3-Layer:
+                            #   base_stone, monthly_stone=null, protection_stone
+                            #
+                            # (D) directions 자체가 비어있음 → null 또는 수비술 전용
                         } | null
                     },
                     ...
@@ -399,29 +402,35 @@ def create_monthly_bp():
                         'error': 'birth_date 형식이 올바르지 않습니다 (YYYY-MM-DD 또는 YYYY-MM-DD HH:MM 필요)',
                     }), 422
 
+            def _numerology_fallback():
+                """월盤 `/monthly-board` 응답에서 `directions`가 비어있을 때의 fallback 헬퍼.
+
+                수비술 스톤이 있으면 수비술 4-Layer만 반환, 없으면 None.
+                이 경로에서 `monthly_stone` / `protection_stone` 은 항상 `null` 이다.
+                """
+                if numerology_stones:
+                    return six_layer_use_case.merge_six_layer_partial(numerology_stones)
+                return None
+
             for key, board in result.get('monthly_boards', {}).items():
                 directions = board.get('directions', {})
                 if directions:
-                    try:
-                        gogyo_result = stone_use_case.execute(
-                            main_star=main_star,
-                            directions=directions,
-                            locale=locale_str,
+                    # NoAuspiciousDirectionError는 엔진 내부에서 처리됨
+                    # → monthly_stone=None 가능, protection_stone은 정상 반환
+                    gogyo_result = stone_use_case.execute(
+                        main_star=main_star,
+                        directions=directions,
+                        locale=locale_str,
+                    )
+                    if numerology_stones:
+                        # 6-Layer: 수비술 4 + 구성기학 2
+                        board['power_stones'] = six_layer_use_case.merge_six_layer(
+                            gogyo_result, numerology_stones,
                         )
-                        if numerology_stones:
-                            # 6-Layer: 수비술 4 + 구성기학 2
-                            board['power_stones'] = six_layer_use_case.merge_six_layer(
-                                gogyo_result, numerology_stones,
-                            )
-                        else:
-                            board['power_stones'] = gogyo_result
-                    except NoAuspiciousDirectionError:
-                        logger.info(
-                            "monthly-board %s: 길방위 없음 → power_stones=null", key,
-                        )
-                        board['power_stones'] = None
+                    else:
+                        board['power_stones'] = gogyo_result
                 else:
-                    board['power_stones'] = None
+                    board['power_stones'] = _numerology_fallback()
 
             return jsonify(result), 200
 

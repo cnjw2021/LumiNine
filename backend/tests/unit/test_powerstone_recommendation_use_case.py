@@ -188,12 +188,14 @@ class TestLocaleRendering:
 # 에러 전파
 # ══════════════════════════════════════════════════════
 
-class TestErrorPropagation:
-    def test_no_auspicious_direction_propagates(self, use_case: PowerStoneRecommendationUseCase):
-        """길방위가 없으면 NoAuspiciousDirectionError 가 그대로 전파된다."""
+class TestNoAuspiciousDirection:
+    def test_no_auspicious_returns_none_monthly(self, use_case: PowerStoneRecommendationUseCase):
+        """길방위가 없으면 monthly_stone=None, protection_stone은 정상 반환."""
         directions = _make_directions(
             auspicious={},  # 모두 False
             marks={"north": ["five_yellow"]},
         )
-        with pytest.raises(NoAuspiciousDirectionError):
-            use_case.execute(main_star=1, directions=directions)
+        result = use_case.execute(main_star=1, directions=directions)
+        assert result["monthly_stone"] is None
+        assert result["protection_stone"] is not None
+        assert "stone_id" in result["protection_stone"]

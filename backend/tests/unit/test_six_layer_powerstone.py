@@ -253,3 +253,25 @@ class TestSixLayerPowerStoneUseCase:
 
         assert "base_stone" not in result
         assert "overall_stone" in result
+
+    # ── merge_six_layer_partial: 길방위 없을 때 수비술만 반환 ──
+
+    def test_merge_six_layer_partial_returns_numerology_only(self) -> None:
+        """길방위 없을 때 수비술 4-Layer만 반환, 구성기학 2-Layer는 None."""
+        numerology = _make_numerology_result()
+        result = self.use_case.merge_six_layer_partial(numerology)
+
+        # 수비술 4-Layer 존재
+        for key in ("overall_stone", "health_stone", "wealth_stone", "love_stone"):
+            assert key in result, f"Missing key: {key}"
+            assert result[key] is not None, f"{key} should not be None"
+            assert "stone_id" in result[key]
+            assert "stone_name" in result[key]
+
+        # 구성기학 2-Layer는 None
+        assert result["monthly_stone"] is None
+        assert result["protection_stone"] is None
+
+        # 메타 정보
+        assert result["life_path_number"] == 7
+        assert result["planet"] == "ketu"

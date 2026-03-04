@@ -128,14 +128,16 @@ class TestLayer1BaseStone:
 # ══════════════════════════════════════════════════════
 
 class TestLayer2MonthlyStone:
-    def test_no_auspicious_raises(self, engine: PowerStoneMatchingEngine):
-        """길방위가 없으면 NoAuspiciousDirectionError."""
+    def test_no_auspicious_returns_none_monthly(self, engine: PowerStoneMatchingEngine):
+        """길방위가 없으면 monthly_stone=None, protection_stone은 정상 반환."""
         directions = _make_directions(
             auspicious={},  # 모두 False
             marks={"north": ["five_yellow"]},
         )
-        with pytest.raises(NoAuspiciousDirectionError):
-            engine.recommend(main_star=1, directions=directions)
+        result = engine.recommend(main_star=1, directions=directions)
+        assert result.monthly_stone is None
+        assert result.protection_stone is not None
+        assert result.protection_stone.reason_params["threat_key"] == "threat.five_yellow"
 
     def test_sojo_direction_preferred(self, engine: PowerStoneMatchingEngine):
         """상생(SOJO) 방위가 비화(HIWA)보다 우선 선택된다."""

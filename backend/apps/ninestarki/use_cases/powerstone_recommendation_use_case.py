@@ -63,8 +63,12 @@ class PowerStoneRecommendationUseCase:
             layer, gogyo, reason 을 포함한다.
 
         Raises:
-            NoAuspiciousDirectionError: 길방위가 없어 월운석 결정 불가
             PowerStoneMatchingError: 매칭 과정에서 오류 발생
+
+        Note:
+            길방위가 없으면 ``monthly_stone`` 은 ``None`` 으로 반환된다.
+            ``protection_stone`` 은 흉살 방위에서 독립적으로 결정하므로
+            정상적으로 결과가 생성되는 한 존재한다.
         """
         logger.info(
             "PowerStoneRecommendationUseCase.execute: main_star=%d locale=%s",
@@ -80,7 +84,11 @@ class PowerStoneRecommendationUseCase:
         # ── 2. 각 레이어를 locale별 dict 로 직렬화 ────
         return {
             "base_stone": self._render_recommendation(result.base_stone, locale),
-            "monthly_stone": self._render_recommendation(result.monthly_stone, locale),
+            "monthly_stone": (
+                self._render_recommendation(result.monthly_stone, locale)
+                if result.monthly_stone is not None
+                else None
+            ),
             "protection_stone": self._render_recommendation(result.protection_stone, locale),
         }
 
