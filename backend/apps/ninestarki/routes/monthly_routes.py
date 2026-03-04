@@ -316,9 +316,20 @@ def create_monthly_bp():
                         "period_end": str,
                         "directions": { ... },
                         "power_stones": {            # nullable — 길방위 없는 경우 null
+                            # birth_date 미제공 시 (3-Layer):
                             "base_stone": { ... },
                             "monthly_stone": { ... },
                             "protection_stone": { ... }
+
+                            # birth_date 제공 시 (6-Layer):
+                            # "overall_stone": { stone_id, stone_name, layer, description, secondary },
+                            # "health_stone":  { stone_id, stone_name, layer, description, secondary },
+                            # "wealth_stone":  { stone_id, stone_name, layer, description, secondary },
+                            # "love_stone":    { stone_id, stone_name, layer, description, secondary },
+                            # "monthly_stone": { stone_id, stone_name, layer, gogyo, reason },
+                            # "protection_stone": { stone_id, stone_name, layer, gogyo, reason },
+                            # "life_path_number": int,
+                            # "planet": str
                         } | null
                     },
                     ...
