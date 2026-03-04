@@ -69,6 +69,10 @@ from apps.ninestarki.use_cases.interfaces.message_catalog_interface import IMess
 from apps.ninestarki.infrastructure.services.message_catalog import MessageCatalog
 from apps.ninestarki.use_cases.powerstone_recommendation_use_case import PowerStoneRecommendationUseCase
 
+# Phase 5: Numerology
+from apps.ninestarki.domain.repositories.numerology_reading_repository_interface import INumerologyReadingRepository
+from apps.ninestarki.infrastructure.persistence.numerology_reading_repository import NumerologyReadingRepository
+
 # Permission UseCase
 from apps.ninestarki.use_cases.permission_use_case import PermissionUseCase
 
@@ -111,8 +115,8 @@ class AppModule(Module):
 
     @singleton
     @provider
-    def provide_calculate_stars_use_case(self, repo: INineStarRepository, solar_terms_repo: ISolarTermsRepository) -> CalculateStarsUseCase:
-        return CalculateStarsUseCase(repo, solar_terms_repo)
+    def provide_calculate_stars_use_case(self, repo: INineStarRepository, solar_terms_repo: ISolarTermsRepository, numerology_reading_repo: INumerologyReadingRepository) -> CalculateStarsUseCase:
+        return CalculateStarsUseCase(repo, solar_terms_repo, numerology_reading_repo)
 
     @singleton
     @provider
@@ -224,3 +228,6 @@ class AppModule(Module):
         binder.bind(IPowerStoneRepository, to=PowerStoneRepository, scope=singleton)
         binder.bind(IMessageCatalog, to=MessageCatalog, scope=singleton)
         binder.bind(PowerStoneRecommendationUseCase, to=PowerStoneRecommendationUseCase, scope=singleton)
+
+        # Phase 5: Numerology DI バインディング
+        binder.bind(INumerologyReadingRepository, to=NumerologyReadingRepository, scope=singleton)

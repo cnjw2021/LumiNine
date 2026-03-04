@@ -504,6 +504,128 @@ export default function Result({ resultData, onReset, compatibilityData }: Resul
         isDayStar={true}
       />
 
+      {/* 数秘術ライフパスナンバー */}
+      {result.numerology && (
+        <div style={{
+          padding: '20px',
+          backgroundColor: 'white',
+          borderRadius: '8px',
+          boxShadow: '0 1px 3px rgba(0,0,0,0.1)',
+          border: '1px solid #e0e0e0'
+        }}>
+          <h3 style={{
+            textAlign: 'center',
+            fontSize: '1rem',
+            fontWeight: 600,
+            margin: '0 0 15px 0',
+            color: '#4a5568'
+          }}>
+            🌟 数秘術 ライフパスナンバー
+          </h3>
+
+          {/* ナンバーと惑星 */}
+          <div style={{
+            display: 'flex',
+            alignItems: 'center',
+            justifyContent: 'center',
+            gap: '15px',
+            marginBottom: '15px'
+          }}>
+            <div style={{
+              width: '60px',
+              height: '60px',
+              borderRadius: '50%',
+              background: 'linear-gradient(135deg, #667eea 0%, #764ba2 100%)',
+              display: 'flex',
+              alignItems: 'center',
+              justifyContent: 'center',
+              boxShadow: '0 4px 12px rgba(102,126,234,0.3)',
+            }}>
+              <span style={{
+                fontSize: '1.8rem',
+                fontWeight: 800,
+                color: 'white',
+                lineHeight: 1,
+              }}>
+                {result.numerology.life_path_number}
+              </span>
+            </div>
+            <div>
+              <p style={{ margin: '0 0 2px 0', fontSize: '0.85rem', fontWeight: 600, color: '#4a5568' }}>
+                ライフパスナンバー {result.numerology.life_path_number}
+              </p>
+              <p style={{ margin: 0, fontSize: '0.75rem', color: '#718096' }}>
+                支配惑星: {result.numerology.planet_name}（{result.numerology.planet.charAt(0).toUpperCase() + result.numerology.planet.slice(1)}）
+              </p>
+            </div>
+          </div>
+
+          {/* キーワードバッジ */}
+          <div style={{
+            display: 'flex',
+            flexWrap: 'wrap',
+            gap: '6px',
+            justifyContent: 'center',
+            marginBottom: '12px'
+          }}>
+            {result.numerology.keywords.map((kw, i) => (
+              <span key={i} style={{
+                padding: '3px 10px',
+                borderRadius: '12px',
+                fontSize: '0.75rem',
+                fontWeight: 500,
+                backgroundColor: '#667eea15',
+                color: '#667eea',
+                border: '1px solid #667eea30',
+              }}>
+                {kw}
+              </span>
+            ))}
+          </div>
+
+          {/* 説明文 */}
+          <p style={{
+            fontSize: '0.85rem',
+            lineHeight: 1.6,
+            color: '#4a5568',
+            margin: '0 0 12px 0',
+            textAlign: 'center',
+          }}>
+            {result.numerology.description}
+          </p>
+
+          {/* 強み・弱み */}
+          <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '10px' }}>
+            <div style={{
+              padding: '8px 10px',
+              borderRadius: '8px',
+              backgroundColor: '#f0fff4',
+              border: '1px solid #c6f6d5',
+            }}>
+              <p style={{ margin: '0 0 4px 0', fontSize: '0.7rem', fontWeight: 600, color: '#38a169' }}>✦ 強み</p>
+              <ul style={{ margin: 0, padding: '0 0 0 16px', listStyleType: 'disc' }}>
+                {result.numerology.strengths.map((s, i) => (
+                  <li key={i} style={{ fontSize: '0.75rem', color: '#2f855a', lineHeight: 1.5 }}>{s}</li>
+                ))}
+              </ul>
+            </div>
+            <div style={{
+              padding: '8px 10px',
+              borderRadius: '8px',
+              backgroundColor: '#fff5f5',
+              border: '1px solid #fed7d7',
+            }}>
+              <p style={{ margin: '0 0 4px 0', fontSize: '0.7rem', fontWeight: 600, color: '#e53e3e' }}>✦ 注意点</p>
+              <ul style={{ margin: 0, padding: '0 0 0 16px', listStyleType: 'disc' }}>
+                {result.numerology.weaknesses.map((w, i) => (
+                  <li key={i} style={{ fontSize: '0.75rem', color: '#c53030', lineHeight: 1.5 }}>{w}</li>
+                ))}
+              </ul>
+            </div>
+          </div>
+        </div>
+      )}
+
       {/* 本命星の属性情報 */}
       <StarAttributesDisplay
         mainStar={main_star.star_number}

@@ -12,6 +12,7 @@ from apps.ninestarki.domain.services.star_life_guidance_service import StarLifeG
 from apps.ninestarki.domain.repositories.star_life_guidance_repository_interface import IStarLifeGuidanceRepository
 from apps.ninestarki.domain.services.direction_marks_domain_service import DirectionMarksDomainService
 from apps.ninestarki.infrastructure.persistence.nine_star_repository import NineStarRepository
+from apps.ninestarki.infrastructure.persistence.numerology_reading_repository import NumerologyReadingRepository
 from apps.ninestarki.use_cases.calculate_stars_use_case import CalculateStarsUseCase
 from apps.ninestarki.domain.services.interfaces.auspicious_dates_service_interface import IAuspiciousDatesService
 from apps.ninestarki.domain.repositories.solar_terms_repository_interface import ISolarTermsRepository
@@ -90,7 +91,7 @@ def test_happy_flow_returns_pdf_bytes(monkeypatch):
         month_fortune_service=NoopPorts(),
         star_attribute_service=NoopPorts(),
         star_life_guidance_service=StarLifeGuidanceService(StarLifeGuidanceRepoFake()),
-        calculate_stars_use_case=CalculateStarsUseCase(NineStarRepository(), SolarTermsRepoFake()),
+        calculate_stars_use_case=CalculateStarsUseCase(NineStarRepository(), SolarTermsRepoFake(), NumerologyReadingRepository()),
         reading_query_repo=NoopPorts(),
         solar_starts_repo=NoopPorts(),
         solar_calendar_provider=NoopPorts(),
