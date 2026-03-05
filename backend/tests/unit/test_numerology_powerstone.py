@@ -159,3 +159,51 @@ class TestNumerologyPowerStoneEngine:
         assert overall["primary"]["stone_name"] == "에메랄드"
         assert "description" in overall["primary"]
         assert overall["secondary"]["stone_id"] == "peridot"
+
+
+# ══════════════════════════════════════════════════════════
+# Yearly Layer Tests
+# ══════════════════════════════════════════════════════════
+
+class TestNumerologyPowerStoneEngineYearly:
+    """Personal Year Number 기반 yearly 레이어 테스트."""
+
+    @pytest.mark.parametrize("number", range(1, 10))
+    def test_recommend_with_yearly_layer(self, engine: NumerologyPowerStoneEngine, number: int):
+        """1~9 모든 PYN에 대해 yearly 레이어가 포함되는지 검증."""
+        result = engine.recommend(number, personal_year_number=number)
+        assert result.yearly is not None
+        assert isinstance(result.yearly, NumerologyStoneRecommendation)
+        assert result.yearly.layer == "yearly"
+        assert isinstance(result.yearly.primary, NumerologyStone)
+        assert isinstance(result.yearly.secondary, NumerologyStone)
+        assert result.personal_year_number == number
+
+    def test_recommend_without_pyn_no_yearly(self, engine: NumerologyPowerStoneEngine):
+        """PYN 미제공 시 yearly 레이어 없음."""
+        result = engine.recommend(1)
+        assert result.yearly is None
+        assert result.personal_year_number is None
+
+    def test_recommend_as_dict_with_yearly(self, engine: NumerologyPowerStoneEngine):
+        """dict 직렬화에서 yearly + personal_year_number 포함 검증."""
+        result = engine.recommend_as_dict(3, locale="ja", personal_year_number=5)
+        assert "yearly" in result
+        assert result["yearly"]["layer"] == "yearly"
+        assert result["yearly"]["primary"]["stone_id"]
+        assert result["yearly"]["secondary"]["stone_id"]
+        assert result["personal_year_number"] == 5
+
+    def test_pyn_out_of_range_raises(self, engine: NumerologyPowerStoneEngine):
+        """PYN 범위(1~9) 벗어나면 ValueError."""
+        with pytest.raises(ValueError, match="1~9"):
+            engine.recommend(1, personal_year_number=0)
+        with pytest.raises(ValueError, match="1~9"):
+            engine.recommend(1, personal_year_number=10)
+
+    def test_pyn_invalid_type_raises(self, engine: NumerologyPowerStoneEngine):
+        """PYN 타입 오류 시 ValueError."""
+        with pytest.raises(ValueError, match="1~9"):
+            engine.recommend(1, personal_year_number="3")  # type: ignore
+        with pytest.raises(ValueError, match="1~9"):
+            engine.recommend(1, personal_year_number=3.5)  # type: ignore
