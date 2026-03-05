@@ -98,6 +98,13 @@ const MonthlyFortuneSection: React.FC<MonthlyFortuneSectionProps> = ({
                 <div style={{ display: 'grid', gridTemplateColumns: 'repeat(3, 1fr)', gap: '20px', position: 'relative', zIndex: 10 }}>
                     {DIRECTION_ORDER.map((dir) => {
                         if (dir === 'center') {
+                            /**
+                             * 中宮 (center palace) is always rendered as neutral.
+                             * In Nine Star Ki, the center position represents the
+                             * observer's current star — it has no directional fortune.
+                             * API `directions` may include a `center` key, but it is
+                             * intentionally ignored here by design.
+                             */
                             return (
                                 <div key={dir} style={{
                                     aspectRatio: '1/1', borderRadius: '14px',
@@ -115,8 +122,8 @@ const MonthlyFortuneSection: React.FC<MonthlyFortuneSectionProps> = ({
 
                         // 'center' is rendered above; skip API lookup for non-directional keys
                         const info = (dir !== 'center' && currentMonthData?.directions?.[dir]) || undefined;
-                        const isAuspicious = info?.is_auspicious;
-                        const hasMarks = info?.marks && info.marks.length > 0;
+                        const isAuspicious = info?.is_auspicious === true;
+                        const isInauspicious = info?.is_auspicious === false;
 
                         let bgColor = 'transparent';
                         let textColor = '#4a4a4a';
@@ -126,7 +133,7 @@ const MonthlyFortuneSection: React.FC<MonthlyFortuneSectionProps> = ({
                             bgColor = 'rgba(155, 176, 165, 0.1)';
                             textColor = '#9bb0a5';
                             icon = '✿';
-                        } else if (hasMarks) {
+                        } else if (isInauspicious) {
                             bgColor = 'rgba(239, 213, 195, 0.3)';
                             textColor = '#d8a7a7';
                             icon = '✕';
