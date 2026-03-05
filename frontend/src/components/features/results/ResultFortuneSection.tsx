@@ -1,8 +1,7 @@
 'use client';
 
 import React from 'react';
-import { Stack, Loader, Text, Paper } from '@mantine/core';
-import { isSixLayer } from '@/types/directionFortune';
+import { isSixLayer, PowerStones, SixLayerPowerStones, PeriodFortuneData } from '@/types/directionFortune';
 import YearlyFortuneSection from './YearlyFortuneSection';
 import MonthlyFortuneSection from './MonthlyFortuneSection';
 
@@ -12,9 +11,8 @@ interface ResultFortuneSectionProps {
   mainStarName: string;
   monthStarName: string;
   targetYear: number;
-  birthdate?: string;
-  powerStones: any;
-  currentMonthData: any;
+  powerStones: PowerStones | SixLayerPowerStones | null;
+  currentMonthData: PeriodFortuneData | null;
   loading: boolean;
   error: string | null;
 }
@@ -68,8 +66,6 @@ const ResultFortuneSection: React.FC<ResultFortuneSectionProps> = ({
 
       {/* 今月の運勢 (Monthly Direction Guide) */}
       <MonthlyFortuneSection
-        mainStar={{ star_number: mainStar, name_jp: mainStarName }}
-        monthStar={{ star_number: monthStar, name_jp: monthStarName }}
         currentMonthData={currentMonthData}
         monthlyStone={monthlyStone}
         protectionStone={protectionStone}

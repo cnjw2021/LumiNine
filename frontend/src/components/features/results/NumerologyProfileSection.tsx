@@ -1,7 +1,7 @@
 'use client';
 
 import React from 'react';
-import { NumerologyStone, SixLayerPowerStones } from '@/types/directionFortune';
+import { SixLayerPowerStones } from '@/types/directionFortune';
 
 interface NumerologyProfileSectionProps {
     stoneData: SixLayerPowerStones;

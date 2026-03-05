@@ -1,11 +1,9 @@
 'use client';
 
 import React from 'react';
-import { GogyoStone, PeriodFortuneData, MonthDirectionInfo } from '@/types/directionFortune';
+import { GogyoStone, PeriodFortuneData } from '@/types/directionFortune';
 
 interface MonthlyFortuneSectionProps {
-    mainStar: { star_number: number; name_jp: string };
-    monthStar: { star_number: number; name_jp: string };
     currentMonthData: PeriodFortuneData | null;
     monthlyStone: GogyoStone | null;
     protectionStone: GogyoStone | null;

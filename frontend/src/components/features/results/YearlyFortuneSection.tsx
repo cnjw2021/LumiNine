@@ -11,7 +11,6 @@ interface YearlyFortuneSectionProps {
 
 const YearlyFortuneSection: React.FC<YearlyFortuneSectionProps> = ({
     yearlyStone,
-    personalYearNumber,
     targetYear,
 }) => {
     const currentYear = targetYear || new Date().getFullYear();

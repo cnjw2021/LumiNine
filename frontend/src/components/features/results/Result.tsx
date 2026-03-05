@@ -166,7 +166,6 @@ export default function Result({ resultData, onReset }: ResultProps) {
               mainStarName={main_star.name_jp}
               monthStarName={month_star.name_jp}
               targetYear={targetYear}
-              birthdate={resultData.birthdate}
               powerStones={powerStones}
               currentMonthData={currentMonthData}
               loading={loading}
