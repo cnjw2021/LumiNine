@@ -396,6 +396,7 @@ def create_monthly_bp():
                     numerology_stones = six_layer_use_case.compute_numerology_stones(
                         birth_date=birth_date,
                         locale=locale_str,
+                        target_year=year,
                     )
                 except ValueError:
                     return jsonify({
@@ -423,8 +424,8 @@ def create_monthly_bp():
                         locale=locale_str,
                     )
                     if numerology_stones:
-                        # 6-Layer: 수비술 4 + 구성기학 2
-                        board['power_stones'] = six_layer_use_case.merge_six_layer(
+                        # 7-Layer: 수비술 5 + 구성기학 2
+                        board['power_stones'] = six_layer_use_case.merge_seven_layer(
                             gogyo_result, numerology_stones,
                         )
                     else:
