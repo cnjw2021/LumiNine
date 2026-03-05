@@ -2,9 +2,10 @@
 
 설계 원칙 (Clean Architecture):
 - 이 모듈은 Domain 레이어에 속하며, FastAPI·SQLAlchemy 등 인프라 구체 클래스에 의존하지 않는다.
-- 외부 의존은 repository 인터페이스(ISolarTermsRepository, IStarGridPatternRepository)를 통해서만 접근한다.
-- solar_terms_data CSV 에 star_number(월반 중궁성)와 zodiac(월간지)가 사전 구축되어 있으므로
-  수식 계산 로직 없이 DB 조회 결과를 직접 사용한다.
+- 외부 의존은 repository 인터페이스(ISolarTermsRepository, IStarGridPatternRepository,
+  IMonthlyDirectionsRepository)를 통해서만 접근한다.
+- solar_terms_data 의 star_number 는 절기운성이며, 월반 중궁성은 그룹 판정 →
+  monthly_directions 테이블 경유로 결정한다.
 """
 from __future__ import annotations
 
@@ -16,6 +17,7 @@ from injector import inject
 
 from apps.ninestarki.domain.repositories.solar_terms_repository_interface import ISolarTermsRepository
 from apps.ninestarki.domain.repositories.star_grid_pattern_repository_interface import IStarGridPatternRepository
+from apps.ninestarki.domain.repositories.monthly_directions_repository_interface import IMonthlyDirectionsRepository
 from apps.ninestarki.domain.exceptions import SetsuMonthNotFoundError
 from apps.ninestarki.domain.services.interfaces.monthly_board_service_interface import IMonthlyBoardDomainService
 from core.utils.logger import get_logger
@@ -70,8 +72,8 @@ class MonthlyBoardResult:
 class MonthlyBoardDomainService(IMonthlyBoardDomainService):
     """월반(月盤) 편성 파이프라인을 총괄하는 도메인 서비스.
 
-    solar_terms_data 에 사전 구축된 star_number(월반 중궁성)와 zodiac(월간지)를
-    직접 사용하여 지정 날짜에 해당하는 절월(節月)을 결정하고 월반을 편성한다.
+    solar_terms_data 의 절기 정보(날짜·간지)와 monthly_directions 테이블의
+    그룹별 월반 중궁성을 사용하여 지정 날짜에 해당하는 절월을 결정하고 월반을 편성한다.
 
     의존성은 생성자 주입(injector) 방식으로 공급된다.
     """
@@ -81,9 +83,11 @@ class MonthlyBoardDomainService(IMonthlyBoardDomainService):
         self,
         solar_terms_repo: ISolarTermsRepository,
         star_grid_repo: IStarGridPatternRepository,
+        monthly_directions_repo: IMonthlyDirectionsRepository,
     ) -> None:
         self._solar_terms_repo = solar_terms_repo
         self._star_grid_repo = star_grid_repo
+        self._monthly_directions_repo = monthly_directions_repo
 
     # ──────────────────────────────
     # Public API
@@ -95,8 +99,9 @@ class MonthlyBoardDomainService(IMonthlyBoardDomainService):
     ) -> MonthlyBoardResult:
         """주어진 날짜가 속하는 절월(節月)의 월반(月盤)을 편성해 반환한다.
 
-        solar_terms_data 에 star_number(월반 중궁성)와 zodiac(월간지)가
-        이미 사전 구축되어 있으므로 수식 계산 없이 DB 조회 결과를 직접 사용한다.
+        절기 정보(날짜·간지)는 solar_terms_data 에서 조회하고,
+        월반 중궁성은 立春 의 star_number 로부터 그룹을 산출한 뒤,
+        해당 그룹을 사용해 monthly_directions 테이블에서 조회해 결정한다.
 
         Args:
             target_date: 기준 날짜 (절입일 경계를 포함해 판정)
@@ -121,11 +126,21 @@ class MonthlyBoardDomainService(IMonthlyBoardDomainService):
             target_date, lookup_year
         )
 
-        # solar_terms_data 에서 직접 취득 (수식 계산 불필요)
-        center_star = matched_term.star_number
         month_zodiac = matched_term.zodiac          # 예: '庚寅'
         month_stem   = month_zodiac[0] if month_zodiac else ''
         month_branch = month_zodiac[1] if len(month_zodiac) > 1 else ''
+
+        # 그룹 판정 → monthly_directions 경유로 월반 중궁성 결정
+        # solar_terms_data.star_number 는 절기운성이므로 직접 사용 불가
+        # spring_start_term 재활용은 lookup_year 가 변경되지 않은 경우만 가능
+        spring_star = (
+            spring_start_term.star_number
+            if spring_start_term and lookup_year == target_date.year
+            else None
+        )
+        center_star = self._resolve_center_star(
+            lookup_year, matched_term.month, spring_star_number=spring_star
+        )
 
         # StarGridPattern 조회
         grid_pattern = self._star_grid_repo.get_by_center_star(center_star)
@@ -142,6 +157,61 @@ class MonthlyBoardDomainService(IMonthlyBoardDomainService):
             period_start=matched_term.solar_terms_date,
             period_end=period_end,
         )
+
+    def _resolve_center_star(
+        self, lookup_year: int, calendar_month: int,
+        *, spring_star_number: int | None = None,
+    ) -> int:
+        """그룹 판정 → monthly_directions 경유로 월반 중궁성을 결정한다.
+
+        MonthFortuneService._get_month_fortune() 과 동일한 로직:
+        1. 해당 절년의 立春 star_number 조회
+        2. 立春 star_number 를 3으로 나눈 나머지로 그룹 판정
+           (1, 4, 7 → group_id=1 / 2, 5, 8 → group_id=2 / 3, 6, 9 → group_id=3)
+        3. monthly_directions(group_id, month) 에서 center_star 취득
+
+        Args:
+            lookup_year: 절년(節年) 기준 연도
+            calendar_month: 양력 월 (1~12, solar_terms_data.month)
+            spring_star_number: 이미 조회된 立春 star_number (None 이면 재조회)
+
+        Returns:
+            center_star (1~9)
+
+        Raises:
+            SetsuMonthNotFoundError: 立春 데이터 또는 monthly_directions 데이터가 없는 경우
+        """
+        if spring_star_number is None:
+            spring_term = self._solar_terms_repo.get_spring_start(lookup_year)
+            if not spring_term:
+                raise SetsuMonthNotFoundError(
+                    f"立春 데이터를 찾을 수 없습니다. year={lookup_year}",
+                    details="DB에 solar_terms 데이터를 확인해 주세요.",
+                )
+            spring_star_number = spring_term.star_number
+
+        # 그룹 판정: 1,4,7→G1 / 2,5,8→G2 / 3,6,9→G3
+        group_id = spring_star_number % 3
+        if group_id == 0:
+            group_id = 3
+
+        monthly_dir = self._monthly_directions_repo.get_by_group_and_month(
+            group_id, calendar_month
+        )
+        if not monthly_dir:
+            raise SetsuMonthNotFoundError(
+                f"monthly_directions 데이터를 찾을 수 없습니다. "
+                f"group={group_id}, month={calendar_month}",
+                details="monthly_directions 테이블 데이터를 확인해 주세요.",
+            )
+
+        logger.debug(
+            "center_star resolved: year=%d month=%d → spring_star=%d "
+            "→ group=%d → center_star=%d",
+            lookup_year, calendar_month, spring_star_number,
+            group_id, monthly_dir.center_star,
+        )
+        return monthly_dir.center_star
 
     def _determine_setsu_month(
         self, target_date: date, lookup_year: int

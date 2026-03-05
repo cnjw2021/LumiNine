@@ -72,6 +72,47 @@ class _StubStarGridPatternRepo:
     def get_by_center_star(self, center_star: int):
         return _StubGridPattern(center_star)
 
+class _StubMonthlyDirection:
+    """MonthlyDirections エンティティのスタブ."""
+    def __init__(self, group_id: int, month: int, center_star: int):
+        self.group_id = group_id
+        self.month = month
+        self.center_star = center_star
+
+
+class _StubMonthlyDirectionsRepo:
+    """monthly_directions テーブルの Stub."""
+
+    def __init__(self, directions: list[_StubMonthlyDirection]):
+        self._directions = directions
+
+    def get_by_group_and_month(self, group_id: int, month: int):
+        for d in self._directions:
+            if d.group_id == group_id and d.month == month:
+                return d
+        return None
+
+    def list_by_group(self, group_id: int):
+        return [d for d in self._directions if d.group_id == group_id]
+
+    def list_by_month(self, month: int):
+        return [d for d in self._directions if d.month == month]
+
+
+def _make_monthly_directions_repo() -> _StubMonthlyDirectionsRepo:
+    """Group 1~3, month 1~12 の stub monthly_directions を生成."""
+    # Group Feb 開始 center_star (伝統的パターン)
+    GROUP_FEB_CENTER = {1: 8, 2: 2, 3: 5}
+    directions = []
+    for gid in [1, 2, 3]:
+        feb_center = GROUP_FEB_CENTER[gid]
+        # 月順: 1,2,3,...,12
+        for month in range(1, 13):
+            # 2月=offset 0, 3月=offset 1, ..., 12月=offset 10, 1月=offset 11
+            offset = (month - 2) % 12
+            cs = ((feb_center - 1 - offset) % 9) + 1
+            directions.append(_StubMonthlyDirection(gid, month, cs))
+    return _StubMonthlyDirectionsRepo(directions)
 
 
 
@@ -122,6 +163,7 @@ class TestMonthlyBoardDomainService:
         return MonthlyBoardDomainService(
             solar_terms_repo=_make_solar_terms_repo(),
             star_grid_repo=_StubStarGridPatternRepo(),
+            monthly_directions_repo=_make_monthly_directions_repo(),
         )
 
     def test_returns_monthly_board_result(self, service):
@@ -164,3 +206,53 @@ class TestMonthlyBoardDomainService:
             "month_zodiac", "period_start", "period_end", "grid_pattern",
         }
         assert required_keys.issubset(d.keys())
+
+    def test_center_star_differs_from_solar_terms_star_number(self, service):
+        """center_star が solar_terms_data.star_number と異なるケースが存在することを
+        検証する回帰テスト。
+
+        グループ経由でcenter_starが決定されるため、절기운성(star_number)をそのまま
+        使うバグが再発すると、この assertion が失敗する。
+        """
+        # stub では 2026-03 の solar_terms_data.star_number = ((3-1)%9)+1 = 3
+        # Group 2 (立春 star=2) の month=3 center_star は
+        # offset=(3-2)%12=1, cs=((2-1-1)%9)+1=1
+        result = service.get_monthly_board(target_date=date(2026, 3, 5))
+        # center_star が期待通り 1 であり、かつ star_number (=3) と異なること
+        assert result.center_star == 1, (
+            "center_star should resolve to 1 for 2026-03 (group 2); "
+            "if this fails, group-based lookup may be incorrect or "
+            "solar_terms_data.star_number is being used directly"
+        )
+
+    def test_center_star_before_lichun_uses_previous_year_group(self, service):
+        """立春より前の日付で lookup_year が前年に繰り下がるケースの回帰テスト。
+
+        2026-01-10 のような 立春 前の日付では、service は前年の立春から
+        グループ／center_star を決定する必要がある。
+
+        stub 実装では:
+          - 1月の solar_terms_data.star_number = ((1-1)%9)+1 = 1
+          - lookup_year=2025 の立春 star_number = 2 → group 2
+          - group 2, month 1: offset=11, cs=((2-1-11)%9)+1 = 9
+        """
+        target = date(2026, 1, 10)
+        result = service.get_monthly_board(target_date=target)
+
+        # stub solar_terms の 1月の star_number は ((1-1)%9)+1 = 1
+        january_term_star_number = ((1 - 1) % 9) + 1
+
+        # グループ／monthly_directions 経由の期待 center_star (stub 定義に基づく)
+        expected_center_star = 9
+
+        # center_star が stub monthly_directions の期待値になっていること
+        assert result.center_star == expected_center_star, (
+            "center_star should resolve to 9 for 2026-01 (pre-立春, previous-year group); "
+            "if this fails, group-based lookup around the year boundary may be incorrect"
+        )
+        # かつ、절기운성(star_number) をそのまま使っていないこと
+        assert result.center_star != january_term_star_number, (
+            "center_star must not equal the January solar_terms_data.star_number; "
+            "if this fails, solar_terms_data.star_number may be used directly "
+            "instead of resolving via the previous year's 立春 group"
+        )
