@@ -1,7 +1,6 @@
 'use client';
 
 import ResultFortuneSection from './ResultFortuneSection';
-import MainStarWithInfo from './MainStarWithInfo';
 import NumerologyStarInfo from './NumerologyStarInfo';
 import TemplateSelectionModal from './TemplateSelectionModal';
 import { useEffect, useState } from 'react';
@@ -16,17 +15,6 @@ import StarAttributesDisplay from './StarAttributesDisplay';
 import FiveElementsCycle from './FiveElementsCycle';
 // Progress removed (modal handles display)
 
-// MainStarWithInfoコンポーネントのStar型と互換性のある型を定義
-interface StarForInfo {
-  number: number;
-  name_jp: string;
-  name_en?: string;
-  element?: string;
-  description?: string;
-  keywords?: string;
-  title?: string;     // 特性タイトルを追加
-  advice?: string;    // アドバイスを追加
-}
 
 // 月命星読みの型定義
 interface MonthStarReading {
@@ -324,18 +312,6 @@ export default function Result({ resultData, onReset, compatibilityData }: Resul
     return keywordsStr.replace(/[,、]/g, '・').trim();
   };
 
-  // StarForInfo形式に変換する関数
-  const formatStarForInfo = (star: CalculationResult['main_star'], additionalInfo?: Partial<StarForInfo>): StarForInfo => ({
-    number: star.star_number,
-    name_jp: star.name_jp,
-    name_en: star.name_en || '',
-    element: star.element || '',
-    description: additionalInfo?.description || star.description || '',
-    // キーワードの処理をprocessKeywords関数で統一
-    keywords: processKeywords(additionalInfo?.keywords || star.keywords),
-    title: additionalInfo?.title || '',
-    advice: additionalInfo?.advice || '',
-  });
 
   return (
     <div style={{ display: 'flex', flexDirection: 'column', gap: '20px' }}>
@@ -476,34 +452,6 @@ export default function Result({ resultData, onReset, compatibilityData }: Resul
         </div>
       </div>
 
-      {/* 本命星のSVGと説明文 */}
-      <MainStarWithInfo
-        star={formatStarForInfo(main_star)}
-        title={`本命星\n（性格・運命の流れ）`}
-      />
-
-      {/* 月命星のSVGと説明文 */}
-      <MainStarWithInfo
-        star={formatStarForInfo(month_star, monthStarReading ? {
-          description: monthStarReading.description,
-          keywords: monthStarReading.keywords,
-          title: monthStarReading.title
-        } : undefined)}
-        title={`月命星\n（環境・対人関係）`}
-        isMonthStar={true}
-      />
-
-      {/* 日命星のSVGと説明文 */}
-      <MainStarWithInfo
-        star={formatStarForInfo(day_star, dailyStarReading ? {
-          description: dailyStarReading.description,
-          keywords: dailyStarReading.keywords || '',
-          title: dailyStarReading.title,
-          advice: dailyStarReading.advice || ''
-        } : undefined)}
-        title={`日命星\n（行動・思考パターン）`}
-        isDayStar={true}
-      />
 
       {/* 数秘術ライフパスナンバー */}
       {result.numerology && (

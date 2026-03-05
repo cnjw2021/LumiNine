@@ -1,7 +1,6 @@
 'use client';
 
 import { useEffect, useState } from 'react';
-import MainStarWithInfo from './MainStarWithInfo';
 import api from '@/utils/api';
 
 // 結果データの型定義
@@ -27,17 +26,6 @@ interface ResultProps {
   onReset: () => void;
 }
 
-// MainStarWithInfoコンポーネントのStar型と互換性のある型を定義
-interface StarForInfo {
-  number: number;
-  name_jp: string;
-  name_en?: string;
-  element?: string;
-  description?: string;
-  keywords?: string;
-  title?: string;     // 特性タイトルを追加
-  advice?: string;    // アドバイスを追加
-}
 
 // 結果データの星情報の型定義
 interface ResultStar {
@@ -132,26 +120,14 @@ export default function SimpleResult({ resultData, onReset }: ResultProps) {
     return keywordsStr.replace(/[,、]/g, '・').trim();
   };
 
-  // StarForInfo形式に変換する関数
-  const formatStarForInfo = (star: ResultStar, additionalInfo?: Partial<StarForInfo>): StarForInfo => ({
-    number: star.star_number,
-    name_jp: star.name_jp,
-    name_en: star.name_en || '',
-    element: star.element || '',
-    description: additionalInfo?.description || star.description || '',
-    // キーワードの処理をprocessKeywords関数で統一
-    keywords: processKeywords(additionalInfo?.keywords || star.keywords),
-    title: additionalInfo?.title || '',
-    advice: additionalInfo?.advice || '',
-  });
 
   return (
     <div style={{ display: 'flex', flexDirection: 'column', gap: '20px' }}>
-      <div style={{ 
-        padding: '20px', 
-        backgroundColor: 'white', 
-        borderRadius: '8px', 
-        boxShadow: '0 1px 3px rgba(0,0,0,0.1)', 
+      <div style={{
+        padding: '20px',
+        backgroundColor: 'white',
+        borderRadius: '8px',
+        boxShadow: '0 1px 3px rgba(0,0,0,0.1)',
         border: '1px solid #e0e0e0'
       }}>
         <div style={{ display: 'flex', flexDirection: 'column', gap: '10px' }}>
@@ -161,7 +137,7 @@ export default function SimpleResult({ resultData, onReset }: ResultProps) {
           <p style={{ textAlign: 'center', color: '#666', margin: 0 }}>
             生年月日: {birthdate}
           </p>
-          
+
           {/* 九星の数字表示セクション */}
           <div style={{ margin: '20px 0' }}>
             <div style={{ display: 'grid', gridTemplateColumns: 'repeat(3, 1fr)', gap: '10px' }}>
@@ -177,9 +153,9 @@ export default function SimpleResult({ resultData, onReset }: ResultProps) {
               }}>
                 <p style={{ fontSize: '0.75rem', fontWeight: 600, color: '#666', margin: '0 0 5px 0' }}>本命星</p>
                 <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', flexDirection: 'column', gap: '2px' }}>
-                  <span style={{ 
-                    fontSize: '2.2rem', 
-                    fontWeight: 800, 
+                  <span style={{
+                    fontSize: '2.2rem',
+                    fontWeight: 800,
                     color: getStarColor(main_star.star_number),
                     lineHeight: 1,
                     textShadow: '0px 2px 4px rgba(0,0,0,0.1)',
@@ -215,9 +191,9 @@ export default function SimpleResult({ resultData, onReset }: ResultProps) {
               }}>
                 <p style={{ fontSize: '0.75rem', fontWeight: 600, color: '#666', margin: '0 0 5px 0' }}>月命星</p>
                 <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', flexDirection: 'column', gap: '2px' }}>
-                  <span style={{ 
-                    fontSize: '2.2rem', 
-                    fontWeight: 800, 
+                  <span style={{
+                    fontSize: '2.2rem',
+                    fontWeight: 800,
                     color: getStarColor(month_star.star_number),
                     lineHeight: 1,
                     textShadow: '0px 2px 4px rgba(0,0,0,0.1)',
@@ -253,9 +229,9 @@ export default function SimpleResult({ resultData, onReset }: ResultProps) {
               }}>
                 <p style={{ fontSize: '0.75rem', fontWeight: 600, color: '#666', margin: '0 0 5px 0' }}>日命星</p>
                 <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', flexDirection: 'column', gap: '2px' }}>
-                  <span style={{ 
-                    fontSize: '2.2rem', 
-                    fontWeight: 800, 
+                  <span style={{
+                    fontSize: '2.2rem',
+                    fontWeight: 800,
                     color: getStarColor(day_star.star_number),
                     lineHeight: 1,
                     textShadow: '0px 2px 4px rgba(0,0,0,0.1)',
@@ -283,38 +259,10 @@ export default function SimpleResult({ resultData, onReset }: ResultProps) {
         </div>
       </div>
 
-      {/* 本命星のSVGと説明文 */}
-      <MainStarWithInfo 
-        star={formatStarForInfo(main_star)} 
-        title={`本命星\n（性格・運命の流れ）`}
-      />
-
-      {/* 月命星のSVGと説明文 */}
-      <MainStarWithInfo 
-        star={formatStarForInfo(month_star, monthStarReading ? {
-          description: monthStarReading.description,
-          keywords: monthStarReading.keywords,
-          title: monthStarReading.title
-        } : undefined)} 
-        title={`月命星\n（環境・対人関係）`}
-        isMonthStar={true}
-      />
-
-      {/* 日命星のSVGと説明文 */}
-      <MainStarWithInfo 
-        star={formatStarForInfo(day_star, dailyStarReading ? {
-          description: dailyStarReading.description,
-          keywords: dailyStarReading.keywords || '',
-          title: dailyStarReading.title,
-          advice: dailyStarReading.advice || ''
-        } : undefined)} 
-        title={`日命星\n（行動・思考パターン）`}
-        isDayStar={true}
-      />
 
       {/* アクションボタン */}
       <div style={{ display: 'flex', justifyContent: 'center', marginTop: '30px' }}>
-        <button 
+        <button
           onClick={onReset}
           style={{
             padding: '10px 20px',

@@ -1,6 +1,5 @@
 export { default as Result } from './Result';
 export { default as SimpleResult } from './SimpleResult';
-export { default as MainStarWithInfo } from './MainStarWithInfo';
 export { default as MainStarKyuseiBoard } from './MainStarKyuseiBoard';
 export { default as ResultFortuneSection } from './ResultFortuneSection';
 export { default as DirectionMapInfo } from './DirectionMapInfo';

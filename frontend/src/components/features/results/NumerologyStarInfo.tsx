@@ -10,7 +10,6 @@ interface NumerologyStarInfoProps {
 
 /**
  * 数秘術ライフパスナンバーの特性を表示するコンポーネント。
- * MainStarWithInfoと一貫したスタイルで表示します。
  */
 const NumerologyStarInfo: React.FC<NumerologyStarInfoProps> = ({ numerology }) => {
   // 数秘術専用グラデーションカラー
