@@ -4,7 +4,6 @@ import React, { useEffect, useState } from 'react';
 import { Paper, Title, Text, Box, Grid, Stack, Loader, Card } from '@mantine/core';
 import api from '@/utils/api';
 import DirectionFortune from '../visualization/DirectionFortune';
-import AnnualFortune from '../visualization/AnnualDirectionsGrid';
 import { PeriodFortuneBoard, PowerStoneSection } from '../visualization';
 
 interface StarData {
@@ -240,32 +239,6 @@ const ResultFortuneSection: React.FC<ResultFortuneSectionProps> = ({ mainStar, m
         birthDate={birthdate}
       />
 
-      {/* 年間吉方位情報表示（一時的に表示させない） */}
-      {targetYear === 0 && yearlyData.length > 0 && (
-        <Paper shadow="sm" p="md" withBorder>
-          <Stack gap="md">
-            <Title order={3}>年間吉方位情報</Title>
-
-            <Box>
-              <Grid gutter={{ base: 'sm', sm: 'md' }} align="stretch">
-                {yearlyData.map((periodData, index) => {
-                  return (
-                    <Grid.Col key={index} span={{ base: 12, sm: 6, md: 4 }} mb="md">
-                      <AnnualFortune periodData={{
-                        ...periodData,
-                        // 1月の場合は翌年を表示するよう修正
-                        display_month: periodData.month === 1
-                          ? `${periodData.year + 1}年${periodData.month}月 ${periodData.zodiac[1]}`
-                          : `${periodData.display_month} ${periodData.zodiac[1]}`
-                      }} />
-                    </Grid.Col>
-                  );
-                })}
-              </Grid>
-            </Box>
-          </Stack>
-        </Paper>
-      )}
     </Stack>
   );
 };
