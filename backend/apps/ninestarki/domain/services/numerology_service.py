@@ -84,6 +84,11 @@ class NumerologyService:
         Raises:
             ValueError: 날짜 형식이 올바르지 않은 경우
         """
+        if not isinstance(target_year, int) or not 1 <= target_year <= 9999:
+            raise ValueError(
+                f"target_year 는 1~9999 범위의 정수여야 합니다: {target_year}"
+            )
+
         date_part = birth_date.strip().split(" ")[0]
         parts = date_part.split("-")
         if len(parts) != 3:

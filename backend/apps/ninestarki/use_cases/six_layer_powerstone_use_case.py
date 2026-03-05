@@ -130,7 +130,7 @@ class SixLayerPowerStoneUseCase:
             return gogyo_result
 
         # ── 3. 수비술 계산 + 6~7-Layer 통합 ────────────────
-        layer_count = "7-Layer" if target_year else "6-Layer"
+        layer_count = "7-Layer" if target_year is not None else "6-Layer"
         logger.info("SixLayerPowerStoneUseCase: birth_date 제공 → %s", layer_count)
         birth_date_normalized = birth_date.strip()
 
