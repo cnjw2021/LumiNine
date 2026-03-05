@@ -206,3 +206,20 @@ class TestMonthlyBoardDomainService:
             "month_zodiac", "period_start", "period_end", "grid_pattern",
         }
         assert required_keys.issubset(d.keys())
+
+    def test_center_star_differs_from_solar_terms_star_number(self, service):
+        """center_star が solar_terms_data.star_number と異なるケースが存在することを
+        検証する回帰テスト。
+
+        グループ経由でcenter_starが決定されるため、절기운성(star_number)をそのまま
+        使うバグが再発すると、この assertion が失敗する。
+        """
+        # stub では 2026-03 の solar_terms_data.star_number = ((3-1)%9)+1 = 3
+        # Group 2 (立春 star=2) の month=3 center_star は
+        # offset=(3-2)%12=1, cs=((2-1-1)%9)+1=1
+        result = service.get_monthly_board(target_date=date(2026, 3, 5))
+        # center_star が star_number (=3) と異なること
+        assert result.center_star != 3, (
+            "center_star should differ from solar_terms_data.star_number; "
+            "group-based lookup is not being used"
+        )

@@ -100,8 +100,8 @@ class MonthlyBoardDomainService(IMonthlyBoardDomainService):
         """주어진 날짜가 속하는 절월(節月)의 월반(月盤)을 편성해 반환한다.
 
         절기 정보(날짜·간지)는 solar_terms_data 에서 조회하고,
-        월반 중궁성은 그룹 판정(立春 star_number → StarGroups) →
-        monthly_directions 테이블 경유로 결정한다.
+        월반 중궁성은 立春 의 star_number 로부터 그룹을 산출한 뒤,
+        해당 그룹을 사용해 monthly_directions 테이블에서 조회해 결정한다.
 
         Args:
             target_date: 기준 날짜 (절입일 경계를 포함해 판정)
@@ -132,8 +132,10 @@ class MonthlyBoardDomainService(IMonthlyBoardDomainService):
 
         # 그룹 판정 → monthly_directions 경유로 월반 중궁성 결정
         # solar_terms_data.star_number 는 절기운성이므로 직접 사용 불가
+        # get_monthly_board() 에서 이미 조회한 spring_start_term 을 재활용
+        spring_star = spring_start_term.star_number if spring_start_term else None
         center_star = self._resolve_center_star(
-            lookup_year, matched_term.month
+            lookup_year, matched_term.month, spring_star_number=spring_star
         )
 
         # StarGridPattern 조회
@@ -152,17 +154,22 @@ class MonthlyBoardDomainService(IMonthlyBoardDomainService):
             period_end=period_end,
         )
 
-    def _resolve_center_star(self, lookup_year: int, calendar_month: int) -> int:
+    def _resolve_center_star(
+        self, lookup_year: int, calendar_month: int,
+        *, spring_star_number: int | None = None,
+    ) -> int:
         """그룹 판정 → monthly_directions 경유로 월반 중궁성을 결정한다.
 
         MonthFortuneService._get_month_fortune() 과 동일한 로직:
         1. 해당 절년의 立春 star_number 조회
-        2. StarGroups.get_group_for_star() 로 그룹 판정
+        2. 立春 star_number 를 3으로 나눈 나머지로 그룹 판정
+           (1, 4, 7 → group_id=1 / 2, 5, 8 → group_id=2 / 3, 6, 9 → group_id=3)
         3. monthly_directions(group_id, month) 에서 center_star 취득
 
         Args:
             lookup_year: 절년(節年) 기준 연도
             calendar_month: 양력 월 (1~12, solar_terms_data.month)
+            spring_star_number: 이미 조회된 立春 star_number (None 이면 재조회)
 
         Returns:
             center_star (1~9)
@@ -170,15 +177,17 @@ class MonthlyBoardDomainService(IMonthlyBoardDomainService):
         Raises:
             SetsuMonthNotFoundError: 立春 데이터 또는 monthly_directions 데이터가 없는 경우
         """
-        spring_term = self._solar_terms_repo.get_spring_start(lookup_year)
-        if not spring_term:
-            raise SetsuMonthNotFoundError(
-                f"立春 데이터를 찾을 수 없습니다. year={lookup_year}",
-                details="DB에 solar_terms 데이터를 확인해 주세요.",
-            )
+        if spring_star_number is None:
+            spring_term = self._solar_terms_repo.get_spring_start(lookup_year)
+            if not spring_term:
+                raise SetsuMonthNotFoundError(
+                    f"立春 데이터를 찾을 수 없습니다. year={lookup_year}",
+                    details="DB에 solar_terms 데이터를 확인해 주세요.",
+                )
+            spring_star_number = spring_term.star_number
 
         # 그룹 판정: 1,4,7→G1 / 2,5,8→G2 / 3,6,9→G3
-        group_id = spring_term.star_number % 3
+        group_id = spring_star_number % 3
         if group_id == 0:
             group_id = 3
 
@@ -195,7 +204,7 @@ class MonthlyBoardDomainService(IMonthlyBoardDomainService):
         logger.debug(
             "center_star resolved: year=%d month=%d → spring_star=%d "
             "→ group=%d → center_star=%d",
-            lookup_year, calendar_month, spring_term.star_number,
+            lookup_year, calendar_month, spring_star_number,
             group_id, monthly_dir.center_star,
         )
         return monthly_dir.center_star
