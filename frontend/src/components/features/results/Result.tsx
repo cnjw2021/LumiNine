@@ -5,6 +5,7 @@ import NumerologyStarInfo from './NumerologyStarInfo';
 import ResultStarDisplay from './ResultStarDisplay';
 import TemplateSelectionModal from './TemplateSelectionModal';
 import { useEffect, useState } from 'react';
+import { usePdfReport } from '@/hooks/usePdfReport';
 import api from '@/utils/api';
 import { useNineStarKiStore } from '@/stores/nineStarKiStore';
 import { ResultProps, PdfJobResultDataMinimal, PartnerMinimal } from '@/types/results';
@@ -14,150 +15,21 @@ import StarAttributesDisplay from './StarAttributesDisplay';
 // Progress removed (modal handles display)
 
 
-
 export default function Result({ resultData, onReset }: ResultProps) {
   const { result, fullName, birthdate } = resultData;
-  const [isGeneratingPdf, setIsGeneratingPdf] = useState<boolean>(false);
-  const [pdfProgress, setPdfProgress] = useState<number>(0);
   const [showTemplateModal, setShowTemplateModal] = useState<boolean>(false);
-  const [browserType, setBrowserType] = useState<'safari' | 'chrome' | 'other'>('other');
 
-  // Zustandストアから日命星と月命星読みデータを保存・取得するための関数を取得
+  // PDF生成とプレビュー用のカスタムフック
   const {
-  } = useNineStarKiStore();
+    isGeneratingPdf,
+    pdfProgress,
+    handleDownloadPdf,
+    handlePreviewReport
+  } = usePdfReport({
+    resultData,
+    onActionComplete: () => setShowTemplateModal(false)
+  });
 
-  // ブラウザを検出する関数
-  const detectBrowser = (): 'safari' | 'chrome' | 'other' => {
-    const userAgent = navigator.userAgent.toLowerCase();
-    if (userAgent.indexOf('safari') !== -1 && userAgent.indexOf('chrome') === -1) {
-      return 'safari';
-    } else if (userAgent.indexOf('chrome') !== -1) {
-      return 'chrome';
-    }
-    return 'other';
-  };
-
-  // ブラウザ検出
-  useEffect(() => {
-    setBrowserType(detectBrowser());
-  }, []);
-
-
-
-  // PDFをダウンロードする関数（Chrome用）
-  const handleDownloadPdf = async (templateId: number) => {
-    await downloadPdf(templateId, false);
-  };
-
-  // 共通のPDFダウンロード関数
-  const downloadPdf = async (templateId: number, useSimple: boolean) => {
-    try {
-      setIsGeneratingPdf(true);
-      setPdfProgress(0);
-
-      const normalizedBirthdate = (resultData.birthdate || '').replace(/\//g, '-');
-      const minimalResultData: PdfJobResultDataMinimal = {
-        fullName: resultData.fullName,
-        birthdate: normalizedBirthdate,
-        gender: (resultData as { gender: 'male' | 'female' }).gender,
-        targetYear: resultData.targetYear || new Date().getFullYear(),
-      };
-
-      // 1. ジョブ登録
-      const createRes = await api.post('/pdf-jobs', {
-        resultData: minimalResultData,
-        templateId,
-        backgroundId: templateId, // 背景IDはテンプレートIDと同じ
-        useSimple,
-      });
-
-      const jobId: string = createRes.data.job_id;
-      setPdfProgress(0); // queued 状態
-
-      // 2. ポーリングでステータス確認
-      const pollInterval = 3000; // 3秒
-      const wait = (ms: number) => new Promise((res) => setTimeout(res, ms));
-
-      while (true) {
-        const statusRes = await api.get(`/pdf-jobs/${jobId}`);
-        const { status, download_url } = statusRes.data;
-
-        if (status === 'queued') {
-          setPdfProgress(10);
-        } else if (status === 'started') {
-          // started 状態が続く間は 30→90% を徐々に進める
-          setPdfProgress((prev) => (prev < 90 ? prev + 10 : prev));
-        }
-
-        if (status === 'finished') {
-          setPdfProgress(100);
-          // ダウンロード開始。ブラウザに任せる。
-          window.location.href = download_url;
-          // 100% をユーザーに見せるため 600ms 程度待機
-          await wait(600);
-          break;
-        }
-
-        if (status === 'failed') {
-          throw new Error('PDF生成に失敗しました。');
-        }
-
-        // まだqueued / started の場合は待機
-        await wait(pollInterval);
-      }
-
-      // 上記 wait で 100% が表示された後にモーダルを閉じる
-      setShowTemplateModal(false);
-    } catch (error) {
-      console.error('PDFの非同期生成中にエラーが発生しました:', error);
-      alert('PDFの生成に失敗しました。もう一度お試しください。');
-    } finally {
-      setPdfProgress(0);
-      setIsGeneratingPdf(false);
-    }
-  };
-
-  // プレビューを表示する関数
-  const handlePreviewReport = async (templateId: number) => {
-    // ブラウザタイプに応じてsimpleディレクトリを使用するかを決定
-    const useSimple = browserType === 'safari';
-
-    try {
-      setIsGeneratingPdf(true);
-
-      // プレビュー用にリクエストデータを準備
-      const resultDataWithReadings = {
-        ...resultData,
-      };
-
-      // プレビューエンドポイントを呼び出し
-      const response = await api.post('/nine-star/preview-report',
-        {
-          resultData: resultDataWithReadings,
-          templateId: templateId,
-          backgroundId: templateId, // 背景IDはテンプレートIDと同じ値を使用
-          useSimple: useSimple // simpleディレクトリのSVGを使うかどうか
-        },
-        { responseType: 'text' }
-      );
-
-      // 新しいタブでHTMLコンテンツを開く
-      const newWindow = window.open('', '_blank');
-      if (newWindow) {
-        newWindow.document.write(response.data);
-        newWindow.document.close();
-      } else {
-        alert('プレビューを表示できません。ポップアップがブロックされている可能性があります。');
-      }
-
-      setShowTemplateModal(false);
-    } catch (error) {
-      console.error('プレビュー表示中にエラーが発生しました:', error);
-      alert('プレビューの表示に失敗しました。もう一度お試しください。');
-    } finally {
-      setIsGeneratingPdf(false);
-    }
-  };
 
   // テンプレート選択モーダルを開く
   const openTemplateModal = () => {
@@ -220,7 +92,6 @@ export default function Result({ resultData, onReset }: ResultProps) {
         mainStarName={main_star.name_jp}
       />
 
-
       {/* ほかのセクションの後、本命星と月命星のガイダンス情報（新規追加）*/}
       <StarLifeGuidance
         mainStar={main_star.star_number}
@@ -234,8 +105,6 @@ export default function Result({ resultData, onReset }: ResultProps) {
         targetYear={resultData.targetYear || new Date().getFullYear()}
         birthdate={resultData.birthdate}
       />
-
-
 
       {/* テンプレート選択モーダル */}
       <TemplateSelectionModal
