@@ -1,3 +1,5 @@
+/* ═══ Result Page Responsive Layout ═══ */
+
 .result-container {
   margin-top: 0px;
   padding: 0px;
@@ -6,11 +8,85 @@
   box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
 }
 
-h2, h3 {
-  color: #333;
+/* Two-column grid: stacks on mobile, side-by-side on desktop */
+.result-grid {
+  display: flex;
+  flex-direction: column;
+  gap: 32px;
 }
 
-p {
-  color: #666;
-  font-size: 14px;
+@media (min-width: 860px) {
+  .result-grid {
+    display: grid;
+    grid-template-columns: 5fr 7fr;
+    gap: 48px;
+  }
+}
+
+/* Yearly Fortune inner grid: stacks on small screens */
+.yearly-fortune-inner {
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+  align-items: center;
+}
+
+@media (min-width: 500px) {
+  .yearly-fortune-inner {
+    display: grid;
+    grid-template-columns: 1fr 2fr;
+    gap: 24px;
+    align-items: center;
+  }
+}
+
+/* Direction grid board - restrict size on all screens */
+.direction-grid-board {
+  max-width: 340px;
+  margin: 0 auto;
+  padding: 20px;
+}
+
+@media (min-width: 500px) {
+  .direction-grid-board {
+    max-width: 380px;
+    padding: 24px;
+  }
+}
+
+/* Monthly stone cards: single col on mobile, 2 cols on wider */
+.monthly-stones-grid {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+}
+
+@media (min-width: 500px) {
+  .monthly-stones-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 20px;
+  }
+}
+
+/* Result page header */
+.result-header {
+  padding: 16px 20px;
+}
+
+@media (min-width: 860px) {
+  .result-header {
+    padding: 24px 32px;
+  }
+}
+
+/* Result page main content */
+.result-main {
+  padding: 24px 16px;
+}
+
+@media (min-width: 860px) {
+  .result-main {
+    padding: 48px 32px;
+  }
 }

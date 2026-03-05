@@ -1,271 +1,189 @@
 'use client';
 
 import React from 'react';
-import { Paper, Title, Box, Text, Badge, Group, Stack, Card, SimpleGrid } from '@mantine/core';
-import { GogyoStone, PeriodFortuneData, MonthDirectionInfo } from '@/types/directionFortune';
+import { GogyoStone, PeriodFortuneData } from '@/types/directionFortune';
 
 interface MonthlyFortuneSectionProps {
-    mainStar: { star_number: number; name_jp: string };
-    monthStar: { star_number: number; name_jp: string };
     currentMonthData: PeriodFortuneData | null;
     monthlyStone: GogyoStone | null;
     protectionStone: GogyoStone | null;
 }
 
-/** 九星の星番号に基づく色 */
-const getStarColor = (starNumber: number): string => {
-    const colors = [
-        '#3490dc', '#2d3748', '#38a169', '#319795', '#ecc94b',
-        '#a0aec0', '#e53e3e', '#805ad5', '#ed64a6',
-    ];
-    return colors[starNumber - 1] || '#3490dc';
+const DIRECTION_ORDER = [
+    'southeast', 'south', 'southwest',
+    'east', 'center', 'west',
+    'northeast', 'north', 'northwest'
+];
+
+const DIRECTION_ABBR: Record<string, string> = {
+    southeast: 'SE', south: 'S', southwest: 'SW',
+    east: 'E', center: '中宮', west: 'W',
+    northeast: 'NE', north: 'N', northwest: 'NW',
 };
 
-/** 方位の日本語表記 */
-const DIRECTION_LABELS: Record<string, string> = {
-    north: '北', northeast: '北東', east: '東', southeast: '南東',
-    south: '南', southwest: '南西', west: '西', northwest: '北西',
-};
-
-/** 吉方位バッジ */
-const DirectionBadge: React.FC<{ direction: string; info: MonthDirectionInfo }> = ({
-    direction,
-    info,
-}) => {
-    const isAuspicious = info.is_auspicious;
-    const bgColor = isAuspicious ? '#ecfdf5' : '#fef2f2';
-    const borderColor = isAuspicious ? '#a7f3d0' : '#fecaca';
-    const textColor = isAuspicious ? '#065f46' : '#991b1b';
-    const icon = isAuspicious ? '◎' : '△';
-
-    return (
-        <Card
-            p="xs"
-            radius="sm"
-            style={{
-                background: bgColor,
-                border: `1px solid ${borderColor}`,
-            }}
-        >
-            <Group gap={6} wrap="nowrap">
-                <Text size="sm" fw={700} style={{ color: textColor, minWidth: '20px' }}>
-                    {icon}
-                </Text>
-                <Stack gap={0} style={{ flex: 1 }}>
-                    <Text size="sm" fw={600} style={{ color: textColor }}>
-                        {DIRECTION_LABELS[direction] || direction}
-                    </Text>
-                    {info.reason && (
-                        <Text size="xs" c="dimmed" lineClamp={1}>
-                            {info.reason}
-                        </Text>
-                    )}
-                </Stack>
-                {info.marks?.length > 0 && (
-                    <Group gap={2}>
-                        {info.marks.map((m, i) => (
-                            <Text key={i} size="xs" style={{ opacity: 0.7 }}>
-                                {m}
-                            </Text>
-                        ))}
-                    </Group>
-                )}
-            </Group>
-        </Card>
-    );
-};
-
-/** 小さな構成気学ストーンカード */
-const GogyoStoneCard: React.FC<{ label: string; stone: GogyoStone; accentColor: string }> = ({
-    label,
-    stone,
-    accentColor,
-}) => (
-    <Card
-        shadow="xs"
-        p="sm"
-        radius="md"
-        style={{
-            background: `linear-gradient(135deg, ${accentColor}08, ${accentColor}15)`,
-            border: `1px solid ${accentColor}25`,
-        }}
-    >
-        <Text fw={600} size="xs" c="dimmed" mb={4}>
-            {label}
-        </Text>
-        <Text fw={700} size="sm" style={{ color: '#2d3748' }}>
+/** Stone card for monthly/protection stone */
+const MonthlyStoneCard: React.FC<{ label: string; stone: GogyoStone; type: string }> = ({ label, stone, type }) => (
+    <div style={{
+        backgroundColor: '#FFFFFF',
+        border: '1px solid rgba(212, 175, 55, 0.1)',
+        padding: '24px', borderRadius: '20px',
+        boxShadow: '0 8px 32px rgba(0,0,0,0.02)',
+        height: '100%',
+    }}>
+        <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '12px' }}>
+            <span style={{
+                fontSize: '10px', letterSpacing: '0.15em', color: '#d4af37',
+                fontFamily: '"Montserrat", sans-serif', fontWeight: 600
+            }}>{label} GUIDANCE</span>
+            <span style={{
+                fontSize: '10px', color: '#4a4a4a', padding: '2px 8px',
+                border: '1px solid rgba(212, 175, 55, 0.4)', borderRadius: '4px',
+                fontFamily: '"Noto Serif JP", serif'
+            }}>{type}</span>
+        </div>
+        <h4 style={{
+            fontFamily: '"Shippori Mincho", "Noto Serif JP", serif',
+            color: '#4a4a4a', fontSize: '16px', fontWeight: 700, marginBottom: '8px', marginTop: 0
+        }}>
             {stone.stone_name}
-        </Text>
-        <Text size="xs" c="dimmed" mt={2}>
+        </h4>
+        <p style={{
+            fontFamily: '"Noto Serif JP", serif', fontSize: '13px',
+            color: 'rgba(74, 74, 74, 0.8)', lineHeight: 1.8, margin: 0
+        }}>
             {stone.reason}
-        </Text>
-    </Card>
+        </p>
+    </div>
 );
 
-const accentColor = '#0ea5e9';
-
-/**
- * Section C: 今月の運勢 (九星気学)
- * ⑦ 本命星 + 月命星 + ⑧ 吉方位テキストリスト + 月運石/護身石
- */
 const MonthlyFortuneSection: React.FC<MonthlyFortuneSectionProps> = ({
-    mainStar,
-    monthStar,
     currentMonthData,
     monthlyStone,
     protectionStone,
 }) => {
-    // 方位データの分類
-    const auspicious: [string, MonthDirectionInfo][] = [];
-    const inauspicious: [string, MonthDirectionInfo][] = [];
-
-    if (currentMonthData?.directions) {
-        Object.entries(currentMonthData.directions).forEach(([dir, info]) => {
-            if (info.is_auspicious) {
-                auspicious.push([dir, info]);
-            } else {
-                inauspicious.push([dir, info]);
-            }
-        });
-    }
-
-    const mainColor = getStarColor(mainStar.star_number);
-    const monthColor = getStarColor(monthStar.star_number);
-
     return (
-        <Paper
-            shadow="sm"
-            p={0}
-            radius="md"
-            style={{
-                background: 'linear-gradient(to bottom right, rgba(255,255,255,0.98), rgba(240,249,255,0.9))',
-                border: '1px solid rgba(209, 213, 219, 0.5)',
-                overflow: 'hidden',
-            }}
-        >
-            {/* ─── ヘッダー ─── */}
-            <Title
-                order={3}
-                ta="center"
-                style={{
-                    color: '#2d3748',
-                    fontSize: 'clamp(0.9rem, 2.5vw, 1.2rem)',
-                    fontWeight: 700,
-                    padding: '14px 16px',
-                    borderBottom: '1px solid rgba(209, 213, 219, 0.6)',
-                    letterSpacing: '0.03em',
-                }}
-            >
-                🌟 今月の運勢
-                {currentMonthData?.display_month && (
-                    <Text component="span" size="sm" fw={400} c="dimmed" ml="xs">
-                        ({currentMonthData.display_month})
-                    </Text>
-                )}
-            </Title>
+        <section>
+            {/* Directional Guide Header */}
+            <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', gap: '8px', marginBottom: '24px' }}>
+                <h3 style={{
+                    color: '#d4af37', fontSize: '11px', letterSpacing: '0.3em',
+                    fontWeight: 500, textTransform: 'uppercase' as const,
+                    fontFamily: '"Montserrat", sans-serif', margin: 0
+                }}>
+                    Directional Guide
+                </h3>
+                <span style={{
+                    color: 'rgba(74, 74, 74, 0.4)', fontSize: '10px',
+                    fontFamily: '"Montserrat", sans-serif', letterSpacing: '0.1em'
+                }}>
+                    {currentMonthData?.display_month || '今月'}
+                </span>
+            </div>
 
-            {/* ─── ⑦ 九星気学の星 ─── */}
-            <Box p="md" style={{ borderBottom: `1px solid ${accentColor}12` }}>
-                <SimpleGrid cols={2} spacing="sm">
-                    <Card
-                        p="sm"
-                        radius="md"
-                        style={{
-                            background: `${mainColor}10`,
-                            border: `2px solid ${mainColor}50`,
-                            textAlign: 'center',
-                        }}
-                    >
-                        <Text size="xs" fw={600} c="dimmed" mb={4}>本命星</Text>
-                        <Text size="xl" fw={800} style={{ color: mainColor, lineHeight: 1 }}>
-                            {mainStar.star_number}
-                        </Text>
-                        <Badge
-                            size="sm"
-                            mt={4}
-                            style={{
-                                background: mainColor,
-                                color: 'white',
-                                fontSize: '0.65rem',
-                            }}
-                        >
-                            {mainStar.name_jp}
-                        </Badge>
-                    </Card>
+            {/* 3×3 Direction Grid Board */}
+            {currentMonthData && (
+                <div className="direction-grid-board" style={{
+                    position: 'relative',
+                    backgroundColor: 'rgba(255, 255, 255, 0.4)',
+                    borderRadius: '20px',
+                    border: '1px solid #ffffff',
+                    boxShadow: '0 10px 40px -10px rgba(0, 0, 0, 0.05)',
+                    marginBottom: '36px'
+                }}>
+                    {/* Cross Lines */}
+                    <div style={{ position: 'absolute', top: '40px', bottom: '40px', left: '33.33%', width: '1px', background: 'linear-gradient(180deg, transparent, rgba(212, 175, 55, 0.4), transparent)' }} />
+                    <div style={{ position: 'absolute', top: '40px', bottom: '40px', right: '33.33%', width: '1px', background: 'linear-gradient(180deg, transparent, rgba(212, 175, 55, 0.4), transparent)' }} />
+                    <div style={{ position: 'absolute', left: '40px', right: '40px', top: '33.33%', height: '1px', background: 'linear-gradient(90deg, transparent, rgba(212, 175, 55, 0.4), transparent)' }} />
+                    <div style={{ position: 'absolute', left: '40px', right: '40px', bottom: '33.33%', height: '1px', background: 'linear-gradient(90deg, transparent, rgba(212, 175, 55, 0.4), transparent)' }} />
 
-                    <Card
-                        p="sm"
-                        radius="md"
-                        style={{
-                            background: `${monthColor}10`,
-                            border: `2px solid ${monthColor}50`,
-                            textAlign: 'center',
-                        }}
-                    >
-                        <Text size="xs" fw={600} c="dimmed" mb={4}>月命星</Text>
-                        <Text size="xl" fw={800} style={{ color: monthColor, lineHeight: 1 }}>
-                            {monthStar.star_number}
-                        </Text>
-                        <Badge
-                            size="sm"
-                            mt={4}
-                            style={{
-                                background: monthColor,
-                                color: 'white',
-                                fontSize: '0.65rem',
-                            }}
-                        >
-                            {monthStar.name_jp}
-                        </Badge>
-                    </Card>
-                </SimpleGrid>
-            </Box>
+                    <div style={{ display: 'grid', gridTemplateColumns: 'repeat(3, 1fr)', gap: '20px', position: 'relative', zIndex: 10 }}>
+                        {DIRECTION_ORDER.map((dir) => {
+                            if (dir === 'center') {
+                                /**
+                                 * 中宮 (center palace) is always rendered as neutral.
+                                 * In Nine Star Ki, the center position represents the
+                                 * observer's current star — it has no directional fortune.
+                                 * API `directions` may include a `center` key, but it is
+                                 * intentionally ignored here by design.
+                                 */
+                                return (
+                                    <div key={dir} style={{
+                                        aspectRatio: '1/1', borderRadius: '14px',
+                                        backgroundColor: '#ffffff',
+                                        display: 'flex', flexDirection: 'column',
+                                        alignItems: 'center', justifyContent: 'center',
+                                        border: '1px solid rgba(212, 175, 55, 0.2)',
+                                        boxShadow: 'inset 0 2px 4px 0 rgba(0, 0, 0, 0.06)'
+                                    }}>
+                                        <span style={{ fontSize: '10px', color: '#d4af37', fontWeight: 700, marginBottom: '4px', fontFamily: '"Noto Serif JP", serif' }}>中宮</span>
+                                        <span style={{ color: '#d4af37', fontSize: '20px' }}>○</span>
+                                    </div>
+                                );
+                            }
 
-            {/* ─── ⑧ 吉方位テキストリスト ─── */}
-            {currentMonthData?.directions && (
-                <Box p="md" style={{ borderBottom: `1px solid ${accentColor}12` }}>
-                    <Text fw={600} size="sm" mb="sm" style={{ color: '#374151' }}>
-                        📍 今月の方位
-                    </Text>
+                            const info = currentMonthData.directions?.[dir];
+                            const isAuspicious = info?.is_auspicious === true;
+                            const isInauspicious = info?.is_auspicious === false;
 
-                    {auspicious.length > 0 && (
-                        <Box mb="sm">
-                            <Text size="xs" fw={600} c="teal" mb={4}>吉方位</Text>
-                            <Stack gap={4}>
-                                {auspicious.map(([dir, info]) => (
-                                    <DirectionBadge key={dir} direction={dir} info={info} />
-                                ))}
-                            </Stack>
-                        </Box>
-                    )}
+                            let bgColor = 'transparent';
+                            let textColor = '#4a4a4a';
+                            let icon = '·';
 
-                    {inauspicious.length > 0 && (
-                        <Box>
-                            <Text size="xs" fw={600} c="red" mb={4}>注意方位</Text>
-                            <Stack gap={4}>
-                                {inauspicious.map(([dir, info]) => (
-                                    <DirectionBadge key={dir} direction={dir} info={info} />
-                                ))}
-                            </Stack>
-                        </Box>
-                    )}
-                </Box>
+                            if (isAuspicious) {
+                                bgColor = 'rgba(155, 176, 165, 0.1)';
+                                textColor = '#9bb0a5';
+                                icon = '✿';
+                            } else if (isInauspicious) {
+                                bgColor = 'rgba(239, 213, 195, 0.3)';
+                                textColor = '#d8a7a7';
+                                icon = '✕';
+                            }
+
+                            return (
+                                <div key={dir} style={{
+                                    aspectRatio: '1/1', borderRadius: '14px',
+                                    backgroundColor: bgColor,
+                                    display: 'flex', flexDirection: 'column',
+                                    alignItems: 'center', justifyContent: 'center',
+                                    border: '1px solid #ffffff'
+                                }}>
+                                    <span style={{
+                                        fontSize: '9px', color: textColor, fontWeight: 700,
+                                        marginBottom: '4px', fontFamily: '"Montserrat", sans-serif'
+                                    }}>
+                                        {DIRECTION_ABBR[dir]}
+                                    </span>
+                                    <span style={{ color: textColor, fontSize: '16px' }}>{icon}</span>
+                                </div>
+                            );
+                        })}
+                    </div>
+                </div>
             )}
 
-            {/* ─── 月運石 / 護身石 ─── */}
+            {/* Monthly and Protection Stones */}
             {(monthlyStone || protectionStone) && (
-                <Box p="md">
-                    <SimpleGrid cols={{ base: 1, xs: 2 }} spacing="sm">
+                <div>
+                    <div style={{ display: 'flex', alignItems: 'center', gap: '8px', marginBottom: '20px' }}>
+                        <h3 style={{
+                            fontFamily: '"Montserrat", sans-serif', color: '#d4af37',
+                            fontSize: '11px', letterSpacing: '0.3em', fontWeight: 500,
+                            textTransform: 'uppercase' as const, margin: 0
+                        }}>
+                            Monthly Guidance Stones
+                        </h3>
+                    </div>
+                    <div className="monthly-stones-grid">
                         {monthlyStone && (
-                            <GogyoStoneCard label="✦ 月運石" stone={monthlyStone} accentColor="#0ea5e9" />
+                            <MonthlyStoneCard label="MONTHLY" stone={monthlyStone} type="月運" />
                         )}
                         {protectionStone && (
-                            <GogyoStoneCard label="✦ 護身石" stone={protectionStone} accentColor="#6366f1" />
+                            <MonthlyStoneCard label="PROTECTION" stone={protectionStone} type="護身" />
                         )}
-                    </SimpleGrid>
-                </Box>
+                    </div>
+                </div>
             )}
-        </Paper>
+        </section>
     );
 };
 
