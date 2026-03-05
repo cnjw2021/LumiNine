@@ -1,0 +1,580 @@
+{
+  "personal_year": {
+    "1": {
+      "life_path": {
+        "1": {
+          "lucky_items": ["旗", "トロフィー"],
+          "lucky_colors": ["レッド"],
+          "fortune_action": "新しい目標を設定し、行動に移す、リーダーシップを発揮する"
+        },
+        "2": {
+          "lucky_items": ["鍵", "橋"],
+          "lucky_colors": ["グリーン"],
+          "fortune_action": "人脈を広げ、協力関係を築く"
+        },
+        "3": {
+          "lucky_items": ["マイク", "スポットライト"],
+          "lucky_colors": ["オレンジ"],
+          "fortune_action": "創造性を活かして自己表現をする"
+        },
+        "4": {
+          "lucky_items": ["基礎", "土台を表すオブジェ"],
+          "lucky_colors": ["ブラウン"],
+          "fortune_action": "安定した基盤を築く"
+        },
+        "5": {
+          "lucky_items": ["翼", "飛行機"],
+          "lucky_colors": ["ブルー"],
+          "fortune_action": "新しい体験をする、冒険に出かける"
+        },
+        "6": {
+          "lucky_items": ["ハート", "絆を表すシンボル"],
+          "lucky_colors": ["ピンク"],
+          "fortune_action": "愛情を深め、人間関係を円滑にする"
+        },
+        "7": {
+          "lucky_items": ["叡智", "知恵を表すシンボル"],
+          "lucky_colors": ["パープル"],
+          "fortune_action": "自己成長、スピリチュアルな探求"
+        },
+        "8": {
+          "lucky_items": ["王冠", "トロフィー"],
+          "lucky_colors": ["ゴールド"],
+          "fortune_action": "金銭的な成功を目指す、リーダーシップを発揮する"
+        },
+        "9": {
+          "lucky_items": ["光", "天使"],
+          "lucky_colors": ["ホワイト"],
+          "fortune_action": "完結と新たな始まり、奉仕の精神"
+        },
+        "11": {
+          "lucky_items": ["ノート", "ペン"],
+          "lucky_colors": ["インディゴブルー"],
+          "fortune_action": "直感を信じて新しいプロジェクトを始める"
+        },
+        "22": {
+          "lucky_items": ["手帳", "定規"],
+          "lucky_colors": ["ロイヤルブルー"],
+          "fortune_action": "大規模なプロジェクトの計画を立てる"
+        },
+        "33": {
+          "lucky_items": ["本", "植物"],
+          "lucky_colors": ["パールホワイト"],
+          "fortune_action": "人々を導き、教育的な活動を始める"
+        }
+      }
+    },
+    "2": {
+      "life_path": {
+        "1": {
+          "lucky_items": ["橋", "パートナーシップを表すシンボル"],
+          "lucky_colors": ["グリーン"],
+          "fortune_action": "人脈を広げ、協力関係を築く"
+        },
+        "2": {
+          "lucky_items": ["ハート", "絆を表すシンボル"],
+          "lucky_colors": ["ピンク"],
+          "fortune_action": "愛情を深め、人間関係を円滑にする"
+        },
+        "3": {
+          "lucky_items": ["グループ", "チームを表すシンボル"],
+          "lucky_colors": ["イエロー"],
+          "fortune_action": "共同作業、チームワークを大切にする"
+        },
+        "4": {
+          "lucky_items": ["家", "家庭を表すシンボル"],
+          "lucky_colors": ["グリーン"],
+          "fortune_action": "家庭円満、安定した生活を送る"
+        },
+        "5": {
+          "lucky_items": ["旅", "移動を表すシンボル"],
+          "lucky_colors": ["ブルー"],
+          "fortune_action": "海外旅行、異文化交流"
+        },
+        "6": {
+          "lucky_items": ["結婚指輪", "ペアリング"],
+          "lucky_colors": ["ピンク"],
+          "fortune_action": "結婚、パートナーシップを深める"
+        },
+        "7": {
+          "lucky_items": ["共同体", "コミュニティを表すシンボル"],
+          "lucky_colors": ["ブルー"],
+          "fortune_action": "奉仕活動、ボランティア活動"
+        },
+        "8": {
+          "lucky_items": ["契約書", "パートナーシップ契約"],
+          "lucky_colors": ["ゴールド"],
+          "fortune_action": "ビジネスパートナーシップを築く"
+        },
+        "9": {
+          "lucky_items": ["グループ", "コミュニティを表すシンボル"],
+          "lucky_colors": ["ホワイト"],
+          "fortune_action": "人道的な活動、ボランティア活動"
+        },
+        "11": {
+          "lucky_items": ["日記帳", "アロマ"],
+          "lucky_colors": ["ディープパープル"],
+          "fortune_action": "瞑想を通じて人との絆を深める"
+        },
+        "22": {
+          "lucky_items": ["パソコン", "手帳"],
+          "lucky_colors": ["ネイビー"],
+          "fortune_action": "チームでの大きなプロジェクトを推進する"
+        },
+        "33": {
+          "lucky_items": ["絵画", "音楽"],
+          "lucky_colors": ["クリスタルホワイト"],
+          "fortune_action": "芸術を通じて人々を癒す"
+        }
+      }
+    },
+    "3": {
+      "life_path": {
+        "1": {
+          "lucky_items": ["マイク", "スポットライト"],
+          "lucky_colors": ["オレンジ"],
+          "fortune_action": "創造性を活かして自己表現をする"
+        },
+        "2": {
+          "lucky_items": ["グループ", "チームを表すシンボル"],
+          "lucky_colors": ["イエロー"],
+          "fortune_action": "共同作業、チームワークを大切にする"
+        },
+        "3": {
+          "lucky_items": ["絵画", "彫刻"],
+          "lucky_colors": ["イエロー"],
+          "fortune_action": "芸術的な活動を楽しむ"
+        },
+        "4": {
+          "lucky_items": ["楽器", "音楽CD"],
+          "lucky_colors": ["グリーン"],
+          "fortune_action": "音楽鑑賞、自然の中で過ごす"
+        },
+        "5": {
+          "lucky_items": ["カメラ", "ビデオカメラ"],
+          "lucky_colors": ["ブルー"],
+          "fortune_action": "旅行、写真撮影"
+        },
+        "6": {
+          "lucky_items": ["パーティーグッズ", "装飾"],
+          "lucky_colors": ["ピンク"],
+          "fortune_action": "パーティーに参加する、友人と過ごす"
+        },
+        "7": {
+          "lucky_items": ["哲学書", "アート作品"],
+          "lucky_colors": ["パープル"],
+          "fortune_action": "読書、美術館鑑賞"
+        },
+        "8": {
+          "lucky_items": ["ブランド品", "高級品"],
+          "lucky_colors": ["ゴールド"],
+          "fortune_action": "自分にご褒美を与える"
+        },
+        "9": {
+          "lucky_items": ["キャンドル", "アロマ"],
+          "lucky_colors": ["ホワイト"],
+          "fortune_action": "リラックスできる空間を作る"
+        },
+        "11": {
+          "lucky_items": ["カード", "香り"],
+          "lucky_colors": ["ミスティックパープル"],
+          "fortune_action": "創造性と直感を組み合わせて表現する"
+        },
+        "22": {
+          "lucky_items": ["スケッチブック", "定規"],
+          "lucky_colors": ["ミッドナイトブルー"],
+          "fortune_action": "アイデアを具体的な形にする"
+        },
+        "33": {
+          "lucky_items": ["絵本", "楽器"],
+          "lucky_colors": ["オパールホワイト"],
+          "fortune_action": "芸術を通じて人々に喜びを与える"
+        }
+      }
+    },
+    "4": {
+      "life_path": {
+        "1": {
+          "lucky_items": ["家", "家庭を表すシンボル"],
+          "lucky_colors": ["ブラウン"],
+          "fortune_action": "家の模様替え、ガーデニング"
+        },
+        "2": {
+          "lucky_items": ["家族写真", "アルバム"],
+          "lucky_colors": ["グリーン"],
+          "fortune_action": "家族との時間を大切にする"
+        },
+        "3": {
+          "lucky_items": ["日記", "手帳"],
+          "lucky_colors": ["イエロー"],
+          "fortune_action": "目標を立て、計画的に行動する"
+        },
+        "4": {
+          "lucky_items": ["土地", "不動産の書類"],
+          "lucky_colors": ["ブラウン"],
+          "fortune_action": "不動産投資、資産形成"
+        },
+        "5": {
+          "lucky_items": ["地図", "旅行ガイドブック"],
+          "lucky_colors": ["ブルー"],
+          "fortune_action": "旅行計画を立てる、新しい場所に住む"
+        },
+        "6": {
+          "lucky_items": ["家族の記念品"],
+          "lucky_colors": ["ピンク"],
+          "fortune_action": "家族との絆を深める"
+        },
+        "7": {
+          "lucky_items": ["自己啓発本", "哲学書"],
+          "lucky_colors": ["パープル"],
+          "fortune_action": "自己成長、スキルアップ"
+        },
+        "8": {
+          "lucky_items": ["預金通帳", "投資に関する本"],
+          "lucky_colors": ["ゴールド"],
+          "fortune_action": "金銭管理、資産運用"
+        },
+        "9": {
+          "lucky_items": ["瞑想グッズ", "ヨガマット"],
+          "lucky_colors": ["ホワイト"],
+          "fortune_action": "心身をリフレッシュする"
+        },
+        "11": {
+          "lucky_items": ["手帳", "アロマ"],
+          "lucky_colors": ["ディープインディゴ"],
+          "fortune_action": "精神的な洞察を実践的な行動に移す"
+        },
+        "22": {
+          "lucky_items": ["メジャー", "ノート"],
+          "lucky_colors": ["スチールブルー"],
+          "fortune_action": "長期的な視点で基盤を築く"
+        },
+        "33": {
+          "lucky_items": ["本", "植物"],
+          "lucky_colors": ["ムーンライトホワイト"],
+          "fortune_action": "安定した環境で人々を導く"
+        }
+      }
+    },
+    "5": {
+      "life_path": {
+        "1": {
+          "lucky_items": ["翼", "飛行機"],
+          "lucky_colors": ["ブルー"],
+          "fortune_action": "新しい体験をする、冒険に出かける"
+        },
+        "2": {
+          "lucky_items": ["旅", "移動を表すシンボル"],
+          "lucky_colors": ["ブルー"],
+          "fortune_action": "グループ旅行、交流会に参加する"
+        },
+        "3": {
+          "lucky_items": ["カメラ", "ビデオカメラ"],
+          "lucky_colors": ["ブルー"],
+          "fortune_action": "旅行中のスケッチ、写真撮影"
+        },
+        "4": {
+          "lucky_items": ["地図", "旅行ガイドブック"],
+          "lucky_colors": ["グリーン"],
+          "fortune_action": "新しい土地で暮らす"
+        },
+        "5": {
+          "lucky_items": ["パスポート", "ビザ"],
+          "lucky_colors": ["パープル"],
+          "fortune_action": "海外旅行、留学"
+        },
+        "6": {
+          "lucky_items": ["友人のプレゼント"],
+          "lucky_colors": ["ピンク"],
+          "fortune_action": "友人との旅行、交流"
+        },
+        "7": {
+          "lucky_items": ["外国語の本", "翻訳アプリ"],
+          "lucky_colors": ["パープル"],
+          "fortune_action": "語学学習、異文化理解"
+        },
+        "8": {
+          "lucky_items": ["ビジネス"],
+          "lucky_colors": ["ゴールド"],
+          "fortune_action": "海外でのビジネス展開"
+        },
+        "9": {
+          "lucky_items": ["世界地図", "グローブ"],
+          "lucky_colors": ["ホワイト"],
+          "fortune_action": "世界平和への貢献"
+        },
+        "11": {
+          "lucky_items": ["カレンダー", "アロマ"],
+          "lucky_colors": ["コズミックパープル"],
+          "fortune_action": "直感に従って新しい体験を求める"
+        },
+        "22": {
+          "lucky_items": ["タブレット", "ペン"],
+          "lucky_colors": ["オーシャンブルー"],
+          "fortune_action": "革新的なアイデアを実現する"
+        },
+        "33": {
+          "lucky_items": ["本", "鈴"],
+          "lucky_colors": ["エーテルホワイト"],
+          "fortune_action": "世界中の人々と知識を共有する"
+        }
+      }
+    },
+    "6": {
+      "life_path": {
+        "1": {
+          "lucky_items": ["ハート", "絆を表すシンボル"],
+          "lucky_colors": ["ピンク"],
+          "fortune_action": "愛情表現を豊かにする"
+        },
+        "2": {
+          "lucky_items": ["家族写真", "アルバム"],
+          "lucky_colors": ["ピンク"],
+          "fortune_action": "家族との絆を深める"
+        },
+        "3": {
+          "lucky_items": ["手紙", "絵画"],
+          "lucky_colors": ["ピンク"],
+          "fortune_action": "感謝の手紙を書く、プレゼントを作る"
+        },
+        "4": {
+          "lucky_items": ["家庭菜園", "観葉植物"],
+          "lucky_colors": ["グリーン"],
+          "fortune_action": "家庭円満のために努力する"
+        },
+        "5": {
+          "lucky_items": ["友人のプレゼント"],
+          "lucky_colors": ["ピンク"],
+          "fortune_action": "友人との旅行、交流"
+        },
+        "6": {
+          "lucky_items": ["結婚指輪", "ペアリング"],
+          "lucky_colors": ["ピンク"],
+          "fortune_action": "結婚、パートナーシップを深める"
+        },
+        "7": {
+          "lucky_items": ["自己啓発本", "人間関係に関する本"],
+          "lucky_colors": ["パープル"],
+          "fortune_action": "コミュニケーションスキルを磨く"
+        },
+        "8": {
+          "lucky_items": ["ボランティア活動の証明書"],
+          "lucky_colors": ["ピンク"],
+          "fortune_action": "社会貢献活動に参加する"
+        },
+        "9": {
+          "lucky_items": ["癒しの音楽", "アロマ"],
+          "lucky_colors": ["ホワイト"],
+          "fortune_action": "リラックスできる空間を作る"
+        },
+        "11": {
+          "lucky_items": ["水晶", "日記"],
+          "lucky_colors": ["スピリチュアルパープル"],
+          "fortune_action": "愛と調和を精神的な次元で深める"
+        },
+        "22": {
+          "lucky_items": ["パソコン", "ノート"],
+          "lucky_colors": ["ディープネイビー"],
+          "fortune_action": "家族や地域社会のための大きな計画を立てる"
+        },
+        "33": {
+          "lucky_items": ["写真", "植物"],
+          "lucky_colors": ["セレスティアルホワイト"],
+          "fortune_action": "愛と慈しみの心で人々を導く"
+        }
+      }
+    },
+    "7": {
+      "life_path": {
+        "1": {
+          "lucky_items": ["哲学書", "自己啓発本"],
+          "lucky_colors": ["パープル"],
+          "fortune_action": "自己成長のための勉強をする"
+        },
+        "2": {
+          "lucky_items": ["瞑想グッズ"],
+          "lucky_colors": ["ブルー"],
+          "fortune_action": "瞑想、ヨガを行う"
+        },
+        "3": {
+          "lucky_items": ["日記", "ジャーナル"],
+          "lucky_colors": ["イエロー"],
+          "fortune_action": "自己分析を行う"
+        },
+        "4": {
+          "lucky_items": ["自然の中での瞑想"],
+          "lucky_colors": ["グリーン"],
+          "fortune_action": "自然と触れ合う"
+        },
+        "5": {
+          "lucky_items": ["海外旅行ガイドブック"],
+          "lucky_colors": ["パープル"],
+          "fortune_action": "異文化に触れる"
+        },
+        "6": {
+          "lucky_items": ["クリスタル浄化"],
+          "lucky_colors": ["ピンク"],
+          "fortune_action": "スピリチュアルな活動に参加する"
+        },
+        "7": {
+          "lucky_items": ["占星術の本", "タロットカード"],
+          "lucky_colors": ["パープル"],
+          "fortune_action": "占いやスピリチュアルな学びを深める"
+        },
+        "8": {
+          "lucky_items": ["自己投資に関する本"],
+          "lucky_colors": ["ゴールド"],
+          "fortune_action": "自己成長のための投資をする"
+        },
+        "9": {
+          "lucky_items": ["瞑想音楽", "アロマ"],
+          "lucky_colors": ["ホワイト"],
+          "fortune_action": "心身をリフレッシュする"
+        },
+        "11": {
+          "lucky_items": ["本", "アロマ"],
+          "lucky_colors": ["ミスティックインディゴ"],
+          "fortune_action": "高次の知恵を探求し、深い洞察を得る"
+        },
+        "22": {
+          "lucky_items": ["手帳", "ペン"],
+          "lucky_colors": ["ロイヤルネイビー"],
+          "fortune_action": "研究成果を実践的な形にする"
+        },
+        "33": {
+          "lucky_items": ["写真", "植物"],
+          "lucky_colors": ["ダイヴァインホワイト"],
+          "fortune_action": "精神的な教えを分かりやすく伝える"
+        }
+      }
+    },
+    "8": {
+      "life_path": {
+        "1": {
+          "lucky_items": ["金貨", "宝くじ"],
+          "lucky_colors": ["ゴールド"],
+          "fortune_action": "金運アップのための行動をする"
+        },
+        "2": {
+          "lucky_items": ["ビジネスカード", "名刺入れ"],
+          "lucky_colors": ["ゴールド"],
+          "fortune_action": "ビジネスパートナーシップを築く"
+        },
+        "3": {
+          "lucky_items": ["ビジネスプラン", "プレゼンテーション"],
+          "lucky_colors": ["ゴールド"],
+          "fortune_action": "ビジネスアイデアを形にする"
+        },
+        "4": {
+          "lucky_items": ["不動産に関する書類"],
+          "lucky_colors": ["ブラウン"],
+          "fortune_action": "不動産投資をする"
+        },
+        "5": {
+          "lucky_items": ["海外のビジネス雑誌"],
+          "lucky_colors": ["パープル"],
+          "fortune_action": "海外進出を目指す"
+        },
+        "6": {
+          "lucky_items": ["高価なプレゼント"],
+          "lucky_colors": ["ゴールド"],
+          "fortune_action": "自分にご褒美を与える"
+        },
+        "7": {
+          "lucky_items": ["ビジネス書", "投資に関する本"],
+          "lucky_colors": ["ブルー"],
+          "fortune_action": "金融に関する知識を身につける"
+        },
+        "8": {
+          "lucky_items": ["高級時計", "ブランド品"],
+          "lucky_colors": ["ゴールド"],
+          "fortune_action": "ステータスシンボルを手に入れる"
+        },
+        "9": {
+          "lucky_items": ["成功を象徴するオブジェ"],
+          "lucky_colors": ["ゴールド"],
+          "fortune_action": "成功をイメージする"
+        },
+        "11": {
+          "lucky_items": ["手帳", "アロマ"],
+          "lucky_colors": ["コズミックインディゴ"],
+          "fortune_action": "直感とビジネスセンスを組み合わせる"
+        },
+        "22": {
+          "lucky_items": ["パソコン", "手帳"],
+          "lucky_colors": ["インペリアルブルー"],
+          "fortune_action": "大規模なビジネスプロジェクトを実現する"
+        },
+        "33": {
+          "lucky_items": ["本", "植物"],
+          "lucky_colors": ["ピュアホワイト"],
+          "fortune_action": "事業を通じて社会に貢献する"
+        }
+      }
+    },
+    "9": {
+      "life_path": {
+        "1": {
+          "lucky_items": ["卒業証書", "認定証"],
+          "lucky_colors": ["ホワイト"],
+          "fortune_action": "新しい章を始める準備をする"
+        },
+        "2": {
+          "lucky_items": ["グループの記念品"],
+          "lucky_colors": ["ホワイト"],
+          "fortune_action": "別れと新たな出会いを大切にする"
+        },
+        "3": {
+          "lucky_items": ["作品集", "ポートフォリオ"],
+          "lucky_colors": ["ホワイト"],
+          "fortune_action": "これまでの成果を振り返る"
+        },
+        "4": {
+          "lucky_items": ["引越しに関する書類"],
+          "lucky_colors": ["ホワイト"],
+          "fortune_action": "新しい住まいを探す"
+        },
+        "5": {
+          "lucky_items": ["旅の思い出", "アルバム"],
+          "lucky_colors": ["ホワイト"],
+          "fortune_action": "過去の旅を振り返る"
+        },
+        "6": {
+          "lucky_items": ["結婚式のアルバム"],
+          "lucky_colors": ["ホワイト"],
+          "fortune_action": "結婚生活を振り返る"
+        },
+        "7": {
+          "lucky_items": ["自己啓発本", "哲学書"],
+          "lucky_colors": ["ホワイト"],
+          "fortune_action": "自己成長の振り返りをする"
+        },
+        "8": {
+          "lucky_items": ["過去のプロジェクトの資料"],
+          "lucky_colors": ["ホワイト"],
+          "fortune_action": "これまでの実績を振り返る"
+        },
+        "9": {
+          "lucky_items": ["浄化アイテム", "お守り"],
+          "lucky_colors": ["ホワイト"],
+          "fortune_action": "心身を清める"
+        },
+        "11": {
+          "lucky_items": ["日記", "アロマ"],
+          "lucky_colors": ["ユニバーサルパープル"],
+          "fortune_action": "精神的な完成と新たな始まりを準備する"
+        },
+        "22": {
+          "lucky_items": ["パソコン", "ノート"],
+          "lucky_colors": ["コズミックブルー"],
+          "fortune_action": "大きなプロジェクトの完成と新たな計画"
+        },
+        "33": {
+          "lucky_items": ["本", "CD"],
+          "lucky_colors": ["トランセンデントホワイト"],
+          "fortune_action": "人々への奉仕と新たな教えの準備"
+        }
+      }
+    }
+  }
+} 

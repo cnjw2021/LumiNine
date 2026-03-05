@@ -20,6 +20,10 @@ from injector import inject
 from apps.ninestarki.domain.repositories.numerology_powerstone_repository_interface import (
     INumerologyPowerStoneRepository,
 )
+from apps.ninestarki.domain.value_objects.numerology import (
+    MASTER_NUMBERS,
+    MASTER_TO_BASE,
+)
 from apps.ninestarki.domain.value_objects.numerology_powerstone import (
     NumerologyPowerStoneResult,
     NumerologyStoneRecommendation,
@@ -31,16 +35,28 @@ logger = get_logger(__name__)
 _LIFE_PATH_LAYERS = ("overall", "health", "wealth", "love")
 _YEARLY_LAYER = "yearly"
 
+# Master Number/PYN 유효 범위
+_VALID_NUMBERS = frozenset(range(1, 10)) | MASTER_NUMBERS
+
 
 class NumerologyPowerStoneEngine:
     """수비술 기반 4-Layer 파워스톤 매칭 엔진.
 
     DI 를 통해 INumerologyPowerStoneRepository 를 주입받는다.
+    Master Number(11/22/33)는 base number 기반으로 스톤을 매핑한다.
     """
 
     @inject
     def __init__(self, repo: INumerologyPowerStoneRepository) -> None:
         self._repo = repo
+
+    @staticmethod
+    def _to_stone_number(n: int) -> int:
+        """Master Number → base number 변환 (스톤 매핑용).
+
+        11→2, 22→4, 33→6. 일반 숫자는 그대로 반환.
+        """
+        return MASTER_TO_BASE.get(n, n)
 
     def recommend(
         self,
@@ -50,8 +66,8 @@ class NumerologyPowerStoneEngine:
         """수비술 파워스톤 추천 실행 (locale 비의존 VO 반환).
 
         Args:
-            life_path_number: 사용자 Life Path Number (1~9)
-            personal_year_number: Personal Year Number (1~9, optional)
+            life_path_number: 사용자 Life Path Number (1~9 또는 11/22/33)
+            personal_year_number: Personal Year Number (1~9 또는 11/22/33, optional)
 
         Returns:
             NumerologyPowerStoneResult (overall, health, wealth, love, [yearly])
@@ -65,7 +81,9 @@ class NumerologyPowerStoneEngine:
             personal_year_number,
         )
 
-        mapping = self._repo.get_mapping(life_path_number)
+        # Master Number → base number 로 스톤 매핑
+        stone_number = self._to_stone_number(life_path_number)
+        mapping = self._repo.get_mapping(stone_number)
         planet = mapping["planet"]
 
         # Life Path 기반 4개 레이어 (고정)
@@ -84,11 +102,12 @@ class NumerologyPowerStoneEngine:
         # Personal Year 기반 연운석 (매년 변경)
         yearly_rec: Optional[NumerologyStoneRecommendation] = None
         if personal_year_number is not None:
-            if not isinstance(personal_year_number, int) or not 1 <= personal_year_number <= 9:
+            if not isinstance(personal_year_number, int) or personal_year_number not in _VALID_NUMBERS:
                 raise ValueError(
-                    f"Personal Year Number 는 1~9 범위여야 합니다: {personal_year_number}"
+                    f"Personal Year Number 는 1~9 또는 11/22/33 범위여야 합니다: {personal_year_number}"
                 )
-            yearly_mapping = self._repo.get_mapping(personal_year_number)
+            pyn_stone = self._to_stone_number(personal_year_number)
+            yearly_mapping = self._repo.get_mapping(pyn_stone)
             yearly_planet = yearly_mapping["planet"]
             if _YEARLY_LAYER not in yearly_mapping:
                 raise ValueError(

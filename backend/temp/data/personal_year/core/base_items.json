@@ -1,0 +1,472 @@
+{
+  "personal_year": {
+    "1": {
+      "life_path": {
+        "1": {
+          "lucky_items": ["ノート", "ペン", "手帳"],
+          "lucky_colors": ["ゴールド"]
+        },
+        "2": {
+          "lucky_items": ["ペアのアクセサリー", "ミラー"],
+          "lucky_colors": ["シルバー"]
+        },
+        "3": {
+          "lucky_items": ["絵筆", "楽器", "手帳"],
+          "lucky_colors": ["イエロー"]
+        },
+        "4": {
+          "lucky_items": ["植物", "アロマキャンドル"],
+          "lucky_colors": ["グリーン"]
+        },
+        "5": {
+          "lucky_items": ["パスポート", "地図", "カメラ"],
+          "lucky_colors": ["パープル"]
+        },
+        "6": {
+          "lucky_items": ["クリスタル", "お花"],
+          "lucky_colors": ["ピンク"]
+        },
+        "7": {
+          "lucky_items": ["本", "アロマオイル"],
+          "lucky_colors": ["ブルー"]
+        },
+        "8": {
+          "lucky_items": ["財布", "クリスタル"],
+          "lucky_colors": ["ゴールド"]
+        },
+        "9": {
+          "lucky_items": ["お香", "浄化アイテム"],
+          "lucky_colors": ["ホワイト"]
+        },
+        "11": {
+          "lucky_items": ["紫色のノート", "瞑想用クッション"],
+          "lucky_colors": ["インディゴブルー"]
+        },
+        "22": {
+          "lucky_items": ["手帳", "定規"],
+          "lucky_colors": ["ロイヤルブルー"]
+        },
+        "33": {
+          "lucky_items": ["観葉植物", "音楽CD"],
+          "lucky_colors": ["パールホワイト"]
+        }
+      }
+    },
+    "2": {
+      "life_path": {
+        "1": {
+          "lucky_items": ["ペアのアクセサリー", "ミラー"],
+          "lucky_colors": ["シルバー"]
+        },
+        "2": {
+          "lucky_items": ["ペアのアクセサリー", "ミラー"],
+          "lucky_colors": ["シルバー"]
+        },
+        "3": {
+          "lucky_items": ["絵筆", "楽器", "手帳"],
+          "lucky_colors": ["イエロー"]
+        },
+        "4": {
+          "lucky_items": ["植物", "アロマキャンドル"],
+          "lucky_colors": ["グリーン"]
+        },
+        "5": {
+          "lucky_items": ["パスポート", "地図", "カメラ"],
+          "lucky_colors": ["パープル"]
+        },
+        "6": {
+          "lucky_items": ["クリスタル", "お花"],
+          "lucky_colors": ["ピンク"]
+        },
+        "7": {
+          "lucky_items": ["本", "アロマオイル"],
+          "lucky_colors": ["ブルー"]
+        },
+        "8": {
+          "lucky_items": ["財布", "クリスタル"],
+          "lucky_colors": ["ゴールド"]
+        },
+        "9": {
+          "lucky_items": ["お香", "浄化アイテム"],
+          "lucky_colors": ["ホワイト"]
+        },
+        "11": {
+          "lucky_items": ["アロマキャンドル", "日記帳"],
+          "lucky_colors": ["ディープパープル"]
+        },
+        "22": {
+          "lucky_items": ["ノートパソコン", "手帳"],
+          "lucky_colors": ["ネイビー"]
+        },
+        "33": {
+          "lucky_items": ["絵画", "ヨガマット"],
+          "lucky_colors": ["クリスタルホワイト"]
+        }
+      }
+    },
+    "3": {
+      "life_path": {
+        "1": {
+          "lucky_items": ["絵筆", "楽器", "手帳"],
+          "lucky_colors": ["イエロー"]
+        },
+        "2": {
+          "lucky_items": ["ペアのアクセサリー", "ミラー"],
+          "lucky_colors": ["シルバー"]
+        },
+        "3": {
+          "lucky_items": ["絵筆", "楽器", "手帳"],
+          "lucky_colors": ["イエロー"]
+        },
+        "4": {
+          "lucky_items": ["植物", "アロマキャンドル"],
+          "lucky_colors": ["グリーン"]
+        },
+        "5": {
+          "lucky_items": ["パスポート", "地図", "カメラ"],
+          "lucky_colors": ["パープル"]
+        },
+        "6": {
+          "lucky_items": ["クリスタル", "お花"],
+          "lucky_colors": ["ピンク"]
+        },
+        "7": {
+          "lucky_items": ["本", "アロマオイル"],
+          "lucky_colors": ["ブルー"]
+        },
+        "8": {
+          "lucky_items": ["財布", "クリスタル"],
+          "lucky_colors": ["ゴールド"]
+        },
+        "9": {
+          "lucky_items": ["お香", "浄化アイテム"],
+          "lucky_colors": ["ホワイト"]
+        },
+        "11": {
+          "lucky_items": ["カード", "香り袋"],
+          "lucky_colors": ["ミスティックパープル"]
+        },
+        "22": {
+          "lucky_items": ["スケッチブック", "定規"],
+          "lucky_colors": ["ミッドナイトブルー"]
+        },
+        "33": {
+          "lucky_items": ["絵本", "楽器"],
+          "lucky_colors": ["オパールホワイト"]
+        }
+      }
+    },
+    "4": {
+      "life_path": {
+        "1": {
+          "lucky_items": ["植物", "アロマキャンドル"],
+          "lucky_colors": ["グリーン"]
+        },
+        "2": {
+          "lucky_items": ["ペアのアクセサリー", "ミラー"],
+          "lucky_colors": ["シルバー"]
+        },
+        "3": {
+          "lucky_items": ["絵筆", "楽器", "手帳"],
+          "lucky_colors": ["イエロー"]
+        },
+        "4": {
+          "lucky_items": ["植物", "アロマキャンドル"],
+          "lucky_colors": ["グリーン"]
+        },
+        "5": {
+          "lucky_items": ["パスポート", "地図", "カメラ"],
+          "lucky_colors": ["パープル"]
+        },
+        "6": {
+          "lucky_items": ["クリスタル", "お花"],
+          "lucky_colors": ["ピンク"]
+        },
+        "7": {
+          "lucky_items": ["本", "アロマオイル"],
+          "lucky_colors": ["ブルー"]
+        },
+        "8": {
+          "lucky_items": ["財布", "クリスタル"],
+          "lucky_colors": ["ゴールド"]
+        },
+        "9": {
+          "lucky_items": ["お香", "浄化アイテム"],
+          "lucky_colors": ["ホワイト"]
+        },
+        "11": {
+          "lucky_items": ["パープルの手帳", "アロマオイル"],
+          "lucky_colors": ["ディープインディゴ"]
+        },
+        "22": {
+          "lucky_items": ["メジャー", "ノート"],
+          "lucky_colors": ["スチールブルー"]
+        },
+        "33": {
+          "lucky_items": ["教科書", "観葉植物"],
+          "lucky_colors": ["ムーンライトホワイト"]
+        }
+      }
+    },
+    "5": {
+      "life_path": {
+        "1": {
+          "lucky_items": ["パスポート", "地図", "カメラ"],
+          "lucky_colors": ["パープル"]
+        },
+        "2": {
+          "lucky_items": ["ペアのアクセサリー", "ミラー"],
+          "lucky_colors": ["シルバー"]
+        },
+        "3": {
+          "lucky_items": ["絵筆", "楽器", "手帳"],
+          "lucky_colors": ["イエロー"]
+        },
+        "4": {
+          "lucky_items": ["植物", "アロマキャンドル"],
+          "lucky_colors": ["グリーン"]
+        },
+        "5": {
+          "lucky_items": ["パスポート", "地図", "カメラ"],
+          "lucky_colors": ["パープル"]
+        },
+        "6": {
+          "lucky_items": ["クリスタル", "お花"],
+          "lucky_colors": ["ピンク"]
+        },
+        "7": {
+          "lucky_items": ["本", "アロマオイル"],
+          "lucky_colors": ["ブルー"]
+        },
+        "8": {
+          "lucky_items": ["財布", "クリスタル"],
+          "lucky_colors": ["ゴールド"]
+        },
+        "9": {
+          "lucky_items": ["お香", "浄化アイテム"],
+          "lucky_colors": ["ホワイト"]
+        },
+        "11": {
+          "lucky_items": ["カレンダー", "アロマディフューザー"],
+          "lucky_colors": ["コズミックパープル"]
+        },
+        "22": {
+          "lucky_items": ["タブレット", "ペン"],
+          "lucky_colors": ["オーシャンブルー"]
+        },
+        "33": {
+          "lucky_items": ["本", "鈴"],
+          "lucky_colors": ["エーテルホワイト"]
+        }
+      }
+    },
+    "6": {
+      "life_path": {
+        "1": {
+          "lucky_items": ["クリスタル", "お花"],
+          "lucky_colors": ["ピンク"]
+        },
+        "2": {
+          "lucky_items": ["ペアのアクセサリー", "ミラー"],
+          "lucky_colors": ["シルバー"]
+        },
+        "3": {
+          "lucky_items": ["絵筆", "楽器", "手帳"],
+          "lucky_colors": ["イエロー"]
+        },
+        "4": {
+          "lucky_items": ["植物", "アロマキャンドル"],
+          "lucky_colors": ["グリーン"]
+        },
+        "5": {
+          "lucky_items": ["パスポート", "地図", "カメラ"],
+          "lucky_colors": ["パープル"]
+        },
+        "6": {
+          "lucky_items": ["クリスタル", "お花"],
+          "lucky_colors": ["ピンク"]
+        },
+        "7": {
+          "lucky_items": ["本", "アロマオイル"],
+          "lucky_colors": ["ブルー"]
+        },
+        "8": {
+          "lucky_items": ["財布", "クリスタル"],
+          "lucky_colors": ["ゴールド"]
+        },
+        "9": {
+          "lucky_items": ["お香", "浄化アイテム"],
+          "lucky_colors": ["ホワイト"]
+        },
+        "11": {
+          "lucky_items": ["紫水晶", "日記帳"],
+          "lucky_colors": ["スピリチュアルパープル"]
+        },
+        "22": {
+          "lucky_items": ["パソコン", "ノート"],
+          "lucky_colors": ["ディープネイビー"]
+        },
+        "33": {
+          "lucky_items": ["写真集", "観葉植物"],
+          "lucky_colors": ["セレスティアルホワイト"]
+        }
+      }
+    },
+    "7": {
+      "life_path": {
+        "1": {
+          "lucky_items": ["本", "アロマオイル"],
+          "lucky_colors": ["ブルー"]
+        },
+        "2": {
+          "lucky_items": ["ペアのアクセサリー", "ミラー"],
+          "lucky_colors": ["シルバー"]
+        },
+        "3": {
+          "lucky_items": ["絵筆", "楽器", "手帳"],
+          "lucky_colors": ["イエロー"]
+        },
+        "4": {
+          "lucky_items": ["植物", "アロマキャンドル"],
+          "lucky_colors": ["グリーン"]
+        },
+        "5": {
+          "lucky_items": ["パスポート", "地図", "カメラ"],
+          "lucky_colors": ["パープル"]
+        },
+        "6": {
+          "lucky_items": ["クリスタル", "お花"],
+          "lucky_colors": ["ピンク"]
+        },
+        "7": {
+          "lucky_items": ["本", "アロマオイル"],
+          "lucky_colors": ["ブルー"]
+        },
+        "8": {
+          "lucky_items": ["財布", "クリスタル"],
+          "lucky_colors": ["ゴールド"]
+        },
+        "9": {
+          "lucky_items": ["お香", "浄化アイテム"],
+          "lucky_colors": ["ホワイト"]
+        },
+        "11": {
+          "lucky_items": ["本", "アロマキャンドル"],
+          "lucky_colors": ["ミスティックインディゴ"]
+        },
+        "22": {
+          "lucky_items": ["手帳", "ペン"],
+          "lucky_colors": ["ロイヤルネイビー"]
+        },
+        "33": {
+          "lucky_items": ["写真", "植物"],
+          "lucky_colors": ["ダイヴァインホワイト"]
+        }
+      }
+    },
+    "8": {
+      "life_path": {
+        "1": {
+          "lucky_items": ["財布", "クリスタル"],
+          "lucky_colors": ["ゴールド"]
+        },
+        "2": {
+          "lucky_items": ["ペアのアクセサリー", "ミラー"],
+          "lucky_colors": ["シルバー"]
+        },
+        "3": {
+          "lucky_items": ["絵筆", "楽器", "手帳"],
+          "lucky_colors": ["イエロー"]
+        },
+        "4": {
+          "lucky_items": ["植物", "アロマキャンドル"],
+          "lucky_colors": ["グリーン"]
+        },
+        "5": {
+          "lucky_items": ["パスポート", "地図", "カメラ"],
+          "lucky_colors": ["パープル"]
+        },
+        "6": {
+          "lucky_items": ["クリスタル", "お花"],
+          "lucky_colors": ["ピンク"]
+        },
+        "7": {
+          "lucky_items": ["本", "アロマオイル"],
+          "lucky_colors": ["ブルー"]
+        },
+        "8": {
+          "lucky_items": ["財布", "クリスタル"],
+          "lucky_colors": ["ゴールド"]
+        },
+        "9": {
+          "lucky_items": ["お香", "浄化アイテム"],
+          "lucky_colors": ["ホワイト"]
+        },
+        "11": {
+          "lucky_items": ["手帳", "アロマオイル"],
+          "lucky_colors": ["コズミックインディゴ"]
+        },
+        "22": {
+          "lucky_items": ["ノートパソコン", "手帳"],
+          "lucky_colors": ["インペリアルブルー"]
+        },
+        "33": {
+          "lucky_items": ["本", "観葉植物"],
+          "lucky_colors": ["ピュアホワイト"]
+        }
+      }
+    },
+    "9": {
+      "life_path": {
+        "1": {
+          "lucky_items": ["お香", "浄化アイテム"],
+          "lucky_colors": ["ホワイト"]
+        },
+        "2": {
+          "lucky_items": ["ペアのアクセサリー", "ミラー"],
+          "lucky_colors": ["シルバー"]
+        },
+        "3": {
+          "lucky_items": ["絵筆", "楽器", "手帳"],
+          "lucky_colors": ["イエロー"]
+        },
+        "4": {
+          "lucky_items": ["植物", "アロマキャンドル"],
+          "lucky_colors": ["グリーン"]
+        },
+        "5": {
+          "lucky_items": ["パスポート", "地図", "カメラ"],
+          "lucky_colors": ["パープル"]
+        },
+        "6": {
+          "lucky_items": ["クリスタル", "お花"],
+          "lucky_colors": ["ピンク"]
+        },
+        "7": {
+          "lucky_items": ["本", "アロマオイル"],
+          "lucky_colors": ["ブルー"]
+        },
+        "8": {
+          "lucky_items": ["財布", "クリスタル"],
+          "lucky_colors": ["ゴールド"]
+        },
+        "9": {
+          "lucky_items": ["お香", "浄化アイテム"],
+          "lucky_colors": ["ホワイト"]
+        },
+        "11": {
+          "lucky_items": ["日記帳", "アロマキャンドル"],
+          "lucky_colors": ["ユニバーサルパープル"]
+        },
+        "22": {
+          "lucky_items": ["パソコン", "ノート"],
+          "lucky_colors": ["コズミックブルー"]
+        },
+        "33": {
+          "lucky_items": ["本", "CD"],
+          "lucky_colors": ["トランセンデントホワイト"]
+        }
+      }
+    }
+  }
+} 
