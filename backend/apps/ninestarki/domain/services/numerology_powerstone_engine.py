@@ -150,9 +150,9 @@ class NumerologyPowerStoneEngine:
         """4~5-Layer 추천을 API 응답용 dict 로 직렬화.
 
         Args:
-            life_path_number: 사용자 Life Path Number (1~9)
+            life_path_number: 사용자 Life Path Number (1~9 또는 11/22/33)
             locale: 응답 언어 코드
-            personal_year_number: Personal Year Number (1~9, optional)
+            personal_year_number: Personal Year Number (1~9 또는 11/22/33, optional)
 
         Returns:
             API 응답용 dict

@@ -207,3 +207,50 @@ class TestNumerologyPowerStoneEngineYearly:
             engine.recommend(1, personal_year_number="3")  # type: ignore
         with pytest.raises(ValueError, match="1~9"):
             engine.recommend(1, personal_year_number=3.5)  # type: ignore
+
+
+# ══════════════════════════════════════════════════════════
+# Master Number Tests
+# ══════════════════════════════════════════════════════════
+
+class TestMasterNumberSupport:
+    """Master Number (11/22/33) 엔진 테스트."""
+
+    @pytest.mark.parametrize("master,base", [(11, 2), (22, 4), (33, 6)])
+    def test_recommend_master_number_uses_base_stones(
+        self, engine: NumerologyPowerStoneEngine, master: int, base: int,
+    ):
+        """Master Number는 base number의 스톤을 사용하되 life_path_number는 원래 값 유지."""
+        master_result = engine.recommend(master)
+        base_result = engine.recommend(base)
+
+        # life_path_number 는 원래 Master Number 유지
+        assert master_result.life_path_number == master
+
+        # 스톤 매핑은 base number 와 동일
+        assert master_result.overall.primary.id == base_result.overall.primary.id
+        assert master_result.health.primary.id == base_result.health.primary.id
+        assert master_result.wealth.primary.id == base_result.wealth.primary.id
+        assert master_result.love.primary.id == base_result.love.primary.id
+
+    @pytest.mark.parametrize("master", [11, 22, 33])
+    def test_recommend_as_dict_master_number(
+        self, engine: NumerologyPowerStoneEngine, master: int,
+    ):
+        """Master Number dict 직렬화 정상 동작."""
+        result = engine.recommend_as_dict(master, locale="ja")
+        assert result["life_path_number"] == master
+        assert result["planet"]  # 비어있지 않음
+        for layer_key in ("overall", "health", "wealth", "love"):
+            assert layer_key in result
+
+    @pytest.mark.parametrize("master,base", [(11, 2), (22, 4), (33, 6)])
+    def test_pyn_master_number_yearly(
+        self, engine: NumerologyPowerStoneEngine, master: int, base: int,
+    ):
+        """Master Number PYN도 yearly 레이어 정상 동작."""
+        result = engine.recommend(1, personal_year_number=master)
+        base_result = engine.recommend(1, personal_year_number=base)
+        assert result.yearly is not None
+        assert result.personal_year_number == master
+        assert result.yearly.primary.id == base_result.yearly.primary.id
