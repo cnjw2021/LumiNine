@@ -117,7 +117,11 @@ export default function Result({ resultData, onReset }: ResultProps) {
                 <p style={{ color: 'red', textAlign: 'center', fontSize: '14px' }}>{stonesError}</p>
               ) : sixLayer ? (
                 <BasePowerstonesSection stoneData={sixLayer} />
-              ) : null}
+              ) : (
+                <p style={{ textAlign: 'center', fontSize: '13px', color: 'rgba(74, 74, 74, 0.5)' }}>
+                  パワーストーンデータがありません
+                </p>
+              )}
             </div>
 
             {/* ── Action Buttons ── */}
