@@ -241,8 +241,12 @@ const PowerStoneCard: React.FC<PowerStoneCardProps> = ({ powerStones, targetYear
                     📅 今月のストーン（方位エネルギー）
                 </Text>
                 <SimpleGrid cols={{ base: 2, sm: 2 }} spacing="xs">
-                    <SixLayerStoneItem stone={powerStones.monthly_stone} layerKey="monthly" />
-                    <SixLayerStoneItem stone={powerStones.protection_stone} layerKey="protection" />
+                    {powerStones.monthly_stone && (
+                        <SixLayerStoneItem stone={powerStones.monthly_stone} layerKey="monthly" />
+                    )}
+                    {powerStones.protection_stone && (
+                        <SixLayerStoneItem stone={powerStones.protection_stone} layerKey="protection" />
+                    )}
                 </SimpleGrid>
             </Card>
         );

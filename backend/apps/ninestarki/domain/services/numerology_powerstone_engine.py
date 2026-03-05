@@ -90,6 +90,10 @@ class NumerologyPowerStoneEngine:
                 )
             yearly_mapping = self._repo.get_mapping(personal_year_number)
             yearly_planet = yearly_mapping["planet"]
+            if _YEARLY_LAYER not in yearly_mapping:
+                raise ValueError(
+                    f"카탈로그에 'yearly' 레이어가 없습니다 (number={personal_year_number})"
+                )
             yearly_layer_data = yearly_mapping[_YEARLY_LAYER]
             primary = self._repo.get_stone(yearly_layer_data["primary"])
             secondary = self._repo.get_stone(yearly_layer_data["secondary"])

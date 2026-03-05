@@ -121,8 +121,8 @@ export interface SixLayerPowerStones {
   wealth_stone: NumerologyStone;
   love_stone: NumerologyStone;
   yearly_stone?: NumerologyStone;
-  monthly_stone: GogyoStone;
-  protection_stone: GogyoStone;
+  monthly_stone: GogyoStone | null;
+  protection_stone: GogyoStone | null;
   life_path_number: number;
   personal_year_number?: number;
   planet: string;

@@ -101,19 +101,21 @@ class SixLayerPowerStoneUseCase:
         birth_date: Optional[str] = None,
         target_year: Optional[int] = None,
     ) -> Dict[str, Any]:
-        """7-Layer 파워스톤 추천 실행.
+        """파워스톤 추천 실행 (6~7-Layer).
 
         Args:
             main_star: 사용자 본명성 (1~9)
             directions: 방위별 길흉 판정 결과 dict
             locale: 응답 언어 코드 (기본값: ``"ja"``)
             birth_date: 생년월일 (``"YYYY-MM-DD"`` 또는 ``"YYYY-MM-DD HH:MM"``). 없으면 3-Layer 반환.
-            target_year: 대상 연도 (Personal Year Number 계산용, optional)
+            target_year: 대상 연도 (Personal Year Number 계산용, optional).
+                제공 시 7-Layer (yearly 포함), 미제공 시 6-Layer.
 
         Returns:
             API 응답용 dict.
             - birth_date 미제공: 3-Layer (base_stone, monthly_stone, protection_stone)
-            - birth_date 제공: 7-Layer (overall + health + wealth + love + yearly + monthly + protection)
+            - birth_date 제공, target_year 미제공: 6-Layer (overall + health + wealth + love + monthly + protection)
+            - birth_date 제공, target_year 제공: 7-Layer (overall + health + wealth + love + yearly + monthly + protection)
         """
         # ── 1. 구성기학 기반 2-Layer (월운석 + 호신석) ─────
         gogyo_result = self._stone_use_case.execute(
@@ -127,8 +129,9 @@ class SixLayerPowerStoneUseCase:
             logger.info("SixLayerPowerStoneUseCase: birth_date 미제공 → 3-Layer")
             return gogyo_result
 
-        # ── 3. 수비술 계산 + 7-Layer 통합 ─────────────────
-        logger.info("SixLayerPowerStoneUseCase: birth_date 제공 → 7-Layer")
+        # ── 3. 수비술 계산 + 6~7-Layer 통합 ────────────────
+        layer_count = "7-Layer" if target_year else "6-Layer"
+        logger.info("SixLayerPowerStoneUseCase: birth_date 제공 → %s", layer_count)
         birth_date_normalized = birth_date.strip()
 
         numerology_result = self.compute_numerology_stones(
