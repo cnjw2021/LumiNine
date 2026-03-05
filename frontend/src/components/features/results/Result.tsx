@@ -12,7 +12,6 @@ import { ResultProps, CompatibilityData, PdfJobResultDataMinimal, PartnerMinimal
 import { CalculationResult } from '@/types/stars';
 import { StarLifeGuidance } from '@/components/features';
 import StarAttributesDisplay from './StarAttributesDisplay';
-import FiveElementsCycle from './FiveElementsCycle';
 // Progress removed (modal handles display)
 
 
@@ -464,8 +463,6 @@ export default function Result({ resultData, onReset, compatibilityData }: Resul
         mainStarName={main_star.name_jp}
       />
 
-      {/* 五行相関図 */}
-      {/* <FiveElementsCycle size={500} /> */}
 
       {/* ほかのセクションの後、本命星と月命星のガイダンス情報（新規追加）*/}
       <StarLifeGuidance

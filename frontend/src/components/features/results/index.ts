@@ -5,5 +5,4 @@ export { default as ResultFortuneSection } from './ResultFortuneSection';
 export { default as DirectionMapInfo } from './DirectionMapInfo';
 export { default as CompatibilityResult } from './CompatibilityResult';
 export { default as StarAttributesDisplay } from './StarAttributesDisplay';
-export { default as FiveElementsCycle } from './FiveElementsCycle';
 export { default as NumerologyStarInfo } from './NumerologyStarInfo';
