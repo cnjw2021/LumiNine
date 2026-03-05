@@ -17,6 +17,9 @@ from apps.ninestarki.domain.services.numerology_powerstone_engine import (
     NumerologyPowerStoneEngine,
 )
 from apps.ninestarki.domain.services.numerology_service import NumerologyService
+from apps.ninestarki.domain.services.numerology_traits_loader import (
+    get_numerology_traits,
+)
 from apps.ninestarki.use_cases.powerstone_recommendation_use_case import (
     PowerStoneRecommendationUseCase,
 )
@@ -71,7 +74,7 @@ class SixLayerPowerStoneUseCase:
             target_year: 대상 연도 (Personal Year Number 계산용)
 
         Returns:
-            수비술 4~5-Layer dict + life_path_number, planet 메타 정보.
+            수비술 4~5-Layer dict + life_path_number, planet, title, traits 메타 정보.
 
         Raises:
             ValueError: birth_date 형식이 잘못된 경우 (그대로 전파)
@@ -93,6 +96,13 @@ class SixLayerPowerStoneUseCase:
             personal_year_number=personal_year,
         )
         result["life_path_number"] = life_path
+
+        # 특성 데이터 (title + traits)
+        traits_data = get_numerology_traits(life_path)
+        if traits_data:
+            result["title"] = traits_data["title"]
+            result["traits"] = traits_data["traits"]
+
         return result
 
     def execute(
@@ -231,6 +241,11 @@ class SixLayerPowerStoneUseCase:
                 numerology_result["yearly"],
             )
             base["personal_year_number"] = numerology_result.get("personal_year_number")
+        # 특성 데이터 전달 (title + traits)
+        if "title" in numerology_result:
+            base["title"] = numerology_result["title"]
+        if "traits" in numerology_result:
+            base["traits"] = numerology_result["traits"]
         return base
 
     # ──────────────────────────────────────────────────

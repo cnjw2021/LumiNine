@@ -348,3 +348,55 @@ class TestSixLayerPowerStoneUseCase:
         # yearly 관련 키 없어야 함
         assert "yearly_stone" not in result or result.get("yearly_stone") is None
         assert "personal_year_number" not in result or result.get("personal_year_number") is None
+
+    @patch(
+        "apps.ninestarki.use_cases.six_layer_powerstone_use_case"
+        ".get_numerology_traits"
+    )
+    @patch(
+        "apps.ninestarki.use_cases.six_layer_powerstone_use_case"
+        ".NumerologyService.calculate_life_path_number"
+    )
+    def test_traits_included_in_response(
+        self, mock_calc: MagicMock, mock_traits: MagicMock,
+    ) -> None:
+        """title + traits 가 execute() 응답에 포함되어야 한다."""
+        mock_calc.return_value = MagicMock(number=1)
+        mock_traits.return_value = {"title": "リーダー", "traits": "独立心が強い"}
+        self.mock_engine.recommend_as_dict.return_value = _make_numerology_result()
+
+        result = self.use_case.execute(
+            main_star=5,
+            directions=DUMMY_DIRECTIONS,
+            locale="ja",
+            birth_date="1990-01-01",
+        )
+
+        assert result["title"] == "リーダー"
+        assert result["traits"] == "独立心が強い"
+
+    @patch(
+        "apps.ninestarki.use_cases.six_layer_powerstone_use_case"
+        ".get_numerology_traits"
+    )
+    @patch(
+        "apps.ninestarki.use_cases.six_layer_powerstone_use_case"
+        ".NumerologyService.calculate_life_path_number"
+    )
+    def test_traits_absent_when_not_found(
+        self, mock_calc: MagicMock, mock_traits: MagicMock,
+    ) -> None:
+        """traits 데이터가 없으면 title/traits 키가 없어야 한다."""
+        mock_calc.return_value = MagicMock(number=1)
+        mock_traits.return_value = None
+        self.mock_engine.recommend_as_dict.return_value = _make_numerology_result()
+
+        result = self.use_case.execute(
+            main_star=5,
+            directions=DUMMY_DIRECTIONS,
+            locale="ja",
+            birth_date="1990-01-01",
+        )
+
+        assert "title" not in result
+        assert "traits" not in result

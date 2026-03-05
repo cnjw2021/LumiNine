@@ -28,8 +28,8 @@ from apps.ninestarki.infrastructure.persistence.numerology_reading_repository im
 
 class TestLifePathCalculation:
     @pytest.mark.parametrize("birth_date, expected_number", [
-        # 1+9+8+4+0+7+0+9 = 38 → 3+8 = 11 → 1+1 = 2
-        ("1984-07-09", 2),
+        # 1+9+8+4+0+7+0+9 = 38 → 3+8 = 11 (Master Number)
+        ("1984-07-09", 11),
         # 1+9+6+7+0+6+0+5 = 34 → 3+4 = 7
         ("1967-06-05", 7),
         # 1+9+7+1+0+2+0+1 = 21 → 2+1 = 3
@@ -60,13 +60,13 @@ class TestLifePathCalculation:
     def test_planet_mapping(self):
         """각 숫자에 올바른 행성이 매핑되어야 한다."""
         result = NumerologyService.calculate_life_path_number("1984-07-09")
-        # 1984-07-09 → 2 → Moon
+        # 1984-07-09 → 11 (Master Number) → Moon
         assert result.planet == Planet.MOON
 
     def test_datetime_format_with_time(self):
         """'YYYY-MM-DD HH:MM' 형식도 지원해야 한다."""
         result = NumerologyService.calculate_life_path_number("1984-07-09 15:30")
-        assert result.number == 2
+        assert result.number == 11  # Master Number
 
     def test_invalid_format_raises(self):
         with pytest.raises(ValueError):
@@ -77,7 +77,7 @@ class TestLifePathCalculation:
         # 각 숫자별 검증된 생년월일 → 기대 Life Path Number
         test_dates = [
             ("1990-09-09", 1),  # 1+9+9+0+0+9+0+9=37 → 10 → 1
-            ("1984-07-09", 2),  # 1+9+8+4+0+7+0+9=38 → 11 → 2
+            ("1980-01-01", 2),  # 1+9+8+0+0+1+0+1=20 → 2+0=2
             ("1971-02-01", 3),  # 1+9+7+1+0+2+0+1=21 → 3
             ("2000-01-01", 4),  # 2+0+0+0+0+1+0+1=4
             ("2000-01-02", 5),  # 2+0+0+0+0+1+0+2=5
@@ -143,12 +143,18 @@ class TestPersonalYearCalculation:
         assert len(results) >= 5
 
 
-class TestReduceToSingleDigit:
+class TestReduceWithMaster:
     @pytest.mark.parametrize("n, expected", [
-        (1, 1), (9, 9), (10, 1), (11, 2), (38, 2), (100, 1),
+        (1, 1), (9, 9), (10, 1),
+        (11, 11),  # Master Number 유지
+        (22, 22),  # Master Number 유지
+        (33, 33),  # Master Number 유지
+        (38, 11),  # 3+8=11 → Master Number
+        (100, 1),
+        (44, 8),   # 4+4=8 → 일반 축소
     ])
     def test_reduction(self, n: int, expected: int):
-        assert NumerologyService._reduce_to_single_digit(n) == expected
+        assert NumerologyService._reduce_with_master(n) == expected
 
 
 class TestPlanetNameLocale:

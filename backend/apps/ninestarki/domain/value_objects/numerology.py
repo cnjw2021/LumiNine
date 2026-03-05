@@ -1,6 +1,7 @@
 """수비술(数秘術) Value Objects.
 
 Life Path Number 계산 결과 및 행성 매핑을 위한 데이터 클래스.
+Master Number(11, 22, 33)를 포함한 확장 매핑을 제공한다.
 """
 from __future__ import annotations
 
@@ -22,6 +23,12 @@ class Planet(Enum):
     MARS = "mars"
 
 
+# ── Master Number 상수 ───────────────────────────────
+MASTER_NUMBERS: frozenset = frozenset({11, 22, 33})
+
+# Master Number → base number (파워스톤 매핑용)
+MASTER_TO_BASE: Dict[int, int] = {11: 2, 22: 4, 33: 6}
+
 # ── 숫자 → 행성 매핑 ────────────────────────────────
 NUMBER_TO_PLANET: Dict[int, Planet] = {
     1: Planet.SUN,
@@ -33,6 +40,10 @@ NUMBER_TO_PLANET: Dict[int, Planet] = {
     7: Planet.KETU,
     8: Planet.SATURN,
     9: Planet.MARS,
+    # Master Numbers (base number 와 동일 행성)
+    11: Planet.MOON,     # 11 → 2 → Moon
+    22: Planet.RAHU,     # 22 → 4 → Rahu
+    33: Planet.VENUS,    # 33 → 6 → Venus
 }
 
 # ── 행성 이름 다국어 ────────────────────────────────

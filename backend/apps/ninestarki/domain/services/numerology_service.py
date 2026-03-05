@@ -1,11 +1,12 @@
 """NumerologyService — 수비술 Life Path Number 계산.
 
-생년월일의 각 자릿수를 합산하여 한 자릿수(1~9)가 될 때까지 축소하는
-순수 비즈니스 로직.  StarCalculatorService 와 동일한 static-method 패턴.
+생년월일의 각 자릿수를 합산하여 한 자릿수(1~9) 또는 Master Number(11/22/33)
+로 축소하는 순수 비즈니스 로직.  StarCalculatorService 와 동일한 static-method 패턴.
 """
 from __future__ import annotations
 
 from apps.ninestarki.domain.value_objects.numerology import (
+    MASTER_NUMBERS,
     NumerologyNumber,
     NUMBER_TO_PLANET,
 )
@@ -15,12 +16,15 @@ class NumerologyService:
     """수비술 계산 순수 비즈니스 로직."""
 
     @staticmethod
-    def _reduce_to_single_digit(n: int) -> int:
-        """양의 정수를 한 자릿수(1~9)로 축소.
+    def _reduce_with_master(n: int) -> int:
+        """양의 정수를 한 자릿수(1~9) 또는 Master Number(11/22/33)로 축소.
 
-        예: 38 → 3+8=11 → 1+1=2
+        예: 38 → 3+8=11 → Master Number이므로 11 유지
+            39 → 3+9=12 → 1+2=3
         """
         while n > 9:
+            if n in MASTER_NUMBERS:
+                return n
             n = sum(int(d) for d in str(n))
         return n
 
@@ -33,7 +37,7 @@ class NumerologyService:
                 (시간 정보가 포함된 경우 시간 부분은 무시됨)
 
         Returns:
-            NumerologyNumber  (1~9 + 대응 행성)
+            NumerologyNumber  (1~9 또는 11/22/33 + 대응 행성)
 
         Raises:
             ValueError: 날짜 형식이 올바르지 않은 경우
@@ -56,7 +60,7 @@ class NumerologyService:
             )
 
         digit_sum = sum(int(d) for d in digits)
-        life_path = NumerologyService._reduce_to_single_digit(digit_sum)
+        life_path = NumerologyService._reduce_with_master(digit_sum)
 
         # Life Path Number 가 1~9 범위(매핑에 존재)인지 확인
         if life_path not in NUMBER_TO_PLANET:
@@ -79,7 +83,7 @@ class NumerologyService:
             target_year: 대상 연도 (예: 2026)
 
         Returns:
-            NumerologyNumber  (1~9 + 대응 행성)
+            NumerologyNumber  (1~9 또는 11/22/33 + 대응 행성)
 
         Raises:
             ValueError: 날짜 형식이 올바르지 않은 경우
@@ -106,7 +110,7 @@ class NumerologyService:
         # target_year + month + day 의 전체 자릿수를 합산
         digits = str(target_year) + month + day
         digit_sum = sum(int(d) for d in digits)
-        personal_year = NumerologyService._reduce_to_single_digit(digit_sum)
+        personal_year = NumerologyService._reduce_with_master(digit_sum)
 
         if personal_year not in NUMBER_TO_PLANET:
             raise ValueError(
