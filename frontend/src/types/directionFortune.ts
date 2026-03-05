@@ -16,6 +16,40 @@ export interface DirectionFortuneStatus {
   northwest: DirectionStatus;
 }
 
+// 月別方位の吉凶情報
+export interface MonthDirectionInfo {
+  is_auspicious: boolean;
+  marks: string[];
+  reason: string | null;
+  is_main_star?: boolean;
+  title?: string;
+  details?: string;
+}
+
+// 月別運気の期間データ
+export interface PeriodFortuneData {
+  center_star: number;
+  display_month: string;
+  display_year?: string;
+  month: number;
+  year: number;
+  zodiac: string;
+  directions: Record<string, MonthDirectionInfo>;
+  period_start?: string;
+  period_end?: string;
+  power_stones?: PowerStones | null;
+}
+
+// month-acquired-fortune API レスポンス
+export interface MonthAcquiredFortuneResponse {
+  number: number;
+  name_jp: string;
+  name_en: string;
+  element: string;
+  description: string;
+  annual_directions?: Record<string, PeriodFortuneData>;
+}
+
 export interface MovingDateInfo {
   date: string;
   auspicious_directions: string[];
