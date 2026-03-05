@@ -62,8 +62,8 @@ export default function Result({ resultData, onReset }: ResultProps) {
     }}>
 
       {/* ──── Header ──── */}
-      <header style={{
-        width: '100%', padding: '24px 32px',
+      <header className="result-header" style={{
+        width: '100%',
         borderBottom: '1px solid rgba(212, 175, 55, 0.1)',
         backgroundColor: 'rgba(255, 255, 255, 0.3)',
         backdropFilter: 'blur(4px)',
@@ -73,9 +73,9 @@ export default function Result({ resultData, onReset }: ResultProps) {
           <div style={{ display: 'flex', alignItems: 'center', gap: '12px' }}>
             <span style={{ color: '#d4af37', fontSize: '20px' }}>✦</span>
             <h1 style={{
-              fontSize: '20px', fontWeight: 'normal', color: '#4a4a4a',
+              fontSize: 'clamp(16px, 4vw, 20px)', fontWeight: 'normal', color: '#4a4a4a',
               fontFamily: '"Shippori Mincho", "Noto Serif JP", serif',
-              letterSpacing: '0.1em', margin: 0
+              letterSpacing: '0.05em', margin: 0
             }}>
               {fullName}様の鑑定結果
             </h1>
@@ -84,12 +84,12 @@ export default function Result({ resultData, onReset }: ResultProps) {
       </header>
 
       {/* ──── Main Content: Two-Column Grid ──── */}
-      <main style={{ maxWidth: '1100px', margin: '0 auto', padding: '48px 32px', position: 'relative', zIndex: 10, width: '100%' }}>
+      <main className="result-main" style={{ maxWidth: '1100px', margin: '0 auto', position: 'relative', zIndex: 10, width: '100%' }}>
 
-        <div style={{ display: 'grid', gridTemplateColumns: '5fr 7fr', gap: '48px' }}>
+        <div className="result-grid">
 
           {/* ════ Left Column: Numerology + Recommended Stones ════ */}
-          <div style={{ display: 'flex', flexDirection: 'column', gap: '48px' }}>
+          <div style={{ display: 'flex', flexDirection: 'column', gap: '32px' }}>
 
             {/* ── Numerology Profile ── */}
             {sixLayer && (

@@ -1,7 +1,6 @@
 'use client';
 
 import React from 'react';
-import { SimpleGrid } from '@mantine/core';
 import { GogyoStone, PeriodFortuneData, MonthDirectionInfo } from '@/types/directionFortune';
 
 interface MonthlyFortuneSectionProps {
@@ -84,9 +83,8 @@ const MonthlyFortuneSection: React.FC<MonthlyFortuneSectionProps> = ({
             </div>
 
             {/* 3×3 Direction Grid Board */}
-            <div style={{
-                maxWidth: '380px', margin: '0 auto', position: 'relative',
-                padding: '24px',
+            <div className="direction-grid-board" style={{
+                position: 'relative',
                 backgroundColor: 'rgba(255, 255, 255, 0.4)',
                 borderRadius: '20px',
                 border: '1px solid #ffffff',
@@ -168,14 +166,14 @@ const MonthlyFortuneSection: React.FC<MonthlyFortuneSectionProps> = ({
                             Monthly Guidance Stones
                         </h3>
                     </div>
-                    <SimpleGrid cols={{ base: 1, sm: 2 }} spacing="24px">
+                    <div className="monthly-stones-grid">
                         {monthlyStone && (
                             <MonthlyStoneCard label="MONTHLY" stone={monthlyStone} type="月運" />
                         )}
                         {protectionStone && (
                             <MonthlyStoneCard label="PROTECTION" stone={protectionStone} type="護身" />
                         )}
-                    </SimpleGrid>
+                    </div>
                 </div>
             )}
         </section>

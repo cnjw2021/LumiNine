@@ -50,11 +50,7 @@ const YearlyFortuneSection: React.FC<YearlyFortuneSectionProps> = ({
                 }} />
 
                 {/* Inner Grid: Icon left + Description right */}
-                <div style={{
-                    display: 'grid', gridTemplateColumns: '1fr 2fr',
-                    gap: '24px', alignItems: 'center',
-                    position: 'relative', zIndex: 10
-                }}>
+                <div className="yearly-fortune-inner" style={{ position: 'relative', zIndex: 10 }}>
                     {/* Left: Stone icon + name */}
                     <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center' }}>
                         <div style={{
