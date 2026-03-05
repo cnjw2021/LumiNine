@@ -179,9 +179,10 @@ const SixLayerStoneItem: React.FC<{
 // ══════════════════════════════════════════════════════════
 interface PowerStoneCardProps {
     powerStones: PowerStones | SixLayerPowerStones;
+    targetYear?: number;
 }
 
-const PowerStoneCard: React.FC<PowerStoneCardProps> = ({ powerStones }) => {
+const PowerStoneCard: React.FC<PowerStoneCardProps> = ({ powerStones, targetYear }) => {
     // ── 6-Layer ──
     if (isSixLayer(powerStones)) {
         return (
@@ -222,7 +223,7 @@ const PowerStoneCard: React.FC<PowerStoneCardProps> = ({ powerStones }) => {
                 {powerStones.yearly_stone && (
                     <>
                         <Text component="div" size="xs" fw={600} c="dimmed" mb={4}>
-                            🌟 {new Date().getFullYear()}年のストーン
+                            🌟 {targetYear || new Date().getFullYear()}年のストーン
                             {powerStones.personal_year_number && (
                                 <Badge size="xs" variant="light" color="orange" ml={6}>
                                     パーソナルイヤー {powerStones.personal_year_number}

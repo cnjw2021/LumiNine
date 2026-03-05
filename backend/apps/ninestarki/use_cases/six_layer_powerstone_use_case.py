@@ -99,14 +99,16 @@ class SixLayerPowerStoneUseCase:
         directions: Dict[str, Any],
         locale: str = "ja",
         birth_date: Optional[str] = None,
+        target_year: Optional[int] = None,
     ) -> Dict[str, Any]:
-        """6-Layer 파워스톤 추천 실행.
+        """7-Layer 파워스톤 추천 실행.
 
         Args:
             main_star: 사용자 본명성 (1~9)
             directions: 방위별 길흉 판정 결과 dict
             locale: 응답 언어 코드 (기본값: ``"ja"``)
             birth_date: 생년월일 (``"YYYY-MM-DD"`` 또는 ``"YYYY-MM-DD HH:MM"``). 없으면 3-Layer 반환.
+            target_year: 대상 연도 (Personal Year Number 계산용, optional)
 
         Returns:
             API 응답용 dict.
@@ -128,15 +130,6 @@ class SixLayerPowerStoneUseCase:
         # ── 3. 수비술 계산 + 7-Layer 통합 ─────────────────
         logger.info("SixLayerPowerStoneUseCase: birth_date 제공 → 7-Layer")
         birth_date_normalized = birth_date.strip()
-
-        # target_year 추출 (direction 데이터에서 연도 추정 or 현재 연도)
-        import datetime
-        target_year = datetime.datetime.now().year
-        # directions 데이터에서 year 정보 추출 시도
-        for dir_info in directions.values():
-            if isinstance(dir_info, dict) and "year" in dir_info:
-                target_year = dir_info["year"]
-                break
 
         numerology_result = self.compute_numerology_stones(
             birth_date_normalized,

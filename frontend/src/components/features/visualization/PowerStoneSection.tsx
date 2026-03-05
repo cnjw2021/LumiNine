@@ -38,7 +38,7 @@ const PowerStoneSection: React.FC<PowerStoneSectionProps> = ({ mainStar, monthSt
         return null; // エラーやデータなしの場合は何も表示しない
     }
 
-    return <PowerStoneCard powerStones={powerStones} />;
+    return <PowerStoneCard powerStones={powerStones} targetYear={targetYear} />;
 };
 
 export default PowerStoneSection;

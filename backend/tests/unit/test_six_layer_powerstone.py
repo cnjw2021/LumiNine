@@ -222,6 +222,7 @@ class TestSixLayerPowerStoneUseCase:
             directions=DUMMY_DIRECTIONS,
             locale="ko",
             birth_date="1995-12-25",
+            target_year=2026,
         )
 
         # 구성기학 호출
@@ -233,6 +234,7 @@ class TestSixLayerPowerStoneUseCase:
 
         # 수비술 호출
         mock_calc.assert_called_once_with("1995-12-25")
+        mock_pyn.assert_called_once_with("1995-12-25", 2026)
         self.mock_engine.recommend_as_dict.assert_called_once_with(
             life_path_number=3,
             locale="ko",

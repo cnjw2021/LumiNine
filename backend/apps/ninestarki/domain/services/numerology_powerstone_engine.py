@@ -84,6 +84,10 @@ class NumerologyPowerStoneEngine:
         # Personal Year 기반 연운석 (매년 변경)
         yearly_rec: Optional[NumerologyStoneRecommendation] = None
         if personal_year_number is not None:
+            if not isinstance(personal_year_number, int) or not 1 <= personal_year_number <= 9:
+                raise ValueError(
+                    f"Personal Year Number 는 1~9 범위여야 합니다: {personal_year_number}"
+                )
             yearly_mapping = self._repo.get_mapping(personal_year_number)
             yearly_planet = yearly_mapping["planet"]
             yearly_layer_data = yearly_mapping[_YEARLY_LAYER]

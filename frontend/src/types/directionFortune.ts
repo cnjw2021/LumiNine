@@ -139,3 +139,6 @@ export function isSixLayer(
 export function isGogyoStone(stone: StoneRecommendation): stone is GogyoStone {
   return 'gogyo' in stone;
 }
+
+/** Alias: SixLayerPowerStones → SevenLayerPowerStones (7-Layer 확장 후 명칭 정합성) */
+export type SevenLayerPowerStones = SixLayerPowerStones;
