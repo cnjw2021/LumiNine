@@ -57,7 +57,8 @@ const NumerologyProfileSection: React.FC<NumerologyProfileSectionProps> = ({ sto
                     color: 'rgba(74, 74, 74, 0.7)',
                     fontSize: '13px', lineHeight: 1.7,
                     fontFamily: '"Noto Serif JP", serif',
-                    maxWidth: '280px', margin: 0
+                    maxWidth: '280px', margin: 0,
+                    whiteSpace: 'pre-line' as const
                 }}>
                     {stoneData.traits}
                 </p>
