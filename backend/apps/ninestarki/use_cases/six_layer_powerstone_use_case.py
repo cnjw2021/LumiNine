@@ -204,8 +204,9 @@ class SixLayerPowerStoneUseCase:
         self,
         numerology_result: Dict[str, Any],
     ) -> Dict[str, Any]:
-        """수비술 4-Layer + 메타정보를 공통으로 조립하는 헬퍼.
+        """수비술 4~5-Layer + 메타정보를 공통으로 조립하는 헬퍼.
 
+        yearly(target_year 제공 시)가 포함되면 5-Layer, 아니면 4-Layer.
         ``merge_six_layer()`` 과 ``merge_six_layer_partial()`` 에서
         공유하여 사용한다.
         """
