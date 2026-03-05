@@ -1,7 +1,7 @@
 'use client';
 
 import React from 'react';
-import { Card, Text, Box, Tooltip, Group } from '@mantine/core';
+import { Card, Text, Box, Tooltip, Badge, Group } from '@mantine/core';
 import Image from 'next/image';
 import {
   IconArrowUp,
@@ -12,9 +12,7 @@ import {
   IconArrowUpLeft,
   IconArrowDownRight,
   IconArrowDownLeft,
-  IconAlertTriangle
 } from '@tabler/icons-react';
-import { HiCheckBadge } from 'react-icons/hi2';
 import PowerStoneCard from './PowerStoneCard';
 import { PowerStones } from '@/types/directionFortune';
 
@@ -215,410 +213,50 @@ const PeriodFortuneBoard: React.FC<PeriodFortuneBoardProps> = ({ periodData }) =
           }}>
             {/* 3×3のグリッドとして九星盤を表示 */}
             <Box style={{ width: '80%', height: '80%', position: 'relative' }}>
-              {/* 中央（中心） */}
-              {periodData.directions.center && (
-                <Box style={{
-                  position: 'absolute',
-                  top: '33%',
-                  left: '33%',
-                  width: '33%',
-                  height: '33%',
-                  display: 'flex',
-                  alignItems: 'center',
-                  justifyContent: 'center',
-                  zIndex: 6
-                }}>
-                  {periodData.directions.center.is_main_star && (
-                    <>
-                      {periodData.directions.center.is_auspicious ? (
-                        <Tooltip label={periodData.directions.center.title || "本命星（中央）"} position="top">
-                          <div style={{
-                            display: 'flex',
-                            alignItems: 'center',
-                            justifyContent: 'center'
-                          }}>
-                            <HiCheckBadge size={window.innerWidth <= 768 ? 24 : 36} color="#667eea" style={{
-                              filter: 'drop-shadow(0 2px 4px rgba(102, 126, 234, 0.3))'
-                            }} />
-                          </div>
-                        </Tooltip>
-                      ) : (
-                        <Tooltip label={periodData.directions.center.title || "注意（中央）"} position="top">
-                          <div style={{
-                            display: 'flex',
-                            alignItems: 'center',
-                            justifyContent: 'center'
-                          }}>
-                            <IconAlertTriangle size={window.innerWidth <= 768 ? 24 : 36} color="#ff5722" style={{
-                              filter: 'drop-shadow(0 2px 4px rgba(255, 87, 34, 0.3))'
-                            }} />
-                          </div>
-                        </Tooltip>
-                      )}
-                    </>
-                  )}
-                </Box>
-              )}
+              {/* 全方位の吉凶をBadgeで表示（DirectionBoardと同じスタイル） */}
+              {Object.entries(periodData.directions)
+                .filter(([dir]) => dir !== 'center')
+                .map(([direction, status]) => {
+                  const isAuspicious = status.is_auspicious === true;
+                  const isInauspicious = status.is_auspicious === false;
 
-              {/* 北（下）270° */}
-              {periodData.directions.north && (
-                <Box style={{
-                  position: 'absolute',
-                  top: 'calc(50% + 62% - 8%)',
-                  left: 'calc(50% - 8%)',
-                  width: '16%',
-                  height: '16%',
-                  display: 'flex',
-                  alignItems: 'center',
-                  justifyContent: 'center',
-                  zIndex: 6
-                }}>
-                  {periodData.directions.north.is_main_star && (
-                    <>
-                      {periodData.directions.north.is_auspicious ? (
-                        <Tooltip label={periodData.directions.north.title || "本命星"} position="bottom">
-                          <div style={{
-                            display: 'flex',
-                            alignItems: 'center',
-                            justifyContent: 'center'
-                          }}>
-                            <HiCheckBadge size={window.innerWidth <= 768 ? 24 : 36} color="#667eea" style={{
-                              filter: 'drop-shadow(0 2px 4px rgba(102, 126, 234, 0.3))'
-                            }} />
-                          </div>
-                        </Tooltip>
-                      ) : (
-                        <Tooltip label={periodData.directions.north.title || "注意"} position="bottom">
-                          <div style={{
-                            display: 'flex',
-                            alignItems: 'center',
-                            justifyContent: 'center'
-                          }}>
-                            <IconAlertTriangle size={window.innerWidth <= 768 ? 24 : 36} color="#ff5722" style={{
-                              filter: 'drop-shadow(0 2px 4px rgba(255, 87, 34, 0.3))'
-                            }} />
-                          </div>
-                        </Tooltip>
-                      )}
-                    </>
-                  )}
-                </Box>
-              )}
+                  // 方位ごとの位置設定
+                  const positions: Record<string, { top: string; left: string }> = {
+                    south: { top: 'calc(50% - 62% - 8%)', left: 'calc(50% - 8%)' },
+                    north: { top: 'calc(50% + 62% - 8%)', left: 'calc(50% - 8%)' },
+                    east: { top: 'calc(50% - 8%)', left: 'calc(50% - 62% - 8%)' },
+                    west: { top: 'calc(50% - 8%)', left: 'calc(50% + 62% - 8%)' },
+                    southeast: { top: 'calc(50% - 44% - 8%)', left: 'calc(50% - 44% - 8%)' },
+                    southwest: { top: 'calc(50% - 44% - 8%)', left: 'calc(50% + 44% - 8%)' },
+                    northeast: { top: 'calc(50% + 44% - 8%)', left: 'calc(50% - 44% - 8%)' },
+                    northwest: { top: 'calc(50% + 44% - 8%)', left: 'calc(50% + 44% - 8%)' },
+                  };
 
-              {/* 南（上）90° */}
-              {periodData.directions.south && (
-                <Box style={{
-                  position: 'absolute',
-                  top: 'calc(50% - 62% - 8%)',
-                  left: 'calc(50% - 8%)',
-                  width: '16%',
-                  height: '16%',
-                  display: 'flex',
-                  alignItems: 'center',
-                  justifyContent: 'center',
-                  zIndex: 6
-                }}>
-                  {periodData.directions.south.is_main_star && (
-                    <>
-                      {periodData.directions.south.is_auspicious ? (
-                        <Tooltip label={periodData.directions.south.title || "本命星"} position="top">
-                          <div style={{
-                            display: 'flex',
-                            alignItems: 'center',
-                            justifyContent: 'center'
-                          }}>
-                            <HiCheckBadge size={window.innerWidth <= 768 ? 24 : 36} color="#667eea" style={{
-                              filter: 'drop-shadow(0 2px 4px rgba(102, 126, 234, 0.3))'
-                            }} />
-                          </div>
-                        </Tooltip>
-                      ) : (
-                        <Tooltip label={periodData.directions.south.title || "注意"} position="top">
-                          <div style={{
-                            display: 'flex',
-                            alignItems: 'center',
-                            justifyContent: 'center'
-                          }}>
-                            <IconAlertTriangle size={window.innerWidth <= 768 ? 24 : 36} color="#ff5722" style={{
-                              filter: 'drop-shadow(0 2px 4px rgba(255, 87, 34, 0.3))'
-                            }} />
-                          </div>
-                        </Tooltip>
-                      )}
-                    </>
-                  )}
-                </Box>
-              )}
+                  const pos = positions[direction];
+                  if (!pos) return null;
 
-              {/* 東（左）0° */}
-              {periodData.directions.east && (
-                <Box style={{
-                  position: 'absolute',
-                  top: 'calc(50% - 8%)',
-                  left: 'calc(50% - 62% - 8%)',
-                  width: '16%',
-                  height: '16%',
-                  display: 'flex',
-                  alignItems: 'center',
-                  justifyContent: 'center',
-                  zIndex: 6
-                }}>
-                  {periodData.directions.east.is_main_star && (
-                    <>
-                      {periodData.directions.east.is_auspicious ? (
-                        <Tooltip label={periodData.directions.east.title || "本命星"} position="left">
-                          <div style={{
-                            display: 'flex',
-                            alignItems: 'center',
-                            justifyContent: 'center'
-                          }}>
-                            <HiCheckBadge size={window.innerWidth <= 768 ? 24 : 36} color="#667eea" style={{
-                              filter: 'drop-shadow(0 2px 4px rgba(102, 126, 234, 0.3))'
-                            }} />
-                          </div>
-                        </Tooltip>
-                      ) : (
-                        <Tooltip label={periodData.directions.east.title || "注意"} position="left">
-                          <div style={{
-                            display: 'flex',
-                            alignItems: 'center',
-                            justifyContent: 'center'
-                          }}>
-                            <IconAlertTriangle size={window.innerWidth <= 768 ? 24 : 36} color="#ff5722" style={{
-                              filter: 'drop-shadow(0 2px 4px rgba(255, 87, 34, 0.3))'
-                            }} />
-                          </div>
+                  return (
+                    <Box key={direction} style={{
+                      ...pos,
+                      position: 'absolute',
+                      width: '16%',
+                      height: '16%',
+                      display: 'flex',
+                      alignItems: 'center',
+                      justifyContent: 'center',
+                      zIndex: 6
+                    }}>
+                      {isAuspicious && (
+                        <Badge size="md" color="green">吉</Badge>
+                      )}
+                      {isInauspicious && (
+                        <Tooltip label={(status.reason || "凶方位").split(',').join('\n')} position="top" withArrow multiline w={150}>
+                          <Badge size="md" color="red">凶</Badge>
                         </Tooltip>
                       )}
-                    </>
-                  )}
-                </Box>
-              )}
-
-              {/* 西（右）180° */}
-              {periodData.directions.west && (
-                <Box style={{
-                  position: 'absolute',
-                  top: 'calc(50% - 8%)',
-                  left: 'calc(50% + 62% - 8%)',
-                  width: '16%',
-                  height: '16%',
-                  display: 'flex',
-                  alignItems: 'center',
-                  justifyContent: 'center',
-                  zIndex: 6
-                }}>
-                  {periodData.directions.west.is_main_star && (
-                    <>
-                      {periodData.directions.west.is_auspicious ? (
-                        <Tooltip label={periodData.directions.west.title || "本命星"} position="right">
-                          <div style={{
-                            display: 'flex',
-                            alignItems: 'center',
-                            justifyContent: 'center'
-                          }}>
-                            <HiCheckBadge size={window.innerWidth <= 768 ? 24 : 36} color="#667eea" style={{
-                              filter: 'drop-shadow(0 2px 4px rgba(102, 126, 234, 0.3))'
-                            }} />
-                          </div>
-                        </Tooltip>
-                      ) : (
-                        <Tooltip label={periodData.directions.west.title || "注意"} position="right">
-                          <div style={{
-                            display: 'flex',
-                            alignItems: 'center',
-                            justifyContent: 'center'
-                          }}>
-                            <IconAlertTriangle size={window.innerWidth <= 768 ? 24 : 36} color="#ff5722" style={{
-                              filter: 'drop-shadow(0 2px 4px rgba(255, 87, 34, 0.3))'
-                            }} />
-                          </div>
-                        </Tooltip>
-                      )}
-                    </>
-                  )}
-                </Box>
-              )}
-
-              {/* 北東（左下）315° */}
-              {periodData.directions.northeast && (
-                <Box style={{
-                  position: 'absolute',
-                  top: 'calc(50% + 44% - 8%)',
-                  left: 'calc(50% - 44% - 8%)',
-                  width: '16%',
-                  height: '16%',
-                  display: 'flex',
-                  alignItems: 'center',
-                  justifyContent: 'center',
-                  zIndex: 6
-                }}>
-                  {periodData.directions.northeast.is_main_star && (
-                    <>
-                      {periodData.directions.northeast.is_auspicious ? (
-                        <Tooltip label={periodData.directions.northeast.title || "本命星"} position="bottom-start">
-                          <div style={{
-                            display: 'flex',
-                            alignItems: 'center',
-                            justifyContent: 'center'
-                          }}>
-                            <HiCheckBadge size={window.innerWidth <= 768 ? 24 : 36} color="#667eea" style={{
-                              filter: 'drop-shadow(0 2px 4px rgba(102, 126, 234, 0.3))'
-                            }} />
-                          </div>
-                        </Tooltip>
-                      ) : (
-                        <Tooltip label={periodData.directions.northeast.title || "注意"} position="bottom-start">
-                          <div style={{
-                            display: 'flex',
-                            alignItems: 'center',
-                            justifyContent: 'center'
-                          }}>
-                            <IconAlertTriangle size={window.innerWidth <= 768 ? 24 : 36} color="#ff5722" style={{
-                              filter: 'drop-shadow(0 2px 4px rgba(255, 87, 34, 0.3))'
-                            }} />
-                          </div>
-                        </Tooltip>
-                      )}
-                    </>
-                  )}
-                </Box>
-              )}
-
-              {/* 北西（右下）225° */}
-              {periodData.directions.northwest && (
-                <Box style={{
-                  position: 'absolute',
-                  top: 'calc(50% + 44% - 8%)',
-                  left: 'calc(50% + 44% - 8%)',
-                  width: '16%',
-                  height: '16%',
-                  display: 'flex',
-                  alignItems: 'center',
-                  justifyContent: 'center',
-                  zIndex: 6
-                }}>
-                  {periodData.directions.northwest.is_main_star && (
-                    <>
-                      {periodData.directions.northwest.is_auspicious ? (
-                        <Tooltip label={periodData.directions.northwest.title || "本命星"} position="bottom-end">
-                          <div style={{
-                            display: 'flex',
-                            alignItems: 'center',
-                            justifyContent: 'center'
-                          }}>
-                            <HiCheckBadge size={window.innerWidth <= 768 ? 24 : 36} color="#667eea" style={{
-                              filter: 'drop-shadow(0 2px 4px rgba(102, 126, 234, 0.3))'
-                            }} />
-                          </div>
-                        </Tooltip>
-                      ) : (
-                        <Tooltip label={periodData.directions.northwest.title || "注意"} position="bottom-end">
-                          <div style={{
-                            display: 'flex',
-                            alignItems: 'center',
-                            justifyContent: 'center'
-                          }}>
-                            <IconAlertTriangle size={window.innerWidth <= 768 ? 24 : 36} color="#ff5722" style={{
-                              filter: 'drop-shadow(0 2px 4px rgba(255, 87, 34, 0.3))'
-                            }} />
-                          </div>
-                        </Tooltip>
-                      )}
-                    </>
-                  )}
-                </Box>
-              )}
-
-              {/* 南東（左上）45° */}
-              {periodData.directions.southeast && (
-                <Box style={{
-                  position: 'absolute',
-                  top: 'calc(50% - 44% - 8%)',
-                  left: 'calc(50% - 44% - 8%)',
-                  width: '16%',
-                  height: '16%',
-                  display: 'flex',
-                  alignItems: 'center',
-                  justifyContent: 'center',
-                  zIndex: 6
-                }}>
-                  {periodData.directions.southeast.is_main_star && (
-                    <>
-                      {periodData.directions.southeast.is_auspicious ? (
-                        <Tooltip label={periodData.directions.southeast.title || "本命星"} position="top-start">
-                          <div style={{
-                            display: 'flex',
-                            alignItems: 'center',
-                            justifyContent: 'center'
-                          }}>
-                            <HiCheckBadge size={window.innerWidth <= 768 ? 24 : 36} color="#667eea" style={{
-                              filter: 'drop-shadow(0 2px 4px rgba(102, 126, 234, 0.3))'
-                            }} />
-                          </div>
-                        </Tooltip>
-                      ) : (
-                        <Tooltip label={periodData.directions.southeast.title || "注意"} position="top-start">
-                          <div style={{
-                            display: 'flex',
-                            alignItems: 'center',
-                            justifyContent: 'center'
-                          }}>
-                            <IconAlertTriangle size={window.innerWidth <= 768 ? 24 : 36} color="#ff5722" style={{
-                              filter: 'drop-shadow(0 2px 4px rgba(255, 87, 34, 0.3))'
-                            }} />
-                          </div>
-                        </Tooltip>
-                      )}
-                    </>
-                  )}
-                </Box>
-              )}
-
-              {/* 南西（右上）135° */}
-              {periodData.directions.southwest && (
-                <Box style={{
-                  position: 'absolute',
-                  top: 'calc(50% - 44% - 8%)',
-                  left: 'calc(50% + 44% - 8%)',
-                  width: '16%',
-                  height: '16%',
-                  display: 'flex',
-                  alignItems: 'center',
-                  justifyContent: 'center',
-                  zIndex: 6
-                }}>
-                  {periodData.directions.southwest.is_main_star && (
-                    <>
-                      {periodData.directions.southwest.is_auspicious ? (
-                        <Tooltip label={periodData.directions.southwest.title || "本命星"} position="top-end">
-                          <div style={{
-                            display: 'flex',
-                            alignItems: 'center',
-                            justifyContent: 'center'
-                          }}>
-                            <HiCheckBadge size={window.innerWidth <= 768 ? 24 : 36} color="#667eea" style={{
-                              filter: 'drop-shadow(0 2px 4px rgba(102, 126, 234, 0.3))'
-                            }} />
-                          </div>
-                        </Tooltip>
-                      ) : (
-                        <Tooltip label={periodData.directions.southwest.title || "注意"} position="top-end">
-                          <div style={{
-                            display: 'flex',
-                            alignItems: 'center',
-                            justifyContent: 'center'
-                          }}>
-                            <IconAlertTriangle size={window.innerWidth <= 768 ? 28 : 36} color="#ff5722" style={{
-                              filter: 'drop-shadow(0 2px 4px rgba(255, 87, 34, 0.3))'
-                            }} />
-                          </div>
-                        </Tooltip>
-                      )}
-                    </>
-                  )}
-                </Box>
-              )}
+                    </Box>
+                  );
+                })}
             </Box>
           </div>
         </div>

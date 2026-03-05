@@ -12,7 +12,7 @@ logger = get_logger(__name__)
 
 class DirectionMarksDomainService:
     """方位の吉凶マーク（破、暗剣殺など）を扱うドメインサービス"""
-    _COMPATIBILITY_MATRIX_POLICY = "neutral"  # "neutral" | "inauspicious"
+    _COMPATIBILITY_MATRIX_POLICY = "inauspicious"  # "neutral" | "inauspicious"
 
     @inject
     def __init__(self, star_grid_repo: IStarGridPatternRepository) -> None:

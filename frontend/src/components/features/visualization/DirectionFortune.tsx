@@ -3,7 +3,6 @@
 import { Grid, Paper, Loader, Center, Card, Title, Text, Box } from '@mantine/core';
 import { useDirectionFortuneData } from '@/hooks/useDirectionFortuneData';
 import DirectionBoard from './DirectionBoard';
-import AuspiciousDatesDisplay from './AuspiciousDatesDisplay';
 
 interface DirectionFortuneProps {
     mainStar: number;
@@ -20,11 +19,7 @@ export default function DirectionFortune({ mainStar, monthStar, title, targetYea
         yearlyStar,
         zodiac,
         springStartDate,
-        springEndDate,
-        movingDates,
-        waterDrawingDates,
-        movingTable,
-        waterDrawingTable
+        springEndDate
     } = useDirectionFortuneData(mainStar, monthStar, targetYear);
 
     // ローディング中の表示
@@ -81,24 +76,6 @@ export default function DirectionFortune({ mainStar, monthStar, title, targetYea
                             ※ 実際にお引越しをされるときには、正確な方位を確認しますので必ずご相談ください。
                         </Text>
                     </Card>
-                </Grid.Col>
-                <Grid.Col span={{ base: 12, md: 6 }}>
-                    <AuspiciousDatesDisplay
-                        title="引越し吉日"
-                        description="引越しは運気に強く影響します。吉方位での引越しは良い準備が不可欠です。"
-                        dates={movingDates}
-                        tableData={movingTable}
-                        icon="🏠"
-                    />
-                </Grid.Col>
-                <Grid.Col span={{ base: 12, md: 6 }}>
-                    <AuspiciousDatesDisplay
-                        title="お水取り吉日"
-                        description="お水取りは金運や仕事運を上げる風水術。良い方位を選んで運気の流れを良くしましょう。"
-                        dates={waterDrawingDates}
-                        tableData={waterDrawingTable}
-                        icon="💧"
-                    />
                 </Grid.Col>
             </Grid>
         </Paper>
