@@ -218,8 +218,9 @@ class TestMonthlyBoardDomainService:
         # Group 2 (立春 star=2) の month=3 center_star は
         # offset=(3-2)%12=1, cs=((2-1-1)%9)+1=1
         result = service.get_monthly_board(target_date=date(2026, 3, 5))
-        # center_star が star_number (=3) と異なること
-        assert result.center_star != 3, (
-            "center_star should differ from solar_terms_data.star_number; "
-            "group-based lookup is not being used"
+        # center_star が期待通り 1 であり、かつ star_number (=3) と異なること
+        assert result.center_star == 1, (
+            "center_star should resolve to 1 for 2026-03 (group 2); "
+            "if this fails, group-based lookup may be incorrect or "
+            "solar_terms_data.star_number is being used directly"
         )

@@ -132,8 +132,12 @@ class MonthlyBoardDomainService(IMonthlyBoardDomainService):
 
         # 그룹 판정 → monthly_directions 경유로 월반 중궁성 결정
         # solar_terms_data.star_number 는 절기운성이므로 직접 사용 불가
-        # get_monthly_board() 에서 이미 조회한 spring_start_term 을 재활용
-        spring_star = spring_start_term.star_number if spring_start_term else None
+        # spring_start_term 재활용은 lookup_year 가 변경되지 않은 경우만 가능
+        spring_star = (
+            spring_start_term.star_number
+            if spring_start_term and lookup_year == target_date.year
+            else None
+        )
         center_star = self._resolve_center_star(
             lookup_year, matched_term.month, spring_star_number=spring_star
         )
