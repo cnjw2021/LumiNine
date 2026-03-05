@@ -6,7 +6,6 @@ import TemplateSelectionModal from './TemplateSelectionModal';
 import { useEffect, useState } from 'react';
 import api from '@/utils/api';
 import { useNineStarKiStore } from '@/stores/nineStarKiStore';
-import DirectionMapInfo from './DirectionMapInfo';
 import { ResultProps, PdfJobResultDataMinimal, PartnerMinimal } from '@/types/results';
 import { CalculationResult } from '@/types/stars';
 import { StarLifeGuidance } from '@/components/features';
@@ -430,8 +429,6 @@ export default function Result({ resultData, onReset }: ResultProps) {
         birthdate={resultData.birthdate}
       />
 
-      {/* 方位サイト推奨セクション */}
-      {/* <DirectionMapInfo /> */}
 
 
       {/* テンプレート選択モーダル */}
