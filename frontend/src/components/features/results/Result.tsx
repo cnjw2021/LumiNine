@@ -7,8 +7,7 @@ import { useEffect, useState } from 'react';
 import api from '@/utils/api';
 import { useNineStarKiStore } from '@/stores/nineStarKiStore';
 import DirectionMapInfo from './DirectionMapInfo';
-import CompatibilityResult from './CompatibilityResult';
-import { ResultProps, CompatibilityData, PdfJobResultDataMinimal, PartnerMinimal } from '@/types/results';
+import { ResultProps, PdfJobResultDataMinimal, PartnerMinimal } from '@/types/results';
 import { CalculationResult } from '@/types/stars';
 import { StarLifeGuidance } from '@/components/features';
 import StarAttributesDisplay from './StarAttributesDisplay';
@@ -34,14 +33,13 @@ interface DailyStarReading {
   advice: string | null;
 }
 
-export default function Result({ resultData, onReset, compatibilityData }: ResultProps) {
+export default function Result({ resultData, onReset }: ResultProps) {
   const { result, fullName, birthdate } = resultData;
   const [monthStarReading, setMonthStarReading] = useState<MonthStarReading | null>(null);
   const [dailyStarReading, setDailyStarReading] = useState<DailyStarReading | null>(null);
   const [isGeneratingPdf, setIsGeneratingPdf] = useState<boolean>(false);
   const [pdfProgress, setPdfProgress] = useState<number>(0);
   const [showTemplateModal, setShowTemplateModal] = useState<boolean>(false);
-  const [localCompatibilityData, setLocalCompatibilityData] = useState<CompatibilityData | null>(null);
   const [browserType, setBrowserType] = useState<'safari' | 'chrome' | 'other'>('other');
 
   // Zustandストアから日命星と月命星読みデータを保存・取得するための関数を取得
@@ -104,23 +102,6 @@ export default function Result({ resultData, onReset, compatibilityData }: Resul
     fetchReadingData();
   }, [result, birthdate, storeDailyStarReading, storeMonthlyStarReading]);
 
-  // 相性鑑定結果の取得
-  useEffect(() => {
-    // すでにCompatibilityDataが渡されている場合は何もしない
-    if (compatibilityData) return;
-
-    const COMPATIBILITY_STORAGE_KEY = 'ninestarki-compatibility-result-data';
-    // ローカルストレージから相性鑑定結果を取得
-    try {
-      const storedData = localStorage.getItem(COMPATIBILITY_STORAGE_KEY);
-      if (storedData) {
-        const parsedData = JSON.parse(storedData) as CompatibilityData;
-        setLocalCompatibilityData(parsedData);
-      }
-    } catch (err) {
-      console.error('相性鑑定結果の読み込みエラー:', err);
-    }
-  }, [compatibilityData]);
 
   // PDFをダウンロードする関数（Chrome用）
   const handleDownloadPdf = async (templateId: number) => {
@@ -133,23 +114,12 @@ export default function Result({ resultData, onReset, compatibilityData }: Resul
       setIsGeneratingPdf(true);
       setPdfProgress(0);
 
-      // 相性鑑定結果が存在するかチェック
-      const isCompatMode = !!compatibilityData || !!resultData.isCompatibilityReading;
-      const compatSource = isCompatMode ? (compatibilityData || localCompatibilityData) : undefined;
-      const partnerMinimal: PartnerMinimal | undefined = compatSource?.targetPerson && compatSource?.gender ? {
-        fullName: compatSource.targetPerson.name,
-        birthdate: (compatSource.targetPerson.birthdate || '').replace(/\//g, '-'),
-        gender: compatSource.gender,
-      } : undefined;
-
-      // 日命星 / 月命星 の読みデータをストアから取得し、リクエストデータに追加
       const normalizedBirthdate = (resultData.birthdate || '').replace(/\//g, '-');
       const minimalResultData: PdfJobResultDataMinimal = {
         fullName: resultData.fullName,
         birthdate: normalizedBirthdate,
         gender: (resultData as { gender: 'male' | 'female' }).gender,
         targetYear: resultData.targetYear || new Date().getFullYear(),
-        ...(partnerMinimal ? { partner: partnerMinimal } : {}),
       };
 
       // 1. ジョブ登録
@@ -214,29 +184,13 @@ export default function Result({ resultData, onReset, compatibilityData }: Resul
     try {
       setIsGeneratingPdf(true);
 
-
-
-      // finalCompatibilityDataが存在するかチェック
-      const compatibilityResult = compatibilityData?.result || localCompatibilityData?.result;
-
-      // デバッグログ
-      console.log('プレビュー - 相性鑑定データ状態:', {
-        'propsからのデータ': compatibilityData ? true : false,
-        'ローカルストレージからのデータ': localCompatibilityData ? true : false,
-        '最終使用データ': compatibilityResult ? true : false,
-        'browserType': browserType,
-        'useSimple': useSimple
-      });
-
       // 日命星と月命星の読みデータをストアから取得しリクエストデータに追加
       const resultDataWithReadings = {
         ...resultData,
         result: {
           ...resultData.result,
           month_star_reading: storedMonthlyStarReading,
-          day_star_reading: storedDailyStarReading,
-          // 相性鑑定結果があれば追加
-          compatibility: compatibilityResult
+          day_star_reading: storedDailyStarReading
         }
       };
 
@@ -279,8 +233,6 @@ export default function Result({ resultData, onReset, compatibilityData }: Resul
     setShowTemplateModal(false);
   };
 
-  // 相性鑑定結果がある場合に表示するコンテンツを取得
-  const finalCompatibilityData = compatibilityData || localCompatibilityData;
 
   if (!result) {
     return null;
@@ -481,21 +433,6 @@ export default function Result({ resultData, onReset, compatibilityData }: Resul
       {/* 方位サイト推奨セクション */}
       {/* <DirectionMapInfo /> */}
 
-      {/* 相性鑑定結果（既存コード）*/}
-      {/* {finalCompatibilityData && (
-        <div 
-          style={{ 
-            marginTop: 20, 
-            padding: '20px', 
-            backgroundColor: 'white',
-            borderRadius: '8px',
-            boxShadow: '0 1px 3px rgba(0,0,0,0.1)',
-            border: '1px solid #e0e0e0'
-          }}
-        >
-          <CompatibilityResult compatibilityData={finalCompatibilityData} />
-        </div>
-      )} */}
 
       {/* テンプレート選択モーダル */}
       <TemplateSelectionModal

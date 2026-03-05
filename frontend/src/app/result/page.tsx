@@ -6,17 +6,15 @@ import { useAuth } from '@/contexts/auth/AuthContext';
 import { Container, Loader, Text, Button, Transition } from '@mantine/core';
 import { useRouter } from 'next/navigation';
 import { HiArrowUp, HiArrowDown } from 'react-icons/hi';
-import { ResultData, CompatibilityData } from '@/types';
+import { ResultData } from '@/types';
 
 // ローカルストレージキー
 const STORAGE_KEY = 'ninestarki-result-data';
-const COMPATIBILITY_STORAGE_KEY = 'ninestarki-compatibility-result-data';
 
 export default function ResultPage() {
   const router = useRouter();
   const { token, isLoading: authLoading } = useAuth();
   const [resultData, setResultData] = useState<ResultData | null>(null);
-  const [compatibilityData, setCompatibilityData] = useState<CompatibilityData | null>(null);
   const [isDataLoading, setIsDataLoading] = useState(true);
   const [loadError, setLoadError] = useState<string | null>(null);
   const [showScrollTop, setShowScrollTop] = useState(false);
@@ -32,7 +30,7 @@ export default function ResultPage() {
         router.push('/login');
         return;
       }
-      
+
       try {
         // ローカルストレージへのアクセスをチェック
         try {
@@ -45,16 +43,16 @@ export default function ResultPage() {
           setIsDataLoading(false);
           return;
         }
-        
+
         // ローカルストレージから通常鑑定データを取得
         const savedData = localStorage.getItem(STORAGE_KEY);
         console.log('取得したデータ:', savedData ? '存在します' : 'ありません');
-        
+
         if (savedData) {
           try {
             const parsedData = JSON.parse(savedData);
             console.log('パース成功:', parsedData ? 'データあり' : 'データなし');
-            
+
             // 必須フィールドが存在するか確認
             if (!parsedData.result || !parsedData.fullName) {
               console.error('データの形式が不正:', parsedData);
@@ -64,21 +62,10 @@ export default function ResultPage() {
               setTimeout(() => router.push('/'), 3000);
               return;
             }
-            
+
             setResultData(parsedData);
 
-            // 相性鑑定データも取得
-            const savedCompatibilityData = localStorage.getItem(COMPATIBILITY_STORAGE_KEY);
-            if (savedCompatibilityData) {
-              try {
-                const parsedCompatibilityData = JSON.parse(savedCompatibilityData);
-                setCompatibilityData(parsedCompatibilityData);
-              } catch (parseError) {
-                console.error('相性データの解析に失敗:', parseError);
-                // 相性データ取得失敗はエラーとしない（オプション）
-              }
-            }
-            
+
             setIsDataLoading(false);
           } catch (parseError) {
             console.error('データの解析に失敗:', parseError);
@@ -156,15 +143,14 @@ export default function ResultPage() {
   const handleReset = () => {
     // ローカルストレージをクリア
     localStorage.removeItem(STORAGE_KEY);
-    localStorage.removeItem(COMPATIBILITY_STORAGE_KEY);
-    
+
     // ホームページに遷移
     router.push('/');
   };
 
   return (
-    <div 
-      className="result-container" 
+    <div
+      className="result-container"
       ref={containerRef}
       onScroll={handleScroll}
     >
@@ -192,12 +178,11 @@ export default function ResultPage() {
           background: rgba(75, 163, 227, 0.5);
         }
       `}</style>
-      <Result 
+      <Result
         resultData={resultData}
-        onReset={handleReset} 
-        compatibilityData={compatibilityData}
+        onReset={handleReset}
       />
-      
+
       <Transition mounted={showScrollTop} transition="fade" duration={400}>
         {(styles) => (
           <Button
