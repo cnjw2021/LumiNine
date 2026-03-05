@@ -4,14 +4,17 @@ import ResultFortuneSection from './ResultFortuneSection';
 import TemplateSelectionModal from './TemplateSelectionModal';
 import { useState } from 'react';
 import { usePdfReport } from '@/hooks/usePdfReport';
+import { usePowerStoneData } from '@/hooks/usePowerStoneData';
+import { useMonthFortuneData } from '@/hooks/useMonthFortuneData';
+import { isSixLayer } from '@/types/directionFortune';
+import BasePowerstonesSection from './BasePowerstonesSection';
+import NumerologyProfileSection from './NumerologyProfileSection';
 import { ResultProps } from '@/types/results';
-
 
 export default function Result({ resultData, onReset }: ResultProps) {
   const { result, fullName, birthdate } = resultData;
   const [showTemplateModal, setShowTemplateModal] = useState<boolean>(false);
 
-  // PDF生成とプレビュー用のカスタムフック
   const {
     isGeneratingPdf,
     pdfProgress,
@@ -22,102 +25,180 @@ export default function Result({ resultData, onReset }: ResultProps) {
     onActionComplete: () => setShowTemplateModal(false)
   });
 
-
-  // テンプレート選択モーダルを開く
-  const openTemplateModal = () => {
-    setShowTemplateModal(true);
-  };
-
-  // テンプレート選択モーダルを閉じる
-  const closeTemplateModal = () => {
-    setShowTemplateModal(false);
-  };
-
-
-  if (!result) {
-    return null;
-  }
+  if (!result) return null;
 
   const { main_star, month_star } = result;
+  const targetYear = resultData.targetYear || new Date().getFullYear();
+
+  const {
+    loading: stonesLoading,
+    powerStones,
+    error: stonesError,
+  } = usePowerStoneData(main_star.star_number, month_star.star_number, targetYear, birthdate);
+
+  const {
+    loading: fortuneLoading,
+    currentMonthData,
+    error: fortuneError,
+  } = useMonthFortuneData(main_star.star_number, month_star.star_number, targetYear);
+
+  const loading = stonesLoading || fortuneLoading;
+  const error = stonesError || fortuneError;
+  const sixLayer = powerStones && isSixLayer(powerStones) ? powerStones : null;
 
   return (
-    <div style={{ display: 'flex', flexDirection: 'column', gap: '20px' }}>
-      {/* ヘッダー: 氏名 + 生年月日 */}
-      <div style={{
-        padding: '20px',
-        backgroundColor: 'white',
-        borderRadius: '8px',
-        boxShadow: '0 1px 3px rgba(0,0,0,0.1)',
-        border: '1px solid #e0e0e0'
-      }}>
-        <div style={{ display: 'flex', flexDirection: 'column', gap: '10px' }}>
-          <h2 style={{ textAlign: 'center', fontSize: '1.2rem', fontWeight: 500, margin: 0 }}>
-            {fullName}様の鑑定結果
-          </h2>
-          <p style={{ textAlign: 'center', color: '#666', margin: 0 }}>
-            生年月日: {birthdate}
-          </p>
-        </div>
-      </div>
+    <div style={{
+      minHeight: '100vh',
+      display: 'flex',
+      flexDirection: 'column',
+      backgroundColor: '#f9f7f2',
+      position: 'relative',
+      fontFamily: '"Montserrat", sans-serif',
+      color: '#4a4a4a',
+      backgroundImage: `
+        radial-gradient(circle at 10% 10%, rgba(216, 167, 167, 0.03) 0%, transparent 40%),
+        radial-gradient(circle at 90% 90%, rgba(155, 176, 165, 0.03) 0%, transparent 40%)
+      `
+    }}>
 
-      {/* 鑑定結果: Section A → B → C */}
-      <ResultFortuneSection
-        mainStar={main_star.star_number}
-        monthStar={month_star.star_number}
-        mainStarName={main_star.name_jp}
-        monthStarName={month_star.name_jp}
-        targetYear={resultData.targetYear || new Date().getFullYear()}
-        birthdate={resultData.birthdate}
-      />
+      {/* ──── Header ──── */}
+      <header style={{
+        width: '100%', padding: '24px 32px',
+        borderBottom: '1px solid rgba(212, 175, 55, 0.1)',
+        backgroundColor: 'rgba(255, 255, 255, 0.3)',
+        backdropFilter: 'blur(4px)',
+        position: 'sticky', top: 0, zIndex: 50
+      }}>
+        <div style={{ maxWidth: '1100px', margin: '0 auto', display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
+          <div style={{ display: 'flex', alignItems: 'center', gap: '12px' }}>
+            <span style={{ color: '#d4af37', fontSize: '20px' }}>✦</span>
+            <h1 style={{
+              fontSize: '20px', fontWeight: 'normal', color: '#4a4a4a',
+              fontFamily: '"Shippori Mincho", "Noto Serif JP", serif',
+              letterSpacing: '0.1em', margin: 0
+            }}>
+              {fullName}様の鑑定結果
+            </h1>
+          </div>
+        </div>
+      </header>
+
+      {/* ──── Main Content: Two-Column Grid ──── */}
+      <main style={{ maxWidth: '1100px', margin: '0 auto', padding: '48px 32px', position: 'relative', zIndex: 10, width: '100%' }}>
+
+        <div style={{ display: 'grid', gridTemplateColumns: '5fr 7fr', gap: '48px' }}>
+
+          {/* ════ Left Column: Numerology + Recommended Stones ════ */}
+          <div style={{ display: 'flex', flexDirection: 'column', gap: '48px' }}>
+
+            {/* ── Numerology Profile ── */}
+            {sixLayer && (
+              <NumerologyProfileSection stoneData={sixLayer} />
+            )}
+
+            {/* ── Recommended Stones ── */}
+            <div>
+              <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', gap: '8px', marginBottom: '24px' }}>
+                <h3 style={{
+                  color: '#d4af37', fontSize: '11px', letterSpacing: '0.3em',
+                  fontWeight: 500, textTransform: 'uppercase' as const,
+                  fontFamily: '"Montserrat", sans-serif', margin: 0
+                }}>
+                  Recommended Stones
+                </h3>
+                <div style={{ width: '48px', height: '1px', background: 'linear-gradient(90deg, transparent, rgba(212, 175, 55, 0.4), transparent)' }} />
+              </div>
+
+              {stonesLoading ? (
+                <div style={{ display: 'flex', justifyContent: 'center', padding: '40px 0' }}>
+                  <span style={{ color: '#d4af37' }}>読み込み中...</span>
+                </div>
+              ) : stonesError ? (
+                <p style={{ color: 'red', textAlign: 'center', fontSize: '14px' }}>{stonesError}</p>
+              ) : sixLayer ? (
+                <BasePowerstonesSection stoneData={sixLayer} />
+              ) : null}
+            </div>
+
+            {/* ── Action Buttons ── */}
+            <div style={{ display: 'flex', flexDirection: 'column', gap: '12px', marginTop: '16px' }}>
+              <button
+                onClick={() => setShowTemplateModal(true)}
+                disabled={isGeneratingPdf}
+                style={{
+                  padding: '16px 48px',
+                  backgroundColor: '#d8a7a7', color: '#FFF',
+                  fontFamily: '"Noto Serif JP", serif',
+                  borderRadius: '9999px',
+                  boxShadow: '0 10px 20px -5px rgba(216, 167, 167, 0.25)',
+                  fontSize: '13px', letterSpacing: '0.2em',
+                  border: 'none', cursor: 'pointer',
+                  transition: 'all 0.3s ease'
+                }}
+              >
+                {isGeneratingPdf ? 'PDF生成中...' : '詳細な鑑定書をダウンロード'}
+              </button>
+              <button
+                onClick={onReset}
+                style={{
+                  padding: '14px 48px',
+                  backgroundColor: 'transparent',
+                  color: '#d4af37',
+                  fontFamily: '"Noto Serif JP", serif',
+                  borderRadius: '9999px',
+                  border: '1px solid rgba(212, 175, 55, 0.3)',
+                  fontSize: '13px', letterSpacing: '0.2em',
+                  cursor: 'pointer',
+                  transition: 'all 0.3s ease'
+                }}
+              >
+                新しい鑑定
+              </button>
+            </div>
+
+          </div>
+
+          {/* ════ Right Column: Yearly Fortune + Direction Guide ════ */}
+          <div style={{ display: 'flex', flexDirection: 'column', gap: '40px' }}>
+            <ResultFortuneSection
+              mainStar={main_star.star_number}
+              monthStar={month_star.star_number}
+              mainStarName={main_star.name_jp}
+              monthStarName={month_star.name_jp}
+              targetYear={targetYear}
+              birthdate={resultData.birthdate}
+              powerStones={powerStones}
+              currentMonthData={currentMonthData}
+              loading={loading}
+              error={error}
+            />
+          </div>
+        </div>
+      </main>
+
+      {/* ──── Footer ──── */}
+      <footer style={{
+        width: '100%', padding: '36px', marginTop: 'auto',
+        borderTop: '1px solid rgba(212, 175, 55, 0.1)', textAlign: 'center'
+      }}>
+        <p style={{
+          fontSize: '10px', letterSpacing: '0.4em',
+          color: 'rgba(74, 74, 74, 0.4)', textTransform: 'uppercase' as const,
+          fontFamily: '"Montserrat", sans-serif', margin: 0
+        }}>
+          © 2024 Nine Star Ki &amp; Numerology Healing Experience
+        </p>
+      </footer>
 
       {/* テンプレート選択モーダル */}
       <TemplateSelectionModal
         isOpen={showTemplateModal}
-        onClose={closeTemplateModal}
+        onClose={() => setShowTemplateModal(false)}
         onSelect={handleDownloadPdf}
         onPreview={handlePreviewReport}
         isGeneratingPdf={isGeneratingPdf}
         pdfProgress={pdfProgress}
       />
-
-      {/* アクションボタン */}
-      <div style={{ display: 'flex', justifyContent: 'center', margin: '0px auto 18px', gap: '15px', width: '100%', maxWidth: '500px' }}>
-        <button
-          onClick={onReset}
-          style={{
-            padding: '10px 20px',
-            fontSize: '1rem',
-            backgroundColor: 'transparent',
-            color: '#3490dc',
-            border: '1px solid #3490dc',
-            borderRadius: '4px',
-            cursor: 'pointer',
-            fontWeight: 500,
-            transition: 'all 0.2s ease'
-          }}
-        >
-          新しい鑑定
-        </button>
-
-        <button
-          onClick={openTemplateModal}
-          disabled={isGeneratingPdf}
-          style={{
-            padding: '10px 20px',
-            fontSize: '1rem',
-            backgroundColor: '#3490dc',
-            color: 'white',
-            border: '1px solid #3490dc',
-            borderRadius: '4px',
-            cursor: isGeneratingPdf ? 'wait' : 'pointer',
-            fontWeight: 500,
-            transition: 'all 0.2s ease',
-            opacity: isGeneratingPdf ? 0.7 : 1
-          }}
-        >
-          {isGeneratingPdf ? 'PDF生成中...' : 'PDF出力'}
-        </button>
-      </div>
     </div>
   );
-} 
+}

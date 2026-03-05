@@ -2,10 +2,7 @@
 
 import React from 'react';
 import { Stack, Loader, Text, Paper } from '@mantine/core';
-import { usePowerStoneData } from '@/hooks/usePowerStoneData';
-import { useMonthFortuneData } from '@/hooks/useMonthFortuneData';
 import { isSixLayer } from '@/types/directionFortune';
-import NumerologyProfileSection from './NumerologyProfileSection';
 import YearlyFortuneSection from './YearlyFortuneSection';
 import MonthlyFortuneSection from './MonthlyFortuneSection';
 
@@ -16,62 +13,41 @@ interface ResultFortuneSectionProps {
   monthStarName: string;
   targetYear: number;
   birthdate?: string;
+  powerStones: any;
+  currentMonthData: any;
+  loading: boolean;
+  error: string | null;
 }
 
-/**
- * 鑑定結果セクション — 3つのセクションを時間軸順に表示
- *
- * Section A: 数秘プロフィール (Life Path — 一生涯)
- * Section B: 今年の運勢 (Personal Year — 今年)
- * Section C: 今月の運勢 (九星気学 — 今月)
- */
 const ResultFortuneSection: React.FC<ResultFortuneSectionProps> = ({
   mainStar,
   monthStar,
   mainStarName,
   monthStarName,
   targetYear,
-  birthdate,
+  powerStones,
+  currentMonthData,
+  loading,
+  error,
 }) => {
-  // パワーストーンデータ
-  const {
-    loading: stonesLoading,
-    powerStones,
-    error: stonesError,
-  } = usePowerStoneData(mainStar, monthStar, targetYear, birthdate);
-
-  // 月の方位データ
-  const {
-    loading: fortuneLoading,
-    currentMonthData,
-    error: fortuneError,
-  } = useMonthFortuneData(mainStar, monthStar, targetYear);
-
-  const loading = stonesLoading || fortuneLoading;
-  const error = stonesError || fortuneError;
-
   if (loading) {
     return (
-      <Paper shadow="sm" p="md" withBorder>
-        <Stack align="center" py="xl">
-          <Loader size="md" />
-          <Text>鑑定データを読み込み中...</Text>
-        </Stack>
-      </Paper>
+      <div style={{ display: 'flex', justifyContent: 'center', alignItems: 'center', minHeight: '200px' }}>
+        <span style={{ color: '#d4af37', fontSize: '14px' }}>鑑定データを読み込み中...</span>
+      </div>
     );
   }
 
   if (error) {
     return (
-      <Paper shadow="sm" p="md" withBorder>
-        <Text c="red" ta="center">{error}</Text>
-      </Paper>
+      <div style={{ textAlign: 'center', padding: '32px', color: '#d8a7a7' }}>
+        {error}
+      </div>
     );
   }
 
   const sixLayer = powerStones && isSixLayer(powerStones) ? powerStones : null;
 
-  // 3-Layer フォールバック: birth_date 未提供時でも monthly/protection stone を表示
   const monthlyStone = sixLayer?.monthly_stone
     ?? (powerStones && !isSixLayer(powerStones) ? powerStones.monthly_stone : null)
     ?? null;
@@ -80,21 +56,17 @@ const ResultFortuneSection: React.FC<ResultFortuneSectionProps> = ({
     ?? null;
 
   return (
-    <Stack gap="lg">
-      {/* ─── Section A: 数秘プロフィール (一生涯) ─── */}
-      {sixLayer && (
-        <NumerologyProfileSection stoneData={sixLayer} />
-      )}
-
-      {/* ─── Section B: 今年の運勢 ─── */}
+    <div style={{ display: 'flex', flexDirection: 'column', gap: '40px' }}>
+      {/* 今年の運勢 (Yearly Fortune) */}
       {sixLayer?.yearly_stone && (
         <YearlyFortuneSection
           yearlyStone={sixLayer.yearly_stone}
           personalYearNumber={sixLayer.personal_year_number}
+          targetYear={targetYear}
         />
       )}
 
-      {/* ─── Section C: 今月の運勢 (九星気学) ─── */}
+      {/* 今月の運勢 (Monthly Direction Guide) */}
       <MonthlyFortuneSection
         mainStar={{ star_number: mainStar, name_jp: mainStarName }}
         monthStar={{ star_number: monthStar, name_jp: monthStarName }}
@@ -102,7 +74,7 @@ const ResultFortuneSection: React.FC<ResultFortuneSectionProps> = ({
         monthlyStone={monthlyStone}
         protectionStone={protectionStone}
       />
-    </Stack>
+    </div>
   );
 };
 
