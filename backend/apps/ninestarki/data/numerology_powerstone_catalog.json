@@ -1,12 +1,13 @@
 {
     "meta": {
-        "version": "1.0.0",
-        "description": "수비술 기반 파워스톤 카탈로그 (전체운/건강운/재물운/연애운)",
+        "version": "1.1.0",
+        "description": "수비술 기반 파워스톤 카탈로그 (전체운/건강운/재물운/연애운/연운석)",
         "mapping_principle": {
-            "overall": "수비술 숫자 → 지배 행성 → 대표석",
-            "health": "수비술 숫자 × 태양(Sun) → 생명력 보완석",
-            "wealth": "수비술 숫자 × 목성(Jupiter) → 풍요 보완석",
-            "love": "수비술 숫자 × 금성(Venus) → 사랑 보완석"
+            "overall": "Life Path Number → 지배 행성 → 대표석",
+            "health": "Life Path Number × 태양(Sun) → 생명력 보완석",
+            "wealth": "Life Path Number × 목성(Jupiter) → 풍요 보완석",
+            "love": "Life Path Number × 금성(Venus) → 사랑 보완석",
+            "yearly": "Personal Year Number → 연간 에너지 보충석 (매년 변경)"
         }
     },
     "stones": {
@@ -293,6 +294,10 @@
             "love": {
                 "primary": "diamond",
                 "secondary": "rose_quartz"
+            },
+            "yearly": {
+                "primary": "sunstone",
+                "secondary": "carnelian"
             }
         },
         "2": {
@@ -312,6 +317,10 @@
             "love": {
                 "primary": "rose_quartz",
                 "secondary": "diamond"
+            },
+            "yearly": {
+                "primary": "moonstone",
+                "secondary": "pearl"
             }
         },
         "3": {
@@ -331,6 +340,10 @@
             "love": {
                 "primary": "rose_quartz",
                 "secondary": "turquoise"
+            },
+            "yearly": {
+                "primary": "citrine",
+                "secondary": "yellow_sapphire"
             }
         },
         "4": {
@@ -350,6 +363,10 @@
             "love": {
                 "primary": "diamond",
                 "secondary": "rose_quartz"
+            },
+            "yearly": {
+                "primary": "hessonite",
+                "secondary": "green_aventurine"
             }
         },
         "5": {
@@ -369,6 +386,10 @@
             "love": {
                 "primary": "rose_quartz",
                 "secondary": "diamond"
+            },
+            "yearly": {
+                "primary": "emerald",
+                "secondary": "peridot"
             }
         },
         "6": {
@@ -388,6 +409,10 @@
             "love": {
                 "primary": "diamond",
                 "secondary": "rose_quartz"
+            },
+            "yearly": {
+                "primary": "rose_quartz",
+                "secondary": "turquoise"
             }
         },
         "7": {
@@ -407,6 +432,10 @@
             "love": {
                 "primary": "rose_quartz",
                 "secondary": "turquoise"
+            },
+            "yearly": {
+                "primary": "cats_eye",
+                "secondary": "lapis_lazuli"
             }
         },
         "8": {
@@ -426,6 +455,10 @@
             "love": {
                 "primary": "diamond",
                 "secondary": "rose_quartz"
+            },
+            "yearly": {
+                "primary": "blue_sapphire",
+                "secondary": "onyx"
             }
         },
         "9": {
@@ -445,6 +478,10 @@
             "love": {
                 "primary": "rose_quartz",
                 "secondary": "diamond"
+            },
+            "yearly": {
+                "primary": "red_coral",
+                "secondary": "carnelian"
             }
         }
     }

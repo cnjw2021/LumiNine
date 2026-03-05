@@ -114,15 +114,17 @@ export interface PowerStones {
   protection_stone: GogyoStone;
 }
 
-/** 6-Layer response (birth_date provided) */
+/** 7-Layer response (birth_date provided) */
 export interface SixLayerPowerStones {
   overall_stone: NumerologyStone;
   health_stone: NumerologyStone;
   wealth_stone: NumerologyStone;
   love_stone: NumerologyStone;
+  yearly_stone?: NumerologyStone;
   monthly_stone: GogyoStone;
   protection_stone: GogyoStone;
   life_path_number: number;
+  personal_year_number?: number;
   planet: string;
 }
 

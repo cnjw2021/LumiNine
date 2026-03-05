@@ -33,6 +33,7 @@ const LAYER_META_6: Record<string, { icon: string; label: string; sublabel: stri
     health: { icon: '❤️', label: '健康運', sublabel: '心身の健康をサポート', color: '#dc2626' },
     wealth: { icon: '💰', label: '財運', sublabel: '豊かさと繁栄を引き寄せる', color: '#d97706' },
     love: { icon: '💕', label: '恋愛運', sublabel: '愛と人間関係の調和', color: '#ec4899' },
+    yearly: { icon: '✨', label: '年運石', sublabel: '今年のエネルギー補充石', color: '#f59e0b' },
     monthly: { icon: '🌙', label: '月運石', sublabel: '今月の吉方位エネルギー', color: '#0891b2' },
     protection: { icon: '🛡️', label: '護身石', sublabel: '今月の凶方位を抑制', color: '#4b5563' },
 };
@@ -216,6 +217,23 @@ const PowerStoneCard: React.FC<PowerStoneCardProps> = ({ powerStones }) => {
                     <SixLayerStoneItem stone={powerStones.wealth_stone} layerKey="wealth" />
                     <SixLayerStoneItem stone={powerStones.love_stone} layerKey="love" />
                 </SimpleGrid>
+
+                {/* 연운석 (Personal Year Number) */}
+                {powerStones.yearly_stone && (
+                    <>
+                        <Text size="xs" fw={600} c="dimmed" mb={4}>
+                            🌟 {new Date().getFullYear()}年のストーン
+                            {powerStones.personal_year_number && (
+                                <Badge size="xs" variant="light" color="orange" ml={6}>
+                                    パーソナルイヤー {powerStones.personal_year_number}
+                                </Badge>
+                            )}
+                        </Text>
+                        <SimpleGrid cols={{ base: 1, sm: 1 }} spacing="xs" mb="sm">
+                            <SixLayerStoneItem stone={powerStones.yearly_stone} layerKey="yearly" />
+                        </SimpleGrid>
+                    </>
+                )}
 
                 {/* 구성기학 2-Layer */}
                 <Text size="xs" fw={600} c="dimmed" mb={4}>

@@ -66,3 +66,47 @@ class NumerologyService:
 
         planet = NUMBER_TO_PLANET[life_path]
         return NumerologyNumber(number=life_path, planet=planet)
+
+    @staticmethod
+    def calculate_personal_year_number(birth_date: str, target_year: int) -> NumerologyNumber:
+        """생년월일 + 대상 연도 → Personal Year Number 계산.
+
+        Personal Year Number = (생월 + 생일 + 대상 연도) 의 각 자릿수를
+        합산하여 한 자릿수(1~9)로 축소한 값.
+
+        Args:
+            birth_date: ``"YYYY-MM-DD"`` 또는 ``"YYYY-MM-DD HH:MM"`` 형식의 생년월일
+            target_year: 대상 연도 (예: 2026)
+
+        Returns:
+            NumerologyNumber  (1~9 + 대응 행성)
+
+        Raises:
+            ValueError: 날짜 형식이 올바르지 않은 경우
+        """
+        date_part = birth_date.strip().split(" ")[0]
+        parts = date_part.split("-")
+        if len(parts) != 3:
+            raise ValueError(
+                f"생년월일 형식이 올바르지 않습니다: {birth_date} (YYYY-MM-DD 필요)"
+            )
+
+        _, month, day = parts
+
+        if not month.isdigit() or not day.isdigit():
+            raise ValueError(
+                f"생년월일 형식이 올바르지 않습니다: {birth_date} (숫자 YYYY-MM-DD 필요)"
+            )
+
+        # target_year + month + day 의 전체 자릿수를 합산
+        digits = str(target_year) + month + day
+        digit_sum = sum(int(d) for d in digits)
+        personal_year = NumerologyService._reduce_to_single_digit(digit_sum)
+
+        if personal_year not in NUMBER_TO_PLANET:
+            raise ValueError(
+                f"유효하지 않은 Personal Year Number가 계산되었습니다: {personal_year}"
+            )
+
+        planet = NUMBER_TO_PLANET[personal_year]
+        return NumerologyNumber(number=personal_year, planet=planet)

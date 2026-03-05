@@ -205,11 +205,16 @@ class TestSixLayerPowerStoneUseCase:
 
     @patch(
         "apps.ninestarki.use_cases.six_layer_powerstone_use_case"
+        ".NumerologyService.calculate_personal_year_number"
+    )
+    @patch(
+        "apps.ninestarki.use_cases.six_layer_powerstone_use_case"
         ".NumerologyService.calculate_life_path_number"
     )
-    def test_both_engines_called(self, mock_calc: MagicMock) -> None:
-        """6-Layer 모드에서 구성기학 + 수비술 양쪽 모두 호출."""
+    def test_both_engines_called(self, mock_calc: MagicMock, mock_pyn: MagicMock) -> None:
+        """7-Layer 모드에서 구성기학 + 수비술 양쪽 모두 호출."""
         mock_calc.return_value = MagicMock(number=3)
+        mock_pyn.return_value = MagicMock(number=2)
         self.mock_engine.recommend_as_dict.return_value = _make_numerology_result()
 
         self.use_case.execute(
@@ -231,6 +236,7 @@ class TestSixLayerPowerStoneUseCase:
         self.mock_engine.recommend_as_dict.assert_called_once_with(
             life_path_number=3,
             locale="ko",
+            personal_year_number=2,
         )
 
     # ── base_stone 은 6-Layer 에서 제외 ───────────────

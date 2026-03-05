@@ -2,12 +2,12 @@
 
 - NumerologyStone: 단일 스톤 정보 (다국어 이름 + 설명)
 - NumerologyStoneRecommendation: 레이어별 추천 결과 (주석 + 부석)
-- NumerologyPowerStoneResult: 4-Layer 최종 결과
+- NumerologyPowerStoneResult: 4~5-Layer 최종 결과
 """
 from __future__ import annotations
 
-from dataclasses import dataclass
-from typing import Dict
+from dataclasses import dataclass, field
+from typing import Dict, Optional
 
 
 @dataclass(frozen=True)
@@ -46,7 +46,7 @@ class NumerologyStone:
 class NumerologyStoneRecommendation:
     """수비술 단일 레이어 추천 결과."""
 
-    layer: str                       # "overall" | "health" | "wealth" | "love"
+    layer: str                       # "overall" | "health" | "wealth" | "love" | "yearly"
     primary: NumerologyStone         # 주석
     secondary: NumerologyStone       # 부석
     planet: str                      # 지배 행성 ("sun", "moon", ...)
@@ -54,7 +54,7 @@ class NumerologyStoneRecommendation:
 
 @dataclass(frozen=True)
 class NumerologyPowerStoneResult:
-    """수비술 기반 4-Layer 파워스톤 추천 최종 결과."""
+    """수비술 기반 4~5-Layer 파워스톤 추천 최종 결과."""
 
     life_path_number: int
     planet: str
@@ -62,3 +62,5 @@ class NumerologyPowerStoneResult:
     health: NumerologyStoneRecommendation        # 건강운
     wealth: NumerologyStoneRecommendation        # 재물운
     love: NumerologyStoneRecommendation          # 연애운
+    yearly: Optional[NumerologyStoneRecommendation] = field(default=None)  # 연운석
+    personal_year_number: Optional[int] = field(default=None)
