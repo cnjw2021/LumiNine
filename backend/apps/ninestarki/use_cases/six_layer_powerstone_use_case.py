@@ -1,7 +1,8 @@
-"""SixLayerPowerStoneUseCase — 7-Layer 파워스톤 통합 유즈케이스.
+"""SixLayerPowerStoneUseCase — 6~7-Layer 파워스톤 통합 유즈케이스.
 
-구성기학 기반 2개 레이어 (월운석, 호신석) + 수비술 기반 5개 레이어
-(전체운, 건강운, 재물운, 연애운, 연운석) 를 하나의 API 응답으로 통합한다.
+구성기학 기반 2개 레이어 (월운석, 호신석) + 수비술 기반 4~5개 레이어
+(전체운, 건강운, 재물운, 연애운, [target_year 제공 시 연운석]) 를
+하나의 API 응답으로 통합한다.
 
 birth_date 가 제공되지 않은 경우 기존 3-Layer 응답을 유지하여
 하위 호환성을 보장한다.
@@ -25,10 +26,11 @@ logger = get_logger(__name__)
 
 
 class SixLayerPowerStoneUseCase:
-    """7-Layer 파워스톤 통합 유즈케이스.
+    """6~7-Layer 파워스톤 통합 유즈케이스.
 
     - birth_date 가 없으면 기존 3-Layer (base/monthly/protection) 반환
-    - birth_date 가 있으면 7-Layer (수비술 5 + 구성기학 2) 반환
+    - birth_date 제공, target_year 미제공 → 6-Layer (수비술 4 + 구성기학 2)
+    - birth_date 제공, target_year 제공 → 7-Layer (수비술 5 + 구성기학 2)
 
     Note:
         월별 반복 호출 시 ``compute_numerology_stones()`` 로 수비술 부분을

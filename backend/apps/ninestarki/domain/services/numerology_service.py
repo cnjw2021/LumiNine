@@ -96,9 +96,9 @@ class NumerologyService:
                 f"생년월일 형식이 올바르지 않습니다: {birth_date} (YYYY-MM-DD 필요)"
             )
 
-        _, month, day = parts
+        year_str, month, day = parts
 
-        if not month.isdigit() or not day.isdigit():
+        if not (year_str.isdigit() and month.isdigit() and day.isdigit()):
             raise ValueError(
                 f"생년월일 형식이 올바르지 않습니다: {birth_date} (숫자 YYYY-MM-DD 필요)"
             )

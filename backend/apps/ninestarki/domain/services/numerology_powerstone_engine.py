@@ -95,6 +95,13 @@ class NumerologyPowerStoneEngine:
                     f"카탈로그에 'yearly' 레이어가 없습니다 (number={personal_year_number})"
                 )
             yearly_layer_data = yearly_mapping[_YEARLY_LAYER]
+            missing_keys = [k for k in ("primary", "secondary") if k not in yearly_layer_data]
+            if missing_keys:
+                missing_str = ", ".join(missing_keys)
+                raise ValueError(
+                    f"카탈로그 'yearly' 레이어에 필요한 키가 없습니다"
+                    f" (number={personal_year_number}, missing={missing_str})"
+                )
             primary = self._repo.get_stone(yearly_layer_data["primary"])
             secondary = self._repo.get_stone(yearly_layer_data["secondary"])
             yearly_rec = NumerologyStoneRecommendation(

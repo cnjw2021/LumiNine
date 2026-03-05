@@ -110,8 +110,8 @@ export type StoneRecommendation = GogyoStone | NumerologyStone;
 /** 3-Layer response (birth_date not provided) */
 export interface PowerStones {
   base_stone: GogyoStone;
-  monthly_stone: GogyoStone;
-  protection_stone: GogyoStone;
+  monthly_stone: GogyoStone | null;
+  protection_stone: GogyoStone | null;
 }
 
 /** 7-Layer response (birth_date provided) */

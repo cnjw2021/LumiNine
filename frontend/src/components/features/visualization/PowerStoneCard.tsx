@@ -27,8 +27,8 @@ const LAYER_META_3: Record<string, { icon: string; label: string; sublabel: stri
     protection: { icon: '🛡️', label: '護身石', sublabel: '今月の凶方位を抑制' },
 };
 
-// ── 6-Layer 메타 ─────────────────────────────────────────
-const LAYER_META_6: Record<string, { icon: string; label: string; sublabel: string; color: string }> = {
+// ── 7-Layer 메타 ─────────────────────────────────────────
+const LAYER_META_7: Record<string, { icon: string; label: string; sublabel: string; color: string }> = {
     overall: { icon: '💎', label: '全体運', sublabel: '人生の総合的な守護石', color: '#7c3aed' },
     health: { icon: '❤️', label: '健康運', sublabel: '心身の健康をサポート', color: '#dc2626' },
     wealth: { icon: '💰', label: '財運', sublabel: '豊かさと繁栄を引き寄せる', color: '#d97706' },
@@ -109,7 +109,7 @@ const SixLayerStoneItem: React.FC<{
     stone: StoneRecommendation;
     layerKey: string;
 }> = ({ stone, layerKey }) => {
-    const meta = LAYER_META_6[layerKey] || { icon: '✦', label: stone.layer, sublabel: '', color: '#6b7280' };
+    const meta = LAYER_META_7[layerKey] || { icon: '✦', label: stone.layer, sublabel: '', color: '#6b7280' };
     const gogyo = isGogyoStone(stone);
 
     return (
@@ -268,8 +268,12 @@ const PowerStoneCard: React.FC<PowerStoneCardProps> = ({ powerStones, targetYear
 
             <Group gap="xs" grow align="stretch" wrap="nowrap">
                 <StoneItem3 stone={powerStones.base_stone} />
-                <StoneItem3 stone={powerStones.monthly_stone} />
-                <StoneItem3 stone={powerStones.protection_stone} />
+                {powerStones.monthly_stone && (
+                    <StoneItem3 stone={powerStones.monthly_stone} />
+                )}
+                {powerStones.protection_stone && (
+                    <StoneItem3 stone={powerStones.protection_stone} />
+                )}
             </Group>
         </Card>
     );

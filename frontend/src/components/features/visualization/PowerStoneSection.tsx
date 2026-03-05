@@ -11,7 +11,8 @@ import PowerStoneCard from './PowerStoneCard';
  * DirectionFortune とは分離されており、
  * ResultFortuneSection や任意のページで自由に配置・表示制御が可能。
  *
- * birthDate を渡すと 6-Layer 応答を取得しリッチなカードを表示する。
+ * birthDate を渡すと 6~7-Layer 応答を取得しリッチなカードを表示する。
+ * targetYear を追加で渡すと yearly(年運石) を含む 7-Layer になる。
  */
 interface PowerStoneSectionProps {
     mainStar: number;

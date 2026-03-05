@@ -406,7 +406,7 @@ def create_monthly_bp():
             def _numerology_fallback():
                 """월盤 `/monthly-board` 응답에서 `directions`가 비어있을 때의 fallback 헬퍼.
 
-                수비술 스톤이 있으면 수비술 4-Layer만 반환, 없으면 None.
+                수비술 스톤이 있으면 수비술 4~5-Layer(target_year 제공 시 yearly 포함)만 반환, 없으면 None.
                 이 경로에서 `monthly_stone` / `protection_stone` 은 항상 `null` 이다.
                 """
                 if numerology_stones:
