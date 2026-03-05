@@ -51,7 +51,6 @@ const ResultFortuneSection: React.FC<ResultFortuneSectionProps> = ({
       {sixLayer?.yearly_stone && (
         <YearlyFortuneSection
           yearlyStone={sixLayer.yearly_stone}
-          personalYearNumber={sixLayer.personal_year_number}
           targetYear={targetYear}
         />
       )}

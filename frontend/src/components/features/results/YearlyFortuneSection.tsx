@@ -5,7 +5,6 @@ import { NumerologyStone } from '@/types/directionFortune';
 
 interface YearlyFortuneSectionProps {
     yearlyStone: NumerologyStone;
-    personalYearNumber?: number;
     targetYear?: number;
 }
 

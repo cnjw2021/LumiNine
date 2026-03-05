@@ -43,7 +43,7 @@ export default function Result({ resultData, onReset }: ResultProps) {
   } = useMonthFortuneData(main_star.star_number, month_star.star_number, targetYear);
 
   const loading = stonesLoading || fortuneLoading;
-  const error = stonesError || fortuneError;
+  const error = [stonesError, fortuneError].filter(Boolean).join(' / ') || null;
   const sixLayer = powerStones && isSixLayer(powerStones) ? powerStones : null;
 
   return (
