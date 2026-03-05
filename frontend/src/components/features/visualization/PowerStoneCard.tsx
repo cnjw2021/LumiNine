@@ -221,7 +221,7 @@ const PowerStoneCard: React.FC<PowerStoneCardProps> = ({ powerStones }) => {
                 {/* 연운석 (Personal Year Number) */}
                 {powerStones.yearly_stone && (
                     <>
-                        <Text size="xs" fw={600} c="dimmed" mb={4}>
+                        <Text component="div" size="xs" fw={600} c="dimmed" mb={4}>
                             🌟 {new Date().getFullYear()}年のストーン
                             {powerStones.personal_year_number && (
                                 <Badge size="xs" variant="light" color="orange" ml={6}>
