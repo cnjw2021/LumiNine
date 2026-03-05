@@ -2,7 +2,6 @@
 export { default as Result } from './results/Result';
 export { default as ResultFortuneSection } from './results/ResultFortuneSection';
 export { default as StarAttributesDisplay } from './results/StarAttributesDisplay';
-export { default as StarLifeGuidance } from './results/StarLifeGuidance';
 
 // Form
 export { default as NineStarKiForm } from './form/NineStarKiForm';

@@ -10,7 +10,6 @@ import api from '@/utils/api';
 import { useNineStarKiStore } from '@/stores/nineStarKiStore';
 import { ResultProps, PdfJobResultDataMinimal, PartnerMinimal } from '@/types/results';
 import { CalculationResult } from '@/types/stars';
-import { StarLifeGuidance } from '@/components/features';
 import StarAttributesDisplay from './StarAttributesDisplay';
 // Progress removed (modal handles display)
 
@@ -90,12 +89,6 @@ export default function Result({ resultData, onReset }: ResultProps) {
       <StarAttributesDisplay
         mainStar={main_star.star_number}
         mainStarName={main_star.name_jp}
-      />
-
-      {/* ほかのセクションの後、本命星と月命星のガイダンス情報（新規追加）*/}
-      <StarLifeGuidance
-        mainStar={main_star.star_number}
-        monthStar={month_star.star_number}
       />
 
       {/* 鑑定結果セクション */}
