@@ -95,6 +95,54 @@ class TestLifePathCalculation:
         assert seen == set(range(1, 10)), f"커버되지 않은 숫자: {set(range(1,10)) - seen}"
 
 
+# ══════════════════════════════════════════════════════
+# NumerologyService — Personal Year Number 계산
+# ══════════════════════════════════════════════════════
+
+class TestPersonalYearCalculation:
+    @pytest.mark.parametrize("birth_date, target_year, expected_number", [
+        # 2+0+2+6+0+7+0+9 = 26 → 2+6 = 8
+        ("1984-07-09", 2026, 8),
+        # 2+0+2+5+0+7+0+9 = 25 → 2+5 = 7
+        ("1984-07-09", 2025, 7),
+        # 2+0+2+6+0+1+0+1 = 12 → 1+2 = 3
+        ("2000-01-01", 2026, 3),
+        # 2+0+2+6+1+2+3+1 = 17 → 1+7 = 8
+        ("1999-12-31", 2026, 8),
+        # 2+0+2+6+0+9+0+9 = 28 → 2+8 = 10 → 1+0 = 1
+        ("1990-09-09", 2026, 1),
+    ])
+    def test_personal_year_number(self, birth_date: str, target_year: int, expected_number: int):
+        result = NumerologyService.calculate_personal_year_number(birth_date, target_year)
+        assert result.number == expected_number
+
+    def test_returns_numerology_number(self):
+        result = NumerologyService.calculate_personal_year_number("1984-07-09", 2026)
+        assert isinstance(result, NumerologyNumber)
+
+    def test_planet_mapping(self):
+        result = NumerologyService.calculate_personal_year_number("1984-07-09", 2026)
+        # Personal Year 8 → Saturn
+        assert result.planet == Planet.SATURN
+
+    def test_datetime_format_with_time(self):
+        result = NumerologyService.calculate_personal_year_number("1984-07-09 15:30", 2026)
+        assert result.number == 8
+
+    def test_invalid_format_raises(self):
+        with pytest.raises(ValueError):
+            NumerologyService.calculate_personal_year_number("invalid", 2026)
+
+    def test_different_years_different_results(self):
+        """연도가 달라지면 Personal Year Number도 달라져야 한다."""
+        results = set()
+        for year in range(2020, 2030):
+            r = NumerologyService.calculate_personal_year_number("1984-07-09", year)
+            results.add(r.number)
+        # 10년간 최소 5개 이상의 서로 다른 숫자가 나와야 함 (중복 허용)
+        assert len(results) >= 5
+
+
 class TestReduceToSingleDigit:
     @pytest.mark.parametrize("n, expected", [
         (1, 1), (9, 9), (10, 1), (11, 2), (38, 2), (100, 1),

@@ -396,6 +396,7 @@ def create_monthly_bp():
                     numerology_stones = six_layer_use_case.compute_numerology_stones(
                         birth_date=birth_date,
                         locale=locale_str,
+                        target_year=year,
                     )
                 except ValueError:
                     return jsonify({
@@ -405,7 +406,7 @@ def create_monthly_bp():
             def _numerology_fallback():
                 """월盤 `/monthly-board` 응답에서 `directions`가 비어있을 때의 fallback 헬퍼.
 
-                수비술 스톤이 있으면 수비술 4-Layer만 반환, 없으면 None.
+                수비술 스톤이 있으면 수비술 4~5-Layer(target_year 제공 시 yearly 포함)만 반환, 없으면 None.
                 이 경로에서 `monthly_stone` / `protection_stone` 은 항상 `null` 이다.
                 """
                 if numerology_stones:
@@ -423,8 +424,8 @@ def create_monthly_bp():
                         locale=locale_str,
                     )
                     if numerology_stones:
-                        # 6-Layer: 수비술 4 + 구성기학 2
-                        board['power_stones'] = six_layer_use_case.merge_six_layer(
+                        # 7-Layer: 수비술 5 + 구성기학 2
+                        board['power_stones'] = six_layer_use_case.merge_seven_layer(
                             gogyo_result, numerology_stones,
                         )
                     else:

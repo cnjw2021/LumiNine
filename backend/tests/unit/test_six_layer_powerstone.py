@@ -205,11 +205,16 @@ class TestSixLayerPowerStoneUseCase:
 
     @patch(
         "apps.ninestarki.use_cases.six_layer_powerstone_use_case"
+        ".NumerologyService.calculate_personal_year_number"
+    )
+    @patch(
+        "apps.ninestarki.use_cases.six_layer_powerstone_use_case"
         ".NumerologyService.calculate_life_path_number"
     )
-    def test_both_engines_called(self, mock_calc: MagicMock) -> None:
-        """6-Layer 모드에서 구성기학 + 수비술 양쪽 모두 호출."""
+    def test_both_engines_called(self, mock_calc: MagicMock, mock_pyn: MagicMock) -> None:
+        """7-Layer 모드에서 구성기학 + 수비술 양쪽 모두 호출."""
         mock_calc.return_value = MagicMock(number=3)
+        mock_pyn.return_value = MagicMock(number=2)
         self.mock_engine.recommend_as_dict.return_value = _make_numerology_result()
 
         self.use_case.execute(
@@ -217,6 +222,7 @@ class TestSixLayerPowerStoneUseCase:
             directions=DUMMY_DIRECTIONS,
             locale="ko",
             birth_date="1995-12-25",
+            target_year=2026,
         )
 
         # 구성기학 호출
@@ -228,9 +234,11 @@ class TestSixLayerPowerStoneUseCase:
 
         # 수비술 호출
         mock_calc.assert_called_once_with("1995-12-25")
+        mock_pyn.assert_called_once_with("1995-12-25", 2026)
         self.mock_engine.recommend_as_dict.assert_called_once_with(
             life_path_number=3,
             locale="ko",
+            personal_year_number=2,
         )
 
     # ── base_stone 은 6-Layer 에서 제외 ───────────────
@@ -275,3 +283,68 @@ class TestSixLayerPowerStoneUseCase:
         # 메타 정보
         assert result["life_path_number"] == 7
         assert result["planet"] == "ketu"
+
+    # ── 7-Layer: yearly_stone 포함 검증 ─────────────
+
+    @patch(
+        "apps.ninestarki.use_cases.six_layer_powerstone_use_case"
+        ".NumerologyService.calculate_personal_year_number"
+    )
+    @patch(
+        "apps.ninestarki.use_cases.six_layer_powerstone_use_case"
+        ".NumerologyService.calculate_life_path_number"
+    )
+    def test_7_layer_includes_yearly_stone(self, mock_calc: MagicMock, mock_pyn: MagicMock) -> None:
+        """7-Layer 모드에서 yearly_stone/personal_year_number 가 응답에 포함."""
+        mock_calc.return_value = MagicMock(number=3)
+        mock_pyn.return_value = MagicMock(number=5)
+
+        numerology_with_yearly = _make_numerology_result()
+        numerology_with_yearly["yearly"] = {
+            "layer": "yearly",
+            "primary": {
+                "stone_id": "citrine",
+                "stone_name": "シトリン",
+                "description": "年エネルギー石",
+            },
+            "secondary": {
+                "stone_id": "garnet",
+                "stone_name": "ガーネット",
+                "description": "補助年運石",
+            },
+        }
+        numerology_with_yearly["personal_year_number"] = 5
+        self.mock_engine.recommend_as_dict.return_value = numerology_with_yearly
+
+        result = self.use_case.execute(
+            main_star=5,
+            directions=DUMMY_DIRECTIONS,
+            locale="ja",
+            birth_date="1990-03-15",
+            target_year=2026,
+        )
+
+        # yearly_stone 포함 검증
+        assert "yearly_stone" in result
+        assert result["yearly_stone"]["stone_id"] == "citrine"
+        assert result["personal_year_number"] == 5
+
+    @patch(
+        "apps.ninestarki.use_cases.six_layer_powerstone_use_case"
+        ".NumerologyService.calculate_life_path_number"
+    )
+    def test_6_layer_no_target_year_excludes_yearly(self, mock_calc: MagicMock) -> None:
+        """target_year 미제공 시 yearly_stone 없는 6-Layer 응답."""
+        mock_calc.return_value = MagicMock(number=3)
+        self.mock_engine.recommend_as_dict.return_value = _make_numerology_result()
+
+        result = self.use_case.execute(
+            main_star=5,
+            directions=DUMMY_DIRECTIONS,
+            locale="ja",
+            birth_date="1990-03-15",
+        )
+
+        # yearly 관련 키 없어야 함
+        assert "yearly_stone" not in result or result.get("yearly_stone") is None
+        assert "personal_year_number" not in result or result.get("personal_year_number") is None

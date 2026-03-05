@@ -110,19 +110,21 @@ export type StoneRecommendation = GogyoStone | NumerologyStone;
 /** 3-Layer response (birth_date not provided) */
 export interface PowerStones {
   base_stone: GogyoStone;
-  monthly_stone: GogyoStone;
-  protection_stone: GogyoStone;
+  monthly_stone: GogyoStone | null;
+  protection_stone: GogyoStone | null;
 }
 
-/** 6-Layer response (birth_date provided) */
+/** 7-Layer response (birth_date provided) */
 export interface SixLayerPowerStones {
   overall_stone: NumerologyStone;
   health_stone: NumerologyStone;
   wealth_stone: NumerologyStone;
   love_stone: NumerologyStone;
-  monthly_stone: GogyoStone;
-  protection_stone: GogyoStone;
+  yearly_stone?: NumerologyStone;
+  monthly_stone: GogyoStone | null;
+  protection_stone: GogyoStone | null;
   life_path_number: number;
+  personal_year_number?: number;
   planet: string;
 }
 
@@ -137,3 +139,6 @@ export function isSixLayer(
 export function isGogyoStone(stone: StoneRecommendation): stone is GogyoStone {
   return 'gogyo' in stone;
 }
+
+/** Alias: SixLayerPowerStones → SevenLayerPowerStones (7-Layer 확장 후 명칭 정합성) */
+export type SevenLayerPowerStones = SixLayerPowerStones;

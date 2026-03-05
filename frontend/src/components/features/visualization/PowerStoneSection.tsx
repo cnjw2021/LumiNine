@@ -11,7 +11,9 @@ import PowerStoneCard from './PowerStoneCard';
  * DirectionFortune とは分離されており、
  * ResultFortuneSection や任意のページで自由に配置・表示制御が可能。
  *
- * birthDate を渡すと 6-Layer 応答を取得しリッチなカードを表示する。
+ * birthDate を渡すと yearly(年運石) を含む 7-Layer 応答を取得しリッチなカードを表示する
+ * （targetYear 未指定時は当年を基準にした年運石が返る）。
+ * targetYear を追加で渡すと、その年を基準にした yearly(年運石) を含む 7-Layer になる。
  */
 interface PowerStoneSectionProps {
     mainStar: number;
@@ -38,7 +40,7 @@ const PowerStoneSection: React.FC<PowerStoneSectionProps> = ({ mainStar, monthSt
         return null; // エラーやデータなしの場合は何も表示しない
     }
 
-    return <PowerStoneCard powerStones={powerStones} />;
+    return <PowerStoneCard powerStones={powerStones} targetYear={targetYear} />;
 };
 
 export default PowerStoneSection;
