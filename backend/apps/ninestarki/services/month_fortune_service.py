@@ -151,6 +151,7 @@ class MonthFortuneService(IMonthFortuneService):
         # 現在の干支と年星のデータを準備
         base_params = {
             'main_star': main_star,
+            'month_star': month_star,
             'zodiac': zodiac
         }
         
@@ -187,12 +188,16 @@ class MonthFortuneService(IMonthFortuneService):
                 }
                 continue
                 
-            # 吉凶判定を行う
-            fortune_status = grid_pattern.get_time_fortune_status(base_params)
+            # 吉凶判定を行う（全9種の凶殺チェックを含む完全版）
+            fortune_status = grid_pattern.get_fortune_status(base_params)
             
             # 本命星の方位に対して、後天定位の鑑定メッセージを取得
             for direction, result in fortune_status.items():
-                if result["is_main_star"]:
+                # get_fortune_status() は is_main_star フラグを持たないため、
+                # marks に "main_star" が含まれるかで本命星方位を判定
+                is_main_star = "main_star" in result.get("marks", [])
+                result["is_main_star"] = is_main_star
+                if is_main_star:
                     # 方位自体を使って後天定位の星番号を取得する
                     # 例：「北」方位なら、常に一白水星
                     acquired_fortune_star_number = {
