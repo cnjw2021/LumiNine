@@ -224,3 +224,35 @@ class TestMonthlyBoardDomainService:
             "if this fails, group-based lookup may be incorrect or "
             "solar_terms_data.star_number is being used directly"
         )
+
+    def test_center_star_before_lichun_uses_previous_year_group(self, service):
+        """立春より前の日付で lookup_year が前年に繰り下がるケースの回帰テスト。
+
+        2026-01-10 のような 立春 前の日付では、service は前年の立春から
+        グループ／center_star を決定する必要がある。
+
+        stub 実装では:
+          - 1月の solar_terms_data.star_number = ((1-1)%9)+1 = 1
+          - lookup_year=2025 の立春 star_number = 2 → group 2
+          - group 2, month 1: offset=11, cs=((2-1-11)%9)+1 = 9
+        """
+        target = date(2026, 1, 10)
+        result = service.get_monthly_board(target_date=target)
+
+        # stub solar_terms の 1月の star_number は ((1-1)%9)+1 = 1
+        january_term_star_number = ((1 - 1) % 9) + 1
+
+        # グループ／monthly_directions 経由の期待 center_star (stub 定義に基づく)
+        expected_center_star = 9
+
+        # center_star が stub monthly_directions の期待値になっていること
+        assert result.center_star == expected_center_star, (
+            "center_star should resolve to 9 for 2026-01 (pre-立春, previous-year group); "
+            "if this fails, group-based lookup around the year boundary may be incorrect"
+        )
+        # かつ、절기운성(star_number) をそのまま使っていないこと
+        assert result.center_star != january_term_star_number, (
+            "center_star must not equal the January solar_terms_data.star_number; "
+            "if this fails, solar_terms_data.star_number may be used directly "
+            "instead of resolving via the previous year's 立春 group"
+        )
