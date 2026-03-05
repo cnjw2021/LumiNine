@@ -161,10 +161,6 @@ export default function Result({ resultData, onReset }: ResultProps) {
           {/* ════ Right Column: Yearly Fortune + Direction Guide ════ */}
           <div style={{ display: 'flex', flexDirection: 'column', gap: '40px' }}>
             <ResultFortuneSection
-              mainStar={main_star.star_number}
-              monthStar={month_star.star_number}
-              mainStarName={main_star.name_jp}
-              monthStarName={month_star.name_jp}
               targetYear={targetYear}
               powerStones={powerStones}
               currentMonthData={currentMonthData}

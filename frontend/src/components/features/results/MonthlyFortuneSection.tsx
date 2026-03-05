@@ -113,7 +113,8 @@ const MonthlyFortuneSection: React.FC<MonthlyFortuneSectionProps> = ({
                             );
                         }
 
-                        const info = currentMonthData?.directions?.[dir];
+                        // 'center' is rendered above; skip API lookup for non-directional keys
+                        const info = (dir !== 'center' && currentMonthData?.directions?.[dir]) || undefined;
                         const isAuspicious = info?.is_auspicious;
                         const hasMarks = info?.marks && info.marks.length > 0;
 

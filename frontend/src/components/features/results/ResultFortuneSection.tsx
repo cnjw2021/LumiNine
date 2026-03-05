@@ -6,10 +6,6 @@ import YearlyFortuneSection from './YearlyFortuneSection';
 import MonthlyFortuneSection from './MonthlyFortuneSection';
 
 interface ResultFortuneSectionProps {
-  mainStar: number;
-  monthStar: number;
-  mainStarName: string;
-  monthStarName: string;
   targetYear: number;
   powerStones: PowerStones | SixLayerPowerStones | null;
   currentMonthData: PeriodFortuneData | null;
@@ -18,10 +14,6 @@ interface ResultFortuneSectionProps {
 }
 
 const ResultFortuneSection: React.FC<ResultFortuneSectionProps> = ({
-  mainStar,
-  monthStar,
-  mainStarName,
-  monthStarName,
   targetYear,
   powerStones,
   currentMonthData,
