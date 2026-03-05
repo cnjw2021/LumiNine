@@ -14,29 +14,9 @@ import StarAttributesDisplay from './StarAttributesDisplay';
 // Progress removed (modal handles display)
 
 
-// 月命星読みの型定義
-interface MonthStarReading {
-  id: number;
-  star_number: number;
-  title: string;
-  keywords: string;
-  description: string;
-}
-
-// 日命星読みの型定義
-interface DailyStarReading {
-  id: number;
-  star_number: number;
-  title: string;
-  keywords: string | null;
-  description: string;
-  advice: string | null;
-}
 
 export default function Result({ resultData, onReset }: ResultProps) {
   const { result, fullName, birthdate } = resultData;
-  const [monthStarReading, setMonthStarReading] = useState<MonthStarReading | null>(null);
-  const [dailyStarReading, setDailyStarReading] = useState<DailyStarReading | null>(null);
   const [isGeneratingPdf, setIsGeneratingPdf] = useState<boolean>(false);
   const [pdfProgress, setPdfProgress] = useState<number>(0);
   const [showTemplateModal, setShowTemplateModal] = useState<boolean>(false);
@@ -44,10 +24,6 @@ export default function Result({ resultData, onReset }: ResultProps) {
 
   // Zustandストアから日命星と月命星読みデータを保存・取得するための関数を取得
   const {
-    setMonthlyStarReading: storeMonthlyStarReading,
-    monthlyStarReading: storedMonthlyStarReading,
-    setDailyStarReading: storeDailyStarReading,
-    dailyStarReading: storedDailyStarReading
   } = useNineStarKiStore();
 
   // ブラウザを検出する関数
@@ -66,41 +42,6 @@ export default function Result({ resultData, onReset }: ResultProps) {
     setBrowserType(detectBrowser());
   }, []);
 
-  // 月命星読みと日命星読みのデータを取得
-  useEffect(() => {
-    if (!result) return;
-
-    const fetchReadingData = async () => {
-      try {
-        const { month_star } = result;
-
-        // 月命星の読みデータを取得
-        const monthReadingResponse = await api.get(`/nine-star/month-star-readings?star_number=${month_star.star_number}`);
-        if (monthReadingResponse.data && monthReadingResponse.data.length > 0) {
-          const monthlyReadingData = monthReadingResponse.data[0];
-          setMonthStarReading(monthlyReadingData);
-          // ストアにも月命星読みデータを保存
-          storeMonthlyStarReading(monthlyReadingData);
-        }
-
-        // 日命星の読みデータを取得（生年月日が有効な場合のみ）
-        if (birthdate) {
-          const formattedBirthdate = birthdate.replace(/\//g, '-'); // YYYY/MM/DD → YYYY-MM-DD
-          const dailyStarResponse = await api.get(`/nine-star/daily-star-reading?birth_date=${formattedBirthdate}`);
-          if (dailyStarResponse.data && dailyStarResponse.data.day_reading) {
-            const dayReadingData = dailyStarResponse.data.day_reading;
-            setDailyStarReading(dayReadingData);
-            // ストアにも日命星読みデータを保存
-            storeDailyStarReading(dayReadingData);
-          }
-        }
-      } catch (err) {
-        console.error('読みデータの取得中にエラーが発生しました:', err);
-      }
-    };
-
-    fetchReadingData();
-  }, [result, birthdate, storeDailyStarReading, storeMonthlyStarReading]);
 
 
   // PDFをダウンロードする関数（Chrome用）
@@ -184,14 +125,9 @@ export default function Result({ resultData, onReset }: ResultProps) {
     try {
       setIsGeneratingPdf(true);
 
-      // 日命星と月命星の読みデータをストアから取得しリクエストデータに追加
+      // プレビュー用にリクエストデータを準備
       const resultDataWithReadings = {
         ...resultData,
-        result: {
-          ...resultData.result,
-          month_star_reading: storedMonthlyStarReading,
-          day_star_reading: storedDailyStarReading
-        }
       };
 
       // プレビューエンドポイントを呼び出し

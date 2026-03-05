@@ -12,28 +12,6 @@ interface Star {
   updated_at: string;
 }
 
-// 月命星読みの型定義
-interface MonthlyStarReading {
-  id: number;
-  star_number: number;
-  title: string;
-  keywords: string;
-  description: string;
-  created_at?: string;
-  updated_at?: string;
-}
-
-// 日命星読みの型定義
-interface DailyStarReading {
-  id: number;
-  star_number: number;
-  title: string;
-  keywords: string | null;
-  description: string;
-  advice: string | null;
-  created_at?: string;
-  updated_at?: string;
-}
 
 // 九星気学の結果の型定義
 interface NineStarKiResult {
@@ -58,8 +36,6 @@ interface NineStarKiState {
   gender: Gender | null;        // 性別
   targetYear: number | null;    // 鑑定対象年
   result: NineStarKiResult | null; // 計算結果
-  monthlyStarReading: MonthlyStarReading | null; // 月命星読みデータ
-  dailyStarReading: DailyStarReading | null; // 日命星読みデータ
   setBirthDateTime: (birthDateTime: string) => void;
   setBirthdate: (birthdate: string) => void;
   setBirthtime: (birthtime: string) => void;
@@ -67,12 +43,10 @@ interface NineStarKiState {
   setGender: (gender: Gender) => void;
   setTargetYear: (targetYear: number) => void;
   setResult: (result: NineStarKiResult) => void;
-  setMonthlyStarReading: (reading: MonthlyStarReading) => void; // 月命星読みデータを設定
-  setDailyStarReading: (reading: DailyStarReading) => void; // 日命星読みデータを設定
-  setUserData: (data: { 
-    birthDateTime: string, 
-    birthdate: string, 
-    birthtime: string, 
+  setUserData: (data: {
+    birthDateTime: string,
+    birthdate: string,
+    birthtime: string,
     fullName: string,
     gender: Gender,
     targetYear?: number
@@ -91,41 +65,34 @@ export const useNineStarKiStore = create<NineStarKiState>()(
       gender: null,
       targetYear: null,
       result: null,
-      monthlyStarReading: null,
-      dailyStarReading: null,
-      
+
       // 生年月日時を設定（ISO形式）
       setBirthDateTime: (birthDateTime: string) => set({ birthDateTime }),
-      
+
       // 生年月日を設定（YYYY/MM/DD形式）
       setBirthdate: (birthdate: string) => set({ birthdate }),
-      
+
       // 時間を設定（HH:MM形式）
       setBirthtime: (birthtime: string) => set({ birthtime }),
-      
+
       // 氏名を設定
       setFullName: (fullName: string) => set({ fullName }),
-      
+
       // 性別を設定
       setGender: (gender: Gender) => set({ gender }),
-      
+
       // 鑑定対象年を設定
       setTargetYear: (targetYear: number) => set({ targetYear }),
-      
+
       // 結果を設定
       setResult: (result: NineStarKiResult) => set({ result }),
 
-      // 月命星読みデータを設定
-      setMonthlyStarReading: (reading: MonthlyStarReading) => set({ monthlyStarReading: reading }),
-      
-      // 日命星読みデータを設定
-      setDailyStarReading: (reading: DailyStarReading) => set({ dailyStarReading: reading }),
 
       // ユーザーデータをまとめて設定
-      setUserData: (data: { 
-        birthDateTime: string, 
-        birthdate: string, 
-        birthtime: string, 
+      setUserData: (data: {
+        birthDateTime: string,
+        birthdate: string,
+        birthtime: string,
         fullName: string,
         gender: Gender,
         targetYear?: number
@@ -137,18 +104,16 @@ export const useNineStarKiStore = create<NineStarKiState>()(
         gender: data.gender,
         targetYear: data.targetYear !== undefined ? data.targetYear : null
       }),
-      
+
       // ストアをリセット
-      reset: () => set({ 
-        birthDateTime: null, 
-        birthdate: null, 
-        birthtime: null, 
+      reset: () => set({
+        birthDateTime: null,
+        birthdate: null,
+        birthtime: null,
         fullName: null,
         gender: null,
         targetYear: null,
         result: null,
-        monthlyStarReading: null,
-        dailyStarReading: null,
       }, true), // trueを追加してステート全体を置き換え
     }),
     {
@@ -162,8 +127,6 @@ export const useNineStarKiStore = create<NineStarKiState>()(
         gender: state.gender,
         targetYear: state.targetYear,
         result: state.result,
-        monthlyStarReading: state.monthlyStarReading,
-        dailyStarReading: state.dailyStarReading,
       }),
     }
   )
