@@ -1,17 +1,10 @@
 'use client';
 
 import ResultFortuneSection from './ResultFortuneSection';
-import NumerologyStarInfo from './NumerologyStarInfo';
-import ResultStarDisplay from './ResultStarDisplay';
 import TemplateSelectionModal from './TemplateSelectionModal';
-import { useEffect, useState } from 'react';
+import { useState } from 'react';
 import { usePdfReport } from '@/hooks/usePdfReport';
-import api from '@/utils/api';
-import { useNineStarKiStore } from '@/stores/nineStarKiStore';
-import { ResultProps, PdfJobResultDataMinimal, PartnerMinimal } from '@/types/results';
-import { CalculationResult } from '@/types/stars';
-import StarAttributesDisplay from './StarAttributesDisplay';
-// Progress removed (modal handles display)
+import { ResultProps } from '@/types/results';
 
 
 export default function Result({ resultData, onReset }: ResultProps) {
@@ -45,20 +38,11 @@ export default function Result({ resultData, onReset }: ResultProps) {
     return null;
   }
 
-  const { main_star, month_star, day_star } = result;
-
-
-  // カンマ区切りのキーワード文字列を処理する関数
-  const processKeywords = (keywordsStr: string | null | undefined): string => {
-    if (!keywordsStr) return '';
-    // カンマと読点を「・」に置き換えて整形
-    return keywordsStr.replace(/[,、]/g, '・').trim();
-  };
-
+  const { main_star, month_star } = result;
 
   return (
     <div style={{ display: 'flex', flexDirection: 'column', gap: '20px' }}>
-      {/* 進捗バーはモーダル内オーバーレイで表示。ページ先頭のバーは不要 */}
+      {/* ヘッダー: 氏名 + 生年月日 */}
       <div style={{
         padding: '20px',
         backgroundColor: 'white',
@@ -73,28 +57,15 @@ export default function Result({ resultData, onReset }: ResultProps) {
           <p style={{ textAlign: 'center', color: '#666', margin: 0 }}>
             生年月日: {birthdate}
           </p>
-
-          {/* 九星の数字表示セクション */}
-          <ResultStarDisplay mainStar={main_star} monthStar={month_star} dayStar={day_star} />
         </div>
       </div>
 
-
-      {/* 数秘術ライフパスナンバー */}
-      {result.numerology && (
-        <NumerologyStarInfo numerology={result.numerology} />
-      )}
-
-      {/* 本命星の属性情報 */}
-      <StarAttributesDisplay
-        mainStar={main_star.star_number}
-        mainStarName={main_star.name_jp}
-      />
-
-      {/* 鑑定結果セクション */}
+      {/* 鑑定結果: Section A → B → C */}
       <ResultFortuneSection
         mainStar={main_star.star_number}
         monthStar={month_star.star_number}
+        mainStarName={main_star.name_jp}
+        monthStarName={month_star.name_jp}
         targetYear={resultData.targetYear || new Date().getFullYear()}
         birthdate={resultData.birthdate}
       />

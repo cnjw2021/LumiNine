@@ -126,6 +126,10 @@ export interface SixLayerPowerStones {
   life_path_number: number;
   personal_year_number?: number;
   planet: string;
+  /** Life Path Number のタイトル (例: "リーダー") */
+  title?: string;
+  /** Life Path Number の特性テキスト */
+  traits?: string;
 }
 
 /** Type guard: 6-Layer response has `overall_stone` key */
