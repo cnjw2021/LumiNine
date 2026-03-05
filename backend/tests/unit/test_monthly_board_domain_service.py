@@ -72,6 +72,47 @@ class _StubStarGridPatternRepo:
     def get_by_center_star(self, center_star: int):
         return _StubGridPattern(center_star)
 
+class _StubMonthlyDirection:
+    """MonthlyDirections エンティティのスタブ."""
+    def __init__(self, group_id: int, month: int, center_star: int):
+        self.group_id = group_id
+        self.month = month
+        self.center_star = center_star
+
+
+class _StubMonthlyDirectionsRepo:
+    """monthly_directions テーブルの Stub."""
+
+    def __init__(self, directions: list[_StubMonthlyDirection]):
+        self._directions = directions
+
+    def get_by_group_and_month(self, group_id: int, month: int):
+        for d in self._directions:
+            if d.group_id == group_id and d.month == month:
+                return d
+        return None
+
+    def list_by_group(self, group_id: int):
+        return [d for d in self._directions if d.group_id == group_id]
+
+    def list_by_month(self, month: int):
+        return [d for d in self._directions if d.month == month]
+
+
+def _make_monthly_directions_repo() -> _StubMonthlyDirectionsRepo:
+    """Group 1~3, month 1~12 の stub monthly_directions を生成."""
+    # Group Feb 開始 center_star (伝統的パターン)
+    GROUP_FEB_CENTER = {1: 8, 2: 2, 3: 5}
+    directions = []
+    for gid in [1, 2, 3]:
+        feb_center = GROUP_FEB_CENTER[gid]
+        # 月順: 1,2,3,...,12
+        for month in range(1, 13):
+            # 2月=offset 0, 3月=offset 1, ..., 12月=offset 10, 1月=offset 11
+            offset = (month - 2) % 12
+            cs = ((feb_center - 1 - offset) % 9) + 1
+            directions.append(_StubMonthlyDirection(gid, month, cs))
+    return _StubMonthlyDirectionsRepo(directions)
 
 
 
@@ -122,6 +163,7 @@ class TestMonthlyBoardDomainService:
         return MonthlyBoardDomainService(
             solar_terms_repo=_make_solar_terms_repo(),
             star_grid_repo=_StubStarGridPatternRepo(),
+            monthly_directions_repo=_make_monthly_directions_repo(),
         )
 
     def test_returns_monthly_board_result(self, service):
