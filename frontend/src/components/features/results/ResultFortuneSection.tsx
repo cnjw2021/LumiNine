@@ -71,6 +71,14 @@ const ResultFortuneSection: React.FC<ResultFortuneSectionProps> = ({
 
   const sixLayer = powerStones && isSixLayer(powerStones) ? powerStones : null;
 
+  // 3-Layer フォールバック: birth_date 未提供時でも monthly/protection stone を表示
+  const monthlyStone = sixLayer?.monthly_stone
+    ?? (powerStones && !isSixLayer(powerStones) ? powerStones.monthly_stone : null)
+    ?? null;
+  const protectionStone = sixLayer?.protection_stone
+    ?? (powerStones && !isSixLayer(powerStones) ? powerStones.protection_stone : null)
+    ?? null;
+
   return (
     <Stack gap="lg">
       {/* ─── Section A: 数秘プロフィール (一生涯) ─── */}
@@ -91,8 +99,8 @@ const ResultFortuneSection: React.FC<ResultFortuneSectionProps> = ({
         mainStar={{ star_number: mainStar, name_jp: mainStarName }}
         monthStar={{ star_number: monthStar, name_jp: monthStarName }}
         currentMonthData={currentMonthData}
-        monthlyStone={sixLayer?.monthly_stone ?? null}
-        protectionStone={sixLayer?.protection_stone ?? null}
+        monthlyStone={monthlyStone}
+        protectionStone={protectionStone}
       />
     </Stack>
   );

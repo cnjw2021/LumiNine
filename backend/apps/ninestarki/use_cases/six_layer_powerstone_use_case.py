@@ -241,6 +241,11 @@ class SixLayerPowerStoneUseCase:
                 numerology_result["yearly"],
             )
             base["personal_year_number"] = numerology_result.get("personal_year_number")
+        # 특성 데이터 전달 (title + traits)
+        if "title" in numerology_result:
+            base["title"] = numerology_result["title"]
+        if "traits" in numerology_result:
+            base["traits"] = numerology_result["traits"]
         return base
 
     # ──────────────────────────────────────────────────
