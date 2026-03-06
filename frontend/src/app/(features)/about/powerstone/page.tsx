@@ -189,7 +189,7 @@ export default function PowerstonePage() {
                     </p>
                 </div>
 
-                <SimpleGrid cols={{ base: 2, sm: 3, md: 3, lg: 3 }} spacing={{ base: 'sm', sm: 'md' }}>
+                <SimpleGrid cols={{ base: 2, sm: 3, md: 3, lg: 3 }} spacing={{ base: 8, sm: 16, lg: 24 }}>
                     {Object.entries(POWERSTONES).map(([key, stoneData]) => (
                         <div key={key} style={{
                             display: 'flex',
@@ -198,7 +198,7 @@ export default function PowerstonePage() {
                             textAlign: 'center',
                             backgroundColor: '#ffffff',
                             borderRadius: '16px',
-                            padding: '16px 8px', // Slightly less padding for mobile 2-col
+                            padding: '16px 4px', // Reduced horizontal padding to allow more text width
                             boxShadow: '0 5px 20px -5px rgba(0, 0, 0, 0.03)',
                             border: '1px solid rgba(212, 175, 55, 0.05)',
                             transition: 'transform 0.3s ease, box-shadow 0.3s ease',
