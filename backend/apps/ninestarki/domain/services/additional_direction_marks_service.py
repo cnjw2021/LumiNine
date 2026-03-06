@@ -142,7 +142,7 @@ class AdditionalDirectionMarksService:
             result = directions[shouni_dir]
             if result.get("fortune_level") in ("best_auspicious", "auspicious"):
                 result["fortune_level"] = "neutral"
-                result["is_auspicious"] = False
+                result["is_auspicious"] = None
             result.setdefault("additional_marks", []).append("shouni_satsu")
 
         # ── 3) 天道 (参考情報のみ) ──

@@ -267,3 +267,5 @@ class TestFortuneLevelEnrichment:
 
         # 寅月の小児殺は south → ダウングレード
         assert directions["south"]["fortune_level"] == "neutral"
+        # 中立状態では is_auspicious が None のまま維持されることを検証
+        assert directions["south"]["is_auspicious"] is None
