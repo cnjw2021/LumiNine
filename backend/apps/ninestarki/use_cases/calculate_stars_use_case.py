@@ -69,6 +69,8 @@ class CalculateStarsUseCase:
             reading_number, locale=locale,
         )
 
+        is_master = numerology_num.number != reading_number
+
         return {
             "birth_datetime": birth_datetime_str,
             "gender": gender,
@@ -79,8 +81,10 @@ class CalculateStarsUseCase:
             "year_star": year_star.to_dict(),
             "numerology": {
                 "life_path_number": numerology_num.number,
+                "is_master_number": is_master,
                 "planet": numerology_num.planet.value,
                 "planet_name": numerology_num.get_planet_name(locale),
+                "reading_number": reading_number,
                 "keywords": reading.keywords,
                 "description": reading.description,
                 "strengths": reading.strengths,
