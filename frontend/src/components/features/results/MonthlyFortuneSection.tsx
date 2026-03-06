@@ -1,6 +1,7 @@
 'use client';
 
 import React from 'react';
+import Image from 'next/image';
 import { GogyoStone, PeriodFortuneData } from '@/types/directionFortune';
 import { getStoneImagePath } from '@/utils/stoneImageMap';
 
@@ -52,7 +53,7 @@ const MonthlyStoneCard: React.FC<{ label: string; stone: GogyoStone; type: strin
                 backgroundColor: '#f9f7f2', flexShrink: 0,
                 display: 'flex', alignItems: 'center', justifyContent: 'center',
             }}>
-                <img
+                <Image
                     src={getStoneImagePath(stone.stone_id)}
                     alt={stone.stone_name}
                     width={44}

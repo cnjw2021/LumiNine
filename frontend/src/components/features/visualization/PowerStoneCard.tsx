@@ -1,6 +1,7 @@
 'use client';
 
 import React from 'react';
+import Image from 'next/image';
 import { Card, Text, Box, Group, Badge, Divider, SimpleGrid } from '@mantine/core';
 import { getStoneImagePath } from '@/utils/stoneImageMap';
 import {
@@ -84,7 +85,7 @@ const StoneItem3: React.FC<{ stone: GogyoStone }> = ({ stone }) => {
                     border: '1px solid rgba(212, 175, 55, 0.2)',
                     backgroundColor: '#f9f7f2',
                 }}>
-                    <img
+                    <Image
                         src={getStoneImagePath(stone.stone_id)}
                         alt={stone.stone_name}
                         width={36} height={36}
@@ -144,7 +145,7 @@ const SixLayerStoneItem: React.FC<{
                     border: `1px solid ${meta.color}30`,
                     backgroundColor: '#f9f7f2',
                 }}>
-                    <img
+                    <Image
                         src={getStoneImagePath(stone.stone_id)}
                         alt={stone.stone_name}
                         width={36} height={36}

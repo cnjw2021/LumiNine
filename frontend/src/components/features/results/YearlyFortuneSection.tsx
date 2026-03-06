@@ -1,6 +1,7 @@
 'use client';
 
 import React from 'react';
+import Image from 'next/image';
 import { NumerologyStone } from '@/types/directionFortune';
 import { getStoneImagePath } from '@/utils/stoneImageMap';
 
@@ -61,7 +62,7 @@ const YearlyFortuneSection: React.FC<YearlyFortuneSectionProps> = ({
                             marginBottom: '12px',
                             overflow: 'hidden',
                         }}>
-                            <img
+                            <Image
                                 src={getStoneImagePath(yearlyStone.stone_id)}
                                 alt={yearlyStone.stone_name}
                                 width={92}
