@@ -1,7 +1,7 @@
 {
     "meta": {
         "version": "1.1.0",
-        "description": "수비술 기반 파워스톤 카탈로그 (전체운/건강운/재물운/연애운/연운석)",
+        "description": "수비술 기반 파워스톤 카탈로그 (전체운/건강운/재물운/연애운/연운석, 마스터넘버 전용 매핑 포함)",
         "mapping_principle": {
             "overall": "Life Path Number → 지배 행성 → 대표석",
             "health": "Life Path Number × 태양(Sun) → 생명력 보완석",
@@ -274,6 +274,54 @@
                 "ko": "정화와 해방의 돌. 라후의 변용 에너지.",
                 "en": "Stone of purification and liberation. Rahu's transformative energy."
             }
+        },
+        "labradorite": {
+            "names": {
+                "ja": "ラブラドライト",
+                "ko": "래브라도라이트",
+                "en": "Labradorite"
+            },
+            "description": {
+                "ja": "直感と変容の石。オーロラのような輝きが霊的覚醒を促す。",
+                "ko": "직관과 변환의 돌. 오로라와 같은 빛이 영적 각성을 촉진한다.",
+                "en": "Stone of intuition and transformation. Aurora-like shine promotes spiritual awakening."
+            }
+        },
+        "fluorite": {
+            "names": {
+                "ja": "フローライト",
+                "ko": "플루오라이트",
+                "en": "Fluorite"
+            },
+            "description": {
+                "ja": "集中と明晰の石。精神の秩序を整え、天才の石と呼ばれる。",
+                "ko": "집중과 명료함의 돌. 정신의 질서를 잡아주며 천재의 돌이라 불린다.",
+                "en": "Stone of focus and clarity. Organizes the mind, known as the Genius Stone."
+            }
+        },
+        "clear_quartz": {
+            "names": {
+                "ja": "水晶",
+                "ko": "수정",
+                "en": "Clear Quartz"
+            },
+            "description": {
+                "ja": "増幅と調和の石。すべてのエネルギーを浄化・増幅するマスタークリスタル。",
+                "ko": "증폭과 조화의 돌. 모든 에너지를 정화·증폭하는 마스터 크리스탈.",
+                "en": "Stone of amplification and harmony. A master crystal that purifies and amplifies all energy."
+            }
+        },
+        "smoky_quartz": {
+            "names": {
+                "ja": "スモーキークォーツ",
+                "ko": "스모키 쿼츠",
+                "en": "Smoky Quartz"
+            },
+            "description": {
+                "ja": "グラウンディングと解毒の石。大地のエネルギーで安定をもたらす。",
+                "ko": "그라운딩과 해독의 돌. 대지의 에너지로 안정을 가져온다.",
+                "en": "Stone of grounding and detoxification. Brings stability through earth energy."
+            }
         }
     },
     "number_mappings": {
@@ -482,6 +530,75 @@
             "yearly": {
                 "primary": "red_coral",
                 "secondary": "carnelian"
+            }
+        },
+        "11": {
+            "planet": "neptune",
+            "overall": {
+                "primary": "amethyst",
+                "secondary": "moonstone"
+            },
+            "health": {
+                "primary": "clear_quartz",
+                "secondary": "labradorite"
+            },
+            "wealth": {
+                "primary": "citrine",
+                "secondary": "lapis_lazuli"
+            },
+            "love": {
+                "primary": "moonstone",
+                "secondary": "rose_quartz"
+            },
+            "yearly": {
+                "primary": "lapis_lazuli",
+                "secondary": "amethyst"
+            }
+        },
+        "22": {
+            "planet": "uranus",
+            "overall": {
+                "primary": "clear_quartz",
+                "secondary": "citrine"
+            },
+            "health": {
+                "primary": "smoky_quartz",
+                "secondary": "tiger_eye"
+            },
+            "wealth": {
+                "primary": "citrine",
+                "secondary": "fluorite"
+            },
+            "love": {
+                "primary": "rose_quartz",
+                "secondary": "diamond"
+            },
+            "yearly": {
+                "primary": "fluorite",
+                "secondary": "clear_quartz"
+            }
+        },
+        "33": {
+            "planet": "neptune",
+            "overall": {
+                "primary": "rose_quartz",
+                "secondary": "amethyst"
+            },
+            "health": {
+                "primary": "amethyst",
+                "secondary": "clear_quartz"
+            },
+            "wealth": {
+                "primary": "clear_quartz",
+                "secondary": "citrine"
+            },
+            "love": {
+                "primary": "rose_quartz",
+                "secondary": "diamond"
+            },
+            "yearly": {
+                "primary": "amethyst",
+                "secondary": "rose_quartz"
             }
         }
     }

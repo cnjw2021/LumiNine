@@ -60,8 +60,8 @@ class TestLifePathCalculation:
     def test_planet_mapping(self):
         """각 숫자에 올바른 행성이 매핑되어야 한다."""
         result = NumerologyService.calculate_life_path_number("1984-07-09")
-        # 1984-07-09 → 11 (Master Number) → Moon
-        assert result.planet == Planet.MOON
+        # 1984-07-09 → 11 (Master Number) → Neptune (전용 행성)
+        assert result.planet == Planet.NEPTUNE
 
     def test_datetime_format_with_time(self):
         """'YYYY-MM-DD HH:MM' 형식도 지원해야 한다."""

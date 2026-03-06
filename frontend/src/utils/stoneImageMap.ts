@@ -6,8 +6,8 @@
 const STONE_IDS = [
     'amethyst', 'aquamarine', 'aventurine', 'blue_sapphire', 'blue_topaz',
     'carnelian', 'cats_eye', 'citrine', 'clear_quartz', 'diamond',
-    'emerald', 'garnet', 'green_aventurine', 'hessonite', 'jade',
-    'lapis_lazuli', 'moonstone', 'onyx', 'pearl', 'peridot',
+    'emerald', 'fluorite', 'garnet', 'green_aventurine', 'hessonite', 'jade',
+    'labradorite', 'lapis_lazuli', 'moonstone', 'onyx', 'pearl', 'peridot',
     'red_coral', 'rose_quartz', 'ruby', 'smoky_quartz', 'sunstone',
     'tiger_eye', 'tigers_eye', 'turquoise', 'yellow_jasper', 'yellow_sapphire',
 ] as const;

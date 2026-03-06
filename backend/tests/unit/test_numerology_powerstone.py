@@ -75,6 +75,16 @@ class TestNumerologyPowerStoneRepository:
                 assert "primary" in mapping[layer]
                 assert "secondary" in mapping[layer]
 
+    def test_master_numbers_loaded(self, repo: NumerologyPowerStoneRepository):
+        """마스터넘버(11/22/33)가 카탈로그에 존재하는지 검증."""
+        for n in (11, 22, 33):
+            mapping = repo.get_mapping(n)
+            assert "planet" in mapping
+            for layer in ("overall", "health", "wealth", "love", "yearly"):
+                assert layer in mapping
+                assert "primary" in mapping[layer]
+                assert "secondary" in mapping[layer]
+
     def test_get_stone_exists(self, repo: NumerologyPowerStoneRepository):
         stone = repo.get_stone("ruby")
         assert isinstance(stone, NumerologyStone)
@@ -100,6 +110,25 @@ class TestNumerologyPowerStoneRepository:
                 stone_id = mapping[layer][role]
                 stone = repo.get_stone(stone_id)
                 assert stone.id == stone_id
+
+    @pytest.mark.parametrize("number", [11, 22, 33])
+    def test_master_mapping_stone_refs_valid(self, repo: NumerologyPowerStoneRepository, number: int):
+        """마스터넘버 매핑에 참조된 모든 stone_id 가 실제 존재하는지 검증."""
+        mapping = repo.get_mapping(number)
+        for layer in ("overall", "health", "wealth", "love", "yearly"):
+            for role in ("primary", "secondary"):
+                stone_id = mapping[layer][role]
+                stone = repo.get_stone(stone_id)
+                assert stone.id == stone_id
+
+    @pytest.mark.parametrize("stone_id", ["labradorite", "fluorite", "clear_quartz", "smoky_quartz"])
+    def test_new_stones_exist(self, repo: NumerologyPowerStoneRepository, stone_id: str):
+        """신규 추가 스톤이 카탈로그에 존재하는지 검증."""
+        stone = repo.get_stone(stone_id)
+        assert stone.id == stone_id
+        assert stone.get_name("ja")
+        assert stone.get_name("ko")
+        assert stone.get_name("en")
 
 
 # ══════════════════════════════════════════════════════════
@@ -195,7 +224,7 @@ class TestNumerologyPowerStoneEngineYearly:
         assert result["personal_year_number"] == 5
 
     def test_pyn_out_of_range_raises(self, engine: NumerologyPowerStoneEngine):
-        """PYN 범위(1~9) 벗어나면 ValueError."""
+        """PYN 범위(1~9, 11/22/33) 벗어나면 ValueError."""
         with pytest.raises(ValueError, match="1~9"):
             engine.recommend(1, personal_year_number=0)
         with pytest.raises(ValueError, match="1~9"):
@@ -210,28 +239,74 @@ class TestNumerologyPowerStoneEngineYearly:
 
 
 # ══════════════════════════════════════════════════════════
-# Master Number Tests
+# Master Number Tests (전용 매핑)
 # ══════════════════════════════════════════════════════════
 
 class TestMasterNumberSupport:
-    """Master Number (11/22/33) 엔진 테스트."""
+    """Master Number (11/22/33) 전용 매핑 테스트."""
+
+    @pytest.mark.parametrize("master", [11, 22, 33])
+    def test_recommend_master_number_returns_result(
+        self, engine: NumerologyPowerStoneEngine, master: int,
+    ):
+        """Master Number가 정상적으로 추천 결과를 반환하는지 검증."""
+        result = engine.recommend(master)
+        assert isinstance(result, NumerologyPowerStoneResult)
+        assert result.life_path_number == master
+        assert result.planet  # 빈 문자열이 아닌지
+        for layer in (result.overall, result.health, result.wealth, result.love):
+            assert isinstance(layer, NumerologyStoneRecommendation)
+            assert isinstance(layer.primary, NumerologyStone)
+            assert isinstance(layer.secondary, NumerologyStone)
 
     @pytest.mark.parametrize("master,base", [(11, 2), (22, 4), (33, 6)])
-    def test_recommend_master_number_uses_base_stones(
+    def test_recommend_master_number_has_unique_stones(
         self, engine: NumerologyPowerStoneEngine, master: int, base: int,
     ):
-        """Master Number는 base number의 스톤을 사용하되 life_path_number는 원래 값 유지."""
+        """Master Number가 base number와 다른 고유한 스톤을 반환하는지 검증."""
         master_result = engine.recommend(master)
         base_result = engine.recommend(base)
 
         # life_path_number 는 원래 Master Number 유지
         assert master_result.life_path_number == master
 
-        # 스톤 매핑은 base number 와 동일
-        assert master_result.overall.primary.id == base_result.overall.primary.id
-        assert master_result.health.primary.id == base_result.health.primary.id
-        assert master_result.wealth.primary.id == base_result.wealth.primary.id
-        assert master_result.love.primary.id == base_result.love.primary.id
+        # 최소 하나의 레이어에서 base number와 다른 스톤을 가져야 함
+        differences = []
+        for layer_name in ("overall", "health", "wealth", "love"):
+            master_layer = getattr(master_result, layer_name)
+            base_layer = getattr(base_result, layer_name)
+            if master_layer.primary.id != base_layer.primary.id:
+                differences.append(f"{layer_name}.primary")
+            if master_layer.secondary.id != base_layer.secondary.id:
+                differences.append(f"{layer_name}.secondary")
+        assert len(differences) > 0, (
+            f"Master {master} 는 base {base} 와 전용 매핑이 달라야 합니다"
+        )
+
+    def test_master_11_details(self, engine: NumerologyPowerStoneEngine):
+        """Master Number 11 (직관의 빛) 전용 스톤 검증."""
+        result = engine.recommend(11)
+        assert result.planet == "neptune"
+        assert result.overall.primary.id == "amethyst"
+        assert result.overall.secondary.id == "moonstone"
+        assert result.health.primary.id == "clear_quartz"
+        assert result.health.secondary.id == "labradorite"
+
+    def test_master_22_details(self, engine: NumerologyPowerStoneEngine):
+        """Master Number 22 (마스터 빌더) 전용 스톤 검증."""
+        result = engine.recommend(22)
+        assert result.planet == "uranus"
+        assert result.overall.primary.id == "clear_quartz"
+        assert result.overall.secondary.id == "citrine"
+        assert result.health.primary.id == "smoky_quartz"
+
+    def test_master_33_details(self, engine: NumerologyPowerStoneEngine):
+        """Master Number 33 (마스터 티처) 전용 스톤 검증."""
+        result = engine.recommend(33)
+        assert result.planet == "neptune"
+        assert result.overall.primary.id == "rose_quartz"
+        assert result.overall.secondary.id == "amethyst"
+        assert result.health.primary.id == "amethyst"
 
     @pytest.mark.parametrize("master", [11, 22, 33])
     def test_recommend_as_dict_master_number(
@@ -244,13 +319,31 @@ class TestMasterNumberSupport:
         for layer_key in ("overall", "health", "wealth", "love"):
             assert layer_key in result
 
-    @pytest.mark.parametrize("master,base", [(11, 2), (22, 4), (33, 6)])
+    @pytest.mark.parametrize("master", [11, 22, 33])
     def test_pyn_master_number_yearly(
-        self, engine: NumerologyPowerStoneEngine, master: int, base: int,
+        self, engine: NumerologyPowerStoneEngine, master: int,
     ):
-        """Master Number PYN도 yearly 레이어 정상 동작."""
+        """Master Number PYN도 전용 yearly 레이어 정상 동작."""
         result = engine.recommend(1, personal_year_number=master)
-        base_result = engine.recommend(1, personal_year_number=base)
         assert result.yearly is not None
         assert result.personal_year_number == master
-        assert result.yearly.primary.id == base_result.yearly.primary.id
+        assert isinstance(result.yearly.primary, NumerologyStone)
+        assert isinstance(result.yearly.secondary, NumerologyStone)
+
+    @pytest.mark.parametrize("master,base", [(11, 2), (22, 4), (33, 6)])
+    def test_pyn_master_number_has_unique_yearly(
+        self, engine: NumerologyPowerStoneEngine, master: int, base: int,
+    ):
+        """Master Number PYN이 base number PYN과 다른 yearly 스톤을 반환하는지 검증."""
+        master_result = engine.recommend(1, personal_year_number=master)
+        base_result = engine.recommend(1, personal_year_number=base)
+        assert master_result.yearly is not None
+        assert base_result.yearly is not None
+        # 최소 하나의 스톤이 달라야 함
+        has_diff = (
+            master_result.yearly.primary.id != base_result.yearly.primary.id
+            or master_result.yearly.secondary.id != base_result.yearly.secondary.id
+        )
+        assert has_diff, (
+            f"Master PYN {master} 의 yearly 가 base PYN {base} 와 달라야 합니다"
+        )

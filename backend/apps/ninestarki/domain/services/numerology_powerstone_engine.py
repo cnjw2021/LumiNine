@@ -7,6 +7,8 @@
   L4 — 연애운: 숫자 × 금성(Venus) 보완석 (Life Path Number 기반, 고정)
   L5 — 연운석: Personal Year Number 기반 연간 보충석 (매년 변경)
 
+Master Number(11/22/33)는 전용 매핑을 가지며 base number와 독립적으로 동작한다.
+
 나머지 2개 레이어(L6 월운석, L7 호신석)는 기존 PowerStoneMatchingEngine
 (구성기학 기반)이 담당한다. 두 엔진은 독립적으로 동작하며,
 API 레이어에서 결합된다.
@@ -20,10 +22,7 @@ from injector import inject
 from apps.ninestarki.domain.repositories.numerology_powerstone_repository_interface import (
     INumerologyPowerStoneRepository,
 )
-from apps.ninestarki.domain.value_objects.numerology import (
-    MASTER_NUMBERS,
-    MASTER_TO_BASE,
-)
+from apps.ninestarki.domain.value_objects.numerology import MASTER_NUMBERS
 from apps.ninestarki.domain.value_objects.numerology_powerstone import (
     NumerologyPowerStoneResult,
     NumerologyStoneRecommendation,
@@ -43,20 +42,12 @@ class NumerologyPowerStoneEngine:
     """수비술 기반 4-Layer 파워스톤 매칭 엔진.
 
     DI 를 통해 INumerologyPowerStoneRepository 를 주입받는다.
-    Master Number(11/22/33)는 base number 기반으로 스톤을 매핑한다.
+    Master Number(11/22/33)는 전용 카탈로그 매핑을 사용한다.
     """
 
     @inject
     def __init__(self, repo: INumerologyPowerStoneRepository) -> None:
         self._repo = repo
-
-    @staticmethod
-    def _to_stone_number(n: int) -> int:
-        """Master Number → base number 변환 (스톤 매핑용).
-
-        11→2, 22→4, 33→6. 일반 숫자는 그대로 반환.
-        """
-        return MASTER_TO_BASE.get(n, n)
 
     def recommend(
         self,
@@ -81,9 +72,8 @@ class NumerologyPowerStoneEngine:
             personal_year_number,
         )
 
-        # Master Number → base number 로 스톤 매핑
-        stone_number = self._to_stone_number(life_path_number)
-        mapping = self._repo.get_mapping(stone_number)
+        # 카탈로그에서 직접 매핑 조회 (Master Number 포함)
+        mapping = self._repo.get_mapping(life_path_number)
         planet = mapping["planet"]
 
         # Life Path 기반 4개 레이어 (고정)
@@ -106,8 +96,7 @@ class NumerologyPowerStoneEngine:
                 raise ValueError(
                     f"Personal Year Number 는 1~9 또는 11/22/33 범위여야 합니다: {personal_year_number}"
                 )
-            pyn_stone = self._to_stone_number(personal_year_number)
-            yearly_mapping = self._repo.get_mapping(pyn_stone)
+            yearly_mapping = self._repo.get_mapping(personal_year_number)
             yearly_planet = yearly_mapping["planet"]
             if _YEARLY_LAYER not in yearly_mapping:
                 raise ValueError(

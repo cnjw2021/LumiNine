@@ -21,12 +21,14 @@ class Planet(Enum):
     KETU = "ketu"
     SATURN = "saturn"
     MARS = "mars"
+    NEPTUNE = "neptune"   # Master Number 11, 33
+    URANUS = "uranus"     # Master Number 22
 
 
 # ── Master Number 상수 ───────────────────────────────
 MASTER_NUMBERS: frozenset = frozenset({11, 22, 33})
 
-# Master Number → base number (파워스톤 매핑용)
+# Master Number → base number (Life Path 계산 등 파워스톤 이외 용도)
 MASTER_TO_BASE: Dict[int, int] = {11: 2, 22: 4, 33: 6}
 
 # ── 숫자 → 행성 매핑 ────────────────────────────────
@@ -40,10 +42,10 @@ NUMBER_TO_PLANET: Dict[int, Planet] = {
     7: Planet.KETU,
     8: Planet.SATURN,
     9: Planet.MARS,
-    # Master Numbers (base number 와 동일 행성)
-    11: Planet.MOON,     # 11 → 2 → Moon
-    22: Planet.RAHU,     # 22 → 4 → Rahu
-    33: Planet.VENUS,    # 33 → 6 → Venus
+    # Master Numbers (전용 행성)
+    11: Planet.NEPTUNE,  # 직관의 빛 → Neptune
+    22: Planet.URANUS,   # 마스터 빌더 → Uranus
+    33: Planet.NEPTUNE,  # 마스터 티처 → Neptune
 }
 
 # ── 행성 이름 다국어 ────────────────────────────────
@@ -57,6 +59,8 @@ PLANET_NAMES: Dict[Planet, Dict[str, str]] = {
     Planet.KETU:    {"ja": "ケートゥ", "ko": "켓투", "en": "Ketu"},
     Planet.SATURN:  {"ja": "土星", "ko": "토성", "en": "Saturn"},
     Planet.MARS:    {"ja": "火星", "ko": "화성", "en": "Mars"},
+    Planet.NEPTUNE: {"ja": "海王星", "ko": "해왕성", "en": "Neptune"},
+    Planet.URANUS:  {"ja": "天王星", "ko": "천왕성", "en": "Uranus"},
 }
 
 
