@@ -53,9 +53,9 @@ export default function NumerologyPage() {
                 <div style={{
                     display: 'flex',
                     flexDirection: 'column',
-                    gap: '24px',
-                    color: 'rgba(74, 74, 74, 0.85)',
-                    fontSize: '15px', lineHeight: 2.0,
+                    gap: '16px',
+                    color: '#4a4a4a',
+                    fontSize: '15px', lineHeight: 1.8,
                     fontFamily: '"Noto Serif JP", serif',
                     marginTop: '24px'
                 }}>
@@ -99,59 +99,59 @@ export default function NumerologyPage() {
                         古代から続く数字の神秘を身近に感じながら、自分や周囲を見つめ直してみてください。
                     </p>
 
-                    <Box mt="xl">
+                    <Box mt="lg">
                         <h4 style={{
                             color: '#d4af37', fontSize: '16px', letterSpacing: '0.1em',
                             fontWeight: 600, fontFamily: '"Shippori Mincho", "Noto Serif JP", serif',
-                            borderBottom: '1px solid rgba(212, 175, 55, 0.3)', paddingBottom: '8px', marginBottom: '16px'
+                            borderBottom: '1px solid rgba(212, 175, 55, 0.3)', paddingBottom: '8px', marginBottom: '12px'
                         }}>
                             基本原理
                         </h4>
 
-                        <Text fw={600} size="sm" color="#8c776b" mt="md" mb="xs">数字の還元</Text>
+                        <Text fw={600} size="sm" color="#7a665a" mt="sm" mb="xs">数字の還元</Text>
                         <p style={{ margin: 0 }}>
                             すべての数字は1から9までの基本数に還元されます。これは、生年月日や名前の文字を数値化し、 一桁になるまで足し合わせることで行われます。
                         </p>
 
-                        <Text fw={600} size="sm" color="#8c776b" mt="md" mb="xs">マスターナンバー</Text>
+                        <Text fw={600} size="sm" color="#7a665a" mt="sm" mb="xs">マスターナンバー</Text>
                         <p style={{ margin: 0 }}>
                             11、22、33などのマスターナンバーは特別な意味を持ち、より高次の精神性や可能性を示します。 これらの数字は還元せずにそのまま解釈されます。
                         </p>
 
-                        <Text fw={600} size="sm" color="#8c776b" mt="md" mb="xs">波動と共鳴</Text>
+                        <Text fw={600} size="sm" color="#7a665a" mt="sm" mb="xs">波動と共鳴</Text>
                         <p style={{ margin: 0 }}>
                             各数字は固有の波動（エネルギー）を持ち、その波動は私たちの人生の異なる側面と共鳴します。 この共鳴が、その人の性格、才能、使命などを形作ります。
                         </p>
                     </Box>
 
-                    <Box mt="xl">
+                    <Box mt="lg">
                         <h4 style={{
                             color: '#d4af37', fontSize: '16px', letterSpacing: '0.1em',
                             fontWeight: 600, fontFamily: '"Shippori Mincho", "Noto Serif JP", serif',
-                            borderBottom: '1px solid rgba(212, 175, 55, 0.3)', paddingBottom: '8px', marginBottom: '16px'
+                            borderBottom: '1px solid rgba(212, 175, 55, 0.3)', paddingBottom: '8px', marginBottom: '12px'
                         }}>
                             数秘術の世界観
                         </h4>
                         <p style={{ margin: 0 }}>
                             数秘術では、宇宙のすべては数字のエネルギーによって構成されていると考えます。 私たちの誕生日や名前に含まれる数字は、魂が選択した人生の設計図を表しています。
                         </p>
-                        <p style={{ margin: 0, marginTop: '16px' }}>
+                        <p style={{ margin: 0, marginTop: '12px' }}>
                             この考え方は、古代ギリシャの哲学者ピタゴラスによって体系化されました。 ピタゴラスは「すべては数である」という原理を提唱し、数字と宇宙の法則の関係を探求しました。
                         </p>
                     </Box>
 
-                    <Box mt="xl">
+                    <Box mt="lg">
                         <h4 style={{
                             color: '#d4af37', fontSize: '16px', letterSpacing: '0.1em',
                             fontWeight: 600, fontFamily: '"Shippori Mincho", "Noto Serif JP", serif',
-                            borderBottom: '1px solid rgba(212, 175, 55, 0.3)', paddingBottom: '8px', marginBottom: '16px'
+                            borderBottom: '1px solid rgba(212, 175, 55, 0.3)', paddingBottom: '8px', marginBottom: '12px'
                         }}>
                             現代における意義
                         </h4>
-                        <p style={{ margin: 0, marginBottom: '12px' }}>
+                        <p style={{ margin: 0, marginBottom: '8px' }}>
                             現代の数秘術は、自己理解と人生の方向性を見出すための実践的なツールとして活用されています：
                         </p>
-                        <ul style={{ margin: 0, paddingLeft: '24px', opacity: 0.85, display: 'flex', flexDirection: 'column', gap: '8px' }}>
+                        <ul style={{ margin: 0, paddingLeft: '24px', display: 'flex', flexDirection: 'column', gap: '4px' }}>
                             <li>自己の本質と可能性の理解</li>
                             <li>人生の転機やチャンスの把握</li>
                             <li>対人関係における相性の理解</li>
@@ -160,11 +160,11 @@ export default function NumerologyPage() {
                         </ul>
                     </Box>
 
-                    <Box mt="xl">
+                    <Box mt="lg">
                         <h4 style={{
                             color: '#d4af37', fontSize: '16px', letterSpacing: '0.1em',
                             fontWeight: 600, fontFamily: '"Shippori Mincho", "Noto Serif JP", serif',
-                            borderBottom: '1px solid rgba(212, 175, 55, 0.3)', paddingBottom: '8px', marginBottom: '16px'
+                            borderBottom: '1px solid rgba(212, 175, 55, 0.3)', paddingBottom: '8px', marginBottom: '12px'
                         }}>
                             実践的な活用
                         </h4>
