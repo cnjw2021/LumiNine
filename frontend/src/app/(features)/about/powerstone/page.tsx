@@ -189,8 +189,8 @@ export default function PowerstonePage() {
                     </p>
                 </div>
 
-                <div style={{ margin: '0 -4px' }}>
-                    <SimpleGrid cols={{ base: 2, sm: 3, md: 3, lg: 3 }} spacing={{ base: 6, sm: 16, lg: 24 }}>
+                <div style={{ margin: '0 -8px' }}>
+                    <SimpleGrid cols={{ base: 2, sm: 3, md: 3, lg: 3 }} spacing={{ base: 4, sm: 16, lg: 24 }}>
                         {Object.entries(POWERSTONES).map(([key, stoneData]) => (
                             <div key={key} style={{
                                 display: 'flex',
