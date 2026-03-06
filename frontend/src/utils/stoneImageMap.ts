@@ -1,6 +1,6 @@
 /**
  * Powerstone image mapping utility.
- * Maps stone_id → public image path for all 30 registered stones.
+ * Maps stone_id → public image path for all registered stones.
  */
 
 const STONE_IDS = [
