@@ -3,26 +3,122 @@
 import React from "react";
 import { Stack, Text, SimpleGrid } from "@mantine/core";
 import Image from "next/image";
-import rawPowerstoneCatalog from "@/data/numerology_powerstone_catalog.json";
-
 interface StoneData {
     names: {
         ja: string;
-        ko: string;
         en: string;
     };
     description: {
         ja: string;
-        ko: string;
-        en: string;
     };
 }
 
-interface PowerstoneCatalog {
-    stones: Record<string, StoneData>;
-}
-
-const powerstoneCatalog = rawPowerstoneCatalog as PowerstoneCatalog;
+const POWERSTONES: Record<string, StoneData> = {
+    ruby: {
+        names: { ja: "ルビー", en: "Ruby" },
+        description: { ja: "情熱と活力の石。太陽のエネルギーを宿す。" }
+    },
+    garnet: {
+        names: { ja: "ガーネット", en: "Garnet" },
+        description: { ja: "実りと忍耐の石。深い赤が生命力を象徴。" }
+    },
+    moonstone: {
+        names: { ja: "ムーンストーン", en: "Moonstone" },
+        description: { ja: "直感と感受性の石。月の光のように穏やかなエネルギー。" }
+    },
+    pearl: {
+        names: { ja: "パール", en: "Pearl" },
+        description: { ja: "純粋と保護の石。母なる海の知恵を象徴。" }
+    },
+    citrine: {
+        names: { ja: "シトリン", en: "Citrine" },
+        description: { ja: "繁栄と成功の石。太陽の光を凝縮した黄金色。" }
+    },
+    amethyst: {
+        names: { ja: "アメジスト", en: "Amethyst" },
+        description: { ja: "知恵と霊性の石。精神の安定と浄化をもたらす。" }
+    },
+    green_aventurine: {
+        names: { ja: "グリーンアベンチュリン", en: "Green Aventurine" },
+        description: { ja: "幸運と癒しの石。心身のバランスを整える。" }
+    },
+    emerald: {
+        names: { ja: "エメラルド", en: "Emerald" },
+        description: { ja: "叡智とコミュニケーションの石。水星の知的エネルギー。" }
+    },
+    peridot: {
+        names: { ja: "ペリドット", en: "Peridot" },
+        description: { ja: "希望と前進の石。太陽の石とも呼ばれる明るいエネルギー。" }
+    },
+    rose_quartz: {
+        names: { ja: "ローズクォーツ", en: "Rose Quartz" },
+        description: { ja: "愛と美の石。金星のエネルギーを宿し、恋愛運を高める。" }
+    },
+    turquoise: {
+        names: { ja: "ターコイズ", en: "Turquoise" },
+        description: { ja: "友情と幸福の石。旅の守護石としても知られる。" }
+    },
+    lapis_lazuli: {
+        names: { ja: "ラピスラズリ", en: "Lapis Lazuli" },
+        description: { ja: "真実と内なる視野の石。ケートゥの神秘的エネルギー。" }
+    },
+    onyx: {
+        names: { ja: "オニキス", en: "Onyx" },
+        description: { ja: "忍耐と規律の石。土星の安定したエネルギー。" }
+    },
+    blue_sapphire: {
+        names: { ja: "ブルーサファイア", en: "Blue Sapphire" },
+        description: { ja: "叡智と真理の石。土星の深い教訓を象徴。" }
+    },
+    carnelian: {
+        names: { ja: "カーネリアン", en: "Carnelian" },
+        description: { ja: "勇気と行動力の石。火星の勝利のエネルギー。" }
+    },
+    tiger_eye: {
+        names: { ja: "タイガーアイ", en: "Tiger's Eye" },
+        description: { ja: "洞察力と金運の石。富と繁栄を引き寄せる。" }
+    },
+    red_coral: {
+        names: { ja: "レッドコーラル", en: "Red Coral" },
+        description: { ja: "生命力と健康の石。火星の保護エネルギー。" }
+    },
+    yellow_sapphire: {
+        names: { ja: "イエローサファイア", en: "Yellow Sapphire" },
+        description: { ja: "幸運と豊穣の石。木星の祝福のエネルギー。" }
+    },
+    sunstone: {
+        names: { ja: "サンストーン", en: "Sunstone" },
+        description: { ja: "自信とリーダーシップの石。太陽の輝きを宿す。" }
+    },
+    diamond: {
+        names: { ja: "ダイヤモンド", en: "Diamond" },
+        description: { ja: "永遠と純粋の石。金星の最高の愛のエネルギー。" }
+    },
+    cats_eye: {
+        names: { ja: "キャッツアイ", en: "Cat's Eye" },
+        description: { ja: "直感と保護の石。ケートゥの守護エネルギー。" }
+    },
+    hessonite: {
+        names: { ja: "ヘソナイト", en: "Hessonite" },
+        description: { ja: "浄化と解放の石。ラーフの変容エネルギー。" }
+    },
+    labradorite: {
+        names: { ja: "ラブラドライト", en: "Labradorite" },
+        description: { ja: "直感と変容の石。オーロラのような輝きが霊的覚醒を促す。" }
+    },
+    fluorite: {
+        names: { ja: "フローライト", en: "Fluorite" },
+        description: { ja: "集中と明晰の石。精神の秩序を整え、天才の石と呼ばれる。" }
+    },
+    clear_quartz: {
+        names: { ja: "水晶", en: "Clear Quartz" },
+        description: { ja: "増幅と調和の石。すべてのエネルギーを浄化・増幅するマスタークリスタル。" }
+    },
+    smoky_quartz: {
+        names: { ja: "スモーキークォーツ", en: "Smoky Quartz" },
+        description: { ja: "グラウンディングと解毒の石。大地のエネルギーで安定をもたらす。" }
+    }
+};
 
 export default function PowerstonePage() {
     return (
@@ -94,7 +190,7 @@ export default function PowerstonePage() {
                 </div>
 
                 <SimpleGrid cols={{ base: 1, sm: 2, lg: 3 }} spacing="md">
-                    {Object.entries(powerstoneCatalog.stones).map(([key, stoneData]) => (
+                    {Object.entries(POWERSTONES).map(([key, stoneData]) => (
                         <div key={key} style={{
                             display: 'flex',
                             flexDirection: 'column',
