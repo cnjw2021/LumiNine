@@ -89,10 +89,12 @@ class NumerologyPowerStoneRepository(INumerologyPowerStoneRepository):
         return stone
 
     def get_mapping(self, number: int) -> Dict:
-        """Life Path Number 에 대한 레이어별 매핑 반환 (방어적 복사).
+        """수비술 숫자에 대한 레이어별 매핑 반환 (방어적 복사).
+
+        Life Path Number 및 Personal Year Number 조회에 공용으로 사용된다.
 
         Args:
-            number: Life Path Number (1~9 또는 11/22/33)
+            number: 수비술 숫자 (1~9 또는 11/22/33)
 
         Returns:
             {"planet": str, "overall": {...}, "health": {...},
@@ -103,12 +105,12 @@ class NumerologyPowerStoneRepository(INumerologyPowerStoneRepository):
         """
         if not isinstance(number, int) or number not in _VALID_MAPPING_NUMBERS:
             raise ValueError(
-                f"유효하지 않은 Life Path Number: {number} (1~9 또는 11/22/33 범위)"
+                f"유효하지 않은 수비술 숫자: {number} (1~9 또는 11/22/33 범위)"
             )
         mapping = self._mappings.get(number)
         if mapping is None:
             raise ValueError(
-                f"Life Path Number {number} 에 대한 매핑 데이터가 로드되지 않았습니다."
+                f"수비술 숫자 {number} 에 대한 매핑 데이터가 로드되지 않았습니다."
             )
         # 싱글톤 상태 보호를 위해 방어적 복사 반환
         return copy.deepcopy(mapping)
