@@ -5,7 +5,6 @@ from injector import inject
 from apps.ninestarki.services.year_fortune_service import YearFortuneService
 from apps.ninestarki.domain.services.direction_marks_domain_service import DirectionMarksDomainService
 from apps.ninestarki.domain.services.annual_directions_domain_service import AnnualDirectionsDomainService
-from apps.ninestarki.services.year_fortune_service import YearFortuneService
 from apps.ninestarki.domain.repositories.annual_directions_repository_interface import IAnnualDirectionsRepository
 from apps.ninestarki.domain.repositories.solar_starts_repository_interface import ISolarStartsRepository
 from core.utils.logger import get_logger
