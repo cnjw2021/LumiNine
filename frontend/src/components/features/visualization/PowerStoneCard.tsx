@@ -2,6 +2,7 @@
 
 import React from 'react';
 import { Card, Text, Box, Group, Badge, Divider, SimpleGrid } from '@mantine/core';
+import { getStoneImagePath } from '@/utils/stoneImageMap';
 import {
     GogyoStone,
     PowerStones,
@@ -76,8 +77,20 @@ const StoneItem3: React.FC<{ stone: GogyoStone }> = ({ stone }) => {
             flexDirection: 'column',
             gap: '6px',
         }}>
-            <Group gap={6} wrap="nowrap">
-                <Text size="lg" style={{ lineHeight: 1 }}>{meta.icon}</Text>
+            <Group gap={8} wrap="nowrap">
+                <Box style={{
+                    width: '36px', height: '36px', borderRadius: '50%',
+                    overflow: 'hidden', flexShrink: 0,
+                    border: '1px solid rgba(212, 175, 55, 0.2)',
+                    backgroundColor: '#f9f7f2',
+                }}>
+                    <img
+                        src={getStoneImagePath(stone.stone_id)}
+                        alt={stone.stone_name}
+                        width={36} height={36}
+                        style={{ objectFit: 'cover', borderRadius: '50%' }}
+                    />
+                </Box>
                 <Box>
                     <Text fw={700} size="xs" style={{ lineHeight: 1.2 }}>{meta.label}</Text>
                     <Text size="10px" c="dimmed" style={{ lineHeight: 1.2 }}>{meta.sublabel}</Text>
@@ -124,8 +137,20 @@ const SixLayerStoneItem: React.FC<{
             height: '100%',
         }}>
             {/* レイヤーラベル */}
-            <Group gap={6} wrap="nowrap">
-                <Text size="lg" style={{ lineHeight: 1 }}>{meta.icon}</Text>
+            <Group gap={8} wrap="nowrap">
+                <Box style={{
+                    width: '36px', height: '36px', borderRadius: '50%',
+                    overflow: 'hidden', flexShrink: 0,
+                    border: `1px solid ${meta.color}30`,
+                    backgroundColor: '#f9f7f2',
+                }}>
+                    <img
+                        src={getStoneImagePath(stone.stone_id)}
+                        alt={stone.stone_name}
+                        width={36} height={36}
+                        style={{ objectFit: 'cover', borderRadius: '50%' }}
+                    />
+                </Box>
                 <Box>
                     <Text fw={700} size="xs" style={{ lineHeight: 1.2, color: meta.color }}>
                         {meta.label}

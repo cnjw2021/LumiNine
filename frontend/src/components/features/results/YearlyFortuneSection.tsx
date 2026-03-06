@@ -2,6 +2,7 @@
 
 import React from 'react';
 import { NumerologyStone } from '@/types/directionFortune';
+import { getStoneImagePath } from '@/utils/stoneImageMap';
 
 interface YearlyFortuneSectionProps {
     yearlyStone: NumerologyStone;
@@ -49,7 +50,7 @@ const YearlyFortuneSection: React.FC<YearlyFortuneSectionProps> = ({
 
                 {/* Inner Grid: Icon left + Description right */}
                 <div className="yearly-fortune-inner" style={{ position: 'relative', zIndex: 10 }}>
-                    {/* Left: Stone icon + name */}
+                    {/* Left: Stone image + name */}
                     <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center' }}>
                         <div style={{
                             width: '100px', height: '100px',
@@ -57,9 +58,16 @@ const YearlyFortuneSection: React.FC<YearlyFortuneSectionProps> = ({
                             backgroundColor: '#f9f7f2',
                             border: '1px solid rgba(212, 175, 55, 0.3)',
                             display: 'flex', alignItems: 'center', justifyContent: 'center',
-                            marginBottom: '12px'
+                            marginBottom: '12px',
+                            overflow: 'hidden',
                         }}>
-                            <span style={{ fontSize: '40px', color: '#d4af37' }}>👁</span>
+                            <img
+                                src={getStoneImagePath(yearlyStone.stone_id)}
+                                alt={yearlyStone.stone_name}
+                                width={92}
+                                height={92}
+                                style={{ objectFit: 'cover', borderRadius: '50%' }}
+                            />
                         </div>
                         <span style={{
                             fontFamily: '"Shippori Mincho", "Noto Serif JP", serif',
