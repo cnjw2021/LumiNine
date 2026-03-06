@@ -39,8 +39,10 @@ _VALID_NUMBERS = frozenset(range(1, 10)) | MASTER_NUMBERS
 
 
 class NumerologyPowerStoneEngine:
-    """수비술 기반 4-Layer 파워스톤 매칭 엔진.
+    """수비술 기반 4~5-Layer 파워스톤 매칭 엔진.
 
+    Life Path Number 기반 4개 레이어(overall/health/wealth/love)에 더해,
+    Personal Year Number 제공 시 yearly 레이어까지 포함해 최대 5개 레이어를 반환한다.
     DI 를 통해 INumerologyPowerStoneRepository 를 주입받는다.
     Master Number(11/22/33)는 전용 카탈로그 매핑을 사용한다.
     """
