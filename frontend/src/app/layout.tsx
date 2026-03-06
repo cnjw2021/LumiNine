@@ -48,7 +48,7 @@ export default function RootLayout({
                 breakpoint: 'sm',
                 collapsed: { desktop: false, mobile: !opened }
               }}
-              padding="20px"
+              padding={{ base: 6, sm: 12, md: 16, lg: 24 }}
               styles={{
                 main: {
                   background: 'linear-gradient(45deg, rgba(75, 163, 227, 0.2) 0%, rgba(255, 228, 92, 0.2) 50%, rgba(75, 163, 227, 0.2) 100%)',

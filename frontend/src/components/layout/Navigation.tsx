@@ -4,10 +4,10 @@ import React, { useState, useEffect, useMemo } from 'react';
 import { useAuth } from '@/contexts/auth/AuthContext';
 import { useRouter } from 'next/navigation';
 import { Stack, Drawer, Box, Text, Flex, Transition } from '@mantine/core';
-import { 
-  IconHome2, 
-  IconLogout, 
-  IconLogin, 
+import {
+  IconHome2,
+  IconLogout,
+  IconLogin,
   IconQuestionMark,
   IconLock,
   IconChevronDown,
@@ -42,7 +42,7 @@ export const Navigation = ({ opened, onClose }: NavigationProps) => {
   // 管理者メニュー項目
   const adminMenuItems: MenuItem[] = useMemo(() => {
     if (!isLoggedIn || (!isAdmin && !isSuperuser)) return [];
-    
+
     const items = [
       { icon: IconDatabase, label: '管理画面', href: '/admin', permission: 'data_management' }
     ];
@@ -57,15 +57,25 @@ export const Navigation = ({ opened, onClose }: NavigationProps) => {
     return items;
   }, [isLoggedIn, isAdmin, isSuperuser]);
 
+  // 鑑定のインサイト
+  const aboutItems: MenuItem[] = useMemo(() => {
+    if (!isLoggedIn && !authLoading) return [];
+    return [
+      { icon: IconQuestionMark, label: '数秘術について', href: '/about/numerology' },
+      { icon: IconQuestionMark, label: '九星気学について', href: '/about/ninestarki' },
+      { icon: IconQuestionMark, label: 'パワーストーンについて', href: '/about/powerstone' }
+    ];
+  }, [isLoggedIn, authLoading]);
+
   // アカウントメニュー項目
   const accountItems: MenuItem[] = useMemo(() => {
     if (isLoggedIn || authLoading) {
       return [
         { icon: IconLock, label: 'パスワード変更', href: '/password-change' },
-        { 
-          icon: IconLogout, 
-          label: 'ログアウト', 
-          href: '#', 
+        {
+          icon: IconLogout,
+          label: 'ログアウト',
+          href: '#',
           onClick: async () => {
             try {
               onClose();
@@ -86,7 +96,7 @@ export const Navigation = ({ opened, onClose }: NavigationProps) => {
   // 権限チェック
   useEffect(() => {
     if (!isLoggedIn || authLoading) return;
-    
+
     const checkMenuPermissions = async () => {
       try {
         const permissionCodes = adminMenuItems
@@ -119,11 +129,11 @@ export const Navigation = ({ opened, onClose }: NavigationProps) => {
       setNavigating(href);
       onClose();
       router.push(href);
-      
+
       const timeoutId = setTimeout(() => {
         setNavigating(null);
       }, 5000);
-      
+
       return () => clearTimeout(timeoutId);
     } catch (error) {
       console.error('Navigation error:', error);
@@ -136,7 +146,7 @@ export const Navigation = ({ opened, onClose }: NavigationProps) => {
     if (!isLoggedIn) return false;
     if (isSuperuser) return true;
     if (!permissionsLoaded) return false;
-    
+
     return adminMenuItems.some(item => {
       if (!item.permission) return true;
       if (isAdmin && ['user_view', 'user_create', 'user_edit', 'user_delete'].includes(item.permission)) return true;
@@ -188,19 +198,24 @@ export const Navigation = ({ opened, onClose }: NavigationProps) => {
           <Stack gap="lg">
             {defaultMenuItems.length > 0 && (
               <Stack gap="xs">
-                <NavigationMenu 
+                <NavigationMenu
                   items={defaultMenuItems}
                   onNavigate={handleNavigation}
                   navigating={navigating}
                 />
               </Stack>
             )}
-            
-            {(isLoggedIn || authLoading) && (
+
+            {aboutItems.length > 0 && (
               <Stack gap="xs">
                 <Text size="sm" fw={700} c="#4BA3E3" style={{ letterSpacing: '0.5px' }}>
-                  九星気学について
+                  鑑定のインサイト
                 </Text>
+                <NavigationMenu
+                  items={aboutItems}
+                  onNavigate={handleNavigation}
+                  navigating={navigating}
+                />
               </Stack>
             )}
 
@@ -208,13 +223,13 @@ export const Navigation = ({ opened, onClose }: NavigationProps) => {
               <Text size="sm" fw={700} c="#4BA3E3" style={{ letterSpacing: '0.5px' }}>
                 アカウント
               </Text>
-              <NavigationMenu 
+              <NavigationMenu
                 items={accountItems}
                 onNavigate={handleNavigation}
                 navigating={navigating}
               />
             </Stack>
-            
+
             {isLoggedIn && (isAdmin || isSuperuser) && hasAnyAdminPermission && (
               <Stack gap="xs">
                 <Text size="sm" fw={700} c="#4BA3E3" style={{ letterSpacing: '0.5px' }}>
@@ -226,7 +241,7 @@ export const Navigation = ({ opened, onClose }: NavigationProps) => {
                   )}
                 </Text>
                 {permissionsLoaded && (
-                  <NavigationMenu 
+                  <NavigationMenu
                     items={adminMenuItems}
                     onNavigate={handleNavigation}
                     navigating={navigating}
@@ -278,19 +293,24 @@ export const Navigation = ({ opened, onClose }: NavigationProps) => {
           <Stack gap="lg">
             {defaultMenuItems.length > 0 && (
               <Stack gap="xs">
-                <NavigationMenu 
+                <NavigationMenu
                   items={defaultMenuItems}
                   onNavigate={handleNavigation}
                   navigating={navigating}
                 />
               </Stack>
             )}
-            
-            {(isLoggedIn || authLoading) && (
+
+            {aboutItems.length > 0 && (
               <Stack gap="xs">
                 <Text size="sm" fw={700} c="#4BA3E3" style={{ letterSpacing: '0.5px' }}>
-                  九星気学について
+                  鑑定のインサイト
                 </Text>
+                <NavigationMenu
+                  items={aboutItems}
+                  onNavigate={handleNavigation}
+                  navigating={navigating}
+                />
               </Stack>
             )}
 
@@ -298,13 +318,13 @@ export const Navigation = ({ opened, onClose }: NavigationProps) => {
               <Text size="sm" fw={700} c="#4BA3E3" style={{ letterSpacing: '0.5px' }}>
                 アカウント
               </Text>
-              <NavigationMenu 
+              <NavigationMenu
                 items={accountItems}
                 onNavigate={handleNavigation}
                 navigating={navigating}
               />
             </Stack>
-            
+
             {isLoggedIn && (isAdmin || isSuperuser) && hasAnyAdminPermission && (
               <Stack gap="xs">
                 <Text size="sm" fw={700} c="#4BA3E3" style={{ letterSpacing: '0.5px' }}>
@@ -316,7 +336,7 @@ export const Navigation = ({ opened, onClose }: NavigationProps) => {
                   )}
                 </Text>
                 {permissionsLoaded && (
-                  <NavigationMenu 
+                  <NavigationMenu
                     items={adminMenuItems}
                     onNavigate={handleNavigation}
                     navigating={navigating}
