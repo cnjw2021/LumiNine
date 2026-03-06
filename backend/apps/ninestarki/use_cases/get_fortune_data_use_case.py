@@ -13,7 +13,7 @@ from apps.ninestarki.domain.repositories.star_grid_pattern_repository_interface 
 from apps.ninestarki.domain.repositories.nine_star_repository_interface import INineStarRepository
 from apps.ninestarki.domain.repositories.solar_terms_repository_interface import ISolarTermsRepository
 from core.exceptions import ValidationError, DomainRuleViolation, ExternalServiceError
-from apps.ninestarki.use_cases.dto.fortune_dtos import AnnualDirectionsResponseDTO, MonthAcquiredFortuneResponseDTO
+from apps.ninestarki.use_cases.dto.fortune_dtos import AnnualDirectionsResponseDTO
 
 logger = get_logger(__name__)
 

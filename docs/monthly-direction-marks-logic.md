@@ -7,7 +7,7 @@
 판정은 **3단계 서비스 체인**으로 구성된다. 각 서비스는 독립적이어서 추가·삭제 시 기존 코드의 변경이 필요 없다 (OCP: 개방/폐쇄 원칙).
 
 ```
-StarGridPattern.get_fortune_status()     ← 모델 레이어: 5흉살만 판정
+StarGridPattern.get_fortune_status()     ← 모델 레이어: 6흉살만 판정
     ↓
 FiveElementsFortuneService.enrich()      ← 도메인 서비스: 오행 상생으로 길방 판정
     ↓
@@ -18,9 +18,9 @@ fortune_level 확정 → 프론트엔드 전달
 
 ---
 
-## Stage 1: 5흉살 판정 (`StarGridPattern.get_fortune_status()`)
+## Stage 1: 6흉살 판정 (`StarGridPattern.get_fortune_status()`)
 
-방위가 흉(凶)인지를 **5종의 흉살 마크**로 판정한다. 1개라도 해당되면 `inauspicious`.
+방위가 흉(凶)인지를 **6종의 흉살 마크**로 판정한다. 1개라도 해당되면 `inauspicious`.
 
 | 마크 | 판정 로직 | 코드 mark 값 |
 |------|----------|-------------|
