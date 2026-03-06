@@ -254,26 +254,46 @@ class GenerateReportUseCase:
             period_start = board.get("period_start", "")
             period_end = board.get("period_end", "")
 
-            # display_period: "3/6 - 4/4" 形式
+            # display_period: "3/6 - 4/4" 形式 + display_year 補正
             display_period = ""
+            display_year = target_year
             if period_start and period_end:
                 try:
                     ps = date.fromisoformat(period_start)
                     pe = date.fromisoformat(period_end)
                     display_period = f"{ps.month}/{ps.day} - {pe.month}/{pe.day}"
+                    display_year = ps.year
                 except (ValueError, TypeError):
                     pass
 
+            # PDF テンプレート用: is_main_star / title / details を directions に付与
+            raw_directions = board.get("directions", {})
+            for _dir_key, dir_info in raw_directions.items():
+                if isinstance(dir_info, dict):
+                    marks = dir_info.get("marks", [])
+                    dir_info["is_main_star"] = "main_star" in marks
+                    reason = dir_info.get("reason") or ""
+                    fortune_level = dir_info.get("fortune_level", "neutral")
+                    if fortune_level == "best_auspicious":
+                        dir_info.setdefault("title", "最大吉方")
+                    elif fortune_level == "auspicious":
+                        dir_info.setdefault("title", "吉方")
+                    elif fortune_level == "inauspicious":
+                        dir_info.setdefault("title", reason or "凶")
+                    else:
+                        dir_info.setdefault("title", "")
+                    dir_info.setdefault("details", reason)
+
             annual_directions[str(cal_month)] = {
-                "year": target_year,
+                "year": display_year,
                 "month": cal_month,
-                "display_month": f"{target_year}年{cal_month}月",
-                "display_title": f"{target_year}年{cal_month}月 {branch}",
+                "display_month": f"{display_year}年{cal_month}月",
+                "display_title": f"{display_year}年{cal_month}月 {branch}",
                 "display_period": display_period,
                 "zodiac": zodiac,
                 "star_number": board.get("center_star"),
                 "center_star": board.get("center_star"),
-                "directions": board.get("directions", {}),
+                "directions": raw_directions,
                 "period_start": period_start,
                 "period_end": period_end,
             }

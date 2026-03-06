@@ -48,17 +48,19 @@ with app.app_context():
         print(f"center_star   : {board['center_star']}")
         print(f"month_zodiac  : {board['month_zodiac']}")
 
-        year_info = result.get("year_info", {})
-        print(f"year_center   : {year_info.get('year_center_star')}")
-        print(f"year_zodiac   : {year_info.get('year_zodiac')}")
+        print(f"year_center   : {result.get('year_center_star')}")
+        print(f"year_zodiac   : {result.get('year_zodiac')}")
 
-        grid = board.get("grid_pattern") or {}
+        grid = board.get("grid_pattern")
         directions_list = ['southeast', 'south', 'southwest', 'east', 'west', 'northeast', 'north', 'northwest']
-        star_values = {d: grid.get(d, '?') for d in directions_list}
-        print(f"\nGrid ({board['center_star']}中宮):")
-        print(f"  SE={star_values['southeast']}  S={star_values['south']}  SW={star_values['southwest']}")
-        print(f"  E ={star_values['east']}  C={board['center_star']}  W ={star_values['west']}")
-        print(f"  NE={star_values['northeast']}  N={star_values['north']}  NW={star_values['northwest']}")
+        if grid:
+            star_values = {d: grid.get(d, '?') for d in directions_list}
+            print(f"\nGrid ({board['center_star']}中宮):")
+            print(f"  SE={star_values['southeast']}  S={star_values['south']}  SW={star_values['southwest']}")
+            print(f"  E ={star_values['east']}  C={board['center_star']}  W ={star_values['west']}")
+            print(f"  NE={star_values['northeast']}  N={star_values['north']}  NW={star_values['northwest']}")
+        else:
+            print("\nGrid pattern not available in use case result.")
 
         print("\n=== 방위판 결과 ===")
         for direction in directions_list:
