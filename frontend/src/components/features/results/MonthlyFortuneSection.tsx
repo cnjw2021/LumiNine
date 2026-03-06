@@ -1,7 +1,9 @@
 'use client';
 
 import React from 'react';
+import Image from 'next/image';
 import { GogyoStone, PeriodFortuneData } from '@/types/directionFortune';
+import { getStoneImagePath } from '@/utils/stoneImageMap';
 
 interface MonthlyFortuneSectionProps {
     currentMonthData: PeriodFortuneData | null;
@@ -36,20 +38,40 @@ const MonthlyStoneCard: React.FC<{ label: string; stone: GogyoStone; type: strin
                 fontFamily: '"Montserrat", sans-serif', fontWeight: 600
             }}>{label} GUIDANCE</span>
             <span style={{
-                fontSize: '10px', color: '#4a4a4a', padding: '2px 8px',
-                border: '1px solid rgba(212, 175, 55, 0.4)', borderRadius: '4px',
-                fontFamily: '"Noto Serif JP", serif'
+                fontSize: '11px', color: '#3a3a3a', padding: '3px 10px',
+                border: '1px solid rgba(212, 175, 55, 0.5)', borderRadius: '4px',
+                fontFamily: '"Noto Serif JP", serif', fontWeight: 600,
             }}>{type}</span>
         </div>
-        <h4 style={{
-            fontFamily: '"Shippori Mincho", "Noto Serif JP", serif',
-            color: '#4a4a4a', fontSize: '16px', fontWeight: 700, marginBottom: '8px', marginTop: 0
-        }}>
-            {stone.stone_name}
-        </h4>
+
+        {/* Stone Image + Name row */}
+        <div style={{ display: 'flex', alignItems: 'center', gap: '12px', marginBottom: '12px' }}>
+            <div style={{
+                width: '48px', height: '48px',
+                borderRadius: '50%', overflow: 'hidden',
+                border: '1px solid rgba(212, 175, 55, 0.2)',
+                backgroundColor: '#f9f7f2', flexShrink: 0,
+                display: 'flex', alignItems: 'center', justifyContent: 'center',
+            }}>
+                <Image
+                    src={getStoneImagePath(stone.stone_id)}
+                    alt={stone.stone_name}
+                    width={44}
+                    height={44}
+                    style={{ objectFit: 'cover', borderRadius: '50%' }}
+                />
+            </div>
+            <h4 style={{
+                fontFamily: '"Shippori Mincho", "Noto Serif JP", serif',
+                color: '#4a4a4a', fontSize: '16px', fontWeight: 700, margin: 0
+            }}>
+                {stone.stone_name}
+            </h4>
+        </div>
+
         <p style={{
             fontFamily: '"Noto Serif JP", serif', fontSize: '13px',
-            color: 'rgba(74, 74, 74, 0.8)', lineHeight: 1.8, margin: 0
+            color: '#4a4a4a', lineHeight: 1.8, margin: 0
         }}>
             {stone.reason}
         </p>
@@ -73,7 +95,7 @@ const MonthlyFortuneSection: React.FC<MonthlyFortuneSectionProps> = ({
                     Directional Guide
                 </h3>
                 <span style={{
-                    color: 'rgba(74, 74, 74, 0.4)', fontSize: '10px',
+                    color: 'rgba(74, 74, 74, 0.5)', fontSize: '10px',
                     fontFamily: '"Montserrat", sans-serif', letterSpacing: '0.1em'
                 }}>
                     {currentMonthData?.display_month || '今月'}
@@ -99,13 +121,6 @@ const MonthlyFortuneSection: React.FC<MonthlyFortuneSectionProps> = ({
                     <div style={{ display: 'grid', gridTemplateColumns: 'repeat(3, 1fr)', gap: '20px', position: 'relative', zIndex: 10 }}>
                         {DIRECTION_ORDER.map((dir) => {
                             if (dir === 'center') {
-                                /**
-                                 * 中宮 (center palace) is always rendered as neutral.
-                                 * In Nine Star Ki, the center position represents the
-                                 * observer's current star — it has no directional fortune.
-                                 * API `directions` may include a `center` key, but it is
-                                 * intentionally ignored here by design.
-                                 */
                                 return (
                                     <div key={dir} style={{
                                         aspectRatio: '1/1', borderRadius: '14px',
@@ -126,16 +141,16 @@ const MonthlyFortuneSection: React.FC<MonthlyFortuneSectionProps> = ({
                             const isInauspicious = info?.is_auspicious === false;
 
                             let bgColor = 'transparent';
-                            let textColor = '#4a4a4a';
+                            let textColor = '#6b6b6b';
                             let icon = '·';
 
                             if (isAuspicious) {
-                                bgColor = 'rgba(155, 176, 165, 0.1)';
-                                textColor = '#9bb0a5';
+                                bgColor = 'rgba(90, 138, 110, 0.10)';
+                                textColor = '#3d7a56';
                                 icon = '✿';
                             } else if (isInauspicious) {
-                                bgColor = 'rgba(239, 213, 195, 0.3)';
-                                textColor = '#d8a7a7';
+                                bgColor = 'rgba(192, 82, 77, 0.08)';
+                                textColor = '#b04a46';
                                 icon = '✕';
                             }
 
@@ -148,12 +163,12 @@ const MonthlyFortuneSection: React.FC<MonthlyFortuneSectionProps> = ({
                                     border: '1px solid #ffffff'
                                 }}>
                                     <span style={{
-                                        fontSize: '9px', color: textColor, fontWeight: 700,
+                                        fontSize: '10px', color: textColor, fontWeight: 700,
                                         marginBottom: '4px', fontFamily: '"Montserrat", sans-serif'
                                     }}>
                                         {DIRECTION_ABBR[dir]}
                                     </span>
-                                    <span style={{ color: textColor, fontSize: '16px' }}>{icon}</span>
+                                    <span style={{ color: textColor, fontSize: '18px', fontWeight: 700 }}>{icon}</span>
                                 </div>
                             );
                         })}

@@ -1,26 +1,27 @@
 'use client';
 
 import React from 'react';
+import Image from 'next/image';
 import { NumerologyStone, SixLayerPowerStones } from '@/types/directionFortune';
+import { getStoneImagePath } from '@/utils/stoneImageMap';
 
 interface BasePowerstonesSectionProps {
     stoneData: SixLayerPowerStones;
 }
 
 const STONE_CONFIGS = [
-    { labelEn: 'OVERALL', labelJp: '全体運', key: 'overall_stone' as const, icon: '💎', color: '#d8a7a7' },
-    { labelEn: 'HEALTH', labelJp: '健康運', key: 'health_stone' as const, icon: '🌿', color: '#9bb0a5' },
-    { labelEn: 'WEALTH', labelJp: '金運', key: 'wealth_stone' as const, icon: '¥', color: '#d4af37' },
-    { labelEn: 'LOVE', labelJp: '恋愛運', key: 'love_stone' as const, icon: '♡', color: '#d8a7a7' },
+    { labelEn: 'OVERALL', labelJp: '全体運', key: 'overall_stone' as const, color: '#d8a7a7' },
+    { labelEn: 'HEALTH', labelJp: '健康運', key: 'health_stone' as const, color: '#9bb0a5' },
+    { labelEn: 'WEALTH', labelJp: '金運', key: 'wealth_stone' as const, color: '#d4af37' },
+    { labelEn: 'LOVE', labelJp: '恋愛運', key: 'love_stone' as const, color: '#d8a7a7' },
 ];
 
 const PowerstoneCard: React.FC<{
     labelEn: string;
     labelJp: string;
     stone: NumerologyStone;
-    icon: string;
     color: string;
-}> = ({ labelEn, labelJp, stone, icon, color }) => (
+}> = ({ labelEn, labelJp, stone, color }) => (
     <div style={{
         display: 'flex',
         alignItems: 'center',
@@ -30,17 +31,23 @@ const PowerstoneCard: React.FC<{
         border: '1px solid #ffffff',
         boxShadow: '0 4px 20px -5px rgba(0, 0, 0, 0.04)',
     }}>
-        {/* Icon Box */}
+        {/* Stone Image */}
         <div style={{
             width: '52px', height: '52px',
-            backgroundColor: '#f5f0eb',
-            borderRadius: '14px',
+            borderRadius: '50%',
+            overflow: 'hidden',
+            border: `2px solid ${color}30`,
             display: 'flex', alignItems: 'center', justifyContent: 'center',
             marginRight: '16px', flexShrink: 0,
+            backgroundColor: '#f9f7f2',
         }}>
-            <span style={{ fontSize: '22px', color, lineHeight: 1 }}>
-                {icon}
-            </span>
+            <Image
+                src={getStoneImagePath(stone.stone_id)}
+                alt={stone.stone_name}
+                width={48}
+                height={48}
+                style={{ objectFit: 'cover', borderRadius: '50%' }}
+            />
         </div>
 
         {/* Text Content */}
@@ -53,7 +60,7 @@ const PowerstoneCard: React.FC<{
                     {labelEn}
                 </span>
                 <span style={{
-                    fontSize: '11px', color: 'rgba(74, 74, 74, 0.35)',
+                    fontSize: '11px', color: 'rgba(74, 74, 74, 0.6)',
                     fontFamily: '"Noto Serif JP", serif',
                 }}>
                     {labelJp}
@@ -79,7 +86,6 @@ const BasePowerstonesSection: React.FC<BasePowerstonesSectionProps> = ({ stoneDa
                     labelEn={cfg.labelEn}
                     labelJp={cfg.labelJp}
                     stone={stoneData[cfg.key]}
-                    icon={cfg.icon}
                     color={cfg.color}
                 />
             ))}
