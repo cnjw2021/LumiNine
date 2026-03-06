@@ -199,7 +199,7 @@ export default function PowerstonePage() {
                                 textAlign: 'center',
                                 backgroundColor: '#ffffff',
                                 borderRadius: '16px',
-                                padding: '16px 2px', // Minimum horizontal padding to allow maximum text width
+                                padding: '16px 12px', // Restored horizontal padding for text breathing room
                                 boxShadow: '0 5px 20px -5px rgba(0, 0, 0, 0.03)',
                                 border: '1px solid rgba(212, 175, 55, 0.05)',
                                 transition: 'transform 0.3s ease, box-shadow 0.3s ease',
