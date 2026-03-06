@@ -28,7 +28,6 @@ from apps.ninestarki.use_cases.solar_admin_use_cases import ListSolarTermsUseCas
 
 # Services / UseCases
 from apps.ninestarki.services.year_fortune_service import YearFortuneService
-from apps.ninestarki.services.month_fortune_service import MonthFortuneService
 from apps.ninestarki.services.star_attribute_service import StarAttributeService
 from apps.ninestarki.domain.services.star_life_guidance_service import StarLifeGuidanceService
 from apps.ninestarki.use_cases.calculate_stars_use_case import CalculateStarsUseCase
@@ -40,7 +39,6 @@ from apps.ninestarki.domain.services.direction_rule_engine import DirectionRuleE
 from apps.ninestarki.use_cases.auspicious_dates_use_case import AuspiciousDatesUseCase
 from apps.ninestarki.presentation.auspicious_dates_presenter import AuspiciousDatesPresenter
 from apps.ninestarki.domain.services.interfaces.year_fortune_service_interface import IYearFortuneService
-from apps.ninestarki.domain.services.interfaces.month_fortune_service_interface import IMonthFortuneService
 from apps.ninestarki.domain.services.interfaces.star_attribute_service_interface import IStarAttributeService
 from apps.ninestarki.domain.services.interfaces.auspicious_dates_service_interface import IAuspiciousDatesService
 from apps.ninestarki.domain.services.auspicious_dates_domain_service import AuspiciousDatesDomainService
@@ -57,6 +55,8 @@ from apps.ninestarki.domain.services.monthly_board_domain_service import Monthly
 from apps.ninestarki.domain.services.interfaces.monthly_board_service_interface import IMonthlyBoardDomainService
 from apps.ninestarki.domain.services.year_star_domain_service import YearStarDomainService
 from apps.ninestarki.use_cases.monthly_directions_use_case import MonthlyDirectionsUseCase
+from apps.ninestarki.domain.services.five_elements_fortune_service import FiveElementsFortuneService
+from apps.ninestarki.domain.services.additional_direction_marks_service import AdditionalDirectionMarksService
 
 # Phase 2: PowerStone Matching Engine
 from apps.ninestarki.domain.services.interfaces.gogyo_service_interface import IGogyoService
@@ -105,11 +105,6 @@ class AppModule(Module):
     @provider
     def provide_year_fortune_service(self, solar_terms_repo: ISolarTermsRepository, solar_starts_repo: ISolarStartsRepository, star_grid_repo: IStarGridPatternRepository) -> YearFortuneService:
         return YearFortuneService(solar_terms_repo, solar_starts_repo, star_grid_repo)
-
-    @singleton
-    @provider
-    def provide_month_fortune_service(self, solar_terms_repo: ISolarTermsRepository, solar_starts_repo: ISolarStartsRepository, star_grid_repo: IStarGridPatternRepository, monthly_repo: IMonthlyDirectionsRepository) -> IMonthFortuneService:
-        return MonthFortuneService(solar_terms_repo, solar_starts_repo, star_grid_repo, monthly_repo)
 
     @singleton
     @provider
@@ -165,7 +160,7 @@ class AppModule(Module):
         auspicious_dates_service: IAuspiciousDatesService,
         auspicious_dates_presenter: AuspiciousDatesPresenter,
         year_fortune_service: YearFortuneService,
-        month_fortune_service: IMonthFortuneService,
+        monthly_directions_use_case: MonthlyDirectionsUseCase,
         star_attribute_service: StarAttributeService,
         star_life_guidance_service: StarLifeGuidanceService,
         calculate_stars_use_case: CalculateStarsUseCase,
@@ -182,7 +177,7 @@ class AppModule(Module):
             auspicious_dates_use_case=auspicious_dates_service,
             auspicious_dates_presenter=auspicious_dates_presenter,
             year_fortune_service=year_fortune_service,
-            month_fortune_service=month_fortune_service,
+            monthly_directions_use_case=monthly_directions_use_case,
             star_attribute_service=star_attribute_service,
             star_life_guidance_service=star_life_guidance_service,
             calculate_stars_use_case=calculate_stars_use_case,
@@ -210,7 +205,6 @@ class AppModule(Module):
         binder.bind(ISolarStartsRepository, to=SolarStartsRepository, scope=singleton)
         binder.bind(ISolarCalendarProvider, to=SolarCalendarProvider, scope=singleton)
         binder.bind(IYearFortuneService, to=YearFortuneService, scope=singleton)
-        binder.bind(IMonthFortuneService, to=MonthFortuneService, scope=singleton)
         binder.bind(IStarAttributeService, to=StarAttributeService, scope=singleton)
         # ドメインサービス用アダプタのバインド
         binder.bind(IAstrologyDataReader, to=AstrologyDataReaderAdapter, scope=singleton)
@@ -228,6 +222,8 @@ class AppModule(Module):
         binder.bind(AnnualDirectionsDomainService, to=AnnualDirectionsDomainService, scope=singleton)
         binder.bind(IMonthlyBoardDomainService, to=MonthlyBoardDomainService, scope=singleton)
         binder.bind(YearStarDomainService, to=YearStarDomainService, scope=singleton)
+        binder.bind(FiveElementsFortuneService, to=FiveElementsFortuneService, scope=singleton)
+        binder.bind(AdditionalDirectionMarksService, to=AdditionalDirectionMarksService, scope=singleton)
         binder.bind(MonthlyDirectionsUseCase, to=MonthlyDirectionsUseCase, scope=singleton)
 
         # Phase 2: PowerStone Matching Engine DI バインディング

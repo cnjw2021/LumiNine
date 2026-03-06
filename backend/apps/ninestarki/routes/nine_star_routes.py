@@ -25,7 +25,6 @@ from apps.ninestarki.use_cases.daily_star_reading_use_case import DailyStarReadi
 from apps.ninestarki.services.star_attribute_service import StarAttributeService
 from apps.ninestarki.use_cases.star_attribute_use_case import StarAttributeUseCase
 from apps.ninestarki.services.year_fortune_service import YearFortuneService
-from apps.ninestarki.services.month_fortune_service import MonthFortuneService
 from apps.ninestarki.domain.services.direction_marks_domain_service import DirectionMarksDomainService
 from apps.ninestarki.services.svg_generator_service import SvgGeneratorService
 from flask_cors import cross_origin
@@ -384,52 +383,6 @@ def create_nine_star_bp():
                 'message': str(e)
             }), 500
 
-    @nine_star_bp.route('/month-acquired-fortune', methods=['GET'])
-    @inject
-    def get_month_acquired_fortune(fortune_use_case: GetFortuneDataUseCase):
-        """
-        月の運気情報を取得するAPI
-        
-        クエリパラメータ:
-            main_star: 本命星の番号（1-9）
-            month_star: 月命星の番号（1-9）
-            target_year: 鑑定年（デフォルトは現在の年）
-        
-        戻り値:
-            12ヶ月分の時の運気情報を含むJSON
-        """
-        try:
-            # クエリパラメータの取得
-            main_star = request.args.get('main_star', type=int)
-            month_star = request.args.get('month_star', type=int)
-            target_year = request.args.get('target_year', type=int)
-            
-            if not main_star or not 1 <= main_star <= 9:
-                return jsonify({'error': '有効な本命星番号（1-9）を指定してください'}), 400
-            
-            if not month_star or not 1 <= month_star <= 9:
-                return jsonify({'error': '有効な月命星番号（1-9）を指定してください'}), 400
-            
-            # 年の取得（指定がない場合は現在の年を使用）
-            if not target_year:
-                target_year = datetime.now().year
-                
-            result = fortune_use_case.get_month_acquired_fortune(main_star, month_star, target_year)
-            return jsonify(result)
-
-        except ValueError as e:
-            logger.error(f"Validation error in get_month_acquired_fortune: {str(e)}")
-            return jsonify({
-                'error': str(e)
-            }), 400
-        except Exception as e:
-            logger.error(f"Error in get_month_acquired_fortune: {str(e)}")
-            import traceback
-            traceback.print_exc()
-            return jsonify({
-                'error': 'Server error',
-                'message': str(e)
-            }), 500
 
     @nine_star_bp.route('/preview-report', methods=['POST'])
     @inject

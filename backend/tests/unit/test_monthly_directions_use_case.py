@@ -14,6 +14,8 @@ from datetime import date
 from typing import Any, Optional
 from apps.ninestarki.use_cases.monthly_directions_use_case import MonthlyDirectionsUseCase
 from apps.ninestarki.domain.services.monthly_board_domain_service import MonthlyBoardResult
+from apps.ninestarki.domain.services.five_elements_fortune_service import FiveElementsFortuneService
+from apps.ninestarki.domain.services.additional_direction_marks_service import AdditionalDirectionMarksService
 from apps.ninestarki.domain.exceptions import YearInfoNotFoundError
 
 
@@ -22,8 +24,27 @@ from apps.ninestarki.domain.exceptions import YearInfoNotFoundError
 # ══════════════════════════════════════════════════════
 
 class _StubGridPattern:
+    """7中宮 배치 stub (실제 StarGridPattern 속성 제공)."""
+    north = 3
+    northeast = 1
+    east = 5
+    southeast = 6
+    south = 2
+    southwest = 4
+    west = 9
+    northwest = 8
+
     def get_fortune_status(self, params: dict) -> dict:
-        return {"north": "auspicious", "south": "inauspicious"}
+        return {
+            "north": {"is_auspicious": True, "reason": None, "marks": [], "fortune_level": None},
+            "northeast": {"is_auspicious": True, "reason": None, "marks": [], "fortune_level": None},
+            "east": {"is_auspicious": False, "reason": "五黄殺", "marks": ["five_yellow"], "fortune_level": "inauspicious"},
+            "southeast": {"is_auspicious": True, "reason": None, "marks": [], "fortune_level": None},
+            "south": {"is_auspicious": True, "reason": None, "marks": [], "fortune_level": None},
+            "southwest": {"is_auspicious": True, "reason": None, "marks": [], "fortune_level": None},
+            "west": {"is_auspicious": True, "reason": None, "marks": [], "fortune_level": None},
+            "northwest": {"is_auspicious": True, "reason": None, "marks": [], "fortune_level": None},
+        }
 
     def to_dict(self):
         return {}
@@ -99,6 +120,8 @@ class TestMonthlyDirectionsUseCaseSingleMonth:
         return MonthlyDirectionsUseCase(
             year_star_service=_StubYearStarService(),
             monthly_board_service=_StubMonthlyBoardService(),
+            five_elements_service=FiveElementsFortuneService(),
+            additional_marks_service=AdditionalDirectionMarksService(),
         )
 
     def test_returns_dict_with_required_keys(self, use_case):
@@ -134,6 +157,8 @@ class TestMonthlyDirectionsUseCaseAllMonths:
         return MonthlyDirectionsUseCase(
             year_star_service=_StubYearStarService(),
             monthly_board_service=_StubMonthlyBoardService(),
+            five_elements_service=FiveElementsFortuneService(),
+            additional_marks_service=AdditionalDirectionMarksService(),
         )
 
     def test_all_12_months_returned(self, use_case):
@@ -153,6 +178,8 @@ class TestMonthlyDirectionsUseCaseMissingSetsuDate:
         return MonthlyDirectionsUseCase(
             year_star_service=_StubYearStarService(),
             monthly_board_service=_StubMonthlyBoardService(missing_setsu_indices=[5, 9]),
+            five_elements_service=FiveElementsFortuneService(),
+            additional_marks_service=AdditionalDirectionMarksService(),
         )
 
     def test_missing_setsu_skipped(self, use_case):
@@ -177,8 +204,68 @@ class TestMonthlyDirectionsUseCaseMissingYearInfo:
         return MonthlyDirectionsUseCase(
             year_star_service=_StubYearStarServiceEmpty(),
             monthly_board_service=_StubMonthlyBoardService(),
+            five_elements_service=FiveElementsFortuneService(),
+            additional_marks_service=AdditionalDirectionMarksService(),
         )
 
     def test_raises_year_info_not_found_error_when_year_info_missing(self, use_case):
         with pytest.raises(YearInfoNotFoundError, match="연반 정보"):
             use_case.execute(main_star=4, month_star=7, target_year=2026, target_month=1)
+
+
+class TestFortuneLevelEnrichment:
+    """五行相生 + 追加マーク(定位対冲/小児殺) による fortune_level 判定テスト.
+
+    _StubGridPattern は 7中宮 配置を再現:
+      main_star=7(金) → south=2(土→金 相生) = best_auspicious
+                      → northeast=1(金→水 相生) = auspicious
+                      → east=5(五黄殺) = inauspicious
+                      → southeast=6(定位対冲 6の定位=NW) = neutral
+    月支=寅 → 小児殺=south → ダウングレード対象
+    """
+
+    @pytest.fixture
+    def use_case(self):
+        return MonthlyDirectionsUseCase(
+            year_star_service=_StubYearStarService(star_number=1),
+            monthly_board_service=_StubMonthlyBoardService(),
+            five_elements_service=FiveElementsFortuneService(),
+            additional_marks_service=AdditionalDirectionMarksService(),
+        )
+
+    def test_five_elements_enriches_fortune_level(self, use_case):
+        """五行 상생으로 fortune_level이 결정되는지 검증."""
+        result = use_case.execute(main_star=7, month_star=9, target_year=2026, target_month=1)
+        board = result["monthly_boards"]["setsu_month_1"]
+        directions = board["directions"]
+
+        # 8(土) → 7(金) 相生 = best_auspicious (NW は寅月で小児殺ではない)
+        assert directions["northwest"]["fortune_level"] == "best_auspicious"
+        # 1(水) ← 7(金) 相生 = auspicious
+        assert directions["northeast"]["fortune_level"] == "auspicious"
+        # 五黄殺はそのまま inauspicious
+        assert directions["east"]["fortune_level"] == "inauspicious"
+
+    def test_teii_taichuu_downgrades_auspicious(self, use_case):
+        """定位対冲で吉方 → 中立にダウングレードされるか検証."""
+        result = use_case.execute(main_star=7, month_star=9, target_year=2026, target_month=1)
+        board = result["monthly_boards"]["setsu_month_1"]
+        directions = board["directions"]
+
+        # 6(六白金星) の定位=NW → SE に配置 = 定位対冲 → neutral
+        assert directions["southeast"]["fortune_level"] == "neutral"
+
+    def test_shouni_satsu_downgrades_auspicious(self, use_case):
+        """小児殺で吉方 → 中立にダウングレードされるか検証.
+
+        月支=寅 → 小児殺=south 方位
+        south=2(土→金 相生) は本来 best_auspicious だが小児殺でダウングレード.
+        """
+        result = use_case.execute(main_star=7, month_star=9, target_year=2026, target_month=1)
+        board = result["monthly_boards"]["setsu_month_1"]
+        directions = board["directions"]
+
+        # 寅月の小児殺は south → ダウングレード
+        assert directions["south"]["fortune_level"] == "neutral"
+        # 中立状態では is_auspicious が None のまま維持されることを検証
+        assert directions["south"]["is_auspicious"] is None

@@ -15,6 +15,8 @@ from injector import inject
 
 from apps.ninestarki.domain.services.year_star_domain_service import YearStarDomainService
 from apps.ninestarki.domain.services.interfaces.monthly_board_service_interface import IMonthlyBoardDomainService
+from apps.ninestarki.domain.services.five_elements_fortune_service import FiveElementsFortuneService
+from apps.ninestarki.domain.services.additional_direction_marks_service import AdditionalDirectionMarksService
 from apps.ninestarki.domain.exceptions import (
     YearInfoNotFoundError,
     MonthlyBoardCalculationError,
@@ -39,9 +41,13 @@ class MonthlyDirectionsUseCase:
         self,
         year_star_service: YearStarDomainService,
         monthly_board_service: IMonthlyBoardDomainService,
+        five_elements_service: FiveElementsFortuneService,
+        additional_marks_service: AdditionalDirectionMarksService,
     ) -> None:
         self._year_star_service = year_star_service
         self._monthly_board = monthly_board_service
+        self._five_elements = five_elements_service
+        self._additional_marks = additional_marks_service
 
     def execute(
         self,
@@ -135,6 +141,20 @@ class MonthlyDirectionsUseCase:
                         "zodiac": board_result.month_zodiac,
                     }
                     fortune_status = board_result.grid_pattern.get_fortune_status(fortune_params)
+
+                    # 五行相生による fortune_level 判定 (OCP: 独立サービスで拡張可能)
+                    self._five_elements.enrich(
+                        fortune_status,
+                        main_star=main_star,
+                        grid_pattern=board_result.grid_pattern,
+                    )
+
+                    # 追加マーク判定: 定位対冲・小児殺・天道 (OCP)
+                    self._additional_marks.enrich(
+                        fortune_status,
+                        grid_pattern=board_result.grid_pattern,
+                        month_branch=board_result.month_branch,
+                    )
 
                 key = f"setsu_month_{setsu_index}"
                 monthly_boards[key] = {

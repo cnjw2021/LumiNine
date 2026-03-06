@@ -4,7 +4,6 @@ from apps.ninestarki.use_cases.generate_report_use_case import GenerateReportUse
 from apps.ninestarki.use_cases.dto.report_dtos import ReportInputDTO
 from apps.ninestarki.use_cases.interfaces.pdf_generator_interface import PdfGeneratorInterface
 from apps.ninestarki.domain.services.interfaces.year_fortune_service_interface import IYearFortuneService
-from apps.ninestarki.domain.services.interfaces.month_fortune_service_interface import IMonthFortuneService
 from apps.ninestarki.domain.services.interfaces.star_attribute_service_interface import IStarAttributeService
 from apps.ninestarki.use_cases.calculate_stars_use_case import CalculateStarsUseCase
 from apps.ninestarki.domain.services.interfaces.auspicious_dates_service_interface import IAuspiciousDatesService
@@ -36,11 +35,9 @@ class YearFortuneFake(IYearFortuneService):
         return {'directions': {}}
 
 
-class MonthFortuneFake(IMonthFortuneService):
-    def get_month_fortune_for_report(self, main_star: int, month_star: int, target_year: int) -> Dict[str, Any]:
-        return {'directions': {}}
-    def get_month_fortune(self, main_star: int, month_star: int, target_year: int) -> Dict[str, Any]:
-        return {'directions': {}}
+class MonthlyDirectionsUCFake:
+    def execute(self, *a, **k):
+        return {"monthly_boards": {}}
 
 
 class StarAttrFake(IStarAttributeService):
@@ -122,7 +119,7 @@ def test_generate_report_use_case_minimal_context(monkeypatch):
         pdf_generator=PdfGenFake(),
         auspicious_dates_use_case=AuspiciousDatesServiceFake(),
         year_fortune_service=YearFortuneFake(),
-        month_fortune_service=MonthFortuneFake(),
+        monthly_directions_use_case=MonthlyDirectionsUCFake(),
         star_attribute_service=StarAttrFake(),
         star_life_guidance_service=StarLifeGuidanceService(StarLifeGuidanceRepoFake()),
         calculate_stars_use_case=CalculateStarsUseCase(NineStarRepository(), SolarTermsRepoFake(), NumerologyReadingRepository()),

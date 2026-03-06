@@ -164,33 +164,3 @@ class TestDirectionConsistency:
             f"{time_inauspicious - full_inauspicious}"
         )
 
-
-class TestMonthFortuneServiceUsesFullCheck:
-    """MonthFortuneService._get_month_fortune()가 get_fortune_status()를 사용하는지 검증.
-
-    코드 레벨 회귀 방지: 누군가 실수로 get_time_fortune_status로
-    되돌리면 이 테스트가 실패한다.
-    """
-
-    def test_source_uses_get_fortune_status(self):
-        import inspect
-        from apps.ninestarki.services.month_fortune_service import MonthFortuneService
-
-        source = inspect.getsource(MonthFortuneService._get_month_fortune)
-
-        assert "get_fortune_status" in source, (
-            "MonthFortuneService._get_month_fortune()는 "
-            "get_fortune_status()를 호출해야 합니다."
-        )
-
-    def test_source_does_not_use_time_fortune_status(self):
-        import inspect
-        from apps.ninestarki.services.month_fortune_service import MonthFortuneService
-
-        source = inspect.getsource(MonthFortuneService._get_month_fortune)
-
-        assert "get_time_fortune_status" not in source, (
-            "MonthFortuneService._get_month_fortune()에서 "
-            "get_time_fortune_status() 호출이 발견되었습니다. "
-            "5개 흉살 체크가 누락되는 issue #61 버그가 재발합니다."
-        )

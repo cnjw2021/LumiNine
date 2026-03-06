@@ -3,10 +3,8 @@ from typing import Dict, Any
 from injector import inject
 
 from apps.ninestarki.services.year_fortune_service import YearFortuneService
-from apps.ninestarki.services.month_fortune_service import MonthFortuneService
 from apps.ninestarki.domain.services.direction_marks_domain_service import DirectionMarksDomainService
 from apps.ninestarki.domain.services.annual_directions_domain_service import AnnualDirectionsDomainService
-from apps.ninestarki.services.year_fortune_service import YearFortuneService
 from apps.ninestarki.domain.repositories.annual_directions_repository_interface import IAnnualDirectionsRepository
 from apps.ninestarki.domain.repositories.solar_starts_repository_interface import ISolarStartsRepository
 from core.utils.logger import get_logger
@@ -14,9 +12,8 @@ from apps.ninestarki.domain.services.year_star_domain_service import YearStarDom
 from apps.ninestarki.domain.repositories.star_grid_pattern_repository_interface import IStarGridPatternRepository
 from apps.ninestarki.domain.repositories.nine_star_repository_interface import INineStarRepository
 from apps.ninestarki.domain.repositories.solar_terms_repository_interface import ISolarTermsRepository
-from apps.ninestarki.domain.services.interfaces.month_fortune_service_interface import IMonthFortuneService
 from core.exceptions import ValidationError, DomainRuleViolation, ExternalServiceError
-from apps.ninestarki.use_cases.dto.fortune_dtos import AnnualDirectionsResponseDTO, MonthAcquiredFortuneResponseDTO
+from apps.ninestarki.use_cases.dto.fortune_dtos import AnnualDirectionsResponseDTO
 
 logger = get_logger(__name__)
 
@@ -25,14 +22,13 @@ class GetFortuneDataUseCase:
     年運、月運、方位運など、様々な運気データを取得する責任を持ちます。
     """
     @inject
-    def __init__(self, nine_star_repo: INineStarRepository, annual_repo: IAnnualDirectionsRepository, solar_terms_repo: ISolarTermsRepository, month_fortune_service: IMonthFortuneService, annual_domain: AnnualDirectionsDomainService, solar_starts_repo: ISolarStartsRepository, year_fortune_service: YearFortuneService, star_grid_repo: IStarGridPatternRepository, direction_marks_service: DirectionMarksDomainService):
+    def __init__(self, nine_star_repo: INineStarRepository, annual_repo: IAnnualDirectionsRepository, solar_terms_repo: ISolarTermsRepository, annual_domain: AnnualDirectionsDomainService, solar_starts_repo: ISolarStartsRepository, year_fortune_service: YearFortuneService, star_grid_repo: IStarGridPatternRepository, direction_marks_service: DirectionMarksDomainService):
         """
         UseCaseが使用するリポジトリとサービスを初期化し、Domainサービスに依存性を注入します.
         """
         self.nine_star_repo = nine_star_repo
         self.annual_repo = annual_repo
         self.solar_terms_repo = solar_terms_repo
-        self.month_fortune_service = month_fortune_service
         self.annual_domain = annual_domain
         self.year_fortune_service = year_fortune_service
         self.star_grid_repo = star_grid_repo
@@ -88,22 +84,3 @@ class GetFortuneDataUseCase:
             month_star=month_star,
             target_year=target_year
         )
-
-    def get_month_acquired_fortune(self, main_star: int, month_star: int, target_year: int) -> MonthAcquiredFortuneResponseDTO:
-        """月の運気情報を取得します。"""
-        logger.info("Executing get_month_acquired_fortune")
-        if not (1 <= int(main_star) <= 9) or not (1 <= int(month_star) <= 9):
-            raise ValidationError("Stars must be in 1..9", fields=["main_star", "month_star"])
-        try:
-            month_fortune_data = self.month_fortune_service.get_month_fortune(
-                main_star=main_star,
-                month_star=month_star,
-                target_year=target_year,
-            )
-        except Exception as e:
-            raise ExternalServiceError("Failed to fetch month fortune", details=str(e)) from e
-        return {
-            'month_star': month_star,
-            'target_year': target_year,
-            'annual_directions': month_fortune_data.get('directions', {})
-        }

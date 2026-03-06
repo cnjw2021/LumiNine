@@ -150,22 +150,27 @@ class StarGridPattern(db.Model):
         main_star_position = None
         month_star_position = None
         
-        # 九星相性マトリックスを取得
-        compatibility_matrix = StarCompatibilityMatrix.get_by_base_star(main_star)
-        if not compatibility_matrix:
-            logger.error(f"Star compatibility matrix not found for center star {main_star}")
-            raise RuntimeError(f"Star compatibility matrix not found for center star {main_star}")
+        # 九星相性マトリックス — 情報用のみ（is_auspicious 判定には使わない）
+        compatibility_matrix = None
+        try:
+            compatibility_matrix = StarCompatibilityMatrix.get_by_base_star(main_star)
+        except Exception as e:
+            logger.warning(
+                "Failed to load StarCompatibilityMatrix for base star %s: %s",
+                main_star,
+                e,
+            )
         
         # 各方位の吉凶を判定
         results = {}
         
-        # 最初のパス: 基本的な判定を行う
+        # 最初のパス: 基本的な凶殺判定を行う（五黄殺・暗剣殺・本命殺・月命殺・水火殺・破 など）
         for direction, star_number in directions.items():
-            # デフォルトは吉
             result = {
                 "is_auspicious": True,
                 "reason": None,
-                "marks": []
+                "marks": [],
+                "fortune_level": None,  # domain service が五行判定で上書きする
             }
             
             if star_number == 5:
@@ -175,10 +180,8 @@ class StarGridPattern(db.Model):
             
             # ２）暗剣殺の判定
             if dark_sword_star == -1:
-                # 中央星が5の場合は暗剣殺判定をスキップ
                 result["marks"].append("no_dark_sword_center_five")
             else:
-                # 暗剣殺の星を凶とする
                 if star_number == dark_sword_star:
                     result["is_auspicious"] = False
                     result["reason"] = "暗剣殺"
@@ -209,16 +212,10 @@ class StarGridPattern(db.Model):
                 result["reason"] = "破" if not result["reason"] else result["reason"] + ", 破"
                 result["marks"].append("opposite_zodiac")
             
-            # ６）九星相性マトリックスによる判定
-            # まず相性レベルを取得（BEST, BETTER, GOOD, BAD）
-            compatibility_level = compatibility_matrix.get_compatibility_level(star_number)
-            # 相性レベルを結果オブジェクトに保存（フロントエンド用）
-            result["compatibility_level"] = compatibility_level.value
-            # BADの場合は凶と判定
-            if compatibility_level == CompatibilityLevel.BAD:
-                result["is_auspicious"] = False
-                result["reason"] = "凶方星" if not result["reason"] else result["reason"] + ", 凶方星"
-                result["marks"].append("compatibility_matrix")
+            # 相性レベルは参考情報として残す
+            if compatibility_matrix:
+                compatibility_level = compatibility_matrix.get_compatibility_level(star_number)
+                result["compatibility_level"] = compatibility_level.value
             
             results[direction] = result
         
@@ -237,6 +234,11 @@ class StarGridPattern(db.Model):
                 results[opposite_pos]["is_auspicious"] = False
                 results[opposite_pos]["reason"] = "月命的殺" if not results[opposite_pos]["reason"] else results[opposite_pos]["reason"] + ", 月命的殺"
                 results[opposite_pos]["marks"].append("month_star_opposite")
+        
+        # 凶方位に fortune_level = "inauspicious" を設定
+        for result in results.values():
+            if not result["is_auspicious"]:
+                result["fortune_level"] = "inauspicious"
         
         return results
 
