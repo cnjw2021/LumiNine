@@ -12,16 +12,12 @@ from apps.ninestarki.domain.repositories.user_repository_interface import IUserR
 from apps.ninestarki.infrastructure.persistence.user_repository import UserRepository
 from apps.ninestarki.domain.repositories.permission_repository_interface import IPermissionRepository
 from apps.ninestarki.infrastructure.persistence.permission_repository import PermissionRepository
-from apps.ninestarki.domain.repositories.star_life_guidance_repository_interface import IStarLifeGuidanceRepository
-from apps.ninestarki.infrastructure.persistence.star_life_guidance_repository import StarLifeGuidanceRepository
-from apps.ninestarki.domain.repositories.reading_query_repository_interface import IReadingQueryRepository
-from apps.ninestarki.infrastructure.persistence.reading_query_repository import ReadingQueryRepository
+
 from apps.ninestarki.domain.repositories.solar_starts_repository_interface import ISolarStartsRepository
 from apps.ninestarki.infrastructure.persistence.solar_starts_repository import SolarStartsRepository
 from apps.ninestarki.domain.services.interfaces.solar_calendar_provider_interface import ISolarCalendarProvider
 from apps.ninestarki.infrastructure.services.solar_calendar_provider import SolarCalendarProvider
-from apps.ninestarki.domain.repositories.annual_directions_repository_interface import IAnnualDirectionsRepository
-from apps.ninestarki.infrastructure.persistence.annual_directions_repository import AnnualDirectionsRepository
+
 from apps.ninestarki.domain.repositories.solar_terms_repository_interface import ISolarTermsRepository
 from apps.ninestarki.infrastructure.persistence.solar_terms_repository import SolarTermsRepository
 from apps.ninestarki.use_cases.solar_admin_use_cases import ListSolarTermsUseCase, UpdateSolarTermUseCase
@@ -30,9 +26,7 @@ from apps.ninestarki.use_cases.solar_admin_use_cases import ListSolarTermsUseCas
 from apps.ninestarki.use_cases.calculate_stars_use_case import CalculateStarsUseCase
 from apps.ninestarki.use_cases.context.report_context_builder import ReportContextBuilder
 from apps.ninestarki.use_cases.generate_report_use_case import GenerateReportUseCase
-from apps.ninestarki.domain.services.direction_marks_domain_service import DirectionMarksDomainService
-from apps.ninestarki.domain.services.direction_rule_engine import DirectionRuleEngine
-from apps.ninestarki.domain.services.annual_directions_domain_service import AnnualDirectionsDomainService
+
 from apps.ninestarki.domain.repositories.star_grid_pattern_repository_interface import IStarGridPatternRepository
 from apps.ninestarki.infrastructure.persistence.star_grid_pattern_repository import StarGridPatternRepository
 from apps.ninestarki.domain.repositories.monthly_directions_repository_interface import IMonthlyDirectionsRepository
@@ -104,23 +98,19 @@ class AppModule(Module):
         pdf_generator: PdfGeneratorInterface,
         monthly_directions_use_case: MonthlyDirectionsUseCase,
         calculate_stars_use_case: CalculateStarsUseCase,
-        reading_query_repo: IReadingQueryRepository,
         solar_starts_repo: ISolarStartsRepository,
         solar_terms_repo: ISolarTermsRepository,
         solar_calendar_provider: ISolarCalendarProvider,
         report_context_builder: ReportContextBuilder,
-        direction_marks_service: DirectionMarksDomainService,
     ) -> GenerateReportUseCase:
         return GenerateReportUseCase(
             pdf_generator=pdf_generator,
             monthly_directions_use_case=monthly_directions_use_case,
             calculate_stars_use_case=calculate_stars_use_case,
-            reading_query_repo=reading_query_repo,
             solar_starts_repo=solar_starts_repo,
             solar_terms_repo=solar_terms_repo,
             solar_calendar_provider=solar_calendar_provider,
             report_context_builder=report_context_builder,
-            direction_marks_service=direction_marks_service,
         )
 
     @singleton
@@ -133,20 +123,14 @@ class AppModule(Module):
         binder.bind(INineStarRepository, to=NineStarRepository, scope=singleton)
         binder.bind(IUserRepository, to=UserRepository, scope=singleton)
         binder.bind(IPermissionRepository, to=PermissionRepository, scope=singleton)
-        binder.bind(IStarLifeGuidanceRepository, to=StarLifeGuidanceRepository, scope=singleton)
-        binder.bind(IReadingQueryRepository, to=ReadingQueryRepository, scope=singleton)
         binder.bind(ISolarStartsRepository, to=SolarStartsRepository, scope=singleton)
         binder.bind(ISolarCalendarProvider, to=SolarCalendarProvider, scope=singleton)
         # ドメインサービス用アダプタのバインド
-        binder.bind(DirectionMarksDomainService, to=DirectionMarksDomainService, scope=singleton)
-        binder.bind(DirectionRuleEngine, to=DirectionRuleEngine, scope=singleton)
-        binder.bind(IAnnualDirectionsRepository, to=AnnualDirectionsRepository, scope=singleton)
         binder.bind(ISolarTermsRepository, to=SolarTermsRepository, scope=singleton)
         binder.bind(IStarGridPatternRepository, to=StarGridPatternRepository, scope=singleton)
         binder.bind(IMonthlyDirectionsRepository, to=MonthlyDirectionsRepository, scope=singleton)
         binder.bind(ListSolarTermsUseCase, to=ListSolarTermsUseCase, scope=singleton)
         binder.bind(UpdateSolarTermUseCase, to=UpdateSolarTermUseCase, scope=singleton)
-        binder.bind(AnnualDirectionsDomainService, to=AnnualDirectionsDomainService, scope=singleton)
         binder.bind(IMonthlyBoardDomainService, to=MonthlyBoardDomainService, scope=singleton)
         binder.bind(YearStarDomainService, to=YearStarDomainService, scope=singleton)
         binder.bind(FiveElementsFortuneService, to=FiveElementsFortuneService, scope=singleton)

@@ -15,7 +15,7 @@ from datetime import datetime, date
 from apps.ninestarki.use_cases.calculate_stars_use_case import CalculateStarsUseCase
 from apps.ninestarki.use_cases.star_catalog_use_case import StarCatalogUseCase
 
-from apps.ninestarki.domain.services.direction_marks_domain_service import DirectionMarksDomainService
+
 from flask_cors import cross_origin
 import os
 

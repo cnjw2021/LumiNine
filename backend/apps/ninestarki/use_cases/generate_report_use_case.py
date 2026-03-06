@@ -6,9 +6,7 @@ from apps.ninestarki.use_cases.interfaces.pdf_generator_interface import PdfGene
 from apps.ninestarki.use_cases.monthly_directions_use_case import MonthlyDirectionsUseCase
 from apps.ninestarki.use_cases.calculate_stars_use_case import CalculateStarsUseCase
 from apps.ninestarki.infrastructure.persistence.nine_star_repository import NineStarRepository
-from apps.ninestarki.domain.repositories.reading_query_repository_interface import IReadingQueryRepository
-from apps.ninestarki.infrastructure.persistence.reading_query_repository import ReadingQueryRepository
-from apps.ninestarki.domain.services.direction_marks_domain_service import DirectionMarksDomainService
+
 from apps.ninestarki.domain.repositories.solar_starts_repository_interface import ISolarStartsRepository
 from apps.ninestarki.domain.repositories.solar_terms_repository_interface import ISolarTermsRepository
 from apps.ninestarki.domain.services.interfaces.solar_calendar_provider_interface import ISolarCalendarProvider
@@ -27,23 +25,19 @@ class GenerateReportUseCase:
      pdf_generator: PdfGeneratorInterface,
      monthly_directions_use_case: MonthlyDirectionsUseCase,
      calculate_stars_use_case: CalculateStarsUseCase,
-     reading_query_repo: IReadingQueryRepository,
      solar_starts_repo: ISolarStartsRepository,
      solar_calendar_provider: ISolarCalendarProvider,
      report_context_builder: ReportContextBuilder,
-     direction_marks_service: Optional[DirectionMarksDomainService] = None,
      solar_terms_repo: ISolarTermsRepository | None = None,
      ):
         self.pdf_generator = pdf_generator
         self._monthly_directions_uc = monthly_directions_use_case
         # Required DI
         self._calc_stars_uc = calculate_stars_use_case
-        self._reading_query: IReadingQueryRepository = reading_query_repo
         self._solar_starts_repo: ISolarStartsRepository = solar_starts_repo
         self._solar_terms_repo: ISolarTermsRepository | None = solar_terms_repo
         self._context_builder = report_context_builder
         self._calendar = solar_calendar_provider
-        self._direction_marks = direction_marks_service
 
     def execute_pdf(self, report_data: ReportInputDTO) -> bytes:
         context = self._prepare_context(report_data)
@@ -69,25 +63,9 @@ class GenerateReportUseCase:
         target_year = report_data.get('target_year', datetime.now().year)
 
         # 1-1. リーディング補強
-        enriched_result = dict(result_data)
-        try:
-            mnr_dict = self._reading_query.get_main_star_message(main_star_num)
-            if mnr_dict:
-                enriched_result['main_star_reading'] = mnr_dict
-        except Exception as e:
-            logger.warning(f"Reading enrichment failed: {e}")
-
-        # 2. サービスの検索
-        if main_star_num is None or month_star_num is None:
-            # サーバーの再計算が失敗したか、入力が不完全です
-            raise DomainRuleViolation("Star numbers are not available for report generation")
-
         month_fortune = self._build_month_fortune_for_report(main_star_num, month_star_num, target_year)
         
-        if self._direction_marks:
-            direction_fortune = self._direction_marks.get_direction_fortune(main_star_num, month_star_num, target_year)
-        else:
-            direction_fortune = {}
+        direction_fortune = {}
 
         # 2-1. 干支と期間情報（DBのみから取得し、ハードコードはしない）
         year_zodiac = None
@@ -129,7 +107,7 @@ class GenerateReportUseCase:
 
         return self._context_builder.build(
             user_info=user_info,
-            ninestar_info=enriched_result,
+            ninestar_info=result_data,
             auspicious_day_result={'results': []},
             year_fortune={},
             month_fortune=month_fortune,

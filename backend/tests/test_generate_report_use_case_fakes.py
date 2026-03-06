@@ -3,7 +3,7 @@ from typing import Any, Dict, Optional
 from apps.ninestarki.use_cases.generate_report_use_case import GenerateReportUseCase
 from apps.ninestarki.use_cases.dto.report_dtos import ReportInputDTO
 from apps.ninestarki.use_cases.interfaces.pdf_generator_interface import PdfGeneratorInterface
-from apps.ninestarki.domain.repositories.reading_query_repository_interface import IReadingQueryRepository
+
 from apps.ninestarki.domain.repositories.solar_starts_repository_interface import ISolarStartsRepository
 from apps.ninestarki.domain.services.interfaces.solar_calendar_provider_interface import ISolarCalendarProvider
 from apps.ninestarki.use_cases.calculate_stars_use_case import CalculateStarsUseCase
@@ -22,8 +22,7 @@ class PdfGenFake(PdfGeneratorInterface):
         return b"%PDF-FAKE%"
 
 
-class NoopPorts(IReadingQueryRepository, ISolarStartsRepository, ISolarCalendarProvider):
-    def get_main_star_message(self, *a, **k): return None
+class NoopPorts(ISolarStartsRepository, ISolarCalendarProvider):
     def get_by_year(self, *a, **k): return type('S', (), {'zodiac': '子', 'solar_starts_date': None, 'star_number': 5})()
     def get_calculation_year(self, dt): return dt.year
 
@@ -61,7 +60,6 @@ def test_generate_report_use_case_minimal_context(monkeypatch):
         pdf_generator=PdfGenFake(),
         monthly_directions_use_case=MonthlyDirectionsUCFake(),
         calculate_stars_use_case=CalculateStarsUseCase(NineStarRepository(), SolarTermsRepoFake(), NumerologyReadingRepository()),
-        reading_query_repo=noop,
         solar_starts_repo=noop,
         solar_calendar_provider=noop,
         report_context_builder=ReportContextBuilder(),
