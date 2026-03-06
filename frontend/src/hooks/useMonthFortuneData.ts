@@ -78,10 +78,8 @@ function findCurrentSetsuMonth(
 
     for (const board of Object.values(monthlyBoards)) {
         if (!board.period_start || !board.period_end) continue;
-        const start = new Date(board.period_start);
-        const end = new Date(board.period_end);
-        start.setHours(0, 0, 0, 0);
-        end.setHours(23, 59, 59, 999);
+        const start = new Date(`${board.period_start}T00:00:00`);
+        const end = new Date(`${board.period_end}T23:59:59.999`);
 
         if (today >= start && today <= end) {
             // monthly-board 応答 → PeriodFortuneData 変換
