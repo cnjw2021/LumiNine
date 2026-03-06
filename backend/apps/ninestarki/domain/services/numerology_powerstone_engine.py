@@ -69,7 +69,7 @@ class NumerologyPowerStoneEngine:
             ValueError: 잘못된 Life Path Number
         """
         logger.info(
-            "NumerologyPowerStoneEngine.recommend: lpn=%d, pyn=%s",
+            "NumerologyPowerStoneEngine.recommend: lpn=%s, pyn=%s",
             life_path_number,
             personal_year_number,
         )
