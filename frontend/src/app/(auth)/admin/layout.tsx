@@ -3,7 +3,7 @@
 import React, { ReactNode } from 'react';
 import { AppShell, Drawer, Group, Stack, Burger, Text } from '@mantine/core';
 import { useDisclosure } from '@mantine/hooks';
-import { IconDashboard, IconUsers, IconStars, IconCodeDots, IconSettings, IconDatabase, IconCalendarEvent, IconDownload } from '@tabler/icons-react';
+import { IconDashboard, IconUsers } from '@tabler/icons-react';
 import { useAdminCheck } from '../../../hooks/useAdminCheck';
 import { NavigationMenu, MenuItem } from '@/components/layout/NavigationMenu';
 import { DrawerHeader } from '@/components/layout/DrawerHeader';
@@ -12,11 +12,6 @@ import { DrawerHeader } from '@/components/layout/DrawerHeader';
 const MENU_ITEMS: MenuItem[] = [
   { label: 'ダッシュボード', href: '/admin', icon: IconDashboard },
   { label: 'ユーザー管理', href: '/admin/users', icon: IconUsers },
-  { label: '九星データ管理', href: '/admin/stars', icon: IconStars },
-  { label: '引っ越し吉日管理', href: '/admin/moving-dates', icon: IconCalendarEvent },
-  { label: '権限管理', href: '/admin/permissions', icon: IconSettings },
-  { label: 'データ管理', href: '/admin/data-management', icon: IconDatabase },
-  { label: 'SQL実行', href: '/admin/sql-execution', icon: IconCodeDots },
 ];
 
 export default function AdminLayout({ children }: { children: ReactNode }) {
@@ -135,4 +130,4 @@ export default function AdminLayout({ children }: { children: ReactNode }) {
       </Drawer>
     </>
   );
-} 
+}

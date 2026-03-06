@@ -3,7 +3,7 @@
 import React from 'react';
 import { Title, Text, Card, SimpleGrid, Container, Group, Badge, Box } from '@mantine/core';
 import { useAuth } from '@/contexts/auth/AuthContext';
-import { IconUser, IconDatabase, IconServer, IconCalendar, IconDownload } from '@tabler/icons-react';
+import { IconUser } from '@tabler/icons-react';
 
 export default function AdminDashboard() {
   const { isAdmin, isSuperuser } = useAuth();
@@ -16,46 +16,6 @@ export default function AdminDashboard() {
       link: '/admin/users',
       color: 'blue',
       superuserOnly: true
-    },
-    {
-      title: '九星データ管理',
-      description: '九星気学データの管理を行います',
-      icon: IconDatabase,
-      link: '/admin/nine-star',
-      color: 'green',
-      superuserOnly: false
-    },
-    {
-      title: '引っ越し吉日管理',
-      description: '引っ越しに良い日の情報を管理します',
-      icon: IconCalendar,
-      link: '/admin/moving-dates',
-      color: 'cyan',
-      superuserOnly: false
-    },
-    {
-      title: '年単位の干支・九星データ初期化',
-      description: '指定年の全日付について、干支と九星のデータを初期化します',
-      icon: IconCalendar,
-      link: '/admin/initialize-astrology',
-      color: 'grape',
-      superuserOnly: false
-    },
-    {
-      title: 'SQLファイル実行',
-      description: 'SQLファイルの実行を行います',
-      icon: IconServer,
-      link: '/admin/sql-execution',
-      color: 'orange',
-      superuserOnly: false
-    },
-    {
-      title: 'テーブル管理',
-      description: 'データベーステーブルの管理を行います',
-      icon: IconDatabase,
-      link: '/admin/table-management',
-      color: 'red',
-      superuserOnly: false
     }
   ];
 
@@ -71,7 +31,7 @@ export default function AdminDashboard() {
         </Group>
       </Box>
 
-      <Text mb="lg">以下のメニューから管理機能にアクセスできます：</Text>
+      <Text mb="lg">以下のメニューから管理機能에 アクセスできます：</Text>
 
       <SimpleGrid
         cols={{ base: 1, xs: 1, sm: 2, md: 2, lg: 3 }}
@@ -116,4 +76,4 @@ export default function AdminDashboard() {
       </SimpleGrid>
     </Container>
   );
-} 
+}
