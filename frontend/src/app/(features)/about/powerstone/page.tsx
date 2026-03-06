@@ -189,79 +189,81 @@ export default function PowerstonePage() {
                     </p>
                 </div>
 
-                <SimpleGrid cols={{ base: 2, sm: 3, md: 3, lg: 3 }} spacing={{ base: 8, sm: 16, lg: 24 }}>
-                    {Object.entries(POWERSTONES).map(([key, stoneData]) => (
-                        <div key={key} style={{
-                            display: 'flex',
-                            flexDirection: 'column',
-                            alignItems: 'center',
-                            textAlign: 'center',
-                            backgroundColor: '#ffffff',
-                            borderRadius: '16px',
-                            padding: '16px 4px', // Reduced horizontal padding to allow more text width
-                            boxShadow: '0 5px 20px -5px rgba(0, 0, 0, 0.03)',
-                            border: '1px solid rgba(212, 175, 55, 0.05)',
-                            transition: 'transform 0.3s ease, box-shadow 0.3s ease',
-                            cursor: 'default',
-                        }}
-                            onMouseEnter={(e) => {
-                                e.currentTarget.style.transform = 'translateY(-4px)';
-                                e.currentTarget.style.boxShadow = '0 15px 30px -10px rgba(0, 0, 0, 0.08)';
+                <div style={{ margin: '0 -4px' }}>
+                    <SimpleGrid cols={{ base: 2, sm: 3, md: 3, lg: 3 }} spacing={{ base: 6, sm: 16, lg: 24 }}>
+                        {Object.entries(POWERSTONES).map(([key, stoneData]) => (
+                            <div key={key} style={{
+                                display: 'flex',
+                                flexDirection: 'column',
+                                alignItems: 'center',
+                                textAlign: 'center',
+                                backgroundColor: '#ffffff',
+                                borderRadius: '16px',
+                                padding: '16px 2px', // Minimum horizontal padding to allow maximum text width
+                                boxShadow: '0 5px 20px -5px rgba(0, 0, 0, 0.03)',
+                                border: '1px solid rgba(212, 175, 55, 0.05)',
+                                transition: 'transform 0.3s ease, box-shadow 0.3s ease',
+                                cursor: 'default',
                             }}
-                            onMouseLeave={(e) => {
-                                e.currentTarget.style.transform = 'none';
-                                e.currentTarget.style.boxShadow = '0 5px 20px -5px rgba(0, 0, 0, 0.03)';
-                            }}
-                        >
-                            <div style={{
-                                width: '80px', // Scaling down slightly for 2-col
-                                height: '80px',
-                                borderRadius: '50%',
-                                overflow: 'hidden',
-                                marginBottom: '16px',
-                                border: '1px solid rgba(212, 175, 55, 0.2)',
-                                position: 'relative',
-                                backgroundColor: '#f9f7f2'
-                            }}>
-                                <Image
-                                    src={`/images/stones/${key}.png`}
-                                    alt={stoneData.names.ja}
-                                    fill
-                                    style={{ objectFit: 'cover' }}
-                                    sizes="80px"
-                                />
+                                onMouseEnter={(e) => {
+                                    e.currentTarget.style.transform = 'translateY(-4px)';
+                                    e.currentTarget.style.boxShadow = '0 15px 30px -10px rgba(0, 0, 0, 0.08)';
+                                }}
+                                onMouseLeave={(e) => {
+                                    e.currentTarget.style.transform = 'none';
+                                    e.currentTarget.style.boxShadow = '0 5px 20px -5px rgba(0, 0, 0, 0.03)';
+                                }}
+                            >
+                                <div style={{
+                                    width: '80px',
+                                    height: '80px',
+                                    borderRadius: '50%',
+                                    overflow: 'hidden',
+                                    marginBottom: '16px',
+                                    border: '1px solid rgba(212, 175, 55, 0.2)',
+                                    position: 'relative',
+                                    backgroundColor: '#f9f7f2'
+                                }}>
+                                    <Image
+                                        src={`/images/stones/${key}.png`}
+                                        alt={stoneData.names.ja}
+                                        fill
+                                        style={{ objectFit: 'cover' }}
+                                        sizes="80px"
+                                    />
+                                </div>
+
+                                <span style={{
+                                    fontSize: 'clamp(14px, 3.5vw, 18px)', fontWeight: 600,
+                                    fontFamily: '"Shippori Mincho", "Noto Serif JP", serif',
+                                    color: '#4a4a4a',
+                                    marginBottom: '2px'
+                                }}>
+                                    {stoneData.names.ja}
+                                </span>
+                                <span style={{
+                                    fontSize: 'clamp(9px, 2.5vw, 11px)',
+                                    fontFamily: '"Montserrat", sans-serif',
+                                    color: '#d4af37',
+                                    letterSpacing: '0.05em',
+                                    marginBottom: '12px'
+                                }}>
+                                    {stoneData.names.en}
+                                </span>
+
+                                <Text style={{
+                                    color: 'rgba(74, 74, 74, 0.85)',
+                                    fontSize: 'clamp(11px, 2.8vw, 13px)', lineHeight: 1.5,
+                                    fontFamily: '"Noto Serif JP", serif',
+                                    margin: 0,
+                                    whiteSpace: 'pre-line'
+                                }}>
+                                    {stoneData.description.ja}
+                                </Text>
                             </div>
-
-                            <span style={{
-                                fontSize: 'clamp(14px, 3.5vw, 18px)', fontWeight: 600,
-                                fontFamily: '"Shippori Mincho", "Noto Serif JP", serif',
-                                color: '#4a4a4a',
-                                marginBottom: '2px'
-                            }}>
-                                {stoneData.names.ja}
-                            </span>
-                            <span style={{
-                                fontSize: 'clamp(9px, 2.5vw, 11px)',
-                                fontFamily: '"Montserrat", sans-serif',
-                                color: '#d4af37',
-                                letterSpacing: '0.05em', // Reduce letter spacing slightly
-                                marginBottom: '12px'
-                            }}>
-                                {stoneData.names.en}
-                            </span>
-
-                            <Text style={{
-                                color: 'rgba(74, 74, 74, 0.85)',
-                                fontSize: 'clamp(11px, 2.8vw, 13px)', lineHeight: 1.5,
-                                fontFamily: '"Noto Serif JP", serif',
-                                margin: 0,
-                                whiteSpace: 'pre-line'
-                            }}>
-                                {stoneData.description.ja}
-                            </Text>
-                        </div>
-                    ))}
-                </SimpleGrid>
+                        ))}
+                    </SimpleGrid>
+                </div>
 
             </main>
         </div>
