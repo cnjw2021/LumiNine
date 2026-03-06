@@ -224,7 +224,7 @@ export default function PowerstonePage() {
                                 backgroundColor: '#f9f7f2'
                             }}>
                                 <Image
-                                    src={`/images/stones/${key}.jpg`}
+                                    src={`/images/stones/${key}.png`}
                                     alt={stoneData.names.ja}
                                     fill
                                     style={{ objectFit: 'cover' }}
