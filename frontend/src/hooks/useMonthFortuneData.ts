@@ -91,7 +91,7 @@ function findCurrentSetsuMonth(
             return {
                 center_star: board.center_star,
                 display_month: `${startYear}年${startMonth}月 ${branch}`,
-                month: board.setsu_month_index,
+                month: startMonth,
                 year: startYear,
                 zodiac: zodiac,
                 directions: board.directions as PeriodFortuneData['directions'],

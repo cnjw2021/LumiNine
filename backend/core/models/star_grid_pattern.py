@@ -170,7 +170,7 @@ class StarGridPattern(db.Model):
                 "is_auspicious": True,
                 "reason": None,
                 "marks": [],
-                "fortune_level": "neutral",  # domain service が上書きする
+                "fortune_level": None,  # domain service が五行判定で上書きする
             }
             
             if star_number == 5:

@@ -36,14 +36,14 @@ class _StubGridPattern:
 
     def get_fortune_status(self, params: dict) -> dict:
         return {
-            "north": {"is_auspicious": None, "reason": None, "marks": [], "fortune_level": "neutral"},
-            "northeast": {"is_auspicious": None, "reason": None, "marks": [], "fortune_level": "neutral"},
+            "north": {"is_auspicious": True, "reason": None, "marks": [], "fortune_level": None},
+            "northeast": {"is_auspicious": True, "reason": None, "marks": [], "fortune_level": None},
             "east": {"is_auspicious": False, "reason": "五黄殺", "marks": ["five_yellow"], "fortune_level": "inauspicious"},
-            "southeast": {"is_auspicious": None, "reason": None, "marks": [], "fortune_level": "neutral"},
-            "south": {"is_auspicious": None, "reason": None, "marks": [], "fortune_level": "neutral"},
-            "southwest": {"is_auspicious": None, "reason": None, "marks": [], "fortune_level": "neutral"},
-            "west": {"is_auspicious": None, "reason": None, "marks": [], "fortune_level": "neutral"},
-            "northwest": {"is_auspicious": None, "reason": None, "marks": [], "fortune_level": "neutral"},
+            "southeast": {"is_auspicious": True, "reason": None, "marks": [], "fortune_level": None},
+            "south": {"is_auspicious": True, "reason": None, "marks": [], "fortune_level": None},
+            "southwest": {"is_auspicious": True, "reason": None, "marks": [], "fortune_level": None},
+            "west": {"is_auspicious": True, "reason": None, "marks": [], "fortune_level": None},
+            "northwest": {"is_auspicious": True, "reason": None, "marks": [], "fortune_level": None},
         }
 
     def to_dict(self):
