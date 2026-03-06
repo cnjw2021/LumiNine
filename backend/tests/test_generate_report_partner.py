@@ -16,8 +16,6 @@ class PdfGenNoop(PdfGeneratorInterface):
 
 
 class NoopPorts(IReadingQueryRepository, ISolarStartsRepository, ISolarCalendarProvider):
-    def get_monthly_star_reading(self, *a, **k): return None
-    def get_daily_star_reading(self, *a, **k): return None
     def get_main_star_message(self, *a, **k): return None
     def get_by_year(self, *a, **k): return type('S', (), {'zodiac': '子', 'solar_starts_date': None, 'star_number': 5})()
     def get_calculation_year(self, dt): return dt.year

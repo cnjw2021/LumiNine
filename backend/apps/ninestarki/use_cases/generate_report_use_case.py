@@ -71,12 +71,6 @@ class GenerateReportUseCase:
         # 1-1. リーディング補強
         enriched_result = dict(result_data)
         try:
-            msr_dict = self._reading_query.get_monthly_star_reading(month_star_num)
-            if msr_dict:
-                enriched_result['month_star_reading'] = msr_dict
-            dsr_dict = self._reading_query.get_daily_star_reading(day_star_num)
-            if dsr_dict:
-                enriched_result['day_star_reading'] = dsr_dict
             mnr_dict = self._reading_query.get_main_star_message(main_star_num)
             if mnr_dict:
                 enriched_result['main_star_reading'] = mnr_dict

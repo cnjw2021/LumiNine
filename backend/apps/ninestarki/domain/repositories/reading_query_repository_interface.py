@@ -8,15 +8,8 @@ from abc import ABC, abstractmethod
 class IReadingQueryRepository(ABC):
     """リーディング取得用のドメイン・リポジトリ・インターフェース"""
 
-    @abstractmethod
-    def get_monthly_star_reading(self, star_number: Optional[int]) -> Optional[Dict[str, Any]]:
-        """月命星読みを取得"""
-        raise NotImplementedError
 
-    @abstractmethod
-    def get_daily_star_reading(self, star_number: Optional[int]) -> Optional[Dict[str, Any]]:
-        """日命星読みを取得"""
-        raise NotImplementedError
+
 
     @abstractmethod
     def get_main_star_message(self, star_number: Optional[int]) -> Optional[Dict[str, Any]]:

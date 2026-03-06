@@ -19,7 +19,7 @@
 
 ### 단위 테스트 (23건) — DB 불필요
 ```
-tests/unit/test_daily_star_reading_use_case.py
+
 tests/unit/test_reading_query_use_case.py
 tests/unit/test_star_catalog_use_case.py
 tests/test_generate_report_happy.py
@@ -34,11 +34,11 @@ tests/test_solar_terms_boundaries.py
 ```
 tests/golden_master/test_annual_directions.py
 tests/golden_master/test_auspicious_days_report.py
-tests/golden_master/test_daily_star_reading.py
+
 tests/golden_master/test_direction_fortune.py
 tests/golden_master/test_month_acquired_fortune.py
-tests/golden_master/test_month_star_readings.py
-tests/golden_master/test_star_attributes.py
+
+
 tests/golden_master/test_star_life_guidance.py
 tests/golden_master/test_year_acquired_fortune.py
 tests/golden_master/test_year_star.py

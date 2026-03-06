@@ -4,9 +4,7 @@ from .admin_account_limit import AdminAccountLimit
 from .system_config import SystemConfig
 from .solar_starts import SolarStarts
 from .solar_terms import SolarTerms
-from .star_attribute import StarAttribute
-from .monthly_star_reading import MonthlyStarReading
-from .daily_star_reading import DailyStarReading
+
 from .star_groups import StarGroups, StarGroup
 from .monthly_directions import MonthlyDirections
 
@@ -32,9 +30,7 @@ __all__ = [
     'SolarTerms',
     'StarGroups',
     'StarGroup',
-    'MonthlyStarReading',
-    'DailyStarReading',
-    'StarAttribute',
+
     'MonthlyDirections',
     'CompatibilityReadingsMaster',
     'CompatibilitySymbolMaster',

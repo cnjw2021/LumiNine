@@ -99,13 +99,7 @@ export const batchCreateStarFortune = async (data: StarFortuneData[]): Promise<B
   return response.data;
 };
 
-/**
- * 属性データを一括登録（管理者用）
- */
-export const batchCreateStarAttribute = async (data: StarAttributeData[]): Promise<BatchProcessResult> => {
-  const response = await api.post<BatchProcessResult>('/admin/star-attribute-batch', data);
-  return response.data;
-};
+
 
 // 型定義
 export interface StarFortuneData {
@@ -117,14 +111,7 @@ export interface StarFortuneData {
   advice?: string;
 }
 
-export interface StarAttributeData {
-  main_star: number;
-  month_star?: number | null;
-  attribute_type: string;
-  attribute_value: string;
-  description?: string;
-  weight?: number;
-}
+
 
 export interface BatchProcessResult {
   message: string;
@@ -133,7 +120,7 @@ export interface BatchProcessResult {
     updated: number;
     failed: number;
     errors: Array<{
-      data: StarFortuneData | StarAttributeData;
+      data: StarFortuneData;
       error: string;
     }>;
   };

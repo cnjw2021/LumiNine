@@ -80,14 +80,12 @@ def execute_sql_file(cursor, file_path):
 # target_tables 指定時に不要なファイルの実行をスキップするために使用
 _SQL_SEED_FILE_TABLE_MAP = {
     '100_stars.sql': {'stars'},
-    '103_stellar_cycles.sql': {'stellar_cycles'},
-    '200_star_attributes.sql': {'star_attributes'},
+
     '210_star_grid_patterns.sql': {'star_grid_patterns'},
     '300_monthly_directions.sql': {'monthly_directions'},
     '310_star_number_group.sql': {'star_groups'},
     '320_pattern_switch_dates.sql': {'pattern_switch_dates'},
-    '400_monthly_star_readings.sql': {'monthly_star_readings'},
-    '410_daily_star_readings.sql': {'daily_star_readings'},
+
     '510_powerstone_seed.sql': {'powerstone_master'},
     '900_system_data.sql': {'system_config', 'admin_account_limit', 'permissions'},
 }
@@ -120,9 +118,9 @@ def _get_existing_tables(cursor) -> set:
 # 新しいテーブルを追加した場合はここにも追加してください
 _EXPECTED_TABLES = {
     'stars', 'solar_starts', 'solar_terms', 'daily_astrology',
-    'star_attributes', 'main_star_acquired_fortune_message',
+    'main_star_acquired_fortune_message',
     'star_life_guidance',
-    'monthly_star_readings', 'daily_star_readings', 'star_groups',
+    'star_groups',
     'star_grid_patterns', 'star_compatibility_matrix', 'monthly_directions',
     'moving_auspicious_dates',
     'compatibility_symbol_pattern_master', 'compatibility_symbol_master',
@@ -131,7 +129,7 @@ _EXPECTED_TABLES = {
     'permissions', 'users', 'user_permissions',
     'powerstone_master', 'recommendation_history',
     # シードSQL内で CREATE TABLE IF NOT EXISTS されるテーブル
-    'stellar_cycles', 'pattern_switch_dates',
+    'pattern_switch_dates',
 }
 
 def run_init():

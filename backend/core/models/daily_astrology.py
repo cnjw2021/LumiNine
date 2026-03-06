@@ -5,7 +5,7 @@ from sqlalchemy.orm import relationship
 
 from core.database import db
 from core.utils.logger import get_logger
-from core.models.daily_star_reading import DailyStarReading
+
 
 logger = get_logger(__name__)
 class DailyAstrology(db.Model):
@@ -24,12 +24,7 @@ class DailyAstrology(db.Model):
     updated_at = Column(TIMESTAMP, nullable=False, server_default=func.current_timestamp(), 
                        onupdate=func.current_timestamp(), comment='更新日時')
     
-    # 日命星読みとのリレーションシップ
-    day_star_reading = relationship('DailyStarReading', 
-                                    primaryjoin='DailyAstrology.star_number == DailyStarReading.star_number',
-                                    foreign_keys='DailyStarReading.star_number',
-                                    uselist=False,
-                                    viewonly=True)
+
 
     def __init__(self, date: Date, zodiac: str, star_number: int, lunar_date: str):
         """初期化
@@ -99,17 +94,7 @@ class DailyAstrology(db.Model):
         """
         return cls.query.filter_by(star_number=star_number).all()
     
-    def get_day_star_reading(self):
-        """この日の日命星読みを取得します
-        
-        Returns:
-            DailyStarReading: 日命星読みデータ。存在しない場合はNone
-        """
-        if hasattr(self, 'day_star_reading') and self.day_star_reading:
-            return self.day_star_reading
-        
-        # リレーションシップで取得できない場合は直接クエリを実行
-        return DailyStarReading.get_by_star(self.star_number)
+
 
     def to_dict(self) -> Dict[str, Any]:
         """モデルを辞書形式に変換（created_at, updated_at は除外）
@@ -127,10 +112,6 @@ class DailyAstrology(db.Model):
             'star_number': self.star_number,
             'lunar_date': self.lunar_date
         }
-        
-        # 日命星読みが存在する場合は追加
-        day_star_reading = self.get_day_star_reading()
-        if day_star_reading:
-            result['day_star_reading'] = day_star_reading.to_dict()
+
             
         return result 
