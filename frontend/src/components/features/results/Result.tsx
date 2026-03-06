@@ -1,6 +1,9 @@
 'use client';
 
 import ResultFortuneSection from './ResultFortuneSection';
+import TemplateSelectionModal from './TemplateSelectionModal';
+import { useState } from 'react';
+import { usePdfReport } from '@/hooks/usePdfReport';
 import { usePowerStoneData } from '@/hooks/usePowerStoneData';
 import { useMonthFortuneData } from '@/hooks/useMonthFortuneData';
 import { isSixLayer } from '@/types/directionFortune';
@@ -10,6 +13,17 @@ import { ResultProps } from '@/types/results';
 
 export default function Result({ resultData, onReset }: ResultProps) {
   const { result, fullName, birthdate } = resultData;
+  const [showTemplateModal, setShowTemplateModal] = useState<boolean>(false);
+
+  const {
+    isGeneratingPdf,
+    pdfProgress,
+    handleDownloadPdf,
+    handlePreviewReport
+  } = usePdfReport({
+    resultData,
+    onActionComplete: () => setShowTemplateModal(false)
+  });
 
   if (!result) return null;
 
@@ -113,16 +127,31 @@ export default function Result({ resultData, onReset }: ResultProps) {
             {/* ── Action Buttons ── */}
             <div style={{ display: 'flex', flexDirection: 'column', gap: '12px', marginTop: '16px' }}>
               <button
-                onClick={onReset}
+                onClick={() => setShowTemplateModal(true)}
+                disabled={isGeneratingPdf}
                 style={{
                   padding: '16px 48px',
-                  backgroundColor: '#d8a7a7',
-                  color: '#FFF',
+                  backgroundColor: '#d8a7a7', color: '#FFF',
                   fontFamily: '"Noto Serif JP", serif',
                   borderRadius: '9999px',
                   boxShadow: '0 10px 20px -5px rgba(216, 167, 167, 0.25)',
                   fontSize: '13px', letterSpacing: '0.2em',
-                  border: 'none',
+                  border: 'none', cursor: 'pointer',
+                  transition: 'all 0.3s ease'
+                }}
+              >
+                {isGeneratingPdf ? 'PDF生成中...' : '詳細な鑑定書をダウンロード'}
+              </button>
+              <button
+                onClick={onReset}
+                style={{
+                  padding: '14px 48px',
+                  backgroundColor: 'transparent',
+                  color: '#d4af37',
+                  fontFamily: '"Noto Serif JP", serif',
+                  borderRadius: '9999px',
+                  border: '1px solid rgba(212, 175, 55, 0.3)',
+                  fontSize: '13px', letterSpacing: '0.2em',
                   cursor: 'pointer',
                   transition: 'all 0.3s ease'
                 }}
@@ -159,6 +188,16 @@ export default function Result({ resultData, onReset }: ResultProps) {
           © 2024 Nine Star Ki &amp; Numerology Healing Experience
         </p>
       </footer>
+
+      {/* テンプレート選択モーダル */}
+      <TemplateSelectionModal
+        isOpen={showTemplateModal}
+        onClose={() => setShowTemplateModal(false)}
+        onSelect={handleDownloadPdf}
+        onPreview={handlePreviewReport}
+        isGeneratingPdf={isGeneratingPdf}
+        pdfProgress={pdfProgress}
+      />
     </div>
   );
 }
