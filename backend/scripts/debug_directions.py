@@ -21,6 +21,7 @@ with app.app_context():
     from apps.ninestarki.infrastructure.persistence.star_grid_pattern_repository import StarGridPatternRepository
     from apps.ninestarki.infrastructure.persistence.monthly_directions_repository import MonthlyDirectionsRepository
     from apps.ninestarki.domain.services.five_elements_fortune_service import FiveElementsFortuneService
+    from apps.ninestarki.domain.services.additional_direction_marks_service import AdditionalDirectionMarksService
 
     nine_star_repo = NineStarRepository()
     solar_terms_repo = SolarTermsRepository()
@@ -31,7 +32,8 @@ with app.app_context():
     year_star_svc = YearStarDomainService(nine_star_repo, solar_terms_repo, solar_starts_repo, star_grid_repo)
     monthly_board_svc = MonthlyBoardDomainService(solar_terms_repo, solar_starts_repo, star_grid_repo, monthly_repo)
     five_elements_svc = FiveElementsFortuneService()
-    uc = MonthlyDirectionsUseCase(year_star_svc, monthly_board_svc, five_elements_svc)
+    additional_marks_svc = AdditionalDirectionMarksService()
+    uc = MonthlyDirectionsUseCase(year_star_svc, monthly_board_svc, five_elements_svc, additional_marks_svc)
 
     MAIN_STAR = int(os.environ.get("MAIN_STAR", 7))
     MONTH_STAR = int(os.environ.get("MONTH_STAR", 9))

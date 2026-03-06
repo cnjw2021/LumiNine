@@ -56,6 +56,7 @@ from apps.ninestarki.domain.services.interfaces.monthly_board_service_interface 
 from apps.ninestarki.domain.services.year_star_domain_service import YearStarDomainService
 from apps.ninestarki.use_cases.monthly_directions_use_case import MonthlyDirectionsUseCase
 from apps.ninestarki.domain.services.five_elements_fortune_service import FiveElementsFortuneService
+from apps.ninestarki.domain.services.additional_direction_marks_service import AdditionalDirectionMarksService
 
 # Phase 2: PowerStone Matching Engine
 from apps.ninestarki.domain.services.interfaces.gogyo_service_interface import IGogyoService
@@ -222,6 +223,7 @@ class AppModule(Module):
         binder.bind(IMonthlyBoardDomainService, to=MonthlyBoardDomainService, scope=singleton)
         binder.bind(YearStarDomainService, to=YearStarDomainService, scope=singleton)
         binder.bind(FiveElementsFortuneService, to=FiveElementsFortuneService, scope=singleton)
+        binder.bind(AdditionalDirectionMarksService, to=AdditionalDirectionMarksService, scope=singleton)
         binder.bind(MonthlyDirectionsUseCase, to=MonthlyDirectionsUseCase, scope=singleton)
 
         # Phase 2: PowerStone Matching Engine DI バインディング

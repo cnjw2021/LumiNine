@@ -15,6 +15,7 @@ from typing import Any, Optional
 from apps.ninestarki.use_cases.monthly_directions_use_case import MonthlyDirectionsUseCase
 from apps.ninestarki.domain.services.monthly_board_domain_service import MonthlyBoardResult
 from apps.ninestarki.domain.services.five_elements_fortune_service import FiveElementsFortuneService
+from apps.ninestarki.domain.services.additional_direction_marks_service import AdditionalDirectionMarksService
 from apps.ninestarki.domain.exceptions import YearInfoNotFoundError
 
 
@@ -101,6 +102,7 @@ class TestMonthlyDirectionsUseCaseSingleMonth:
             year_star_service=_StubYearStarService(),
             monthly_board_service=_StubMonthlyBoardService(),
             five_elements_service=FiveElementsFortuneService(),
+            additional_marks_service=AdditionalDirectionMarksService(),
         )
 
     def test_returns_dict_with_required_keys(self, use_case):
@@ -137,6 +139,7 @@ class TestMonthlyDirectionsUseCaseAllMonths:
             year_star_service=_StubYearStarService(),
             monthly_board_service=_StubMonthlyBoardService(),
             five_elements_service=FiveElementsFortuneService(),
+            additional_marks_service=AdditionalDirectionMarksService(),
         )
 
     def test_all_12_months_returned(self, use_case):
@@ -157,6 +160,7 @@ class TestMonthlyDirectionsUseCaseMissingSetsuDate:
             year_star_service=_StubYearStarService(),
             monthly_board_service=_StubMonthlyBoardService(missing_setsu_indices=[5, 9]),
             five_elements_service=FiveElementsFortuneService(),
+            additional_marks_service=AdditionalDirectionMarksService(),
         )
 
     def test_missing_setsu_skipped(self, use_case):
@@ -182,6 +186,7 @@ class TestMonthlyDirectionsUseCaseMissingYearInfo:
             year_star_service=_StubYearStarServiceEmpty(),
             monthly_board_service=_StubMonthlyBoardService(),
             five_elements_service=FiveElementsFortuneService(),
+            additional_marks_service=AdditionalDirectionMarksService(),
         )
 
     def test_raises_year_info_not_found_error_when_year_info_missing(self, use_case):
