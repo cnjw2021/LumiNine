@@ -2,7 +2,6 @@ from apps.ninestarki.use_cases.generate_report_use_case import GenerateReportUse
 from apps.ninestarki.use_cases.dto.report_dtos import ReportInputDTO
 from apps.ninestarki.use_cases.interfaces.pdf_generator_interface import PdfGeneratorInterface
 from apps.ninestarki.domain.services.interfaces.year_fortune_service_interface import IYearFortuneService
-from apps.ninestarki.use_cases.monthly_directions_use_case import MonthlyDirectionsUseCase
 from apps.ninestarki.domain.services.interfaces.star_attribute_service_interface import IStarAttributeService
 from apps.ninestarki.domain.repositories.reading_query_repository_interface import IReadingQueryRepository
 from apps.ninestarki.domain.repositories.solar_starts_repository_interface import ISolarStartsRepository
