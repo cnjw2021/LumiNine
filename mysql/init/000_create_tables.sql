@@ -250,27 +250,6 @@ CREATE TABLE IF NOT EXISTS `moving_auspicious_dates` (
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci COMMENT='引っ越し吉日情報';
 
 
--- 相性マスターテーブル
-CREATE TABLE IF NOT EXISTS `compatibility_master` (
-  `id` INT AUTO_INCREMENT PRIMARY KEY COMMENT 'ID',
-  `main_star` INT NOT NULL COMMENT '主星 (判断する側の本命星) 番号',
-  `main_birth_month` INT NULL COMMENT '主星の持ち主の生まれ月 (NULL の場合は月に関係なく適用)',
-  `target_star` INT NOT NULL COMMENT '対象星 (相手の本命星) 番号',
-  `target_birth_month` INT NULL COMMENT '対象星の持ち主の生まれ月 (NULL の場合は月に関係なく適用)',
-  `symbols_male` VARCHAR(10) NOT NULL COMMENT '男性の相性記号 (★,○,P,F,N,▲ など)',
-  `symbols_female` VARCHAR(10) NOT NULL COMMENT '女性の相性記号 (★,○,P,F,N,▲ など)',
-  `created_at` TIMESTAMP DEFAULT CURRENT_TIMESTAMP COMMENT '作成日時',
-  `updated_at` TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP COMMENT '更新日時',
-  UNIQUE KEY `unique_compatibility` (`main_star`, `main_birth_month`, `target_star`, `target_birth_month`, `symbols_male`, `symbols_female`) COMMENT '相性データの一意制約',
-  FOREIGN KEY (`main_star`) REFERENCES `stars` (`star_number`) ON DELETE CASCADE,
-  FOREIGN KEY (`target_star`) REFERENCES `stars` (`star_number`) ON DELETE CASCADE,
-  INDEX `idx_main_star` (`main_star`),
-  INDEX `idx_main_birth_month` (`main_birth_month`),
-  INDEX `idx_target_star` (`target_star`),
-  INDEX `idx_target_birth_month` (`target_birth_month`),
-  INDEX `idx_symbols_male` (`symbols_male`),
-  INDEX `idx_symbols_female` (`symbols_female`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci COMMENT='相性マスター';
 
 -- 相性記号パターンマスターテーブル
 CREATE TABLE IF NOT EXISTS `compatibility_symbol_pattern_master` (
