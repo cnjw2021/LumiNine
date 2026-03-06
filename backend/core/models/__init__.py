@@ -13,7 +13,7 @@ from .monthly_directions import MonthlyDirections
 from .compatibility_readings_master import CompatibilityReadingsMaster
 from .compatibility_symbol_master import CompatibilitySymbolMaster
 from .compatibility_symbol_pattern_master import CompatibilitySymbolPatternMaster
-from .compatibility_master import CompatibilityMaster
+
 from .hourly_star_zodiac import HourlyStarZodiac
 from .zodiac_group import ZodiacGroup
 from .zodiac_group_member import ZodiacGroupMember
@@ -39,7 +39,7 @@ __all__ = [
     'CompatibilityReadingsMaster',
     'CompatibilitySymbolMaster',
     'CompatibilitySymbolPatternMaster',
-    'CompatibilityMaster',
+
     'HourlyStarZodiac',
     'ZodiacGroup',
     'ZodiacGroupMember',

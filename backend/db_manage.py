@@ -124,7 +124,7 @@ _EXPECTED_TABLES = {
     'month_star_acquired_fortune_message', 'star_life_guidance',
     'monthly_star_readings', 'daily_star_readings', 'star_groups',
     'star_grid_patterns', 'star_compatibility_matrix', 'monthly_directions',
-    'moving_auspicious_dates', 'compatibility_master',
+    'moving_auspicious_dates',
     'compatibility_symbol_pattern_master', 'compatibility_symbol_master',
     'compatibility_readings_master', 'zodiac_groups', 'zodiac_group_members',
     'hourly_star_zodiacs', 'system_config', 'admin_account_limit',
