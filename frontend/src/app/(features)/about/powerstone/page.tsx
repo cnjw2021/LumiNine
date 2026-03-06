@@ -189,7 +189,7 @@ export default function PowerstonePage() {
                     </p>
                 </div>
 
-                <SimpleGrid cols={{ base: 1, sm: 2, lg: 3 }} spacing="md">
+                <SimpleGrid cols={{ base: 2, sm: 3, md: 3, lg: 3 }} spacing={{ base: 'sm', sm: 'md' }}>
                     {Object.entries(POWERSTONES).map(([key, stoneData]) => (
                         <div key={key} style={{
                             display: 'flex',
@@ -198,7 +198,7 @@ export default function PowerstonePage() {
                             textAlign: 'center',
                             backgroundColor: '#ffffff',
                             borderRadius: '16px',
-                            padding: '20px 12px',
+                            padding: '16px 8px', // Slightly less padding for mobile 2-col
                             boxShadow: '0 5px 20px -5px rgba(0, 0, 0, 0.03)',
                             border: '1px solid rgba(212, 175, 55, 0.05)',
                             transition: 'transform 0.3s ease, box-shadow 0.3s ease',
@@ -214,11 +214,11 @@ export default function PowerstonePage() {
                             }}
                         >
                             <div style={{
-                                width: '100px',
-                                height: '100px',
+                                width: '80px', // Scaling down slightly for 2-col
+                                height: '80px',
                                 borderRadius: '50%',
                                 overflow: 'hidden',
-                                marginBottom: '20px',
+                                marginBottom: '16px',
                                 border: '1px solid rgba(212, 175, 55, 0.2)',
                                 position: 'relative',
                                 backgroundColor: '#f9f7f2'
@@ -228,31 +228,31 @@ export default function PowerstonePage() {
                                     alt={stoneData.names.ja}
                                     fill
                                     style={{ objectFit: 'cover' }}
-                                    sizes="100px"
+                                    sizes="80px"
                                 />
                             </div>
 
                             <span style={{
-                                fontSize: '18px', fontWeight: 600,
+                                fontSize: 'clamp(14px, 3.5vw, 18px)', fontWeight: 600,
                                 fontFamily: '"Shippori Mincho", "Noto Serif JP", serif',
                                 color: '#4a4a4a',
-                                marginBottom: '4px'
+                                marginBottom: '2px'
                             }}>
                                 {stoneData.names.ja}
                             </span>
                             <span style={{
-                                fontSize: '11px',
+                                fontSize: 'clamp(9px, 2.5vw, 11px)',
                                 fontFamily: '"Montserrat", sans-serif',
                                 color: '#d4af37',
-                                letterSpacing: '0.1em',
-                                marginBottom: '16px'
+                                letterSpacing: '0.05em', // Reduce letter spacing slightly
+                                marginBottom: '12px'
                             }}>
                                 {stoneData.names.en}
                             </span>
 
                             <Text style={{
                                 color: 'rgba(74, 74, 74, 0.85)',
-                                fontSize: '13px', lineHeight: 1.6,
+                                fontSize: 'clamp(11px, 2.8vw, 13px)', lineHeight: 1.5,
                                 fontFamily: '"Noto Serif JP", serif',
                                 margin: 0,
                                 whiteSpace: 'pre-line'
