@@ -121,7 +121,7 @@ def _get_existing_tables(cursor) -> set:
 _EXPECTED_TABLES = {
     'stars', 'solar_starts', 'solar_terms', 'daily_astrology',
     'star_attributes', 'main_star_acquired_fortune_message',
-    'month_star_acquired_fortune_message', 'star_life_guidance',
+    'star_life_guidance',
     'monthly_star_readings', 'daily_star_readings', 'star_groups',
     'star_grid_patterns', 'star_compatibility_matrix', 'monthly_directions',
     'moving_auspicious_dates',

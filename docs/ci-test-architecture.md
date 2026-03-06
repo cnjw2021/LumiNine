@@ -179,7 +179,7 @@ graph TD
 | `zodiac_groups.csv` | `zodiac_groups` |
 | `zodiac_group_members.csv` | `zodiac_group_members` |
 | `hourly_star_zodiacs.csv` | `hourly_star_zodiacs` |
-| `compatibility_master_*.csv` (9건) | `compatibility_master` |
+
 | 기타 | `star_compatibility_matrix`, `compatibility_readings_master` 등 |
 
 ---

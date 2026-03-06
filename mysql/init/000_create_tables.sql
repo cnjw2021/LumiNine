@@ -81,19 +81,6 @@ CREATE TABLE IF NOT EXISTS `main_star_acquired_fortune_message` (
   UNIQUE KEY `unique_star_message` (`star_number`) COMMENT '星番号の一意制約'
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
--- 時の運気メッセージテーブル
-CREATE TABLE IF NOT EXISTS `month_star_acquired_fortune_message` (
-  `id` INT AUTO_INCREMENT PRIMARY KEY COMMENT 'ID',
-  `star_number` INT NOT NULL COMMENT '九星番号（1-9）',
-  `luck_title` VARCHAR(100) NOT NULL COMMENT '吉運タイトル',
-  `luck_details` TEXT NOT NULL COMMENT '吉運の詳細説明',
-  `unluck_title` VARCHAR(100) NOT NULL COMMENT '凶運タイトル',
-  `unluck_details` TEXT NOT NULL COMMENT '凶運の詳細説明',
-  `created_at` TIMESTAMP DEFAULT CURRENT_TIMESTAMP COMMENT '作成日時',
-  `updated_at` TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP COMMENT '更新日時',
-  FOREIGN KEY (`star_number`) REFERENCES `stars` (`star_number`) ON DELETE CASCADE,
-  UNIQUE KEY `unique_star_message` (`star_number`) COMMENT '星番号の一意制約'
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
 -- 星と人生のガイダンス情報を格納するテーブル
 CREATE TABLE IF NOT EXISTS `star_life_guidance` (

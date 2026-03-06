@@ -87,23 +87,6 @@ def load_main_star_acquired_fortune_message_data(connection=None):
         print(f"エラーが発生しました: {e}")
         raise
 
-def load_month_star_acquired_fortune_message_data(connection=None):
-    """month_star_acquired_fortune_message CSVデータをロードする関数"""
-    try:
-        load_dotenv()
-        print("month_star_acquired_fortune_messageデータのロードを開始します...")
-        row_count = load_csv_to_table(
-            csv_filename='month_star_acquired_fortune_message_data.csv',
-            table_name='month_star_acquired_fortune_message',
-            truncate_table=True,
-            use_load_data_infile=True,
-            connection=connection
-        )
-        print(f"month_star_acquired_fortune_messageのデータ挿入完了: {row_count}行")
-        return row_count
-    except Exception as e:
-        print(f"エラーが発生しました: {e}")
-        raise
 
 
 
@@ -231,7 +214,6 @@ def load_all_csv_data(target_tables=None):
                 'solar_terms_data.csv': 'solar_terms',
                 'solar_starts_data.csv': 'solar_starts',
                 'daily_astrology_data.csv': 'daily_astrology',
-                'month_star_acquired_fortune_message.csv': 'month_star_acquired_fortune_message',
                 'main_star_acquired_fortune_message.csv': 'main_star_acquired_fortune_message',
                 'compatibility_symbol_master.csv': 'compatibility_symbol_master',
                 'compatibility_symbol_pattern_master.csv': 'compatibility_symbol_pattern_master',

@@ -42,8 +42,8 @@
 
 - **기본 별 정보**: `stars` (1-9 백수성~구자화성 기본 데이터)
 - **달력 및 절기 데이터**: `solar_starts` (입춘 데이터), `solar_terms` (절기 데이터), `daily_astrology` (일별 간지/별 데이터)
-- **운세 및 감정 데이터**: `monthly_star_readings`, `daily_star_readings`, `star_attributes`, `main_star_acquired_fortune_message`, `month_star_acquired_fortune_message` - 모두 `stars` 테이블의 `star_number`를 Foreign Key로 참조
-- **방위 및 상성 데이터**: `star_grid_patterns` (구성반), `monthly_directions` (월반 방위), `star_compatibility_matrix`, `compatibility_master` (상성 마스터)
+- **운세 및 감정 데이터**: `monthly_star_readings`, `daily_star_readings`, `star_attributes`, `main_star_acquired_fortune_message` - 모두 `stars` 테이블의 `star_number`를 Foreign Key로 참조
+- **방위 및 상성 데이터**: `star_grid_patterns` (구성반), `monthly_directions` (월반 방위), `star_compatibility_matrix`
 - **시스템 및 인증 데이터**: `users` (사용자 정보), `permissions`, `user_permissions` (권한 관리)
 
 ## ✍️ 코딩 컨벤션
