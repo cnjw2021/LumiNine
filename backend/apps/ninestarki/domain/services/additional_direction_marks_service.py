@@ -132,7 +132,7 @@ class AdditionalDirectionMarksService:
                     "best_auspicious", "auspicious",
                 ):
                     result["fortune_level"] = "neutral"
-                    result["is_auspicious"] = False
+                    result["is_auspicious"] = None
                 if result:
                     result.setdefault("additional_marks", []).append("teii_taichuu")
 

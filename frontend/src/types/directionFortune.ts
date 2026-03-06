@@ -19,7 +19,7 @@ export interface DirectionFortuneStatus {
 
 // 月別方位の吉凶情報
 export interface MonthDirectionInfo {
-  is_auspicious: boolean;
+  is_auspicious: boolean | null;
   marks: string[];
   reason: string | null;
   is_main_star?: boolean;

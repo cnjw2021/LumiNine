@@ -25,7 +25,10 @@ from apps.ninestarki.domain.exceptions import YearInfoNotFoundError
 
 class _StubGridPattern:
     def get_fortune_status(self, params: dict) -> dict:
-        return {"north": "auspicious", "south": "inauspicious"}
+        return {
+            "north": {"is_auspicious": True, "reason": None, "marks": [], "fortune_level": "neutral"},
+            "south": {"is_auspicious": False, "reason": "五黄殺", "marks": ["five_yellow"], "fortune_level": "inauspicious"},
+        }
 
     def to_dict(self):
         return {}

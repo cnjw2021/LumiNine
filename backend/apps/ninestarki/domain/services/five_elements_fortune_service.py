@@ -115,4 +115,4 @@ class FiveElementsFortuneService:
             else:
                 # 相克等 → 中立
                 result["fortune_level"] = "neutral"
-                result["is_auspicious"] = False
+                result["is_auspicious"] = None

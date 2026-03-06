@@ -154,8 +154,12 @@ class StarGridPattern(db.Model):
         compatibility_matrix = None
         try:
             compatibility_matrix = StarCompatibilityMatrix.get_by_base_star(main_star)
-        except Exception:
-            pass
+        except Exception as e:
+            logger.warning(
+                "Failed to load StarCompatibilityMatrix for base star %s: %s",
+                main_star,
+                e,
+            )
         
         # 各方位の吉凶を判定
         results = {}
