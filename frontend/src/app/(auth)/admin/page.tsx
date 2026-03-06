@@ -26,14 +26,6 @@ export default function AdminDashboard() {
       superuserOnly: false
     },
     {
-      title: 'SVG九星盤ダウンロード',
-      description: '高品質なSVG形式の九星盤を生成・ダウンロードできます',
-      icon: IconDownload,
-      link: '/admin/svg-kyusei',
-      color: 'violet',
-      superuserOnly: true
-    },
-    {
       title: '引っ越し吉日管理',
       description: '引っ越しに良い日の情報を管理します',
       icon: IconCalendar,
@@ -70,7 +62,7 @@ export default function AdminDashboard() {
   return (
     <Container size="lg" py="xl">
       <Title order={2} mb="md">管理者ダッシュボード</Title>
-      
+
       <Box mb="xl">
         <Text mb="xs">ログイン情報:</Text>
         <Group>
@@ -78,26 +70,26 @@ export default function AdminDashboard() {
           <Badge color={isSuperuser ? 'pink' : 'gray'}>スーパーユーザー</Badge>
         </Group>
       </Box>
-      
+
       <Text mb="lg">以下のメニューから管理機能にアクセスできます：</Text>
-      
-      <SimpleGrid 
-        cols={{ base: 1, xs: 1, sm: 2, md: 2, lg: 3 }} 
+
+      <SimpleGrid
+        cols={{ base: 1, xs: 1, sm: 2, md: 2, lg: 3 }}
         spacing="lg"
       >
         {features
           .filter(feature => !feature.superuserOnly || isSuperuser)
           .map((feature) => (
-            <Card 
-              key={feature.title} 
-              shadow="sm" 
+            <Card
+              key={feature.title}
+              shadow="sm"
               p="lg"
-              radius="md" 
+              radius="md"
               withBorder
               component="a"
               href={feature.link}
-              style={{ 
-                textDecoration: 'none', 
+              style={{
+                textDecoration: 'none',
                 color: 'inherit',
                 transition: 'transform 0.2s ease, box-shadow 0.2s ease',
                 cursor: 'pointer',
@@ -111,7 +103,7 @@ export default function AdminDashboard() {
                 <feature.icon size={24} color={`var(--mantine-color-${feature.color}-6)`} />
                 <Title order={4} size="h4">{feature.title}</Title>
               </Group>
-              <Text size="sm" c="dimmed" style={{ 
+              <Text size="sm" c="dimmed" style={{
                 fontSize: 'var(--mantine-font-size-sm)',
                 '@media (minWidth: 48em)': {
                   fontSize: 'var(--mantine-font-size-md)'

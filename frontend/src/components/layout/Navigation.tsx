@@ -34,8 +34,7 @@ export const Navigation = ({ opened, onClose }: NavigationProps) => {
   const defaultMenuItems: MenuItem[] = useMemo(() => {
     if (!isLoggedIn && !authLoading) return [];
     return [
-      { icon: IconHome2, label: '九星気学鑑定', href: '/' },
-      { icon: IconQuestionMark, label: 'サンプル一覧', href: '/examples' }
+      { icon: IconHome2, label: '九星気学鑑定', href: '/' }
     ];
   }, [isLoggedIn, authLoading]);
 
@@ -46,13 +45,6 @@ export const Navigation = ({ opened, onClose }: NavigationProps) => {
     const items = [
       { icon: IconDatabase, label: '管理画面', href: '/admin', permission: 'data_management' }
     ];
-
-    if (isSuperuser) {
-      items.push(
-        { icon: IconDownload, label: 'SVG九星盤ダウンロード', href: '/admin/svg-kyusei', permission: 'svg_download' },
-        { icon: IconDownload, label: 'SVG五行図ダウンロード', href: '/admin/svg-gogyo', permission: 'svg_download' }
-      );
-    }
 
     return items;
   }, [isLoggedIn, isAdmin, isSuperuser]);

@@ -13,7 +13,6 @@ const MENU_ITEMS: MenuItem[] = [
   { label: 'ダッシュボード', href: '/admin', icon: IconDashboard },
   { label: 'ユーザー管理', href: '/admin/users', icon: IconUsers },
   { label: '九星データ管理', href: '/admin/stars', icon: IconStars },
-  { label: 'SVG九星盤ダウンロード', href: '/admin/svg-kyusei', icon: IconDownload },
   { label: '引っ越し吉日管理', href: '/admin/moving-dates', icon: IconCalendarEvent },
   { label: '権限管理', href: '/admin/permissions', icon: IconSettings },
   { label: 'データ管理', href: '/admin/data-management', icon: IconDatabase },
@@ -47,7 +46,7 @@ export default function AdminLayout({ children }: { children: ReactNode }) {
           }
         }}
       >
-        <AppShell.Header style={{ 
+        <AppShell.Header style={{
           backgroundColor: 'rgba(255, 255, 255, 0.9)',
           backdropFilter: 'blur(10px)',
           borderBottom: '2px solid rgba(75, 163, 227, 0.1)'
@@ -61,11 +60,11 @@ export default function AdminLayout({ children }: { children: ReactNode }) {
                 size="sm"
                 color="#4BA3E3"
               />
-              <Text 
-                size="xl" 
-                fw={600} 
-                c="#4BA3E3" 
-                style={{ 
+              <Text
+                size="xl"
+                fw={600}
+                c="#4BA3E3"
+                style={{
                   letterSpacing: '0.5px',
                   whiteSpace: 'nowrap',
                   overflow: 'hidden',
@@ -84,7 +83,7 @@ export default function AdminLayout({ children }: { children: ReactNode }) {
           borderRight: '2px solid rgba(75, 163, 227, 0.1)'
         }}>
           <Stack gap="xs">
-            <NavigationMenu 
+            <NavigationMenu
               items={MENU_ITEMS}
               onNavigate={(href) => {
                 close();
@@ -124,7 +123,7 @@ export default function AdminLayout({ children }: { children: ReactNode }) {
         }}
       >
         <Stack gap="xs">
-          <NavigationMenu 
+          <NavigationMenu
             items={MENU_ITEMS}
             onNavigate={(href) => {
               close();
