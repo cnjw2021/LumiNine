@@ -87,90 +87,8 @@ def load_main_star_acquired_fortune_message_data(connection=None):
         print(f"エラーが発生しました: {e}")
         raise
 
-def load_month_star_acquired_fortune_message_data(connection=None):
-    """month_star_acquired_fortune_message CSVデータをロードする関数"""
-    try:
-        load_dotenv()
-        print("month_star_acquired_fortune_messageデータのロードを開始します...")
-        row_count = load_csv_to_table(
-            csv_filename='month_star_acquired_fortune_message_data.csv',
-            table_name='month_star_acquired_fortune_message',
-            truncate_table=True,
-            use_load_data_infile=True,
-            connection=connection
-        )
-        print(f"month_star_acquired_fortune_messageのデータ挿入完了: {row_count}行")
-        return row_count
-    except Exception as e:
-        print(f"エラーが発生しました: {e}")
-        raise
 
-def load_compatibility_master_data(connection=None):
-    """compatibility_master CSVデータをロードする関数"""
-    try:
-        load_dotenv()
-        print("compatibility_masterデータのロードを開始します...")
-        
-        # 独自のコネクションが渡されていない場合は新しく作成
-        should_close_connection = False
-        if connection is None:
-            connection = get_mysql_connection(require_file_privilege=True)
-            should_close_connection = True
-            
-        try:
-            # 9つのCSVファイルとそれに対応するテーブル名のマッピング
-            csv_table_mapping = {
-                'compatibility_master_1.csv': 'compatibility_master',
-                'compatibility_master_2.csv': 'compatibility_master',
-                'compatibility_master_3.csv': 'compatibility_master',
-                'compatibility_master_4.csv': 'compatibility_master',
-                'compatibility_master_5.csv': 'compatibility_master',
-                'compatibility_master_6.csv': 'compatibility_master',
-                'compatibility_master_7.csv': 'compatibility_master',
-                'compatibility_master_8.csv': 'compatibility_master',
-                'compatibility_master_9.csv': 'compatibility_master'
-            }
-            
-            # 最初のファイルだけテーブルをtruncateする
-            truncate_done = False
-            total_rows = 0
-            
-            for csv_file, table_name in csv_table_mapping.items():
-                # ファイルの存在確認
-                csv_path = get_csv_path(csv_file)
-                if not os.path.exists(csv_path):
-                    print(f"ファイル {csv_file} が見つかりません。スキップします。")
-                    continue
-                
-                try:
-                    # 各ファイルをロード
-                    row_count = load_csv_to_table(
-                        connection=connection,
-                        csv_filename=csv_file,
-                        table_name=table_name,
-                        truncate_table=not truncate_done,  # 最初のファイルのみtruncate
-                        use_load_data_infile=True
-                    )
-                    
-                    # 最初のファイルのロード後はtruncateしない
-                    if not truncate_done:
-                        truncate_done = True
-                        
-                    total_rows += row_count
-                    print(f"ファイル {csv_file} から {row_count}行をロードしました")
-                except Exception as e:
-                    print(f"ファイル {csv_file} のロード中にエラーが発生しました: {e}")
-                    # 一つのファイルのエラーで全体が失敗しないよう、続行する
-            
-            print(f"compatibility_masterのデータ挿入完了: 合計 {total_rows}行")
-            return total_rows
-        finally:
-            if should_close_connection and connection is not None and connection.is_connected():
-                connection.close()
-                print("データベース接続を閉じました")
-    except Exception as e:
-        print(f"エラーが発生しました: {e}")
-        raise
+
 
 def load_compatibility_readings_master_data(connection=None):
     """compatibility_readings_master CSVデータをロードする関数"""
@@ -296,7 +214,6 @@ def load_all_csv_data(target_tables=None):
                 'solar_terms_data.csv': 'solar_terms',
                 'solar_starts_data.csv': 'solar_starts',
                 'daily_astrology_data.csv': 'daily_astrology',
-                'month_star_acquired_fortune_message.csv': 'month_star_acquired_fortune_message',
                 'main_star_acquired_fortune_message.csv': 'main_star_acquired_fortune_message',
                 'compatibility_symbol_master.csv': 'compatibility_symbol_master',
                 'compatibility_symbol_pattern_master.csv': 'compatibility_symbol_pattern_master',
@@ -323,17 +240,8 @@ def load_all_csv_data(target_tables=None):
                     truncate_tables=True,
                     use_load_data_infile=True
                 )
-            
-            # compatibility_masterの9つのファイルを個別にロード
-            if not target_tables or 'compatibility_master' in target_tables:
-                # 新しいコネクションを作成（前のload_multiple_csv_filesでクローズされているため）
-                compatibility_connection = get_mysql_connection(require_file_privilege=True)
-                try:
-                    compatibility_rows = load_compatibility_master_data(compatibility_connection)
-                    results['compatibility_master'] = compatibility_rows
-                finally:
-                    if compatibility_connection is not None and compatibility_connection.is_connected():
-                        compatibility_connection.close()
+
+
             
             # user_accountデータを個別にロード（truncateしない）
             if not target_tables or 'users' in target_tables:

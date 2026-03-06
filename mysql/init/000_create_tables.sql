@@ -54,18 +54,6 @@ CREATE TABLE IF NOT EXISTS daily_astrology (
     INDEX idx_year_month_day (year, month, day)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci COMMENT='日付ごとの干支と九星の情報';
 
--- 詳細な属性データテーブル
-CREATE TABLE IF NOT EXISTS `star_attributes` (
-  `id` INT AUTO_INCREMENT PRIMARY KEY COMMENT 'ID',
-  `star_number` INT NOT NULL COMMENT '九星番号（1-9）',
-  `attribute_type` VARCHAR(50) NOT NULL COMMENT '属性タイプ（color, shape, place等）',
-  `attribute_value` VARCHAR(100) NOT NULL COMMENT '属性値',
-  `description` TEXT COMMENT '説明',
-  `created_at` TIMESTAMP DEFAULT CURRENT_TIMESTAMP COMMENT '作成日時',
-  `updated_at` TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP COMMENT '更新日時',
-  FOREIGN KEY (`star_number`) REFERENCES `stars` (`star_number`) ON DELETE CASCADE,
-  UNIQUE KEY `star_attribute_value` (`star_number`, `attribute_type`, `attribute_value`) COMMENT '星・属性タイプ・属性値の一意制約'
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
 -- 時の運気メッセージテーブル
 CREATE TABLE IF NOT EXISTS `main_star_acquired_fortune_message` (
@@ -81,19 +69,6 @@ CREATE TABLE IF NOT EXISTS `main_star_acquired_fortune_message` (
   UNIQUE KEY `unique_star_message` (`star_number`) COMMENT '星番号の一意制約'
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
--- 時の運気メッセージテーブル
-CREATE TABLE IF NOT EXISTS `month_star_acquired_fortune_message` (
-  `id` INT AUTO_INCREMENT PRIMARY KEY COMMENT 'ID',
-  `star_number` INT NOT NULL COMMENT '九星番号（1-9）',
-  `luck_title` VARCHAR(100) NOT NULL COMMENT '吉運タイトル',
-  `luck_details` TEXT NOT NULL COMMENT '吉運の詳細説明',
-  `unluck_title` VARCHAR(100) NOT NULL COMMENT '凶運タイトル',
-  `unluck_details` TEXT NOT NULL COMMENT '凶運の詳細説明',
-  `created_at` TIMESTAMP DEFAULT CURRENT_TIMESTAMP COMMENT '作成日時',
-  `updated_at` TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP COMMENT '更新日時',
-  FOREIGN KEY (`star_number`) REFERENCES `stars` (`star_number`) ON DELETE CASCADE,
-  UNIQUE KEY `unique_star_message` (`star_number`) COMMENT '星番号の一意制約'
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
 -- 星と人生のガイダンス情報を格納するテーブル
 CREATE TABLE IF NOT EXISTS `star_life_guidance` (
@@ -107,32 +82,7 @@ CREATE TABLE IF NOT EXISTS `star_life_guidance` (
   UNIQUE KEY `idx_main_month_star_category` (`main_star`, `month_star`, `category`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
--- 月命星の鑑定結果を保存するための専用テーブル
-CREATE TABLE IF NOT EXISTS `monthly_star_readings` (
-  `id` INT AUTO_INCREMENT PRIMARY KEY COMMENT 'ID',
-  `star_number` INT NOT NULL COMMENT '九星番号（1-9）',
-  `title` VARCHAR(100) NOT NULL COMMENT '見出し（例：社会的な顔）',
-  `keywords` TEXT COMMENT '特徴を表すキーワード',
-  `description` TEXT NOT NULL COMMENT '詳細な鑑定内容',
-  `created_at` TIMESTAMP DEFAULT CURRENT_TIMESTAMP COMMENT '作成日時',
-  `updated_at` TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP COMMENT '更新日時',
-  FOREIGN KEY (`star_number`) REFERENCES `stars` (`star_number`) ON DELETE CASCADE,
-  UNIQUE KEY `unique_star` (`star_number`) COMMENT '星番号の一意制約'
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
--- 日命星の鑑定結果を保存するための専用テーブル
-CREATE TABLE IF NOT EXISTS `daily_star_readings` (
-  `id` INT AUTO_INCREMENT PRIMARY KEY COMMENT 'ID',
-  `star_number` INT NOT NULL COMMENT '九星番号（1-9）',
-  `title` VARCHAR(100) NOT NULL COMMENT '見出し（例：内面的な性質）',
-  `keywords` TEXT COMMENT '特徴を表すキーワード',
-  `description` TEXT NOT NULL COMMENT '詳細な鑑定内容',
-  `advice` TEXT COMMENT 'アドバイス',
-  `created_at` TIMESTAMP DEFAULT CURRENT_TIMESTAMP COMMENT '作成日時',
-  `updated_at` TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP COMMENT '更新日時',
-  FOREIGN KEY (`star_number`) REFERENCES `stars` (`star_number`) ON DELETE CASCADE,
-  UNIQUE KEY `unique_star` (`star_number`) COMMENT '星番号の一意制約'
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
 -- 星のグループを管理するテーブル（東四命、中三命、西二命）
 -- 方位などの判定に利用
@@ -250,27 +200,6 @@ CREATE TABLE IF NOT EXISTS `moving_auspicious_dates` (
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci COMMENT='引っ越し吉日情報';
 
 
--- 相性マスターテーブル
-CREATE TABLE IF NOT EXISTS `compatibility_master` (
-  `id` INT AUTO_INCREMENT PRIMARY KEY COMMENT 'ID',
-  `main_star` INT NOT NULL COMMENT '主星 (判断する側の本命星) 番号',
-  `main_birth_month` INT NULL COMMENT '主星の持ち主の生まれ月 (NULL の場合は月に関係なく適用)',
-  `target_star` INT NOT NULL COMMENT '対象星 (相手の本命星) 番号',
-  `target_birth_month` INT NULL COMMENT '対象星の持ち主の生まれ月 (NULL の場合は月に関係なく適用)',
-  `symbols_male` VARCHAR(10) NOT NULL COMMENT '男性の相性記号 (★,○,P,F,N,▲ など)',
-  `symbols_female` VARCHAR(10) NOT NULL COMMENT '女性の相性記号 (★,○,P,F,N,▲ など)',
-  `created_at` TIMESTAMP DEFAULT CURRENT_TIMESTAMP COMMENT '作成日時',
-  `updated_at` TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP COMMENT '更新日時',
-  UNIQUE KEY `unique_compatibility` (`main_star`, `main_birth_month`, `target_star`, `target_birth_month`, `symbols_male`, `symbols_female`) COMMENT '相性データの一意制約',
-  FOREIGN KEY (`main_star`) REFERENCES `stars` (`star_number`) ON DELETE CASCADE,
-  FOREIGN KEY (`target_star`) REFERENCES `stars` (`star_number`) ON DELETE CASCADE,
-  INDEX `idx_main_star` (`main_star`),
-  INDEX `idx_main_birth_month` (`main_birth_month`),
-  INDEX `idx_target_star` (`target_star`),
-  INDEX `idx_target_birth_month` (`target_birth_month`),
-  INDEX `idx_symbols_male` (`symbols_male`),
-  INDEX `idx_symbols_female` (`symbols_female`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci COMMENT='相性マスター';
 
 -- 相性記号パターンマスターテーブル
 CREATE TABLE IF NOT EXISTS `compatibility_symbol_pattern_master` (

@@ -32,24 +32,7 @@ export interface CalculationResult {
   numerology?: NumerologyResult;
 }
 
-// 月命星読みの型定義
-export interface MonthStarReading {
-  id: number;
-  star_number: number;
-  title: string;
-  keywords: string;
-  description: string;
-}
 
-// 日命星読みの型定義
-export interface DailyStarReading {
-  id: number;
-  star_number: number;
-  title: string;
-  keywords: string | null;
-  description: string;
-  advice: string | null;
-}
 
 // 結果表示用の星情報
 export interface StarForInfo {

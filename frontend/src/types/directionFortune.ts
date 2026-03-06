@@ -52,30 +52,6 @@ export interface MonthAcquiredFortuneResponse {
   annual_directions?: Record<string, PeriodFortuneData>;
 }
 
-export interface MovingDateInfo {
-  date: string;
-  auspicious_directions: string[];
-}
-
-export interface WaterDrawingDateInfo {
-  date: string;
-  auspicious_directions: string[];
-  auspicious_times?: Array<{ time: string; ganzhi: string }>;
-}
-
-export interface AuspiciousTableRow {
-  month: number;
-  cells: Record<string, string>;
-}
-
-export interface AuspiciousTableYear {
-  year: number;
-  headers: string[];
-  rows: AuspiciousTableRow[];
-}
-
-export type AuspiciousTableData = AuspiciousTableYear[];
-
 // ── Phase 4–5: パワーストーン推薦 ──
 
 /** 구성기학 (五行) 기반 스톤 — base / monthly / protection */
