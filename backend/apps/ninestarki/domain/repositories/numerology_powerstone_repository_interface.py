@@ -30,15 +30,17 @@ class INumerologyPowerStoneRepository(ABC):
 
     @abstractmethod
     def get_mapping(self, number: int) -> Dict:
-        """Life Path Number 에 대한 4-Layer 매핑 반환.
+        """수비술 숫자에 대한 레이어별 매핑 반환.
+
+        Life Path Number 및 Personal Year Number 조회에 공용으로 사용된다.
 
         Args:
-            number: Life Path Number (1~9)
+            number: 수비술 숫자 (1~9 또는 11/22/33)
 
         Returns:
             {"planet": str, "overall": {...}, "health": {...},
-             "wealth": {...}, "love": {...}}
+             "wealth": {...}, "love": {...}, "yearly": {...}}
 
         Raises:
-            ValueError: 1~9 범위 밖의 숫자
+            ValueError: 유효 범위 밖의 숫자
         """

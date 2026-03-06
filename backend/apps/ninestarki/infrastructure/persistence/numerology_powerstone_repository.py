@@ -12,6 +12,7 @@ from typing import Dict
 from apps.ninestarki.domain.repositories.numerology_powerstone_repository_interface import (
     INumerologyPowerStoneRepository,
 )
+from apps.ninestarki.domain.value_objects.numerology import MASTER_NUMBERS
 from apps.ninestarki.domain.value_objects.numerology_powerstone import NumerologyStone
 
 
@@ -19,11 +20,15 @@ from apps.ninestarki.domain.value_objects.numerology_powerstone import Numerolog
 _DATA_DIR = Path(__file__).resolve().parent.parent.parent / "data"
 _CATALOG_PATH = _DATA_DIR / "numerology_powerstone_catalog.json"
 
+# 유효한 number_mappings 키 범위 (1~9 + Master Numbers)
+_VALID_MAPPING_NUMBERS = frozenset(range(1, 10)) | MASTER_NUMBERS
+
 
 class NumerologyPowerStoneRepository(INumerologyPowerStoneRepository):
     """JSON 기반 수비술 파워스톤 리포지토리.
 
     인스턴스 생성 시 numerology_powerstone_catalog.json 을 로드하여 메모리에 캐시한다.
+    Master Number(11/22/33) 전용 매핑도 지원한다.
     """
 
     def __init__(self, catalog_path: Path | None = None) -> None:
@@ -84,15 +89,28 @@ class NumerologyPowerStoneRepository(INumerologyPowerStoneRepository):
         return stone
 
     def get_mapping(self, number: int) -> Dict:
-        """Life Path Number 에 대한 4-Layer 매핑 반환 (방어적 복사)."""
-        if not isinstance(number, int) or number < 1 or number > 9:
+        """수비술 숫자에 대한 레이어별 매핑 반환 (방어적 복사).
+
+        Life Path Number 및 Personal Year Number 조회에 공용으로 사용된다.
+
+        Args:
+            number: 수비술 숫자 (1~9 또는 11/22/33)
+
+        Returns:
+            {"planet": str, "overall": {...}, "health": {...},
+             "wealth": {...}, "love": {...}, "yearly": {...}}
+
+        Raises:
+            ValueError: 유효 범위 밖의 숫자
+        """
+        if not isinstance(number, int) or number not in _VALID_MAPPING_NUMBERS:
             raise ValueError(
-                f"유효하지 않은 Life Path Number: {number} (1~9 범위)"
+                f"유효하지 않은 수비술 숫자: {number} (1~9 또는 11/22/33 범위)"
             )
         mapping = self._mappings.get(number)
         if mapping is None:
             raise ValueError(
-                f"Life Path Number {number} 에 대한 매핑 데이터가 로드되지 않았습니다."
+                f"수비술 숫자 {number} 에 대한 매핑 데이터가 로드되지 않았습니다."
             )
         # 싱글톤 상태 보호를 위해 방어적 복사 반환
         return copy.deepcopy(mapping)

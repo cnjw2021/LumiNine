@@ -7,6 +7,7 @@ from apps.ninestarki.domain.repositories.solar_terms_repository_interface import
 from apps.ninestarki.domain.repositories.numerology_reading_repository_interface import (
     INumerologyReadingRepository,
 )
+from apps.ninestarki.domain.value_objects.numerology import MASTER_TO_BASE
 from core.models.daily_astrology import DailyAstrology
 from core.utils.logger import get_logger
 
@@ -62,9 +63,13 @@ class CalculateStarsUseCase:
 
         # ── 수비술 Life Path Number 계산 ──────────
         numerology_num = NumerologyService.calculate_life_path_number(birth_datetime_str)
+        # Reading 데이터는 1~9만 존재하므로 Master Number → base number 변환
+        reading_number = MASTER_TO_BASE.get(numerology_num.number, numerology_num.number)
         reading = self._numerology_reading_repo.get_reading(
-            numerology_num.number, locale=locale,
+            reading_number, locale=locale,
         )
+
+        is_master = numerology_num.number != reading_number
 
         return {
             "birth_datetime": birth_datetime_str,
@@ -76,8 +81,10 @@ class CalculateStarsUseCase:
             "year_star": year_star.to_dict(),
             "numerology": {
                 "life_path_number": numerology_num.number,
+                "is_master_number": is_master,
                 "planet": numerology_num.planet.value,
                 "planet_name": numerology_num.get_planet_name(locale),
+                "reading_number": reading_number,
                 "keywords": reading.keywords,
                 "description": reading.description,
                 "strengths": reading.strengths,
