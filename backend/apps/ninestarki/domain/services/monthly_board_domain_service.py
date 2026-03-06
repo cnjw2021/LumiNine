@@ -16,6 +16,7 @@ from typing import Any, Optional
 from injector import inject
 
 from apps.ninestarki.domain.repositories.solar_terms_repository_interface import ISolarTermsRepository
+from apps.ninestarki.domain.repositories.solar_starts_repository_interface import ISolarStartsRepository
 from apps.ninestarki.domain.repositories.star_grid_pattern_repository_interface import IStarGridPatternRepository
 from apps.ninestarki.domain.repositories.monthly_directions_repository_interface import IMonthlyDirectionsRepository
 from apps.ninestarki.domain.exceptions import SetsuMonthNotFoundError
@@ -82,10 +83,12 @@ class MonthlyBoardDomainService(IMonthlyBoardDomainService):
     def __init__(
         self,
         solar_terms_repo: ISolarTermsRepository,
+        solar_starts_repo: ISolarStartsRepository,
         star_grid_repo: IStarGridPatternRepository,
         monthly_directions_repo: IMonthlyDirectionsRepository,
     ) -> None:
         self._solar_terms_repo = solar_terms_repo
+        self._solar_starts_repo = solar_starts_repo
         self._star_grid_repo = star_grid_repo
         self._monthly_directions_repo = monthly_directions_repo
 
@@ -131,15 +134,11 @@ class MonthlyBoardDomainService(IMonthlyBoardDomainService):
         month_branch = month_zodiac[1] if len(month_zodiac) > 1 else ''
 
         # 그룹 판정 → monthly_directions 경유로 월반 중궁성 결정
-        # solar_terms_data.star_number 는 절기운성이므로 직접 사용 불가
-        # spring_start_term 재활용은 lookup_year 가 변경되지 않은 경우만 가능
-        spring_star = (
-            spring_start_term.star_number
-            if spring_start_term and lookup_year == target_date.year
-            else None
-        )
+        # 주의: solar_terms_data.star_number 는 절기운성이며, 년반 중궁성이 아님.
+        #       solar_starts_data.star_number 가 년반 중궁성이므로, 이를 사용하여
+        #       그룹을 판정해야 한다. (1,4,7→G1 / 2,5,8→G2 / 3,6,9→G3)
         center_star = self._resolve_center_star(
-            lookup_year, matched_term.month, spring_star_number=spring_star
+            lookup_year, matched_term.month,
         )
 
         # StarGridPattern 조회
@@ -160,38 +159,39 @@ class MonthlyBoardDomainService(IMonthlyBoardDomainService):
 
     def _resolve_center_star(
         self, lookup_year: int, calendar_month: int,
-        *, spring_star_number: int | None = None,
     ) -> int:
         """그룹 판정 → monthly_directions 경유로 월반 중궁성을 결정한다.
 
-        MonthFortuneService._get_month_fortune() 과 동일한 로직:
-        1. 해당 절년의 立春 star_number 조회
-        2. 立春 star_number 를 3으로 나눈 나머지로 그룹 판정
+        1. 해당 절년의 年盤中宮星(solar_starts_data.star_number) 조회
+        2. 年盤中宮星 을 3으로 나눈 나머지로 그룹 판정
            (1, 4, 7 → group_id=1 / 2, 5, 8 → group_id=2 / 3, 6, 9 → group_id=3)
         3. monthly_directions(group_id, month) 에서 center_star 취득
+
+        중요: solar_terms_data.star_number 는 절기운성(節気運星)이지,
+              年盤中宮星이 아니다. 그룹 판정에는 solar_starts_data.star_number
+              를 사용해야 한다.
 
         Args:
             lookup_year: 절년(節年) 기준 연도
             calendar_month: 양력 월 (1~12, solar_terms_data.month)
-            spring_star_number: 이미 조회된 立春 star_number (None 이면 재조회)
 
         Returns:
             center_star (1~9)
 
         Raises:
-            SetsuMonthNotFoundError: 立春 데이터 또는 monthly_directions 데이터가 없는 경우
+            SetsuMonthNotFoundError: 年盤 데이터 또는 monthly_directions 데이터가 없는 경우
         """
-        if spring_star_number is None:
-            spring_term = self._solar_terms_repo.get_spring_start(lookup_year)
-            if not spring_term:
-                raise SetsuMonthNotFoundError(
-                    f"立春 데이터를 찾을 수 없습니다. year={lookup_year}",
-                    details="DB에 solar_terms 데이터를 확인해 주세요.",
-                )
-            spring_star_number = spring_term.star_number
+        # solar_starts_data 에서 年盤中宮星 조회
+        year_starts = self._solar_starts_repo.get_by_year(lookup_year)
+        if not year_starts:
+            raise SetsuMonthNotFoundError(
+                f"solar_starts 데이터를 찾을 수 없습니다. year={lookup_year}",
+                details="DB에 solar_starts_data 를 확인해 주세요.",
+            )
+        year_center_star: int = year_starts.star_number
 
         # 그룹 판정: 1,4,7→G1 / 2,5,8→G2 / 3,6,9→G3
-        group_id = spring_star_number % 3
+        group_id = year_center_star % 3
         if group_id == 0:
             group_id = 3
 
@@ -206,9 +206,9 @@ class MonthlyBoardDomainService(IMonthlyBoardDomainService):
             )
 
         logger.debug(
-            "center_star resolved: year=%d month=%d → spring_star=%d "
+            "center_star resolved: year=%d month=%d → year_center_star=%d "
             "→ group=%d → center_star=%d",
-            lookup_year, calendar_month, spring_star_number,
+            lookup_year, calendar_month, year_center_star,
             group_id, monthly_dir.center_star,
         )
         return monthly_dir.center_star

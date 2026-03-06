@@ -28,7 +28,7 @@ with app.app_context():
     monthly_repo = MonthlyDirectionsRepository()
 
     year_star_svc = YearStarDomainService(nine_star_repo, solar_terms_repo, solar_starts_repo, star_grid_repo)
-    monthly_board_svc = MonthlyBoardDomainService(solar_terms_repo, monthly_repo, star_grid_repo)
+    monthly_board_svc = MonthlyBoardDomainService(solar_terms_repo, solar_starts_repo, star_grid_repo, monthly_repo)
     uc = MonthlyDirectionsUseCase(year_star_svc, monthly_board_svc)
 
     MAIN_STAR = int(os.environ.get("MAIN_STAR", 7))
@@ -63,7 +63,8 @@ with app.app_context():
         reason = data.get("reason", "")
         compat = data.get("compatibility_level", "")
         symbol = "○" if auspicious else "×"
-        print(f"  {symbol} {direction:10s} auspicious={str(auspicious):5s} reason={reason:30s} marks={marks}  compat={compat}")
+        reason_str = reason or ""
+        print(f"  {symbol} {direction:10s} auspicious={str(auspicious):5s} reason={reason_str:30s} marks={marks}  compat={compat}")
 
     print("\n=== 기대 결과 (타 서비스 기준 2026년 3월, main=7 month=9) ===")
     print("  S  = 吉 (最大吉方)")
