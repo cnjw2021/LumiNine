@@ -7,21 +7,14 @@ import json
 from apps.ninestarki.domain.entities.nine_star import NineStar
 from core.models.daily_astrology import DailyAstrology
 from core.utils.logger import get_logger
-from core.models.star_attribute import StarAttribute
 from apps.ninestarki.domain.repositories.monthly_directions_repository_interface import IMonthlyDirectionsRepository
 from apps.ninestarki.domain.repositories.star_grid_pattern_repository_interface import IStarGridPatternRepository
-from core.models.main_star_acquired_fortune_message import MainStarAcquiredFortuneMessage
-from core.models.month_star_acquired_fortune_message import MonthStarAcquiredFortuneMessage
 from core.services.solar_calendar_service import SolarCalendarService
-from core.models.solar_starts import SolarStarts
 from datetime import datetime, date
 
 from apps.ninestarki.use_cases.calculate_stars_use_case import CalculateStarsUseCase
 from apps.ninestarki.use_cases.star_catalog_use_case import StarCatalogUseCase
 
-from apps.ninestarki.services.star_attribute_service import StarAttributeService
-from apps.ninestarki.use_cases.star_attribute_use_case import StarAttributeUseCase
-from apps.ninestarki.services.year_fortune_service import YearFortuneService
 from apps.ninestarki.domain.services.direction_marks_domain_service import DirectionMarksDomainService
 from flask_cors import cross_origin
 import os
@@ -76,46 +69,6 @@ def create_nine_star_bp():
             return jsonify({'error': '星データの取得に失敗しました'}), 500
     
 
-    @nine_star_bp.route('/star-attributes', methods=['GET'])
-    @inject
-    def get_star_attributes(star_attr_uc: StarAttributeUseCase):
-        """
-        星の属性データを取得するエンドポイント
-        特定の星番号を指定すると、その星の属性情報のみを返す
-        """
-        try:
-            star_number = request.args.get('star_number')
-            
-            if not star_number:
-                return jsonify({
-                    'error': 'Missing parameter',
-                    'message': 'star_number is required'
-                }), 400
-            
-            star_number = int(star_number)
-            
-            if not 1 <= star_number <= 9:
-                return jsonify({
-                    'error': 'Invalid parameter',
-                    'message': 'star_number must be between 1 and 9'
-                }), 400
-            
-            result = star_attr_uc.get_star_attributes(star_number)
-            
-            return jsonify(result)
-            
-        except ValueError as e:
-            logger.error(f"Error parsing parameters: {str(e)}")
-            return jsonify({
-                'error': 'Invalid parameter format',
-                'message': 'star_number should be a valid integer'
-            }), 400
-        except Exception as e:
-            logger.error(f"Unexpected error in get_star_attributes: {str(e)}")
-            return jsonify({
-                'error': 'Server error',
-                'message': str(e)
-            }), 500
 
     @nine_star_bp.route('/preview-report', methods=['POST'])
     @inject

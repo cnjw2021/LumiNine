@@ -27,24 +27,11 @@ from apps.ninestarki.infrastructure.persistence.solar_terms_repository import So
 from apps.ninestarki.use_cases.solar_admin_use_cases import ListSolarTermsUseCase, UpdateSolarTermUseCase
 
 # Services / UseCases
-from apps.ninestarki.services.year_fortune_service import YearFortuneService
-from apps.ninestarki.services.star_attribute_service import StarAttributeService
-from apps.ninestarki.domain.services.star_life_guidance_service import StarLifeGuidanceService
 from apps.ninestarki.use_cases.calculate_stars_use_case import CalculateStarsUseCase
-from apps.ninestarki.services.compatibility_service import CompatibilityService
 from apps.ninestarki.use_cases.context.report_context_builder import ReportContextBuilder
 from apps.ninestarki.use_cases.generate_report_use_case import GenerateReportUseCase
 from apps.ninestarki.domain.services.direction_marks_domain_service import DirectionMarksDomainService
 from apps.ninestarki.domain.services.direction_rule_engine import DirectionRuleEngine
-from apps.ninestarki.presentation.auspicious_dates_presenter import AuspiciousDatesPresenter
-from apps.ninestarki.domain.services.interfaces.year_fortune_service_interface import IYearFortuneService
-from apps.ninestarki.domain.services.interfaces.star_attribute_service_interface import IStarAttributeService
-from apps.ninestarki.domain.services.interfaces.auspicious_dates_service_interface import IAuspiciousDatesService
-from apps.ninestarki.domain.services.auspicious_dates_domain_service import AuspiciousDatesDomainService
-from apps.ninestarki.domain.services.interfaces.astrology_data_reader_interface import IAstrologyDataReader
-from apps.ninestarki.domain.services.interfaces.compatibility_service_interface import ICompatibilityService
-from apps.ninestarki.infrastructure.services.adapters.astrology_data_reader_adapter import AstrologyDataReaderAdapter
-from apps.ninestarki.infrastructure.services.adapters.compatibility_service_adapter import CompatibilityServiceAdapter
 from apps.ninestarki.domain.services.annual_directions_domain_service import AnnualDirectionsDomainService
 from apps.ninestarki.domain.repositories.star_grid_pattern_repository_interface import IStarGridPatternRepository
 from apps.ninestarki.infrastructure.persistence.star_grid_pattern_repository import StarGridPatternRepository
@@ -102,28 +89,8 @@ class AppModule(Module):
 
     @singleton
     @provider
-    def provide_year_fortune_service(self, solar_terms_repo: ISolarTermsRepository, solar_starts_repo: ISolarStartsRepository, star_grid_repo: IStarGridPatternRepository) -> YearFortuneService:
-        return YearFortuneService(solar_terms_repo, solar_starts_repo, star_grid_repo)
-
-    @singleton
-    @provider
-    def provide_star_attribute_service(self) -> StarAttributeService:
-        return StarAttributeService()
-
-    @singleton
-    @provider
-    def provide_star_life_guidance_service(self, repo: IStarLifeGuidanceRepository) -> StarLifeGuidanceService:
-        return StarLifeGuidanceService(repo)
-
-    @singleton
-    @provider
     def provide_calculate_stars_use_case(self, repo: INineStarRepository, solar_terms_repo: ISolarTermsRepository, numerology_reading_repo: INumerologyReadingRepository) -> CalculateStarsUseCase:
         return CalculateStarsUseCase(repo, solar_terms_repo, numerology_reading_repo)
-
-    @singleton
-    @provider
-    def provide_compatibility_service(self) -> CompatibilityService:
-        return CompatibilityService()
 
     @singleton
     @provider
@@ -132,33 +99,11 @@ class AppModule(Module):
 
     @singleton
     @provider
-    def provide_astrology_data_reader(self, solar_terms_repo: ISolarTermsRepository, solar_starts_repo: ISolarStartsRepository) -> IAstrologyDataReader:
-        # ポート経由で節気/立春情報を取得するため、両方のリポジトリを注入
-        return AstrologyDataReaderAdapter(solar_terms_repo, solar_starts_repo)
-
-    @singleton
-    @provider
-    def provide_compatibility_service_port(self) -> ICompatibilityService:
-        return CompatibilityServiceAdapter()
-
-    @singleton
-    @provider
-    def provide_auspicious_dates_presenter(self) -> AuspiciousDatesPresenter:
-        return AuspiciousDatesPresenter()
-
-    @singleton
-    @provider
     def provide_generate_report_use_case(
         self,
         pdf_generator: PdfGeneratorInterface,
-        auspicious_dates_service: IAuspiciousDatesService,
-        auspicious_dates_presenter: AuspiciousDatesPresenter,
-        year_fortune_service: YearFortuneService,
         monthly_directions_use_case: MonthlyDirectionsUseCase,
-        star_attribute_service: StarAttributeService,
-        star_life_guidance_service: StarLifeGuidanceService,
         calculate_stars_use_case: CalculateStarsUseCase,
-        compatibility_service: CompatibilityService,
         reading_query_repo: IReadingQueryRepository,
         solar_starts_repo: ISolarStartsRepository,
         solar_terms_repo: ISolarTermsRepository,
@@ -168,14 +113,8 @@ class AppModule(Module):
     ) -> GenerateReportUseCase:
         return GenerateReportUseCase(
             pdf_generator=pdf_generator,
-            auspicious_dates_use_case=auspicious_dates_service,
-            auspicious_dates_presenter=auspicious_dates_presenter,
-            year_fortune_service=year_fortune_service,
             monthly_directions_use_case=monthly_directions_use_case,
-            star_attribute_service=star_attribute_service,
-            star_life_guidance_service=star_life_guidance_service,
             calculate_stars_use_case=calculate_stars_use_case,
-            compatibility_service=compatibility_service,
             reading_query_repo=reading_query_repo,
             solar_starts_repo=solar_starts_repo,
             solar_terms_repo=solar_terms_repo,
@@ -198,13 +137,7 @@ class AppModule(Module):
         binder.bind(IReadingQueryRepository, to=ReadingQueryRepository, scope=singleton)
         binder.bind(ISolarStartsRepository, to=SolarStartsRepository, scope=singleton)
         binder.bind(ISolarCalendarProvider, to=SolarCalendarProvider, scope=singleton)
-        binder.bind(IYearFortuneService, to=YearFortuneService, scope=singleton)
-        binder.bind(IStarAttributeService, to=StarAttributeService, scope=singleton)
         # ドメインサービス用アダプタのバインド
-        binder.bind(IAstrologyDataReader, to=AstrologyDataReaderAdapter, scope=singleton)
-        binder.bind(ICompatibilityService, to=CompatibilityServiceAdapter, scope=singleton)
-        binder.bind(IAuspiciousDatesService, to=AuspiciousDatesDomainService, scope=singleton)
-        # Setter injection for AuspiciousDatesDomainService -> DirectionRuleEngine
         binder.bind(DirectionMarksDomainService, to=DirectionMarksDomainService, scope=singleton)
         binder.bind(DirectionRuleEngine, to=DirectionRuleEngine, scope=singleton)
         binder.bind(IAnnualDirectionsRepository, to=AnnualDirectionsRepository, scope=singleton)

@@ -1,19 +1,13 @@
 from apps.ninestarki.use_cases.generate_report_use_case import GenerateReportUseCase
 from apps.ninestarki.use_cases.dto.report_dtos import ReportInputDTO
 from apps.ninestarki.use_cases.interfaces.pdf_generator_interface import PdfGeneratorInterface
-from apps.ninestarki.domain.services.interfaces.year_fortune_service_interface import IYearFortuneService
-from apps.ninestarki.domain.services.interfaces.star_attribute_service_interface import IStarAttributeService
 from apps.ninestarki.domain.repositories.reading_query_repository_interface import IReadingQueryRepository
 from apps.ninestarki.domain.repositories.solar_starts_repository_interface import ISolarStartsRepository
 from apps.ninestarki.domain.services.interfaces.solar_calendar_provider_interface import ISolarCalendarProvider
 from apps.ninestarki.use_cases.context.report_context_builder import ReportContextBuilder
-from apps.ninestarki.domain.services.star_life_guidance_service import StarLifeGuidanceService
-from apps.ninestarki.domain.repositories.star_life_guidance_repository_interface import IStarLifeGuidanceRepository
-from apps.ninestarki.domain.services.direction_marks_domain_service import DirectionMarksDomainService
 from apps.ninestarki.infrastructure.persistence.nine_star_repository import NineStarRepository
 from apps.ninestarki.infrastructure.persistence.numerology_reading_repository import NumerologyReadingRepository
 from apps.ninestarki.use_cases.calculate_stars_use_case import CalculateStarsUseCase
-from apps.ninestarki.domain.services.interfaces.auspicious_dates_service_interface import IAuspiciousDatesService
 from apps.ninestarki.domain.repositories.solar_terms_repository_interface import ISolarTermsRepository
 import pytest
 
@@ -25,10 +19,7 @@ class PdfGenNoop(PdfGeneratorInterface):
         return b"%PDF%"
 
 
-class NoopPorts(IYearFortuneService, IStarAttributeService, IReadingQueryRepository, ISolarStartsRepository, ISolarCalendarProvider):
-    def get_year_fortune_for_report(self, *a, **k): return {'directions': {}}
-    def get_year_fortune(self, *a, **k): return {'directions': {}}
-    def get_star_attributes(self, *a, **k): return {}
+class NoopPorts(IReadingQueryRepository, ISolarStartsRepository, ISolarCalendarProvider):
     def get_monthly_star_reading(self, *a, **k): return None
     def get_daily_star_reading(self, *a, **k): return None
     def get_main_star_message(self, *a, **k): return None
@@ -37,24 +28,8 @@ class NoopPorts(IYearFortuneService, IStarAttributeService, IReadingQueryReposit
 
 
 class MonthlyDirectionsUCFake:
-    """MonthlyDirectionsUseCase の Fake — 空の月盤を返す"""
     def execute(self, *a, **k):
         return {"monthly_boards": {}}
-
-
-class StarLifeGuidanceRepoFake(IStarLifeGuidanceRepository):
-    def find_by_stars_and_category(self, *a, **k):
-        return None
-    def find_by_stars(self, *a, **k):
-        class Obj: pass
-        job = Obj(); job.category = 'job'; job.content = 'テスト職業'
-        lucky = Obj(); lucky.category = 'lucky_item'; lucky.content = 'テスト開運アイテム'
-        return [job, lucky]
-
-
-class AuspiciousDatesServiceFake(IAuspiciousDatesService):
-    def execute(self, main_star: int, month_star: int, target_year: int):
-        return {"moving_dates": [], "water_drawing_dates": []}
 
 
 class SolarTermsRepoFake(ISolarTermsRepository):
@@ -80,26 +55,15 @@ class SolarTermsRepoFake(ISolarTermsRepository):
 
 
 def test_happy_flow_returns_pdf_bytes(monkeypatch):
-    # Appコンテキストの依存を除去: 方向マークの判定をno-opの結果にカット
-    monkeypatch.setattr(
-        DirectionMarksDomainService,
-        "get_direction_fortune",
-        staticmethod(lambda *args, **kwargs: {"north": {"is_auspicious": True}}),
-    )
-
+    noop = NoopPorts()
     uc = GenerateReportUseCase(
         pdf_generator=PdfGenNoop(),
-        auspicious_dates_use_case=AuspiciousDatesServiceFake(),
-        year_fortune_service=NoopPorts(),
         monthly_directions_use_case=MonthlyDirectionsUCFake(),
-        star_attribute_service=NoopPorts(),
-        star_life_guidance_service=StarLifeGuidanceService(StarLifeGuidanceRepoFake()),
         calculate_stars_use_case=CalculateStarsUseCase(NineStarRepository(), SolarTermsRepoFake(), NumerologyReadingRepository()),
-        reading_query_repo=NoopPorts(),
-        solar_starts_repo=NoopPorts(),
-        solar_calendar_provider=NoopPorts(),
+        reading_query_repo=noop,
+        solar_starts_repo=noop,
+        solar_calendar_provider=noop,
         report_context_builder=ReportContextBuilder(),
-        compatibility_service=type('Compat', (), {'get_compatibility': lambda *a, **k: {'readings': []}})(),
     )
 
     payload: ReportInputDTO = {
@@ -116,4 +80,3 @@ def test_happy_flow_returns_pdf_bytes(monkeypatch):
 
     pdf_bytes = uc.execute_pdf(payload)
     assert isinstance(pdf_bytes, (bytes, bytearray)) and len(pdf_bytes) > 0
-

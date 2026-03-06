@@ -23,8 +23,6 @@ PROJECT_ROOT = os.path.dirname(os.path.abspath(__file__))
 from apps.ninestarki.routes.nine_star_routes import create_nine_star_bp
 from apps.ninestarki.routes.nine_star_routes import create_nine_star_bp
 from apps.ninestarki.routes.monthly_routes import create_monthly_bp
-from apps.ninestarki.routes.compatibility_routes import create_compatibility_bp
-from apps.ninestarki.routes.star_life_guidance_routes import create_star_life_guidance_bp
 from apps.ninestarki.routes.pdf_job_routes import create_pdf_jobs_bp
 from core.exceptions import AppError
 
@@ -100,8 +98,6 @@ def create_app() -> Flask:
     # 블루프린트 등록
     app.register_blueprint(create_nine_star_bp())
     app.register_blueprint(create_monthly_bp())
-    app.register_blueprint(create_compatibility_bp())
-    app.register_blueprint(create_star_life_guidance_bp())
     app.register_blueprint(create_pdf_jobs_bp(generate_report_use_case))
     app.register_blueprint(auth_bp, url_prefix='/api/auth')
 
@@ -135,15 +131,13 @@ def create_app() -> Flask:
                 "version": "1.0.0",
                 "endpoints": [
                     "/api/nine-star/calculate",
-                    "/api/nine-star/compatibility",
                     "/api/nine-star/monthly-chart",
                     "/api/auth/login",
                     "/api/auth/me",
                     "/api/admin/stars",
                     "/api/admin/solar/solar-starts",
                     "/api/admin/solar/solar-terms",
-                    "/api/monthly/directions",
-                    "/api/star-life-guidance"
+                    "/api/monthly/directions"
                 ]
             }, cls=CustomJSONEncoder, ensure_ascii=False),
             status=200,
