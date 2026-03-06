@@ -2,7 +2,7 @@
 
 import { useState, useEffect } from 'react';
 import api from '@/utils/api';
-import { PeriodFortuneData } from '@/types/directionFortune';
+import { PeriodFortuneData, MonthDirectionInfo, PowerStones } from '@/types/directionFortune';
 
 /**
  * 現在の節月に該当する月運データを取得するカスタムフック。
@@ -62,8 +62,8 @@ interface MonthlyBoardEntry {
     month_branch?: string;
     period_start: string;
     period_end: string;
-    directions: Record<string, unknown>;
-    power_stones?: unknown;
+    directions: Record<string, MonthDirectionInfo>;
+    power_stones?: PowerStones | null;
 }
 
 /**
@@ -94,10 +94,10 @@ function findCurrentSetsuMonth(
                 month: startMonth,
                 year: startYear,
                 zodiac: zodiac,
-                directions: board.directions as PeriodFortuneData['directions'],
+                directions: board.directions,
                 period_start: board.period_start,
                 period_end: board.period_end,
-                power_stones: board.power_stones as PeriodFortuneData['power_stones'],
+                power_stones: board.power_stones,
             };
         }
     }

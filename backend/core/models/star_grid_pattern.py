@@ -164,7 +164,7 @@ class StarGridPattern(db.Model):
         # 各方位の吉凶を判定
         results = {}
         
-        # 最初のパス: 基本的な判定を行う (5凶殺)
+        # 最初のパス: 基本的な凶殺判定を行う（五黄殺・暗剣殺・本命殺・月命殺・水火殺・破 など）
         for direction, star_number in directions.items():
             result = {
                 "is_auspicious": True,
