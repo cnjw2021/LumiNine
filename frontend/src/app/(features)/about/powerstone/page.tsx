@@ -244,7 +244,7 @@ export default function PowerstonePage() {
                                 <span style={{
                                     fontSize: 'clamp(9px, 2.5vw, 11px)',
                                     fontFamily: '"Montserrat", sans-serif',
-                                    color: '#d4af37',
+                                    color: '#b8952b', // Darkened gold for better contrast
                                     letterSpacing: '0.05em',
                                     marginBottom: '12px'
                                 }}>
@@ -252,7 +252,7 @@ export default function PowerstonePage() {
                                 </span>
 
                                 <Text style={{
-                                    color: 'rgba(74, 74, 74, 0.85)',
+                                    color: '#555555', // Solid darker color instead of opacity
                                     fontSize: 'clamp(11px, 2.8vw, 13px)', lineHeight: 1.5,
                                     fontFamily: '"Noto Serif JP", serif',
                                     margin: 0,
