@@ -137,21 +137,36 @@ const MonthlyFortuneSection: React.FC<MonthlyFortuneSectionProps> = ({
                             }
 
                             const info = currentMonthData.directions?.[dir];
-                            const isAuspicious = info?.is_auspicious === true;
-                            const isInauspicious = info?.is_auspicious === false;
+                            const fortuneLevel = info?.fortune_level ?? (
+                                info?.is_auspicious === true ? 'auspicious'
+                                    : info?.is_auspicious === false ? 'inauspicious'
+                                        : 'neutral'
+                            );
 
                             let bgColor = 'transparent';
-                            let textColor = '#6b6b6b';
+                            let textColor = '#a0a0a0';
                             let icon = '·';
 
-                            if (isAuspicious) {
-                                bgColor = 'rgba(90, 138, 110, 0.10)';
-                                textColor = '#3d7a56';
-                                icon = '✿';
-                            } else if (isInauspicious) {
-                                bgColor = 'rgba(192, 82, 77, 0.08)';
-                                textColor = '#b04a46';
-                                icon = '✕';
+                            switch (fortuneLevel) {
+                                case 'best_auspicious':
+                                    bgColor = 'rgba(212, 175, 55, 0.12)';
+                                    textColor = '#b8860b';
+                                    icon = '✿';
+                                    break;
+                                case 'auspicious':
+                                    bgColor = 'rgba(90, 138, 110, 0.10)';
+                                    textColor = '#3d7a56';
+                                    icon = '✿';
+                                    break;
+                                case 'inauspicious':
+                                    bgColor = 'rgba(192, 82, 77, 0.08)';
+                                    textColor = '#b04a46';
+                                    icon = '✕';
+                                    break;
+                                default: // neutral
+                                    bgColor = 'transparent';
+                                    textColor = '#a0a0a0';
+                                    icon = '·';
                             }
 
                             return (

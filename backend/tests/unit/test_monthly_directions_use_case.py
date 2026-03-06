@@ -14,6 +14,7 @@ from datetime import date
 from typing import Any, Optional
 from apps.ninestarki.use_cases.monthly_directions_use_case import MonthlyDirectionsUseCase
 from apps.ninestarki.domain.services.monthly_board_domain_service import MonthlyBoardResult
+from apps.ninestarki.domain.services.five_elements_fortune_service import FiveElementsFortuneService
 from apps.ninestarki.domain.exceptions import YearInfoNotFoundError
 
 
@@ -99,6 +100,7 @@ class TestMonthlyDirectionsUseCaseSingleMonth:
         return MonthlyDirectionsUseCase(
             year_star_service=_StubYearStarService(),
             monthly_board_service=_StubMonthlyBoardService(),
+            five_elements_service=FiveElementsFortuneService(),
         )
 
     def test_returns_dict_with_required_keys(self, use_case):
@@ -134,6 +136,7 @@ class TestMonthlyDirectionsUseCaseAllMonths:
         return MonthlyDirectionsUseCase(
             year_star_service=_StubYearStarService(),
             monthly_board_service=_StubMonthlyBoardService(),
+            five_elements_service=FiveElementsFortuneService(),
         )
 
     def test_all_12_months_returned(self, use_case):
@@ -153,6 +156,7 @@ class TestMonthlyDirectionsUseCaseMissingSetsuDate:
         return MonthlyDirectionsUseCase(
             year_star_service=_StubYearStarService(),
             monthly_board_service=_StubMonthlyBoardService(missing_setsu_indices=[5, 9]),
+            five_elements_service=FiveElementsFortuneService(),
         )
 
     def test_missing_setsu_skipped(self, use_case):
@@ -177,6 +181,7 @@ class TestMonthlyDirectionsUseCaseMissingYearInfo:
         return MonthlyDirectionsUseCase(
             year_star_service=_StubYearStarServiceEmpty(),
             monthly_board_service=_StubMonthlyBoardService(),
+            five_elements_service=FiveElementsFortuneService(),
         )
 
     def test_raises_year_info_not_found_error_when_year_info_missing(self, use_case):

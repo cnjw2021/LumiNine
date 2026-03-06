@@ -3,6 +3,7 @@ export interface DirectionStatus {
   reason: string | null;
   marks: string[];
   compatibility_level?: string;
+  fortune_level?: 'best_auspicious' | 'auspicious' | 'neutral' | 'inauspicious';
 }
 
 export interface DirectionFortuneStatus {
@@ -24,6 +25,7 @@ export interface MonthDirectionInfo {
   is_main_star?: boolean;
   title?: string;
   details?: string;
+  fortune_level?: 'best_auspicious' | 'auspicious' | 'neutral' | 'inauspicious';
 }
 
 // 月別運気の期間データ

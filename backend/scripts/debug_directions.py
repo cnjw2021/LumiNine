@@ -29,7 +29,8 @@ with app.app_context():
 
     year_star_svc = YearStarDomainService(nine_star_repo, solar_terms_repo, solar_starts_repo, star_grid_repo)
     monthly_board_svc = MonthlyBoardDomainService(solar_terms_repo, solar_starts_repo, star_grid_repo, monthly_repo)
-    uc = MonthlyDirectionsUseCase(year_star_svc, monthly_board_svc)
+    five_elements_svc = FiveElementsFortuneService()
+    uc = MonthlyDirectionsUseCase(year_star_svc, monthly_board_svc, five_elements_svc)
 
     MAIN_STAR = int(os.environ.get("MAIN_STAR", 7))
     MONTH_STAR = int(os.environ.get("MONTH_STAR", 9))
@@ -38,33 +39,35 @@ with app.app_context():
 
     print(f"=== Debug: main={MAIN_STAR} month={MONTH_STAR} year={TARGET_YEAR} setsu={SETSU_MONTH} ===\n")
 
-    result = uc.execute(main_star=MAIN_STAR, month_star=MONTH_STAR,
-                        target_year=TARGET_YEAR, target_month=SETSU_MONTH)
+    result = uc.execute(MAIN_STAR, MONTH_STAR, TARGET_YEAR, target_month=SETSU_MONTH)
 
-    key = f"setsu_month_{SETSU_MONTH}"
-    board = result["monthly_boards"][key]
+    for key, board in result.get("monthly_boards", {}).items():
+        print(f"center_star   : {board['center_star']}")
+        print(f"month_zodiac  : {board['month_zodiac']}")
 
-    print(f"center_star   : {board['center_star']}")
-    print(f"month_zodiac  : {board['month_zodiac']}")
-    print(f"year_center   : {result.get('year_center_star')}")
-    print(f"year_zodiac   : {result.get('year_zodiac')}")
+        year_info = result.get("year_info", {})
+        print(f"year_center   : {year_info.get('year_center_star')}")
+        print(f"year_zodiac   : {year_info.get('year_zodiac')}")
 
-    grid_pattern = star_grid_repo.get_by_center_star(board["center_star"])
-    if grid_pattern:
+        grid = board.get("grid_pattern") or {}
+        directions_list = ['southeast', 'south', 'southwest', 'east', 'west', 'northeast', 'north', 'northwest']
+        star_values = {d: grid.get(d, '?') for d in directions_list}
         print(f"\nGrid ({board['center_star']}中宮):")
-        print(f"  SE={grid_pattern.southeast}  S={grid_pattern.south}  SW={grid_pattern.southwest}")
-        print(f"  E ={grid_pattern.east}  C={grid_pattern.center_star}  W ={grid_pattern.west}")
-        print(f"  NE={grid_pattern.northeast}  N={grid_pattern.north}  NW={grid_pattern.northwest}")
+        print(f"  SE={star_values['southeast']}  S={star_values['south']}  SW={star_values['southwest']}")
+        print(f"  E ={star_values['east']}  C={board['center_star']}  W ={star_values['west']}")
+        print(f"  NE={star_values['northeast']}  N={star_values['north']}  NW={star_values['northwest']}")
 
-    print("\n=== 방위판 결과 ===")
-    for direction, data in board["directions"].items():
-        auspicious = data.get("is_auspicious")
-        marks = data.get("marks", [])
-        reason = data.get("reason", "")
-        compat = data.get("compatibility_level", "")
-        symbol = "○" if auspicious else "×"
-        reason_str = reason or ""
-        print(f"  {symbol} {direction:10s} auspicious={str(auspicious):5s} reason={reason_str:30s} marks={marks}  compat={compat}")
+        print("\n=== 방위판 결과 ===")
+        for direction in directions_list:
+            data = board.get("directions", {}).get(direction, {})
+            auspicious = data.get("is_auspicious", "?")
+            marks = data.get("marks", [])
+            reason = data.get("reason", "")
+            compat = data.get("compatibility_level", "")
+            fortune_level = data.get("fortune_level", "")
+            symbol = "◎" if fortune_level == "best_auspicious" else "○" if fortune_level == "auspicious" else "×" if fortune_level == "inauspicious" else "·"
+            reason_str = reason or ""
+            print(f"  {symbol} {direction:10s} level={fortune_level:18s} reason={reason_str:30s} marks={marks}  compat={compat}")
 
     print("\n=== 기대 결과 (타 서비스 기준 2026년 3월, main=7 month=9) ===")
     print("  S  = 吉 (最大吉方)")

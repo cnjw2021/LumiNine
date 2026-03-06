@@ -151,7 +151,6 @@ class StarGridPattern(db.Model):
         month_star_position = None
         
         # 九星相性マトリックス — 情報用のみ（is_auspicious 判定には使わない）
-        # 標準的な九星気学の方位吉凶は 5凶殺（五黄殺・暗剣殺・本命殺・月命殺・破）で判定する。
         compatibility_matrix = None
         try:
             compatibility_matrix = StarCompatibilityMatrix.get_by_base_star(main_star)
@@ -161,13 +160,13 @@ class StarGridPattern(db.Model):
         # 各方位の吉凶を判定
         results = {}
         
-        # 最初のパス: 基本的な判定を行う
+        # 最初のパス: 基本的な判定を行う (5凶殺)
         for direction, star_number in directions.items():
-            # デフォルトは吉
             result = {
                 "is_auspicious": True,
                 "reason": None,
-                "marks": []
+                "marks": [],
+                "fortune_level": "neutral",  # domain service が上書きする
             }
             
             if star_number == 5:
@@ -177,10 +176,8 @@ class StarGridPattern(db.Model):
             
             # ２）暗剣殺の判定
             if dark_sword_star == -1:
-                # 中央星が5の場合は暗剣殺判定をスキップ
                 result["marks"].append("no_dark_sword_center_five")
             else:
-                # 暗剣殺の星を凶とする
                 if star_number == dark_sword_star:
                     result["is_auspicious"] = False
                     result["reason"] = "暗剣殺"
@@ -211,7 +208,7 @@ class StarGridPattern(db.Model):
                 result["reason"] = "破" if not result["reason"] else result["reason"] + ", 破"
                 result["marks"].append("opposite_zodiac")
             
-            # 相性レベルは参考情報として残す（吉凶判定には使わない）
+            # 相性レベルは参考情報として残す
             if compatibility_matrix:
                 compatibility_level = compatibility_matrix.get_compatibility_level(star_number)
                 result["compatibility_level"] = compatibility_level.value
@@ -233,6 +230,11 @@ class StarGridPattern(db.Model):
                 results[opposite_pos]["is_auspicious"] = False
                 results[opposite_pos]["reason"] = "月命的殺" if not results[opposite_pos]["reason"] else results[opposite_pos]["reason"] + ", 月命的殺"
                 results[opposite_pos]["marks"].append("month_star_opposite")
+        
+        # 凶方位に fortune_level = "inauspicious" を設定
+        for result in results.values():
+            if not result["is_auspicious"]:
+                result["fortune_level"] = "inauspicious"
         
         return results
 
