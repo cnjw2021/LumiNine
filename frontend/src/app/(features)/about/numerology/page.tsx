@@ -1,15 +1,6 @@
 "use client";
 
 import React from "react";
-import { Stack, Text } from "@mantine/core";
-import rawNumerologyTraits from "@/data/numerology_traits.json";
-
-interface NumerologyData {
-    title: string;
-    traits: string;
-}
-
-const numerologyTraits = rawNumerologyTraits as Record<string, NumerologyData>;
 
 export default function NumerologyPage() {
     return (
@@ -58,71 +49,55 @@ export default function NumerologyPage() {
                     <div style={{ width: '40px', height: '1px', background: 'linear-gradient(90deg, transparent, rgba(212, 175, 55, 0.6), transparent)' }} />
                 </div>
 
-                <div style={{ marginBottom: '40px' }}>
-                    <p style={{
-                        color: 'rgba(74, 74, 74, 0.85)',
-                        fontSize: '15px', lineHeight: 2.0,
-                        fontFamily: '"Noto Serif JP", serif',
-                        margin: 0, marginBottom: '24px',
-                        textAlign: 'center'
-                    }}>
-                        数秘術（Numerology）は、生年月日や姓名から導き出される数字を用いて、個人の性格、才能、運命などを読み解く占術です。
+                <div style={{
+                    display: 'flex',
+                    flexDirection: 'column',
+                    gap: '24px',
+                    color: 'rgba(74, 74, 74, 0.85)',
+                    fontSize: '15px', lineHeight: 2.0,
+                    fontFamily: '"Noto Serif JP", serif',
+                    marginTop: '24px'
+                }}>
+                    <p style={{ margin: 0 }}>
+                        数秘術（Numerology）は、「数」に霊的な意味があると考える占術です。
                     </p>
-                    <p style={{
-                        color: 'rgba(74, 74, 74, 0.85)',
-                        fontSize: '15px', lineHeight: 2.0,
-                        fontFamily: '"Noto Serif JP", serif',
-                        margin: 0,
-                        textAlign: 'center'
-                    }}>
-                        以下は、1から9までの基本ナンバーと、11, 22, 33からなるマスターナンバーの性質です。
+                    <p style={{ margin: 0 }}>
+                        起源は古代バビロニアやエジプトに遡り、建築や信仰で数の神秘が重視されました。
+                    </p>
+                    <p style={{ margin: 0 }}>
+                        ギリシアの数学者ピタゴラスは、「万物は数から成る」という思想を提唱しました。
+                    </p>
+                    <p style={{ margin: 0 }}>
+                        中世以降はカバラなどの神秘思想とも結びつき、近代ヨーロッパで体系化が進みます。
+                    </p>
+                    <p style={{ margin: 0 }}>
+                        現代の主流では、生年月日や名前を一定のルールで数に置き換え、1～9に還元します。
+                    </p>
+                    <p style={{ margin: 0 }}>
+                        生年月日を合計して導き出す運命数（ライフパスナンバー）は、個人の基本的な性格や人生のテーマを示す重要な数とされ、数秘術の中でも特に広く活用されています。
+                    </p>
+                    <p style={{ margin: 0 }}>
+                        たとえば2025年1月26日生まれは「2+0+2+5+1+2+6=18→1+8=9」が運命数となります。
+                    </p>
+                    <p style={{ margin: 0 }}>
+                        1～9の数字は、それぞれ独立性や協調性など異なる象徴を持ちます。<br />
+                        1はリーダーシップ、2は協調、3は創造性、4は安定、5は自由、6は愛、7は探究、8は成功、9は博愛。
+                    </p>
+                    <p style={{ margin: 0 }}>
+                        また、マスターナンバーと呼ばれる11、22、33は、一般的な数とは異なり、特別な使命や強いエネルギーを持つ数とされています。
+                    </p>
+                    <p style={{ margin: 0 }}>
+                        名前のアルファベットを数字に置き換える方法もあり、「表現数」などを読み解きます。
+                    </p>
+                    <p style={{ margin: 0 }}>
+                        数秘術は自己分析のほか、相性占いや日々の指針を知るためのツールにもなります。
+                    </p>
+                    <p style={{ margin: 0 }}>
+                        数秘術は、科学とは異なる視点から、数字を通じて自分や未来を考える楽しいツールとして活用できます。<br />
+                        まずは運命数を計算し、1～9のキーワードを知るだけでも楽しめます。<br />
+                        古代から続く数字の神秘を身近に感じながら、自分や周囲を見つめ直してみてください。
                     </p>
                 </div>
-
-                <Stack gap="xl" style={{ marginTop: '16px' }}>
-                    {Object.entries(numerologyTraits).map(([num, data], index, array) => (
-                        <div key={num} style={{
-                            display: 'flex',
-                            flexDirection: 'column',
-                            paddingBottom: index === array.length - 1 ? '0' : '32px',
-                            borderBottom: index === array.length - 1 ? 'none' : '1px solid rgba(212, 175, 55, 0.15)',
-                        }}>
-                            <div style={{
-                                display: 'flex',
-                                alignItems: 'center',
-                                gap: '16px',
-                                marginBottom: '16px',
-                            }}>
-                                <span style={{
-                                    fontSize: '36px', fontWeight: 700,
-                                    fontFamily: '"Noto Serif JP", serif',
-                                    color: '#d8a7a7', lineHeight: 1,
-                                    width: '40px', textAlign: 'center'
-                                }}>
-                                    {num}
-                                </span>
-                                <div style={{ width: '1px', height: '28px', backgroundColor: 'rgba(212, 175, 55, 0.3)' }} />
-                                <span style={{
-                                    fontSize: '17px', fontWeight: 600,
-                                    fontFamily: '"Shippori Mincho", "Noto Serif JP", serif',
-                                    color: '#4a4a4a', letterSpacing: '0.05em'
-                                }}>
-                                    {data.title}
-                                </span>
-                            </div>
-
-                            <Text style={{
-                                color: 'rgba(74, 74, 74, 0.85)',
-                                fontSize: '14px', lineHeight: 1.8,
-                                fontFamily: '"Noto Serif JP", serif',
-                                margin: 0,
-                                whiteSpace: 'pre-line'
-                            }}>
-                                {data.traits}
-                            </Text>
-                        </div>
-                    ))}
-                </Stack>
 
             </main>
         </div>
