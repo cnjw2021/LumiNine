@@ -103,7 +103,7 @@ class MonthlyBoardDomainService(IMonthlyBoardDomainService):
         """주어진 날짜가 속하는 절월(節月)의 월반(月盤)을 편성해 반환한다.
 
         절기 정보(날짜·간지)는 solar_terms_data 에서 조회하고,
-        월반 중궁성은 立春 의 star_number 로부터 그룹을 산출한 뒤,
+        월반 중궁성은 年盤中宮星 (solar_starts_data.star_number) 로부터 그룹을 산출한 뒤,
         해당 그룹을 사용해 monthly_directions 테이블에서 조회해 결정한다.
 
         Args:
