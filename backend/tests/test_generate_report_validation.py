@@ -2,7 +2,6 @@ from apps.ninestarki.use_cases.generate_report_use_case import GenerateReportUse
 from apps.ninestarki.use_cases.dto.report_dtos import ReportInputDTO
 from apps.ninestarki.use_cases.interfaces.pdf_generator_interface import PdfGeneratorInterface
 from apps.ninestarki.domain.services.interfaces.year_fortune_service_interface import IYearFortuneService
-from apps.ninestarki.domain.services.interfaces.month_fortune_service_interface import IMonthFortuneService
 from apps.ninestarki.domain.services.interfaces.star_attribute_service_interface import IStarAttributeService
 from apps.ninestarki.use_cases.calculate_stars_use_case import CalculateStarsUseCase
 from apps.ninestarki.domain.repositories.reading_query_repository_interface import IReadingQueryRepository
@@ -27,17 +26,20 @@ class PdfGenNoop(PdfGeneratorInterface):
         return b"%PDF%"
 
 
-class Noop(IYearFortuneService, IMonthFortuneService, IStarAttributeService, IReadingQueryRepository, ISolarStartsRepository, ISolarCalendarProvider):
+class Noop(IYearFortuneService, IStarAttributeService, IReadingQueryRepository, ISolarStartsRepository, ISolarCalendarProvider):
     def get_year_fortune_for_report(self, *a, **k): return {'directions': {}}
     def get_year_fortune(self, *a, **k): return {'directions': {}}
-    def get_month_fortune_for_report(self, *a, **k): return {'directions': {}}
-    def get_month_fortune(self, *a, **k): return {'directions': {}}
     def get_star_attributes(self, *a, **k): return {}
     def get_monthly_star_reading(self, *a, **k): return None
     def get_daily_star_reading(self, *a, **k): return None
     def get_main_star_message(self, *a, **k): return None
     def get_by_year(self, *a, **k): return type('S', (), {'zodiac': '子', 'solar_starts_date': None, 'star_number': 5})()
     def get_calculation_year(self, dt): return dt.year
+
+
+class MonthlyDirectionsUCFake:
+    def execute(self, *a, **k):
+        return {"monthly_boards": {}}
 
 
 class StarLifeGuidanceRepoFake(IStarLifeGuidanceRepository):
@@ -82,7 +84,7 @@ def _uc():
         pdf_generator=PdfGenNoop(),
         auspicious_dates_use_case=AuspiciousDatesServiceFake(),
         year_fortune_service=Noop(),
-        month_fortune_service=Noop(),
+        monthly_directions_use_case=MonthlyDirectionsUCFake(),
         star_attribute_service=Noop(),
         star_life_guidance_service=StarLifeGuidanceService(StarLifeGuidanceRepoFake()),
         calculate_stars_use_case=CalculateStarsUseCase(NineStarRepository(), SolarTermsRepoFake(), NumerologyReadingRepository()),

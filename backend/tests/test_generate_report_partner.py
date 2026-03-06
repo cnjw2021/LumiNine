@@ -2,7 +2,6 @@ from apps.ninestarki.use_cases.generate_report_use_case import GenerateReportUse
 from apps.ninestarki.use_cases.dto.report_dtos import ReportInputDTO
 from apps.ninestarki.use_cases.interfaces.pdf_generator_interface import PdfGeneratorInterface
 from apps.ninestarki.domain.services.interfaces.year_fortune_service_interface import IYearFortuneService
-from apps.ninestarki.domain.services.interfaces.month_fortune_service_interface import IMonthFortuneService
 from apps.ninestarki.domain.services.interfaces.star_attribute_service_interface import IStarAttributeService
 from apps.ninestarki.domain.repositories.reading_query_repository_interface import IReadingQueryRepository
 from apps.ninestarki.domain.repositories.solar_starts_repository_interface import ISolarStartsRepository
@@ -23,17 +22,20 @@ class PdfGenNoop(PdfGeneratorInterface):
         return b"%PDF%"
 
 
-class NoopServices(IYearFortuneService, IMonthFortuneService, IStarAttributeService, IReadingQueryRepository, ISolarStartsRepository, ISolarCalendarProvider):
+class NoopServices(IYearFortuneService, IStarAttributeService, IReadingQueryRepository, ISolarStartsRepository, ISolarCalendarProvider):
     def get_year_fortune_for_report(self, *a, **k): return {'directions': {}}
     def get_year_fortune(self, *a, **k): return {'directions': {}}
-    def get_month_fortune_for_report(self, *a, **k): return {'directions': {}}
-    def get_month_fortune(self, *a, **k): return {'directions': {}}
     def get_star_attributes(self, *a, **k): return {}
     def get_monthly_star_reading(self, *a, **k): return None
     def get_daily_star_reading(self, *a, **k): return None
     def get_main_star_message(self, *a, **k): return None
     def get_by_year(self, *a, **k): return type('S', (), {'zodiac': '子', 'solar_starts_date': None, 'star_number': 5})()
     def get_calculation_year(self, dt): return dt.year
+
+
+class MonthlyDirectionsUCFake:
+    def execute(self, *a, **k):
+        return {"monthly_boards": {}}
 
 
 class CalcUseCaseFake:
@@ -78,7 +80,7 @@ def test_partner_compatibility_flow_does_not_error(monkeypatch):
         pdf_generator=PdfGenNoop(),
         auspicious_dates_use_case=AuspiciousDatesServiceFake(),
         year_fortune_service=NoopServices(),
-        month_fortune_service=NoopServices(),
+        monthly_directions_use_case=MonthlyDirectionsUCFake(),
         star_attribute_service=NoopServices(),
         star_life_guidance_service=StarLifeGuidanceService(StarLifeGuidanceRepoFake()),
         calculate_stars_use_case=CalcUseCaseFake(),

@@ -4,7 +4,7 @@ from datetime import datetime, date, timedelta
 # 必要なすべてのサービスとファインダーをインポートします。
 from apps.ninestarki.use_cases.interfaces.pdf_generator_interface import PdfGeneratorInterface
 from apps.ninestarki.domain.services.interfaces.year_fortune_service_interface import IYearFortuneService
-from apps.ninestarki.domain.services.interfaces.month_fortune_service_interface import IMonthFortuneService
+from apps.ninestarki.use_cases.monthly_directions_use_case import MonthlyDirectionsUseCase
 from apps.ninestarki.domain.services.interfaces.star_attribute_service_interface import IStarAttributeService
 from apps.ninestarki.domain.services.star_life_guidance_service import StarLifeGuidanceService
 from apps.ninestarki.domain.services.interfaces.auspicious_dates_service_interface import IAuspiciousDatesService
@@ -33,7 +33,7 @@ class GenerateReportUseCase:
      pdf_generator: PdfGeneratorInterface,
      auspicious_dates_use_case: IAuspiciousDatesService,
      year_fortune_service: IYearFortuneService,
-     month_fortune_service: IMonthFortuneService,
+     monthly_directions_use_case: MonthlyDirectionsUseCase,
      star_attribute_service: IStarAttributeService,
      star_life_guidance_service: StarLifeGuidanceService,
      calculate_stars_use_case: CalculateStarsUseCase,
@@ -50,7 +50,7 @@ class GenerateReportUseCase:
         self.auspicious_dates_service = auspicious_dates_use_case
         self._auspicious_dates_presenter = auspicious_dates_presenter or AuspiciousDatesPresenter()
         self.year_fortune_service = year_fortune_service
-        self.month_fortune_service = month_fortune_service
+        self._monthly_directions_uc = monthly_directions_use_case
         self.star_attribute_service = star_attribute_service
         self.star_life_guidance_service = star_life_guidance_service
         # Required DI
@@ -110,7 +110,7 @@ class GenerateReportUseCase:
         auspicious_day_raw = self.auspicious_dates_service.execute(main_star_num, month_star_num, target_year)
         auspicious_day_data = self._auspicious_dates_presenter.enrich_response(auspicious_day_raw)
         year_fortune = self.year_fortune_service.get_year_fortune_for_report(main_star_num, month_star_num, target_year)
-        month_fortune = self.month_fortune_service.get_month_fortune_for_report(main_star_num, month_star_num, target_year)
+        month_fortune = self._build_month_fortune_for_report(main_star_num, month_star_num, target_year)
         main_star_attributes = self.star_attribute_service.get_star_attributes(main_star_num)
         month_star_attributes = self.star_attribute_service.get_star_attributes(month_star_num)
         life_guidance_raw = self.star_life_guidance_service.get_star_life_guidance(main_star_num, month_star_num)
@@ -205,3 +205,78 @@ class GenerateReportUseCase:
             use_simple=report_data.get('use_simple', False),
             compatibility=compatibility,
         )
+
+    # ──────────────────────────────────────────────────────────────
+    # Private: MonthlyDirectionsUseCase → レポートテンプレート形式変換
+    # ──────────────────────────────────────────────────────────────
+
+    # 節月インデックス(1=寅月) → カレンダー月 のマッピング
+    _SETSU_TO_CALENDAR_MONTH = {
+        1: 2, 2: 3, 3: 4, 4: 5, 5: 6, 6: 7,
+        7: 8, 8: 9, 9: 10, 10: 11, 11: 12, 12: 1,
+    }
+
+    def _build_month_fortune_for_report(
+        self, main_star: int, month_star: int, target_year: int
+    ) -> Dict[str, Any]:
+        """MonthlyDirectionsUseCase の結果をレポートテンプレート形式に変換する。
+
+        レポートテンプレート (monthly_fortune_page.html) は以下の構造を期待する::
+
+            month_fortune.directions["1"] = {
+                "year": int,
+                "month": int,            # カレンダー月
+                "display_month": str,     # "2026年3月"
+                "display_title": str,     # "2026年3月 卯"
+                "display_period": str,    # "3/6 - 4/4"
+                "zodiac": str,            # "卯" or "乙卯"
+                "star_number": int,       # 中宮星
+                "center_star": int,
+                "directions": { ... },
+            }
+        """
+        try:
+            result = self._monthly_directions_uc.execute(
+                main_star=main_star,
+                month_star=month_star,
+                target_year=target_year,
+            )
+        except Exception as e:
+            logger.warning("月運データの取得に失敗しました: %s", e)
+            return {"directions": {}}
+
+        annual_directions: Dict[str, Any] = {}
+        for key, board in result.get("monthly_boards", {}).items():
+            setsu_idx = board.get("setsu_month_index", 0)
+            cal_month = self._SETSU_TO_CALENDAR_MONTH.get(setsu_idx, setsu_idx)
+            zodiac = board.get("month_zodiac", "")
+            branch = board.get("month_branch", zodiac[-1] if zodiac else "")
+            period_start = board.get("period_start", "")
+            period_end = board.get("period_end", "")
+
+            # display_period: "3/6 - 4/4" 形式
+            display_period = ""
+            if period_start and period_end:
+                try:
+                    ps = date.fromisoformat(period_start)
+                    pe = date.fromisoformat(period_end)
+                    display_period = f"{ps.month}/{ps.day} - {pe.month}/{pe.day}"
+                except (ValueError, TypeError):
+                    pass
+
+            annual_directions[str(cal_month)] = {
+                "year": target_year,
+                "month": cal_month,
+                "display_month": f"{target_year}年{cal_month}月",
+                "display_title": f"{target_year}年{cal_month}月 {branch}",
+                "display_period": display_period,
+                "zodiac": zodiac,
+                "star_number": board.get("center_star"),
+                "center_star": board.get("center_star"),
+                "directions": board.get("directions", {}),
+                "period_start": period_start,
+                "period_end": period_end,
+            }
+
+        return {"directions": annual_directions}
+
