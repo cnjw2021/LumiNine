@@ -75,7 +75,6 @@ export default function NumerologyPage() {
                         margin: 0,
                         textAlign: 'center'
                     }}>
-                        LumiNineでは、生年月日からライフパスナンバーなどの重要な数字を計算し、あなたに最適なパワーストーンやアドバイスを提供します。<br />
                         以下は、1から9までの基本ナンバーと、11, 22, 33からなるマスターナンバーの性質です。
                     </p>
                 </div>
