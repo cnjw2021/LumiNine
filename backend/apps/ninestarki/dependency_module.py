@@ -36,7 +36,6 @@ from apps.ninestarki.use_cases.context.report_context_builder import ReportConte
 from apps.ninestarki.use_cases.generate_report_use_case import GenerateReportUseCase
 from apps.ninestarki.domain.services.direction_marks_domain_service import DirectionMarksDomainService
 from apps.ninestarki.domain.services.direction_rule_engine import DirectionRuleEngine
-from apps.ninestarki.use_cases.auspicious_dates_use_case import AuspiciousDatesUseCase
 from apps.ninestarki.presentation.auspicious_dates_presenter import AuspiciousDatesPresenter
 from apps.ninestarki.domain.services.interfaces.year_fortune_service_interface import IYearFortuneService
 from apps.ninestarki.domain.services.interfaces.star_attribute_service_interface import IStarAttributeService
@@ -141,11 +140,6 @@ class AppModule(Module):
     @provider
     def provide_compatibility_service_port(self) -> ICompatibilityService:
         return CompatibilityServiceAdapter()
-
-    @singleton
-    @provider
-    def provide_auspicious_dates_use_case(self, service: IAuspiciousDatesService) -> AuspiciousDatesUseCase:
-        return AuspiciousDatesUseCase(service)
 
     @singleton
     @provider

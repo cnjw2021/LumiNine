@@ -10,5 +10,4 @@ export { default as NineStarKiForm } from './form/NineStarKiForm';
 export { default as StarPositionContainer } from './visualization/StarPositionContainer';
 export { default as DirectionFortune } from './visualization/DirectionFortune';
 export { default as PeriodFortuneBoard } from './visualization/PeriodFortuneBoard';
-export { default as StarsDataDisplay } from './visualization/StarsDataDisplay';
 export { default as PowerStoneSection } from './visualization/PowerStoneSection'; 
