@@ -21,12 +21,9 @@ PROJECT_ROOT = os.path.dirname(os.path.abspath(__file__))
 
 # 絶対パスでインポート
 from apps.ninestarki.routes.nine_star_routes import create_nine_star_bp
-from apps.ninestarki.routes.admin_routes import create_admin_bp
+from apps.ninestarki.routes.nine_star_routes import create_nine_star_bp
 from apps.ninestarki.routes.monthly_routes import create_monthly_bp
-from apps.ninestarki.routes.solar_routes import create_solar_bp
-from apps.ninestarki.routes.db_management_routes import create_db_management_bp
 from apps.ninestarki.routes.compatibility_routes import create_compatibility_bp
-from apps.ninestarki.routes.auspicious_days import create_auspicious_days_report_bp
 from apps.ninestarki.routes.star_life_guidance_routes import create_star_life_guidance_bp
 from apps.ninestarki.routes.pdf_job_routes import create_pdf_jobs_bp
 from core.exceptions import AppError
@@ -102,12 +99,8 @@ def create_app() -> Flask:
 
     # 블루프린트 등록
     app.register_blueprint(create_nine_star_bp())
-    app.register_blueprint(create_admin_bp())
     app.register_blueprint(create_monthly_bp())
-    app.register_blueprint(create_solar_bp())
-    app.register_blueprint(create_db_management_bp())
     app.register_blueprint(create_compatibility_bp())
-    app.register_blueprint(create_auspicious_days_report_bp())
     app.register_blueprint(create_star_life_guidance_bp())
     app.register_blueprint(create_pdf_jobs_bp(generate_report_use_case))
     app.register_blueprint(auth_bp, url_prefix='/api/auth')
