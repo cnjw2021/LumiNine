@@ -1,7 +1,28 @@
 "use client";
 
 import React from "react";
-import { Container, Title, Text, Stack, Card } from "@mantine/core";
+import { Stack, Text, SimpleGrid } from "@mantine/core";
+import Image from "next/image";
+import rawPowerstoneCatalog from "@/data/numerology_powerstone_catalog.json";
+
+interface StoneData {
+    names: {
+        ja: string;
+        ko: string;
+        en: string;
+    };
+    description: {
+        ja: string;
+        ko: string;
+        en: string;
+    };
+}
+
+interface PowerstoneCatalog {
+    stones: Record<string, StoneData>;
+}
+
+const powerstoneCatalog = rawPowerstoneCatalog as PowerstoneCatalog;
 
 export default function PowerstonePage() {
     return (
@@ -18,7 +39,7 @@ export default function PowerstonePage() {
         radial-gradient(circle at 90% 90%, rgba(155, 176, 165, 0.03) 0%, transparent 40%)
       `
         }}>
-            <main style={{ maxWidth: '800px', margin: '0 auto', padding: '80px 20px', position: 'relative', zIndex: 10, width: '100%' }}>
+            <main style={{ maxWidth: '1000px', margin: '0 auto', padding: '80px 20px', position: 'relative', zIndex: 10, width: '100%' }}>
 
                 <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', gap: '8px', marginBottom: '48px' }}>
                     <h1 style={{
@@ -44,6 +65,7 @@ export default function PowerstonePage() {
                     padding: '48px 40px',
                     boxShadow: '0 10px 40px -10px rgba(0, 0, 0, 0.05)',
                     border: '1px solid rgba(212, 175, 55, 0.1)',
+                    marginBottom: '48px'
                 }}>
                     <p style={{
                         color: 'rgba(74, 74, 74, 0.85)',
@@ -62,9 +84,84 @@ export default function PowerstonePage() {
                         margin: 0,
                         textAlign: 'center'
                     }}>
-                        LumiNineでは、数秘術と九星気学の複合的なアプローチを用いて、その時のあなたに最も必要なパワーストーンを多角的に選定します。
+                        LumiNineでは、数秘術と九星気学の複合的なアプローチを用いて、その時のあなたに最も必要なパワーストーンを多角的に選定します。<br />
+                        以下は、LumiNineの鑑定で使用される主要なパワーストーンとその特徴です。
                     </p>
                 </div>
+
+                <SimpleGrid cols={{ base: 1, sm: 2, lg: 3 }} spacing="lg">
+                    {Object.entries(powerstoneCatalog.stones).map(([key, stoneData]) => (
+                        <div key={key} style={{
+                            display: 'flex',
+                            flexDirection: 'column',
+                            alignItems: 'center',
+                            textAlign: 'center',
+                            backgroundColor: '#ffffff',
+                            borderRadius: '16px',
+                            padding: '32px 24px',
+                            boxShadow: '0 5px 20px -5px rgba(0, 0, 0, 0.03)',
+                            border: '1px solid rgba(212, 175, 55, 0.05)',
+                            transition: 'transform 0.3s ease, box-shadow 0.3s ease',
+                            cursor: 'default',
+                        }}
+                            onMouseEnter={(e) => {
+                                e.currentTarget.style.transform = 'translateY(-4px)';
+                                e.currentTarget.style.boxShadow = '0 15px 30px -10px rgba(0, 0, 0, 0.08)';
+                            }}
+                            onMouseLeave={(e) => {
+                                e.currentTarget.style.transform = 'none';
+                                e.currentTarget.style.boxShadow = '0 5px 20px -5px rgba(0, 0, 0, 0.03)';
+                            }}
+                        >
+                            <div style={{
+                                width: '100px',
+                                height: '100px',
+                                borderRadius: '50%',
+                                overflow: 'hidden',
+                                marginBottom: '20px',
+                                border: '1px solid rgba(212, 175, 55, 0.2)',
+                                position: 'relative',
+                                backgroundColor: '#f9f7f2'
+                            }}>
+                                <Image
+                                    src={`/images/stones/${key}.jpg`}
+                                    alt={stoneData.names.ja}
+                                    fill
+                                    style={{ objectFit: 'cover' }}
+                                    sizes="100px"
+                                />
+                            </div>
+
+                            <span style={{
+                                fontSize: '18px', fontWeight: 600,
+                                fontFamily: '"Shippori Mincho", "Noto Serif JP", serif',
+                                color: '#4a4a4a',
+                                marginBottom: '4px'
+                            }}>
+                                {stoneData.names.ja}
+                            </span>
+                            <span style={{
+                                fontSize: '11px',
+                                fontFamily: '"Montserrat", sans-serif',
+                                color: '#d4af37',
+                                letterSpacing: '0.1em',
+                                marginBottom: '16px'
+                            }}>
+                                {stoneData.names.en}
+                            </span>
+
+                            <Text style={{
+                                color: 'rgba(74, 74, 74, 0.85)',
+                                fontSize: '13px', lineHeight: 1.6,
+                                fontFamily: '"Noto Serif JP", serif',
+                                margin: 0,
+                                whiteSpace: 'pre-line'
+                            }}>
+                                {stoneData.description.ja}
+                            </Text>
+                        </div>
+                    ))}
+                </SimpleGrid>
 
             </main>
         </div>
