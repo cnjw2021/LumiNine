@@ -20,6 +20,7 @@ with app.app_context():
     from apps.ninestarki.infrastructure.persistence.solar_starts_repository import SolarStartsRepository
     from apps.ninestarki.infrastructure.persistence.star_grid_pattern_repository import StarGridPatternRepository
     from apps.ninestarki.infrastructure.persistence.monthly_directions_repository import MonthlyDirectionsRepository
+    from apps.ninestarki.domain.services.five_elements_fortune_service import FiveElementsFortuneService
 
     nine_star_repo = NineStarRepository()
     solar_terms_repo = SolarTermsRepository()
