@@ -57,7 +57,7 @@ export const Navigation = ({ opened, onClose }: NavigationProps) => {
     return items;
   }, [isLoggedIn, isAdmin, isSuperuser]);
 
-  // 各占術について
+  // 鑑定のインサイト
   const aboutItems: MenuItem[] = useMemo(() => {
     if (!isLoggedIn && !authLoading) return [];
     return [
@@ -209,7 +209,7 @@ export const Navigation = ({ opened, onClose }: NavigationProps) => {
             {aboutItems.length > 0 && (
               <Stack gap="xs">
                 <Text size="sm" fw={700} c="#4BA3E3" style={{ letterSpacing: '0.5px' }}>
-                  占術について
+                  鑑定のインサイト
                 </Text>
                 <NavigationMenu
                   items={aboutItems}
@@ -304,7 +304,7 @@ export const Navigation = ({ opened, onClose }: NavigationProps) => {
             {aboutItems.length > 0 && (
               <Stack gap="xs">
                 <Text size="sm" fw={700} c="#4BA3E3" style={{ letterSpacing: '0.5px' }}>
-                  占術について
+                  鑑定のインサイト
                 </Text>
                 <NavigationMenu
                   items={aboutItems}
