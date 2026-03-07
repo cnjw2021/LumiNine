@@ -23,14 +23,6 @@
   }
 }
 
-@media print {
-  .result-grid {
-    display: grid !important;
-    grid-template-columns: 5fr 7fr !important;
-    gap: 32px !important;
-  }
-}
-
 
 /* Yearly Fortune inner grid: stacks on small screens */
 .yearly-fortune-inner {
@@ -46,15 +38,6 @@
     grid-template-columns: 1fr 2fr;
     gap: 24px;
     align-items: center;
-  }
-}
-
-@media print {
-  .yearly-fortune-inner {
-    display: grid !important;
-    grid-template-columns: 1fr 2fr !important;
-    gap: 24px !important;
-    align-items: center !important;
   }
 }
 

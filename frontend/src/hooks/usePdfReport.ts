@@ -52,7 +52,7 @@ export const usePdfReport = ({ resultData, contentRef, onActionComplete }: UsePd
                 logging: false,
             });
 
-            // ── 4. Map image onto A4 — preserve aspect ratio ──
+            // ── 3. Map image onto A4 — preserve aspect ratio ──
             const imgWidth = A4_WIDTH_PT;
             const imgHeight = (canvas.height * A4_WIDTH_PT) / canvas.width;
 
@@ -69,7 +69,7 @@ export const usePdfReport = ({ resultData, contentRef, onActionComplete }: UsePd
             // Centre horizontally if scaled down
             const xOffset = (A4_WIDTH_PT - finalWidth) / 2;
 
-            // ── 5. Build PDF and trigger download ──
+            // ── 4. Build PDF and trigger download ──
             const pdf = new jsPDF({ orientation: 'portrait', unit: 'pt', format: 'a4' });
 
             // Fill entire page with content background color (hides any margins)
