@@ -73,10 +73,23 @@ cd frontend && npm install && npm run dev
 cd backend && pip install -r requirements.txt && flask run
 ```
 
+## PDF 크로스브라우저 호환성
+
+`html2canvas` + `jsPDF` 기반 프론트엔드 PDF 생성에 다음 방어 로직이 적용되어 있습니다:
+
+| 방어 항목 | 설명 |
+|-----------|------|
+| 폰트 로딩 대기 | `document.fonts.ready` 완료 후 캡처하여 시스템 폰트 폴백 방지 |
+| iOS Safari 메모리 방어 | canvas 픽셀 수가 16MP 초과 시 `scale` 자동 하향 조절 |
+| 빈 canvas 검증 | `html2canvas` 반환값이 0×0이면 에러 처리 |
+| Safari 다운로드 폴백 | Safari 환경에서는 Blob 생성 후 `window.open()`으로 항상 새 탭 오픈 |
+| 다중 페이지 분할 | 컨텐츠가 A4 높이 초과 시 축소 대신 자동 페이지 분할 |
+
 ## 로드맵
 
 GitHub Projects 및 Issues를 통해 가치 단위(Value Stream)로 관리됩니다.
 
 ### 진행 중 / 예정
 
+- [#83](https://github.com/cnjw2021/LumiNine/issues/83) — 크로스브라우저 PDF 생성 방어 코드 추가 (iOS Safari 메모리/폰트/다운로드)
 - [#67](https://github.com/cnjw2021/LumiNine/issues/67) — 수비술 마스터넘버(11/22/33) 전용 파워스톤 매핑 추가
