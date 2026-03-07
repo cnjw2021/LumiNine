@@ -59,7 +59,9 @@ export const usePdfReport = ({ resultData, contentRef, onActionComplete }: UsePd
             let finalWidth = imgWidth;
             let finalHeight = imgHeight;
 
-            // If content is taller than A4, scale both dimensions to fit
+            // If content is taller than A4, scale both dimensions to fit one page.
+            // Design decision: the result report is intentionally a single A4 page
+            // summary. Multi-page splitting is not required per UX specification.
             if (imgHeight > A4_HEIGHT_PT) {
                 const ratio = A4_HEIGHT_PT / imgHeight;
                 finalWidth = imgWidth * ratio;

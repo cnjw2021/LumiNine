@@ -1,7 +1,7 @@
 'use client';
 
 import ResultFortuneSection from './ResultFortuneSection';
-import { useState, useRef } from 'react';
+import { useRef } from 'react';
 import { usePdfReport } from '@/hooks/usePdfReport';
 import { usePowerStoneData } from '@/hooks/usePowerStoneData';
 import { useMonthFortuneData } from '@/hooks/useMonthFortuneData';
