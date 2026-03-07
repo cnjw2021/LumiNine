@@ -83,7 +83,7 @@ cd backend && pip install -r requirements.txt && flask run
 | iOS Safari 메모리 방어 | canvas 픽셀 수가 16MP 초과 시 `scale` 자동 하향 조절 |
 | 빈 canvas 검증 | `html2canvas` 반환값이 0×0이면 에러 처리 |
 | Safari 다운로드 폴백 | Safari 환경에서는 Blob 생성 후 `window.open()`으로 항상 새 탭 오픈 |
-| 다중 페이지 분할 | 컨텐츠가 A4 높이 초과 시 축소 대신 자동 페이지 분할 |
+| 단일 페이지 피팅 | 컨텐츠가 A4 높이 초과 시 비례 축소하여 단일 페이지에 피팅 |
 
 ## 로드맵
 
