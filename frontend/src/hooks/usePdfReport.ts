@@ -52,11 +52,11 @@ const getSafeScale = (el: HTMLElement, preferredScale: number): number => {
     // Derive the largest scale that fits within the pixel limit.
     const maxScale = Math.sqrt(IOS_CANVAS_MAX_PIXELS / (w * h));
 
-    // If even scale=1 cannot fit, fail fast with a clear error.
+    // If the derived maxScale is invalid, fail fast with a clear error.
     if (!Number.isFinite(maxScale) || maxScale <= 0) {
         const message =
-            `[PDF] iOS canvas limit exceeded even at scale=1. ` +
-            `Element size ${w}×${h} (~${(w * h / 1e6).toFixed(1)} MP) is too large for the canvas.`;
+            `[PDF] Failed to compute a valid iOS-safe canvas scale. ` +
+            `Element size ${w}×${h} (~${(w * h / 1e6).toFixed(1)} MP) is too large or invalid for the canvas.`;
         console.error(message);
         throw new Error(message);
     }
@@ -159,7 +159,7 @@ export const usePdfReport = ({ resultData, contentRef, onActionComplete }: UsePd
             } else {
                 // Multi-page — slice canvas into per-page chunks to reduce memory
                 const totalPages = Math.ceil(imgHeight / A4_HEIGHT_PT);
-                const pageHeightPx = Math.round(canvas.height / totalPages);
+                const pageHeightPx = Math.ceil(canvas.height / totalPages);
 
                 for (let page = 0; page < totalPages; page++) {
                     if (page > 0) pdf.addPage();
@@ -174,13 +174,15 @@ export const usePdfReport = ({ resultData, contentRef, onActionComplete }: UsePd
                     sliceCanvas.height = sliceHeight;
 
                     const sliceCtx = sliceCanvas.getContext('2d');
-                    if (sliceCtx) {
-                        sliceCtx.drawImage(
-                            canvas,
-                            0, yStart, canvas.width, sliceHeight,
-                            0, 0, canvas.width, sliceHeight
-                        );
+                    if (!sliceCtx) {
+                        throw new Error('Failed to acquire 2D context for slice canvas during PDF generation.');
                     }
+
+                    sliceCtx.drawImage(
+                        canvas,
+                        0, yStart, canvas.width, sliceHeight,
+                        0, 0, canvas.width, sliceHeight
+                    );
 
                     const sliceImgHeight = (sliceHeight * A4_WIDTH_PT) / canvas.width;
                     pdf.addImage(sliceCanvas, 'PNG', 0, 0, imgWidth, sliceImgHeight);
