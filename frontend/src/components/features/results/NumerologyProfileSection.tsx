@@ -13,7 +13,7 @@ interface NumerologyProfileSectionProps {
  */
 const NumerologyProfileSection: React.FC<NumerologyProfileSectionProps> = ({ stoneData }) => {
     return (
-        <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', textAlign: 'center' }}>
+        <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', textAlign: 'center', pageBreakInside: 'avoid' }}>
 
             {/* Botanical Wreath Circle */}
             <div style={{

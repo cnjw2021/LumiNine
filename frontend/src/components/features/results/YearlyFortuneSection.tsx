@@ -17,7 +17,7 @@ const YearlyFortuneSection: React.FC<YearlyFortuneSectionProps> = ({
     const currentYear = targetYear || new Date().getFullYear();
 
     return (
-        <section style={{ position: 'relative' }}>
+        <section style={{ position: 'relative', pageBreakInside: 'avoid' }}>
             {/* Header */}
             <div style={{ display: 'flex', alignItems: 'center', gap: '16px', marginBottom: '20px' }}>
                 <h3 style={{
@@ -38,7 +38,8 @@ const YearlyFortuneSection: React.FC<YearlyFortuneSectionProps> = ({
                 padding: '36px',
                 border: '1px solid rgba(212, 175, 55, 0.1)',
                 boxShadow: '0 10px 40px -10px rgba(0, 0, 0, 0.05)',
-                overflow: 'hidden'
+                overflow: 'hidden',
+                pageBreakInside: 'avoid'
             }}>
                 {/* Decorative background circle */}
                 <div style={{
@@ -46,7 +47,9 @@ const YearlyFortuneSection: React.FC<YearlyFortuneSectionProps> = ({
                     width: '200px', height: '200px',
                     backgroundColor: 'rgba(216, 167, 167, 0.05)',
                     borderRadius: '50%',
-                    transform: 'translate(50%, -50%)'
+                    transform: 'translate(50%, -50%)',
+                    printColorAdjust: 'exact',
+                    WebkitPrintColorAdjust: 'exact',
                 }} />
 
                 {/* Inner Grid: Icon left + Description right */}
@@ -61,6 +64,8 @@ const YearlyFortuneSection: React.FC<YearlyFortuneSectionProps> = ({
                             display: 'flex', alignItems: 'center', justifyContent: 'center',
                             marginBottom: '12px',
                             overflow: 'hidden',
+                            printColorAdjust: 'exact',
+                            WebkitPrintColorAdjust: 'exact',
                         }}>
                             <Image
                                 src={getStoneImagePath(yearlyStone.stone_id)}

@@ -30,6 +30,7 @@ const PowerstoneCard: React.FC<{
         borderRadius: '16px',
         border: '1px solid #ffffff',
         boxShadow: '0 4px 20px -5px rgba(0, 0, 0, 0.04)',
+        pageBreakInside: 'avoid',
     }}>
         {/* Stone Image */}
         <div style={{

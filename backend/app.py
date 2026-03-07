@@ -23,7 +23,6 @@ PROJECT_ROOT = os.path.dirname(os.path.abspath(__file__))
 from apps.ninestarki.routes.nine_star_routes import create_nine_star_bp
 from apps.ninestarki.routes.nine_star_routes import create_nine_star_bp
 from apps.ninestarki.routes.monthly_routes import create_monthly_bp
-from apps.ninestarki.routes.pdf_job_routes import create_pdf_jobs_bp
 from core.exceptions import AppError
 
 from core.auth import auth_bp
@@ -98,7 +97,6 @@ def create_app() -> Flask:
     # 블루프린트 등록
     app.register_blueprint(create_nine_star_bp())
     app.register_blueprint(create_monthly_bp())
-    app.register_blueprint(create_pdf_jobs_bp(generate_report_use_case))
     app.register_blueprint(auth_bp, url_prefix='/api/auth')
 
     # 権限ユースケースもDIから取得

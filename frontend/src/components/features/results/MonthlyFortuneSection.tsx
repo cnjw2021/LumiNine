@@ -31,6 +31,7 @@ const MonthlyStoneCard: React.FC<{ label: string; stone: GogyoStone; type: strin
         padding: '24px', borderRadius: '20px',
         boxShadow: '0 8px 32px rgba(0,0,0,0.02)',
         height: '100%',
+        pageBreakInside: 'avoid',
     }}>
         <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '12px' }}>
             <span style={{
@@ -84,7 +85,21 @@ const MonthlyFortuneSection: React.FC<MonthlyFortuneSectionProps> = ({
     protectionStone,
 }) => {
     return (
-        <section>
+        <section style={{ pageBreakInside: 'avoid' }}>
+            <style dangerouslySetInnerHTML={{
+                __html: `
+                @media print {
+                    .direction-grid-board {
+                        print-color-adjust: exact;
+                        -webkit-print-color-adjust: exact;
+                        page-break-inside: avoid;
+                    }
+                    .monthly-stones-grid {
+                        page-break-inside: avoid;
+                    }
+                }
+            `}} />
+
             {/* Directional Guide Header */}
             <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', gap: '8px', marginBottom: '24px' }}>
                 <h3 style={{
@@ -106,7 +121,7 @@ const MonthlyFortuneSection: React.FC<MonthlyFortuneSectionProps> = ({
             {currentMonthData && (
                 <div className="direction-grid-board" style={{
                     position: 'relative',
-                    backgroundColor: 'rgba(255, 255, 255, 0.4)',
+                    backgroundColor: '#fefdfb',
                     borderRadius: '20px',
                     border: '1px solid #ffffff',
                     boxShadow: '0 10px 40px -10px rgba(0, 0, 0, 0.05)',
@@ -129,8 +144,7 @@ const MonthlyFortuneSection: React.FC<MonthlyFortuneSectionProps> = ({
                                             backgroundColor: '#ffffff',
                                             display: 'flex', flexDirection: 'column',
                                             alignItems: 'center', justifyContent: 'center',
-                                            border: '1px solid rgba(212, 175, 55, 0.2)',
-                                            boxShadow: 'inset 0 2px 4px 0 rgba(0, 0, 0, 0.06)',
+                                            border: '1px solid rgba(212, 175, 55, 0.15)',
                                         }}
                                     >
                                         <span style={{ fontSize: '10px', color: '#d4af37', fontWeight: 700, fontFamily: '"Noto Serif JP", serif' }}>中宮</span>
@@ -145,7 +159,7 @@ const MonthlyFortuneSection: React.FC<MonthlyFortuneSectionProps> = ({
                                         : 'neutral'
                             );
 
-                            let bgColor = 'transparent';
+                            let bgColor = 'rgba(255, 255, 255, 0)';
                             let textColor = '#a0a0a0';
                             let icon = '·';
                             let defaultReason = '無難';
@@ -170,7 +184,7 @@ const MonthlyFortuneSection: React.FC<MonthlyFortuneSectionProps> = ({
                                     defaultReason = '凶方位';
                                     break;
                                 default: // neutral
-                                    bgColor = 'transparent';
+                                    bgColor = 'rgba(255, 255, 255, 0)';
                                     textColor = '#a0a0a0';
                                     icon = '·';
                             }

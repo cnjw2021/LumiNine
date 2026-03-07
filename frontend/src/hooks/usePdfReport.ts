@@ -1,131 +1,90 @@
 'use client';
 
-import { useState, useEffect } from 'react';
-import api from '@/utils/api';
-import { ResultData, PdfJobResultDataMinimal } from '@/types/results';
+import { useState, RefObject } from 'react';
+import { ResultData } from '@/types/results';
+
+// A4 constants (jsPDF default: 72 DPI)
+const A4_WIDTH_PT = 595.28;
+const A4_HEIGHT_PT = 841.89;
 
 interface UsePdfReportProps {
     resultData: ResultData;
+    contentRef: RefObject<HTMLDivElement | null>;
     onActionComplete?: () => void;
 }
 
-export const usePdfReport = ({ resultData, onActionComplete }: UsePdfReportProps) => {
+/**
+ * PDF generation hook using html2canvas + jsPDF.
+ *
+ * The Result component is already laid out at A4 width (794px),
+ * so html2canvas captures it at the correct size without any
+ * runtime width manipulation.
+ */
+export const usePdfReport = ({ resultData, contentRef, onActionComplete }: UsePdfReportProps) => {
     const [isGeneratingPdf, setIsGeneratingPdf] = useState<boolean>(false);
-    const [pdfProgress, setPdfProgress] = useState<number>(0);
-    const [browserType, setBrowserType] = useState<'safari' | 'chrome' | 'other'>('other');
 
-    // ブラウザを検出する関数
-    const detectBrowser = (): 'safari' | 'chrome' | 'other' => {
-        if (typeof window === 'undefined') return 'other';
-        const userAgent = window.navigator.userAgent.toLowerCase();
-        if (userAgent.indexOf('safari') !== -1 && userAgent.indexOf('chrome') === -1) {
-            return 'safari';
-        } else if (userAgent.indexOf('chrome') !== -1) {
-            return 'chrome';
+    const handleDownloadPdf = async () => {
+        const target = contentRef.current;
+        if (!target) {
+            console.warn('PDF target element not found. Missing contentRef?');
+            return;
         }
-        return 'other';
-    };
 
-    // ブラウザ検出
-    useEffect(() => {
-        setBrowserType(detectBrowser());
-    }, []);
+        setIsGeneratingPdf(true);
 
-    // 共通のPDFダウンロード関数
-    const downloadPdf = async (templateId: number, useSimple: boolean) => {
         try {
-            setIsGeneratingPdf(true);
-            setPdfProgress(0);
+            const html2canvas = (await import('html2canvas')).default;
+            const { jsPDF } = await import('jspdf');
 
-            const normalizedBirthdate = (resultData.birthdate || '').replace(/\//g, '-');
-            const minimalResultData: PdfJobResultDataMinimal = {
-                fullName: resultData.fullName,
-                birthdate: normalizedBirthdate,
-                gender: (resultData as any).gender, // ResultData type might need gender adjustment or casting
-                targetYear: resultData.targetYear || new Date().getFullYear(),
-            };
+            // ── 1. Hide non-PDF elements (action buttons) ──
+            const hiddenEls = target.querySelectorAll('.hide-on-pdf');
+            hiddenEls.forEach(el => (el as HTMLElement).style.display = 'none');
 
-            // 1. ジョブ登録
-            const createRes = await api.post('/pdf-jobs', {
-                resultData: minimalResultData,
-                templateId,
-                backgroundId: templateId,
-                useSimple,
+            // ── 2. Capture the DOM element ──
+            const canvas = await html2canvas(target, {
+                scale: 2,
+                useCORS: true,
+                backgroundColor: '#f9f7f2',
+                logging: false,
             });
 
-            const jobId: string = createRes.data.job_id;
-            setPdfProgress(0);
+            // ── 3. Restore hidden elements ──
+            hiddenEls.forEach(el => (el as HTMLElement).style.display = '');
 
-            // 2. ポーリングでステータス確認
-            const pollInterval = 3000;
-            const wait = (ms: number) => new Promise((res) => setTimeout(res, ms));
+            // ── 4. Map image onto A4 — preserve aspect ratio ──
+            const imgWidth = A4_WIDTH_PT;
+            const imgHeight = (canvas.height * A4_WIDTH_PT) / canvas.width;
 
-            while (true) {
-                const statusRes = await api.get(`/pdf-jobs/${jobId}`);
-                const { status, download_url } = statusRes.data;
+            let finalWidth = imgWidth;
+            let finalHeight = imgHeight;
 
-                if (status === 'queued') {
-                    setPdfProgress(10);
-                } else if (status === 'started') {
-                    setPdfProgress((prev) => (prev < 90 ? prev + 10 : prev));
-                }
-
-                if (status === 'finished') {
-                    setPdfProgress(100);
-                    window.location.href = download_url;
-                    await wait(600);
-                    break;
-                }
-
-                if (status === 'failed') {
-                    throw new Error('PDF生成に失敗しました。');
-                }
-
-                await wait(pollInterval);
+            // If content is taller than A4, scale both dimensions to fit
+            if (imgHeight > A4_HEIGHT_PT) {
+                const ratio = A4_HEIGHT_PT / imgHeight;
+                finalWidth = imgWidth * ratio;
+                finalHeight = A4_HEIGHT_PT;
             }
+
+            // Centre horizontally if scaled down
+            const xOffset = (A4_WIDTH_PT - finalWidth) / 2;
+
+            // ── 5. Build PDF and trigger download ──
+            const pdf = new jsPDF({ orientation: 'portrait', unit: 'pt', format: 'a4' });
+
+            // Fill entire page with content background color (hides any margins)
+            pdf.setFillColor(249, 247, 242); // #f9f7f2
+            pdf.rect(0, 0, A4_WIDTH_PT, A4_HEIGHT_PT, 'F');
+
+            const imgData = canvas.toDataURL('image/png');
+            pdf.addImage(imgData, 'PNG', xOffset, 0, finalWidth, finalHeight);
+
+            const fileName = `${resultData.fullName || 'User'}_NineStarKi_Report.pdf`;
+            pdf.save(fileName);
 
             if (onActionComplete) onActionComplete();
         } catch (error) {
-            console.error('PDFの非同期生成中にエラーが発生しました:', error);
+            console.error('PDF generation failed:', error);
             alert('PDFの生成に失敗しました。もう一度お試しください。');
-        } finally {
-            setPdfProgress(0);
-            setIsGeneratingPdf(false);
-        }
-    };
-
-    const handleDownloadPdf = async (templateId: number) => {
-        await downloadPdf(templateId, false);
-    };
-
-    const handlePreviewReport = async (templateId: number) => {
-        const useSimple = browserType === 'safari';
-
-        try {
-            setIsGeneratingPdf(true);
-
-            const response = await api.post('/nine-star/preview-report',
-                {
-                    resultData,
-                    templateId,
-                    backgroundId: templateId,
-                    useSimple,
-                },
-                { responseType: 'text' }
-            );
-
-            const newWindow = window.open('', '_blank');
-            if (newWindow) {
-                newWindow.document.write(response.data);
-                newWindow.document.close();
-            } else {
-                alert('プレビューを表示できません。ポップアップがブロックされている可能性があります。');
-            }
-
-            if (onActionComplete) onActionComplete();
-        } catch (error) {
-            console.error('プレビュー表示中にエラーが発生しました:', error);
-            alert('プレビューの表示に失敗しました。もう一度お試しください。');
         } finally {
             setIsGeneratingPdf(false);
         }
@@ -133,8 +92,7 @@ export const usePdfReport = ({ resultData, onActionComplete }: UsePdfReportProps
 
     return {
         isGeneratingPdf,
-        pdfProgress,
+        pdfProgress: isGeneratingPdf ? 50 : 0,
         handleDownloadPdf,
-        handlePreviewReport,
     };
 };

@@ -6,8 +6,6 @@ from core.database import db
 # 必要なすべてのインターフェースと実装をインポート
 from apps.ninestarki.domain.repositories.nine_star_repository_interface import INineStarRepository
 from apps.ninestarki.infrastructure.persistence.nine_star_repository import NineStarRepository
-from apps.ninestarki.use_cases.interfaces.pdf_generator_interface import PdfGeneratorInterface
-from apps.ninestarki.infrastructure.pdf.weasyprint_pdf_generator import WeasyPrintPdfGenerator
 from apps.ninestarki.domain.repositories.user_repository_interface import IUserRepository
 from apps.ninestarki.infrastructure.persistence.user_repository import UserRepository
 from apps.ninestarki.domain.repositories.permission_repository_interface import IPermissionRepository
@@ -76,13 +74,6 @@ class AppModule(Module):
 
     @singleton
     @provider
-    def provide_pdf_generator(self) -> PdfGeneratorInterface:
-        # backendディレクトリを基準にする（static/templatesは backend/apps/ninestarki 配下）
-        base_dir = os.environ.get("APP_ROOT_DIR") or os.path.abspath(os.path.join(os.path.dirname(__file__), "..", ".."))
-        return WeasyPrintPdfGenerator(base_dir=base_dir)
-
-    @singleton
-    @provider
     def provide_calculate_stars_use_case(self, repo: INineStarRepository, solar_terms_repo: ISolarTermsRepository, numerology_reading_repo: INumerologyReadingRepository) -> CalculateStarsUseCase:
         return CalculateStarsUseCase(repo, solar_terms_repo, numerology_reading_repo)
 
@@ -95,7 +86,6 @@ class AppModule(Module):
     @provider
     def provide_generate_report_use_case(
         self,
-        pdf_generator: PdfGeneratorInterface,
         monthly_directions_use_case: MonthlyDirectionsUseCase,
         calculate_stars_use_case: CalculateStarsUseCase,
         solar_starts_repo: ISolarStartsRepository,
@@ -104,7 +94,6 @@ class AppModule(Module):
         report_context_builder: ReportContextBuilder,
     ) -> GenerateReportUseCase:
         return GenerateReportUseCase(
-            pdf_generator=pdf_generator,
             monthly_directions_use_case=monthly_directions_use_case,
             calculate_stars_use_case=calculate_stars_use_case,
             solar_starts_repo=solar_starts_repo,
