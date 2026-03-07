@@ -70,64 +70,6 @@ def load_daily_astrology_data(connection=None):
         raise
 
 
-
-
-
-def load_compatibility_readings_master_data(connection=None):
-    """compatibility_readings_master CSVデータをロードする関数"""
-    try:
-        load_dotenv()
-        print("compatibility_readings_masterデータのロードを開始します...")
-        row_count = load_csv_to_table(
-            csv_filename='compatibility_readings_master.csv',
-            table_name='compatibility_readings_master',
-            truncate_table=True,
-            use_load_data_infile=True,
-            connection=connection
-        )
-        print(f"compatibility_readings_masterのデータ挿入完了: {row_count}行")
-        return row_count
-    except Exception as e:
-        print(f"エラーが発生しました: {e}")
-        raise
-
-def load_compatibility_symbol_master_data(connection=None):
-    """compatibility_symbol_master CSVデータをロードする関数"""
-    try:
-        load_dotenv()
-        print("compatibility_symbol_masterデータのロードを開始します...")
-        row_count = load_csv_to_table(
-            csv_filename='compatibility_symbol_master.csv',
-            table_name='compatibility_symbol_master',
-            truncate_table=True,
-            use_load_data_infile=True,
-            connection=connection
-        )
-        print(f"compatibility_symbol_masterのデータ挿入完了: {row_count}行")
-        return row_count
-    except Exception as e:
-        print(f"エラーが発生しました: {e}")
-        raise
-
-def load_compatibility_symbol_pattern_master_data(connection=None):
-    """compatibility_symbol_pattern_master CSVデータをロードする関数"""
-    try:
-        load_dotenv()
-        print("compatibility_symbol_pattern_masterデータのロードを開始します...")
-        row_count = load_csv_to_table(
-            csv_filename='compatibility_symbol_pattern_master.csv',
-            table_name='compatibility_symbol_pattern_master',
-            truncate_table=True,
-            use_load_data_infile=True,
-            connection=connection
-        )
-        print(f"compatibility_symbol_pattern_masterのデータ挿入完了: {row_count}行")
-        return row_count
-    except Exception as e:
-        print(f"エラーが発生しました: {e}")
-        raise
-
-
 def load_star_compatibility_matrix_data(connection=None):
     """star_compatibility_matrix CSVデータをロードする関数"""
     try:
@@ -180,9 +122,7 @@ def load_all_csv_data(target_tables=None):
                 'solar_terms_data.csv': 'solar_terms',
                 'solar_starts_data.csv': 'solar_starts',
                 'daily_astrology_data.csv': 'daily_astrology',
-                'compatibility_symbol_master.csv': 'compatibility_symbol_master',
-                'compatibility_symbol_pattern_master.csv': 'compatibility_symbol_pattern_master',
-                'compatibility_readings_master.csv': 'compatibility_readings_master',
+
                 'star_compatibility_matrix.csv': 'star_compatibility_matrix',
                 'pattern_switch_dates.csv': 'pattern_switch_dates',
             }
