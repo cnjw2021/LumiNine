@@ -163,7 +163,8 @@ export const usePdfReport = ({ resultData, contentRef, onActionComplete }: UsePd
                 pdf.addImage(canvas, 'PNG', 0, 0, imgWidth, imgHeight);
             } else {
                 // Multi-page — slice canvas into per-page chunks to reduce memory
-                const pageHeightPx = (A4_HEIGHT_PT * canvas.width) / A4_WIDTH_PT;
+                // Use integer pixel boundaries to avoid off-by-one gaps/overlaps between slices
+                const pageHeightPx = Math.floor((A4_HEIGHT_PT * canvas.width) / A4_WIDTH_PT);
                 const totalPages = Math.ceil(canvas.height / pageHeightPx);
 
                 for (let page = 0; page < totalPages; page++) {
@@ -189,7 +190,8 @@ export const usePdfReport = ({ resultData, contentRef, onActionComplete }: UsePd
                         0, 0, canvas.width, sliceHeight
                     );
 
-                    const sliceImgHeight = (sliceHeight * A4_WIDTH_PT) / canvas.width;
+                    // Derive PDF height from the actual integer canvas height to stay consistent
+                    const sliceImgHeight = (sliceCanvas.height * A4_WIDTH_PT) / canvas.width;
                     pdf.addImage(sliceCanvas, 'PNG', 0, 0, imgWidth, sliceImgHeight);
                 }
             }
