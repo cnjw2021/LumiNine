@@ -1,8 +1,6 @@
 from typing import Any, Dict, Optional
 from datetime import datetime, date, timedelta
 
-# 必要なすべてのサービスとファインダーをインポートします。
-from apps.ninestarki.use_cases.interfaces.pdf_generator_interface import PdfGeneratorInterface
 from apps.ninestarki.use_cases.monthly_directions_use_case import MonthlyDirectionsUseCase
 from apps.ninestarki.use_cases.calculate_stars_use_case import CalculateStarsUseCase
 from apps.ninestarki.infrastructure.persistence.nine_star_repository import NineStarRepository
@@ -19,10 +17,9 @@ from core.config import get_config
 logger = get_logger(__name__)
 
 class GenerateReportUseCase:
-    """PDF レポート生成を担当するUseCase"""
+    """PDF レポートコンテキスト作成用UseCase (PDF生成自体はフロントエンドへ移行)"""
     
     def __init__(self,
-     pdf_generator: PdfGeneratorInterface,
      monthly_directions_use_case: MonthlyDirectionsUseCase,
      calculate_stars_use_case: CalculateStarsUseCase,
      solar_starts_repo: ISolarStartsRepository,
@@ -30,25 +27,15 @@ class GenerateReportUseCase:
      report_context_builder: ReportContextBuilder,
      solar_terms_repo: ISolarTermsRepository | None = None,
      ):
-        self.pdf_generator = pdf_generator
         self._monthly_directions_uc = monthly_directions_use_case
-        # Required DI
         self._calc_stars_uc = calculate_stars_use_case
         self._solar_starts_repo: ISolarStartsRepository = solar_starts_repo
         self._solar_terms_repo: ISolarTermsRepository | None = solar_terms_repo
         self._context_builder = report_context_builder
         self._calendar = solar_calendar_provider
 
-    def execute_pdf(self, report_data: ReportInputDTO) -> bytes:
-        context = self._prepare_context(report_data)
-        return self.pdf_generator.generate(context)
-
-    def execute_html_preview(self, report_data: ReportInputDTO) -> str:
-        context = self._prepare_context(report_data)
-        return self.pdf_generator.html_renderer.render(context)
-
     def _prepare_context(self, report_data: ReportInputDTO) -> ReportContextDTO:
-        logger.info(f"PDF 生成 UseCase 実行開始: {report_data.get('full_name')}")
+        logger.info(f"レポートデータ Context 作成開始: {report_data.get('full_name')}")
         
         # 1. 基本情報
         if not report_data.get('full_name') or not report_data.get('birthdate') or not report_data.get('gender'):

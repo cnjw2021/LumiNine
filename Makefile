@@ -12,7 +12,7 @@ else ifeq ($(ENV), dev)
 	COMPOSE = docker compose -f docker-compose.yml -f docker-compose.dev.yml
 endif
 
-.PHONY: bootstrap setup up down stop restart logs renew help db-reset prune build-be rebuild-be restart-be restart-worker logs-be build-fe rebuild-fe restart-fe logs-fe gen-pngs
+.PHONY: bootstrap setup up down stop restart logs renew help db-reset prune build-be rebuild-be restart-be restart-worker logs-be build-fe rebuild-fe rebuild-fe-clean restart-fe logs-fe gen-pngs
 .DEFAULT_GOAL := help
 
 # 待機対象とする主要サービス（certbot は除外してエラーを回避）
@@ -121,6 +121,12 @@ rebuild-fe: ## 🔄 フロントエンドのみをキャッシュなしで再構
 	@echo "### [$(ENV)] 環境のフロントエンドのみをキャッシュなしで再構築します... ###"
 	$(COMPOSE) build --no-cache frontend
 	$(COMPOSE) up -d frontend
+
+rebuild-fe-clean: ## 🔄 フロントエンドを再構築し、匿名ボリュームも再作成します。(依存関係変更時)
+	@echo "### [$(ENV)] 環境のフロントエンドをキャッシュなし＆ボリューム再作成で再構築します... ###"
+	$(COMPOSE) build --no-cache frontend
+	$(COMPOSE) up -d --renew-anon-volumes frontend
+
 
 restart-fe: ## 🔄 フロントエンドのみを再起動します。(例: make restart-fe ENV=dev)
 	@echo "### [$(ENV)] 環境のフロントエンドのみを再起動します... ###"

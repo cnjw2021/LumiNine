@@ -23,6 +23,7 @@
   }
 }
 
+
 /* Yearly Fortune inner grid: stacks on small screens */
 .yearly-fortune-inner {
   display: flex;
@@ -68,6 +69,7 @@
     gap: 20px;
   }
 }
+
 
 /* Result page header */
 .result-header {
