@@ -108,11 +108,16 @@ export const usePdfReport = ({ resultData, contentRef, onActionComplete }: UsePd
 
         try {
             // ── 0. Wait for all web fonts to finish loading ──
-            const docWithFonts = document as Document & { fonts?: FontFaceSet };
-            if (typeof document !== 'undefined' && docWithFonts.fonts?.ready) {
-                await docWithFonts.fonts.ready;
+            if (typeof document !== 'undefined') {
+                const docWithFonts = document as Document & { fonts?: FontFaceSet };
+                if (docWithFonts.fonts?.ready) {
+                    await docWithFonts.fonts.ready;
+                } else {
+                    // Fallback: small delay to give fonts a chance to load in environments without Font Loading API
+                    await new Promise<void>(resolve => setTimeout(resolve, 50));
+                }
             } else {
-                // Fallback: small delay to give fonts a chance to load in environments without Font Loading API
+                // Fallback: small delay to give fonts a chance to load when `document` is not available
                 await new Promise<void>(resolve => setTimeout(resolve, 50));
             }
 
@@ -158,8 +163,8 @@ export const usePdfReport = ({ resultData, contentRef, onActionComplete }: UsePd
                 pdf.addImage(canvas, 'PNG', 0, 0, imgWidth, imgHeight);
             } else {
                 // Multi-page — slice canvas into per-page chunks to reduce memory
-                const totalPages = Math.ceil(imgHeight / A4_HEIGHT_PT);
-                const pageHeightPx = Math.ceil(canvas.height / totalPages);
+                const pageHeightPx = (A4_HEIGHT_PT * canvas.width) / A4_WIDTH_PT;
+                const totalPages = Math.ceil(canvas.height / pageHeightPx);
 
                 for (let page = 0; page < totalPages; page++) {
                     if (page > 0) pdf.addPage();
