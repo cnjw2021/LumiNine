@@ -94,27 +94,15 @@ class TestDirectionConsistency:
     def params(self, request):
         return request.param
 
-    @patch("core.models.star_grid_pattern.StarCompatibilityMatrix")
-    def test_fortune_status_is_stricter_or_equal(self, mock_compat, grid, params):
+    def test_fortune_status_is_stricter_or_equal(self, grid, params):
         """get_fortune_status()의 凶방위 집합은 반드시
         get_time_fortune_status()의 凶방위 집합을 포함해야 한다.
 
         즉 get_fortune_status()에서 吉인 방위가
         get_time_fortune_status()에서 凶으로 되는 것은 논리적으로 불가능.
         """
-        # StarCompatibilityMatrix mock 설정 (상성 BAD가 아닌 값)
-        mock_matrix = MagicMock()
-        mock_level = MagicMock()
-        mock_level.value = "GOOD"
-        mock_matrix.get_compatibility_level.return_value = mock_level
-        mock_compat.get_by_base_star.return_value = mock_matrix
-
-        with patch("core.models.star_grid_pattern.CompatibilityLevel") as mock_cl:
-            mock_bad = MagicMock()
-            mock_cl.BAD = mock_bad
-
-            full_result = grid.get_fortune_status(params)
-            time_result = grid.get_time_fortune_status(params)
+        full_result = grid.get_fortune_status(params)
+        time_result = grid.get_time_fortune_status(params)
 
         for d in _DIRECTIONS:
             full_ausp = full_result.get(d, {}).get("is_auspicious", True)
@@ -128,24 +116,13 @@ class TestDirectionConsistency:
                     f"time_marks={time_result[d].get('marks')}"
                 )
 
-    @patch("core.models.star_grid_pattern.StarCompatibilityMatrix")
-    def test_inauspicious_sets_match(self, mock_compat, grid, params):
+    def test_inauspicious_sets_match(self, grid, params):
         """수정 이후, 두 메서드의 凶방위 집합이 동일해야 한다.
 
         get_fortune_status()에 포함된 五黄殺/本命殺/月命殺 체크가
         get_time_fortune_status()에서 누락되면 이 테스트가 실패한다.
         """
-        mock_matrix = MagicMock()
-        mock_level = MagicMock()
-        mock_level.value = "GOOD"
-        mock_matrix.get_compatibility_level.return_value = mock_level
-        mock_compat.get_by_base_star.return_value = mock_matrix
-
-        with patch("core.models.star_grid_pattern.CompatibilityLevel") as mock_cl:
-            mock_bad = MagicMock()
-            mock_cl.BAD = mock_bad
-
-            full_result = grid.get_fortune_status(params)
+        full_result = grid.get_fortune_status(params)
 
         time_result = grid.get_time_fortune_status(params)
 
