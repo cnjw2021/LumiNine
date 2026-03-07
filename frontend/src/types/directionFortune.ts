@@ -1,30 +1,8 @@
-export interface DirectionStatus {
-  is_auspicious: boolean | null;
-  reason: string | null;
-  marks: string[];
-  compatibility_level?: string;
-  fortune_level?: 'best_auspicious' | 'auspicious' | 'neutral' | 'inauspicious';
-}
 
-export interface DirectionFortuneStatus {
-  north: DirectionStatus;
-  northeast: DirectionStatus;
-  east: DirectionStatus;
-  southeast: DirectionStatus;
-  south: DirectionStatus;
-  southwest: DirectionStatus;
-  west: DirectionStatus;
-  northwest: DirectionStatus;
-}
 
 // 月別方位の吉凶情報
 export interface MonthDirectionInfo {
   is_auspicious: boolean | null;
-  marks: string[];
-  reason: string | null;
-  is_main_star?: boolean;
-  title?: string;
-  details?: string;
   fortune_level?: 'best_auspicious' | 'auspicious' | 'neutral' | 'inauspicious';
 }
 
@@ -42,15 +20,7 @@ export interface PeriodFortuneData {
   power_stones?: PowerStones | null;
 }
 
-// month-acquired-fortune API レスポンス
-export interface MonthAcquiredFortuneResponse {
-  number: number;
-  name_jp: string;
-  name_en: string;
-  element: string;
-  description: string;
-  annual_directions?: Record<string, PeriodFortuneData>;
-}
+
 
 // ── Phase 4–5: パワーストーン推薦 ──
 
