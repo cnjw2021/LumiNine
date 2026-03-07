@@ -126,7 +126,10 @@ const MonthlyFortuneSection: React.FC<MonthlyFortuneSectionProps> = ({
                                 return (
                                     <div
                                         key={dir}
-                                        onClick={() => setSelectedDirection(dir)}
+                                        onClick={() => setSelectedDirection(prev => prev === dir ? null : dir)}
+                                        onKeyDown={(e) => { if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); setSelectedDirection(prev => prev === dir ? null : dir); } }}
+                                        role="button"
+                                        tabIndex={0}
                                         style={{
                                             aspectRatio: '1/1', borderRadius: '14px',
                                             backgroundColor: '#ffffff',
@@ -182,7 +185,10 @@ const MonthlyFortuneSection: React.FC<MonthlyFortuneSectionProps> = ({
                             return (
                                 <div
                                     key={dir}
-                                    onClick={() => setSelectedDirection(dir)}
+                                    onClick={() => setSelectedDirection(prev => prev === dir ? null : dir)}
+                                    onKeyDown={(e) => { if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); setSelectedDirection(prev => prev === dir ? null : dir); } }}
+                                    role="button"
+                                    tabIndex={0}
                                     style={{
                                         aspectRatio: '1/1', borderRadius: '14px',
                                         backgroundColor: bgColor,
@@ -222,7 +228,9 @@ const MonthlyFortuneSection: React.FC<MonthlyFortuneSectionProps> = ({
                     display: 'flex',
                     alignItems: 'center',
                     gap: '16px',
-                    animation: 'fadeIn 0.3s ease'
+                    animation: 'fadeIn 0.3s ease',
+                    opacity: 1,
+                    transition: 'opacity 0.3s ease'
                 }}>
                     <div style={{
                         fontFamily: '"Montserrat", sans-serif',
