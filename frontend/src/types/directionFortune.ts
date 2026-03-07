@@ -1,5 +1,3 @@
-
-
 // 月別方位の吉凶情報
 export interface MonthDirectionInfo {
   is_auspicious: boolean | null;
@@ -20,8 +18,6 @@ export interface PeriodFortuneData {
   period_end?: string;
   power_stones?: PowerStones | null;
 }
-
-
 
 // ── Phase 4–5: パワーストーン推薦 ──
 

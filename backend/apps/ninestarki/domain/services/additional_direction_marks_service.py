@@ -100,7 +100,7 @@ class AdditionalDirectionMarksService:
         reason = result.get("reason")
         if not reason:
             result["reason"] = label
-        elif label not in reason:
+        elif label not in reason.split(", "):
             result["reason"] = reason + ", " + label
 
     def enrich(
