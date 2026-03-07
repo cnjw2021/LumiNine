@@ -87,13 +87,6 @@
   }
 }
 
-@media print {
-  .monthly-stones-grid {
-    display: grid !important;
-    grid-template-columns: 1fr 1fr !important;
-    gap: 20px !important;
-  }
-}
 
 /* Result page header */
 .result-header {

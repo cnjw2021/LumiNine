@@ -86,19 +86,6 @@ const MonthlyFortuneSection: React.FC<MonthlyFortuneSectionProps> = ({
 }) => {
     return (
         <section style={{ pageBreakInside: 'avoid' }}>
-            <style dangerouslySetInnerHTML={{
-                __html: `
-                @media print {
-                    .direction-grid-board {
-                        print-color-adjust: exact;
-                        -webkit-print-color-adjust: exact;
-                        page-break-inside: avoid;
-                    }
-                    .monthly-stones-grid {
-                        page-break-inside: avoid;
-                    }
-                }
-            `}} />
 
             {/* Directional Guide Header */}
             <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', gap: '8px', marginBottom: '24px' }}>

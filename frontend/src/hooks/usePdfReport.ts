@@ -36,9 +36,13 @@ export const usePdfReport = ({ resultData, contentRef, onActionComplete }: UsePd
             const html2canvas = (await import('html2canvas')).default;
             const { jsPDF } = await import('jspdf');
 
-            // ── 1. Hide non-PDF elements (action buttons) ──
+            // ── 1. Hide non-PDF elements & disable sticky header ──
             const hiddenEls = target.querySelectorAll('.hide-on-pdf');
             hiddenEls.forEach(el => (el as HTMLElement).style.display = 'none');
+
+            const header = target.querySelector('.result-header') as HTMLElement | null;
+            const originalPosition = header?.style.position ?? '';
+            if (header) header.style.position = 'static';
 
             // ── 2. Capture the DOM element ──
             const canvas = await html2canvas(target, {
@@ -47,9 +51,6 @@ export const usePdfReport = ({ resultData, contentRef, onActionComplete }: UsePd
                 backgroundColor: '#f9f7f2',
                 logging: false,
             });
-
-            // ── 3. Restore hidden elements ──
-            hiddenEls.forEach(el => (el as HTMLElement).style.display = '');
 
             // ── 4. Map image onto A4 — preserve aspect ratio ──
             const imgWidth = A4_WIDTH_PT;
@@ -86,13 +87,17 @@ export const usePdfReport = ({ resultData, contentRef, onActionComplete }: UsePd
             console.error('PDF generation failed:', error);
             alert('PDFの生成に失敗しました。もう一度お試しください。');
         } finally {
+            // ── Always restore hidden elements & sticky header ──
+            const hiddenEls = target.querySelectorAll('.hide-on-pdf');
+            hiddenEls.forEach(el => (el as HTMLElement).style.display = '');
+            const header = target.querySelector('.result-header') as HTMLElement | null;
+            if (header) header.style.position = '';
             setIsGeneratingPdf(false);
         }
     };
 
     return {
         isGeneratingPdf,
-        pdfProgress: isGeneratingPdf ? 50 : 0,
         handleDownloadPdf,
     };
 };

@@ -35,7 +35,7 @@ class GenerateReportUseCase:
         self._calendar = solar_calendar_provider
 
     def _prepare_context(self, report_data: ReportInputDTO) -> ReportContextDTO:
-        logger.info(f"レポートデータ Context 생성開始: {report_data.get('full_name')}")
+        logger.info(f"レポートデータ Context 作成開始: {report_data.get('full_name')}")
         
         # 1. 基本情報
         if not report_data.get('full_name') or not report_data.get('birthdate') or not report_data.get('gender'):
