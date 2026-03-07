@@ -8,9 +8,7 @@ from .solar_terms import SolarTerms
 from .star_groups import StarGroups, StarGroup
 from .monthly_directions import MonthlyDirections
 
-from .compatibility_readings_master import CompatibilityReadingsMaster
-from .compatibility_symbol_master import CompatibilitySymbolMaster
-from .compatibility_symbol_pattern_master import CompatibilitySymbolPatternMaster
+
 
 from .hourly_star_zodiac import HourlyStarZodiac
 from .zodiac_group import ZodiacGroup
@@ -32,9 +30,7 @@ __all__ = [
     'StarGroup',
 
     'MonthlyDirections',
-    'CompatibilityReadingsMaster',
-    'CompatibilitySymbolMaster',
-    'CompatibilitySymbolPatternMaster',
+
 
     'HourlyStarZodiac',
     'ZodiacGroup',

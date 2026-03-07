@@ -55,32 +55,6 @@ CREATE TABLE IF NOT EXISTS daily_astrology (
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci COMMENT='日付ごとの干支と九星の情報';
 
 
--- 時の運気メッセージテーブル
-CREATE TABLE IF NOT EXISTS `main_star_acquired_fortune_message` (
-  `id` INT AUTO_INCREMENT PRIMARY KEY COMMENT 'ID',
-  `star_number` INT NOT NULL COMMENT '九星番号（1-9）',
-  `luck_title` VARCHAR(100) NOT NULL COMMENT '吉運タイトル',
-  `luck_details` TEXT NOT NULL COMMENT '吉運の詳細説明',
-  `unluck_title` VARCHAR(100) NOT NULL COMMENT '凶運タイトル',
-  `unluck_details` TEXT NOT NULL COMMENT '凶運の詳細説明',
-  `created_at` TIMESTAMP DEFAULT CURRENT_TIMESTAMP COMMENT '作成日時',
-  `updated_at` TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP COMMENT '更新日時',
-  FOREIGN KEY (`star_number`) REFERENCES `stars` (`star_number`) ON DELETE CASCADE,
-  UNIQUE KEY `unique_star_message` (`star_number`) COMMENT '星番号の一意制約'
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
-
-
--- 星と人生のガイダンス情報を格納するテーブル
-CREATE TABLE IF NOT EXISTS `star_life_guidance` (
-  `id` INT AUTO_INCREMENT PRIMARY KEY,
-  `main_star` INT NOT NULL COMMENT '本命星',
-  `month_star` INT NOT NULL COMMENT '月命星',
-  `category` ENUM('job', 'lucky_color', 'lucky_item') NOT NULL COMMENT 'カテゴリ',
-  `content` TEXT NOT NULL COMMENT '内容',
-  `created_at` TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
-  `updated_at` TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
-  UNIQUE KEY `idx_main_month_star_category` (`main_star`, `month_star`, `category`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
 
 
@@ -181,61 +155,6 @@ CREATE TABLE IF NOT EXISTS `monthly_directions` (
   FOREIGN KEY (`west`) REFERENCES `stars` (`star_number`) ON DELETE CASCADE,
   FOREIGN KEY (`northwest`) REFERENCES `stars` (`star_number`) ON DELETE CASCADE
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
-
--- 引っ越し吉日テーブル
-CREATE TABLE IF NOT EXISTS `moving_auspicious_dates` (
-  `id` INT AUTO_INCREMENT PRIMARY KEY COMMENT 'ID',
-  `year` INT NOT NULL COMMENT '対象年度',
-  `main_star` INT NOT NULL COMMENT '本命星',
-  `month_star` INT NOT NULL COMMENT '月命星',
-  `date` DATE NOT NULL COMMENT '引っ越し吉日',
-  `description` TEXT NULL COMMENT '備考・説明',
-  `direction` VARCHAR(50) NULL COMMENT '方位（例: 南東、北西）',
-  `created_at` TIMESTAMP DEFAULT CURRENT_TIMESTAMP COMMENT '作成日時',
-  `updated_at` TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP COMMENT '更新日時',
-  UNIQUE KEY `unique_year_main_star` (`year`, `main_star`, `month_star`, `date`),
-  FOREIGN KEY (`main_star`) REFERENCES `stars` (`star_number`) ON DELETE CASCADE,
-  FOREIGN KEY (`month_star`) REFERENCES `stars` (`star_number`) ON DELETE CASCADE,
-  INDEX `idx_year` (`year`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci COMMENT='引っ越し吉日情報';
-
-
-
--- 相性記号パターンマスターテーブル
-CREATE TABLE IF NOT EXISTS `compatibility_symbol_pattern_master` (
-  `id` INT AUTO_INCREMENT PRIMARY KEY COMMENT 'ID',
-  `symbols` VARCHAR(10) NOT NULL COMMENT '相性記号 (★,○,P,F,N,▲ など)',
-  `pattern_code` VARCHAR(30) NOT NULL COMMENT 'パターンコード',
-  `created_at` TIMESTAMP DEFAULT CURRENT_TIMESTAMP COMMENT '作成日時',
-  `updated_at` TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP COMMENT '更新日時',
-  UNIQUE KEY `unique_pattern_code` (`pattern_code`) COMMENT 'パターンコードの一意制約',
-  UNIQUE KEY `unique_symbols` (`symbols`) COMMENT '記号の一意制約'
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci COMMENT='相性記号パターンマスター';
-
--- 相性記号マスター
-CREATE TABLE IF NOT EXISTS `compatibility_symbol_master` (
-  `id` INT AUTO_INCREMENT PRIMARY KEY COMMENT 'ID',
-  `symbol` VARCHAR(10) NOT NULL COMMENT '相性記号 (★,○,P,F,N,▲,◆ など)',
-  `meaning` VARCHAR(50) NOT NULL COMMENT '記号の意味（最高・良好・ビジネスなど）',
-  `description` TEXT COMMENT '説明',
-  `created_at` TIMESTAMP DEFAULT CURRENT_TIMESTAMP COMMENT '作成日時',
-  `updated_at` TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP COMMENT '更新日時',
-  UNIQUE KEY `unique_symbol` (`symbol`) COMMENT '記号の一意制約'
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci COMMENT='相性記号マスター';
-
--- 相性鑑定文テーブル
-CREATE TABLE IF NOT EXISTS `compatibility_readings_master` (
-  `id` INT AUTO_INCREMENT PRIMARY KEY COMMENT 'ID',
-  `pattern_code` VARCHAR(30) NOT NULL COMMENT 'パターンコード',
-  `theme` VARCHAR(30) NOT NULL COMMENT 'テーマ',
-  `title` VARCHAR(100) NOT NULL COMMENT '鑑定タイトル',
-  `content` TEXT NOT NULL COMMENT '鑑定内容',
-  `created_at` TIMESTAMP DEFAULT CURRENT_TIMESTAMP COMMENT '作成日時',
-  `updated_at` TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP COMMENT '更新日時',
-  UNIQUE KEY `unique_reading` (`pattern_code`, `theme`) COMMENT '鑑定文の一意制約',
-  FOREIGN KEY (`pattern_code`) REFERENCES `compatibility_symbol_pattern_master` (`pattern_code`) ON DELETE CASCADE,
-  INDEX `idx_pattern_code` (`pattern_code`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci COMMENT='相性鑑定文マスター';
 
 -- 十二支グループマスタ
 CREATE TABLE IF NOT EXISTS `zodiac_groups` (

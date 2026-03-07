@@ -14,13 +14,12 @@ from apps.ninestarki.dependency_module import AppModule
 from injector import Injector
 
 from apps.ninestarki.use_cases.permission_use_case import PermissionUseCase
-from apps.ninestarki.use_cases.generate_report_use_case import GenerateReportUseCase
+from apps.ninestarki.use_cases.permission_use_case import PermissionUseCase
 
 # パスを追加
 PROJECT_ROOT = os.path.dirname(os.path.abspath(__file__))
 
 # 絶対パスでインポート
-from apps.ninestarki.routes.nine_star_routes import create_nine_star_bp
 from apps.ninestarki.routes.nine_star_routes import create_nine_star_bp
 from apps.ninestarki.routes.monthly_routes import create_monthly_bp
 from core.exceptions import AppError
@@ -51,7 +50,6 @@ template_folder_path = os.path.join(PROJECT_ROOT, 'apps', 'ninestarki', 'templat
 def create_app() -> Flask:
     # DIコンテナを作成し、必要なユースケースを取得
     injector = Injector([AppModule()])
-    generate_report_use_case = injector.get(GenerateReportUseCase)
 
     app = Flask(__name__, 
                static_folder='static',
@@ -99,7 +97,7 @@ def create_app() -> Flask:
     app.register_blueprint(create_monthly_bp())
     app.register_blueprint(auth_bp, url_prefix='/api/auth')
 
-    # 権限ユースケースもDIから取得
+    # 권한 유즈케이스도 DI에서 취득
     perm_use_case = injector.get(PermissionUseCase)
     app.register_blueprint(create_permission_bp(perm_use_case))
 
@@ -132,9 +130,6 @@ def create_app() -> Flask:
                     "/api/nine-star/monthly-chart",
                     "/api/auth/login",
                     "/api/auth/me",
-                    "/api/admin/stars",
-                    "/api/admin/solar/solar-starts",
-                    "/api/admin/solar/solar-terms",
                     "/api/monthly/directions"
                 ]
             }, cls=CustomJSONEncoder, ensure_ascii=False),

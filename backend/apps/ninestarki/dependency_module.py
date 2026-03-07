@@ -18,12 +18,7 @@ from apps.ninestarki.infrastructure.services.solar_calendar_provider import Sola
 
 from apps.ninestarki.domain.repositories.solar_terms_repository_interface import ISolarTermsRepository
 from apps.ninestarki.infrastructure.persistence.solar_terms_repository import SolarTermsRepository
-from apps.ninestarki.use_cases.solar_admin_use_cases import ListSolarTermsUseCase, UpdateSolarTermUseCase
-
-# Services / UseCases
 from apps.ninestarki.use_cases.calculate_stars_use_case import CalculateStarsUseCase
-from apps.ninestarki.use_cases.context.report_context_builder import ReportContextBuilder
-from apps.ninestarki.use_cases.generate_report_use_case import GenerateReportUseCase
 
 from apps.ninestarki.domain.repositories.star_grid_pattern_repository_interface import IStarGridPatternRepository
 from apps.ninestarki.infrastructure.persistence.star_grid_pattern_repository import StarGridPatternRepository
@@ -79,31 +74,6 @@ class AppModule(Module):
 
     @singleton
     @provider
-    def provide_report_context_builder(self) -> ReportContextBuilder:
-        return ReportContextBuilder()
-
-    @singleton
-    @provider
-    def provide_generate_report_use_case(
-        self,
-        monthly_directions_use_case: MonthlyDirectionsUseCase,
-        calculate_stars_use_case: CalculateStarsUseCase,
-        solar_starts_repo: ISolarStartsRepository,
-        solar_terms_repo: ISolarTermsRepository,
-        solar_calendar_provider: ISolarCalendarProvider,
-        report_context_builder: ReportContextBuilder,
-    ) -> GenerateReportUseCase:
-        return GenerateReportUseCase(
-            monthly_directions_use_case=monthly_directions_use_case,
-            calculate_stars_use_case=calculate_stars_use_case,
-            solar_starts_repo=solar_starts_repo,
-            solar_terms_repo=solar_terms_repo,
-            solar_calendar_provider=solar_calendar_provider,
-            report_context_builder=report_context_builder,
-        )
-
-    @singleton
-    @provider
     def provide_permission_use_case(self, user_repo: IUserRepository, perm_repo: IPermissionRepository) -> PermissionUseCase:
         return PermissionUseCase(user_repo, perm_repo)
 
@@ -118,8 +88,6 @@ class AppModule(Module):
         binder.bind(ISolarTermsRepository, to=SolarTermsRepository, scope=singleton)
         binder.bind(IStarGridPatternRepository, to=StarGridPatternRepository, scope=singleton)
         binder.bind(IMonthlyDirectionsRepository, to=MonthlyDirectionsRepository, scope=singleton)
-        binder.bind(ListSolarTermsUseCase, to=ListSolarTermsUseCase, scope=singleton)
-        binder.bind(UpdateSolarTermUseCase, to=UpdateSolarTermUseCase, scope=singleton)
         binder.bind(IMonthlyBoardDomainService, to=MonthlyBoardDomainService, scope=singleton)
         binder.bind(YearStarDomainService, to=YearStarDomainService, scope=singleton)
         binder.bind(FiveElementsFortuneService, to=FiveElementsFortuneService, scope=singleton)
