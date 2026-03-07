@@ -3,6 +3,7 @@
 // 月別方位の吉凶情報
 export interface MonthDirectionInfo {
   is_auspicious: boolean | null;
+  reason: string | null;
   fortune_level?: 'best_auspicious' | 'auspicious' | 'neutral' | 'inauspicious';
 }
 

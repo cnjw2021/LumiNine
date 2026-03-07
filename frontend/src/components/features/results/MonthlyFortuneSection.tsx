@@ -175,8 +175,9 @@ const MonthlyFortuneSection: React.FC<MonthlyFortuneSectionProps> = ({
                                     backgroundColor: bgColor,
                                     display: 'flex', flexDirection: 'column',
                                     alignItems: 'center', justifyContent: 'center',
-                                    border: '1px solid #ffffff'
-                                }}>
+                                    border: '1px solid #ffffff',
+                                    cursor: info?.reason ? 'help' : 'default'
+                                }} title={info?.reason || ''}>
                                     <span style={{
                                         fontSize: '10px', color: textColor, fontWeight: 700,
                                         marginBottom: '4px', fontFamily: '"Montserrat", sans-serif'
