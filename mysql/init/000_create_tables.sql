@@ -99,22 +99,6 @@ CREATE TABLE IF NOT EXISTS `star_grid_patterns` (
   FOREIGN KEY (`northwest`) REFERENCES `stars` (`star_number`) ON DELETE CASCADE
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
--- 九星間の相性マトリックス
-CREATE TABLE IF NOT EXISTS `star_compatibility_matrix` (
-  `base_star` INT PRIMARY KEY COMMENT '基準となる星（1-9）',
-  `star_1` ENUM('BEST', 'BETTER', 'GOOD', 'BAD') NOT NULL COMMENT '一白水星との相性（BEST: 大吉, BETTER: 中吉, GOOD: 小吉, BAD: 凶）',
-  `star_2` ENUM('BEST', 'BETTER', 'GOOD', 'BAD') NOT NULL COMMENT '二黒土星との相性',
-  `star_3` ENUM('BEST', 'BETTER', 'GOOD', 'BAD') NOT NULL COMMENT '三碧木星との相性',
-  `star_4` ENUM('BEST', 'BETTER', 'GOOD', 'BAD') NOT NULL COMMENT '四緑木星との相性',
-  `star_5` ENUM('BEST', 'BETTER', 'GOOD', 'BAD') NOT NULL COMMENT '五黄土星との相性',
-  `star_6` ENUM('BEST', 'BETTER', 'GOOD', 'BAD') NOT NULL COMMENT '六白金星との相性',
-  `star_7` ENUM('BEST', 'BETTER', 'GOOD', 'BAD') NOT NULL COMMENT '七赤金星との相性',
-  `star_8` ENUM('BEST', 'BETTER', 'GOOD', 'BAD') NOT NULL COMMENT '八白土星との相性',
-  `star_9` ENUM('BEST', 'BETTER', 'GOOD', 'BAD') NOT NULL COMMENT '九紫火星との相性',
-  `created_at` TIMESTAMP DEFAULT CURRENT_TIMESTAMP COMMENT '作成日時',
-  `updated_at` TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP COMMENT '更新日時',
-  FOREIGN KEY (`base_star`) REFERENCES `stars` (`star_number`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
 -- 月盤方位データテーブル
 CREATE TABLE IF NOT EXISTS `monthly_directions` (

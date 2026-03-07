@@ -4,9 +4,7 @@ from core.database import db
 from core.utils.logger import get_logger
 from core.utils.calendar_utils import get_opposite_zodiac_direction
 from typing import Dict, List, Tuple, Optional, Any
-from core.models.star_compatibility_matrix import StarCompatibilityMatrix
 from core.models.compatibility_level import CompatibilityLevel
-
 logger = get_logger(__name__)
 
 class StarGridPattern(db.Model):
@@ -150,16 +148,6 @@ class StarGridPattern(db.Model):
         main_star_position = None
         month_star_position = None
         
-        # 九星相性マトリックス — 情報用のみ（is_auspicious 判定には使わない）
-        compatibility_matrix = None
-        try:
-            compatibility_matrix = StarCompatibilityMatrix.get_by_base_star(main_star)
-        except Exception as e:
-            logger.warning(
-                "Failed to load StarCompatibilityMatrix for base star %s: %s",
-                main_star,
-                e,
-            )
         
         # 各方位の吉凶を判定
         results = {}
@@ -213,9 +201,6 @@ class StarGridPattern(db.Model):
                 result["marks"].append("opposite_zodiac")
             
             # 相性レベルは参考情報として残す
-            if compatibility_matrix:
-                compatibility_level = compatibility_matrix.get_compatibility_level(star_number)
-                result["compatibility_level"] = compatibility_level.value
             
             results[direction] = result
         
