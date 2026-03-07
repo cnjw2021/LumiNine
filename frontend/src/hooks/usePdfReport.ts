@@ -22,11 +22,14 @@ const isIOS = (): boolean => {
         (navigator.platform === 'MacIntel' && navigator.maxTouchPoints > 1);
 };
 
-/** Detect Safari (both iOS and macOS). */
+/** Detect Safari (both iOS and macOS), excluding other iOS browsers. */
 const isSafari = (): boolean => {
     if (typeof navigator === 'undefined') return false;
     const ua = navigator.userAgent;
-    return /Safari/.test(ua) && !/Chrome/.test(ua) && !/Chromium/.test(ua);
+    const isSafariLike = /Safari/.test(ua) && !/Chrome/.test(ua) && !/Chromium/.test(ua);
+    // Exclude common non-Safari iOS browsers whose UAs also include "Safari".
+    const isIOSNonSafari = /CriOS|FxiOS|EdgiOS|OPiOS/.test(ua);
+    return isSafariLike && !isIOSNonSafari;
 };
 
 /**
@@ -105,8 +108,9 @@ export const usePdfReport = ({ resultData, contentRef, onActionComplete }: UsePd
 
         try {
             // ── 0. Wait for all web fonts to finish loading ──
-            if (typeof document !== 'undefined' && (document as any).fonts?.ready) {
-                await (document as any).fonts.ready;
+            const docWithFonts = document as Document & { fonts?: FontFaceSet };
+            if (typeof document !== 'undefined' && docWithFonts.fonts?.ready) {
+                await docWithFonts.fonts.ready;
             } else {
                 // Fallback: small delay to give fonts a chance to load in environments without Font Loading API
                 await new Promise<void>(resolve => setTimeout(resolve, 50));
@@ -146,25 +150,40 @@ export const usePdfReport = ({ resultData, contentRef, onActionComplete }: UsePd
             const imgHeight = (canvas.height * A4_WIDTH_PT) / canvas.width;
 
             const pdf = new jsPDF({ orientation: 'portrait', unit: 'pt', format: 'a4' });
-            const imgData = canvas.toDataURL('image/png');
 
             if (imgHeight <= A4_HEIGHT_PT) {
-                // Single page — fill background and draw image
+                // Single page — pass canvas directly (avoids base64 memory overhead)
                 pdf.setFillColor(249, 247, 242); // #f9f7f2
                 pdf.rect(0, 0, A4_WIDTH_PT, A4_HEIGHT_PT, 'F');
-                pdf.addImage(imgData, 'PNG', 0, 0, imgWidth, imgHeight);
+                pdf.addImage(canvas, 'PNG', 0, 0, imgWidth, imgHeight);
             } else {
-                // Multi-page — slice by A4 height
+                // Multi-page — slice canvas into per-page chunks to reduce memory
                 const totalPages = Math.ceil(imgHeight / A4_HEIGHT_PT);
+                const pageHeightPx = Math.round(canvas.height / totalPages);
+
                 for (let page = 0; page < totalPages; page++) {
                     if (page > 0) pdf.addPage();
                     pdf.setFillColor(249, 247, 242);
                     pdf.rect(0, 0, A4_WIDTH_PT, A4_HEIGHT_PT, 'F');
-                    pdf.addImage(
-                        imgData, 'PNG',
-                        0, -(page * A4_HEIGHT_PT),
-                        imgWidth, imgHeight
-                    );
+
+                    // Create a temporary canvas for this page's slice
+                    const sliceCanvas = document.createElement('canvas');
+                    sliceCanvas.width = canvas.width;
+                    const yStart = page * pageHeightPx;
+                    const sliceHeight = Math.min(pageHeightPx, canvas.height - yStart);
+                    sliceCanvas.height = sliceHeight;
+
+                    const sliceCtx = sliceCanvas.getContext('2d');
+                    if (sliceCtx) {
+                        sliceCtx.drawImage(
+                            canvas,
+                            0, yStart, canvas.width, sliceHeight,
+                            0, 0, canvas.width, sliceHeight
+                        );
+                    }
+
+                    const sliceImgHeight = (sliceHeight * A4_WIDTH_PT) / canvas.width;
+                    pdf.addImage(sliceCanvas, 'PNG', 0, 0, imgWidth, sliceImgHeight);
                 }
             }
 
