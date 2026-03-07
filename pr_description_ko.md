@@ -5,9 +5,11 @@
 
 ## 주요 변경 사항
 
-### 1. 백엔드 정리 및 스키마 최적화 (Phase 4, 8 & 9)
-- **추가 스크립트 삭제 (Phase 9)**:
-  - `backend/scripts/fortune_direction_year.py`: 연반 기준 방위 계산을 수행하던 레거시 독립형 스크립트 삭제. 현재는 `StarGridPattern` 모델 및 도메인 서비스를 통해 통합 관리되고 있습니다.
+### 1. 백엔드 정리 및 스키마 최적화 (Phase 4, 8, 9 & 11)
+- **불필요한 스크립트 대거 삭제 (Phase 9 & 11)**:
+  - `backend/scripts/fortune_direction_year.py`, `generate_main_star_pngs.py`, `debug_directions.py` 등 사용되지 않거나 깨진 레거시 스크립트를 삭제했습니다.
+- **CI 빌드 오류 수정 (Phase 12)**:
+  - `backend/core/` 및 `backend/apps/ninestarki/`에 누락된 `__init__.py` 파일을 생성하여 패키지 탐색(setuptools) 오류를 해결했습니다.
 - **추가 테이블 및 모델 삭제 (Phase 8)**:
   - `moving_auspicious_dates`, `compatibility_symbol_pattern_master`, `compatibility_symbol_master`, `compatibility_readings_master` 테이블 및 관련 모델(`backend/core/models/`) 삭제.
   - `backend/scripts/generate_compatibility_readings.py` (데이터 생성 스크립트) 삭제.
