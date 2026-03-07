@@ -154,14 +154,6 @@ test-integration: ## 🧪 統合テストのみ実行します。(DB + バック
 	@echo "### [dev] 統合テストのみ実行します... ###"
 	docker compose -f docker-compose.yml -f docker-compose.dev.yml run --rm backend-test pytest tests/golden_master tests/test_direction_fortune_birthdate_2026.py -v
 
-debug-directions: ## 🔍 方位吉凶デバッグ (例: make debug-directions MAIN_STAR=5 MONTH_STAR=3)
-	@echo "### 方位吉凶デバッグスクリプトを実行します... ###"
-	docker compose -f docker-compose.yml -f docker-compose.dev.yml run --rm \
-	  -e MAIN_STAR="$(or $(MAIN_STAR),5)" \
-	  -e MONTH_STAR="$(or $(MONTH_STAR),3)" \
-	  -e TARGET_YEAR="$(or $(TARGET_YEAR),2026)" \
-	  -e SETSU_MONTH="$(or $(SETSU_MONTH),2)" \
-	  backend-test python scripts/debug_directions.py
 
 
 # ==============================================================================

@@ -156,21 +156,6 @@ CREATE TABLE IF NOT EXISTS `monthly_directions` (
   FOREIGN KEY (`northwest`) REFERENCES `stars` (`star_number`) ON DELETE CASCADE
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
--- 引っ越し吉日テーブル
-CREATE TABLE IF NOT EXISTS `moving_auspicious_dates` (
-  `id` INT AUTO_INCREMENT PRIMARY KEY COMMENT 'ID',
-  `year` INT NOT NULL COMMENT '対象年度',
-  `main_star` INT NOT NULL COMMENT '本命星',
-  `month_star` INT NOT NULL COMMENT '月命星',
-  `date` DATE NOT NULL COMMENT '引っ越し吉日',
-  `description` TEXT NULL COMMENT '備考・説明',
-  `direction` VARCHAR(50) NULL COMMENT '方位（例: 南東、北西）',
-  `created_at` TIMESTAMP DEFAULT CURRENT_TIMESTAMP COMMENT '作成日時',
-  `updated_at` TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP COMMENT '更新日時',
-  UNIQUE KEY `unique_year_main_star` (`year`, `main_star`, `month_star`, `date`),
-  FOREIGN KEY (`main_star`) REFERENCES `stars` (`star_number`) ON DELETE CASCADE,
-  FOREIGN KEY (`month_star`) REFERENCES `stars` (`star_number`) ON DELETE CASCADE,
-
 -- 十二支グループマスタ
 CREATE TABLE IF NOT EXISTS `zodiac_groups` (
   `id` INT AUTO_INCREMENT PRIMARY KEY COMMENT 'グループID',
