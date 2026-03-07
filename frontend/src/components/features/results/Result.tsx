@@ -180,7 +180,7 @@ export default function Result({ resultData, onReset }: ResultProps) {
 
         {/* ──── Footer ──── */}
         <footer className="result-footer" style={{
-          width: '100%', padding: '36px', marginTop: 'auto',
+          width: '100%', padding: '36px', marginTop: '0',
           borderTop: '1px solid rgba(212, 175, 55, 0.1)', textAlign: 'center'
         }}>
           <p style={{

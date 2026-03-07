@@ -1,7 +1,6 @@
 'use client';
 
 import React from 'react';
-import Image from 'next/image';
 import { NumerologyStone, SixLayerPowerStones } from '@/types/directionFortune';
 import { getStoneImagePath } from '@/utils/stoneImageMap';
 
@@ -42,12 +41,13 @@ const PowerstoneCard: React.FC<{
             marginRight: '16px', flexShrink: 0,
             backgroundColor: '#f9f7f2',
         }}>
-            <Image
+            {/* eslint-disable-next-line @next/next/no-img-element */}
+            <img
                 src={getStoneImagePath(stone.stone_id)}
                 alt={stone.stone_name}
                 width={48}
                 height={48}
-                style={{ objectFit: 'cover', borderRadius: '50%' }}
+                style={{ objectFit: 'cover', borderRadius: '50%', display: 'block' }}
             />
         </div>
 

@@ -105,6 +105,7 @@ export const usePdfReport = ({ resultData, contentRef, onActionComplete }: UsePd
         // Query header outside try so finally can restore its original position
         const header = target.querySelector('.result-header') as HTMLElement | null;
         const originalPosition = header?.style.position ?? '';
+        const originalMinHeight = target.style.minHeight;
 
         try {
             // ── 0. Wait for all web fonts to finish loading ──
@@ -124,6 +125,10 @@ export const usePdfReport = ({ resultData, contentRef, onActionComplete }: UsePd
             hiddenEls.forEach(el => (el as HTMLElement).style.display = 'none');
 
             if (header) header.style.position = 'static';
+
+            // Temporarily remove minHeight so html2canvas captures only the
+            // actual content height and does not add viewport-sized blank space.
+            target.style.minHeight = 'unset';
 
             // ── 2. Determine safe scale (iOS canvas memory defense) ──
             const preferredScale = 2;
@@ -230,6 +235,7 @@ export const usePdfReport = ({ resultData, contentRef, onActionComplete }: UsePd
             const hiddenEls = target.querySelectorAll('.hide-on-pdf');
             hiddenEls.forEach(el => (el as HTMLElement).style.display = '');
             if (header) header.style.position = originalPosition;
+            target.style.minHeight = originalMinHeight;
             setIsGeneratingPdf(false);
         }
     };
