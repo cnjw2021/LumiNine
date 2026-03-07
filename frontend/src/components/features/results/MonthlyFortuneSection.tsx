@@ -122,16 +122,18 @@ const MonthlyFortuneSection: React.FC<MonthlyFortuneSectionProps> = ({
                         {DIRECTION_ORDER.map((dir) => {
                             if (dir === 'center') {
                                 return (
-                                    <div key={dir} style={{
-                                        aspectRatio: '1/1', borderRadius: '14px',
-                                        backgroundColor: '#ffffff',
-                                        display: 'flex', flexDirection: 'column',
-                                        alignItems: 'center', justifyContent: 'center',
-                                        border: '1px solid rgba(212, 175, 55, 0.2)',
-                                        boxShadow: 'inset 0 2px 4px 0 rgba(0, 0, 0, 0.06)'
-                                    }}>
-                                        <span style={{ fontSize: '10px', color: '#d4af37', fontWeight: 700, marginBottom: '4px', fontFamily: '"Noto Serif JP", serif' }}>中宮</span>
-                                        <span style={{ color: '#d4af37', fontSize: '20px' }}>○</span>
+                                    <div
+                                        key={dir}
+                                        style={{
+                                            aspectRatio: '1/1', borderRadius: '14px',
+                                            backgroundColor: '#ffffff',
+                                            display: 'flex', flexDirection: 'column',
+                                            alignItems: 'center', justifyContent: 'center',
+                                            border: '1px solid rgba(212, 175, 55, 0.2)',
+                                            boxShadow: 'inset 0 2px 4px 0 rgba(0, 0, 0, 0.06)',
+                                        }}
+                                    >
+                                        <span style={{ fontSize: '10px', color: '#d4af37', fontWeight: 700, fontFamily: '"Noto Serif JP", serif' }}>中宮</span>
                                     </div>
                                 );
                             }
@@ -146,22 +148,26 @@ const MonthlyFortuneSection: React.FC<MonthlyFortuneSectionProps> = ({
                             let bgColor = 'transparent';
                             let textColor = '#a0a0a0';
                             let icon = '·';
+                            let defaultReason = '無難';
 
                             switch (fortuneLevel) {
                                 case 'best_auspicious':
                                     bgColor = 'rgba(212, 175, 55, 0.12)';
                                     textColor = '#b8860b';
                                     icon = '✿';
+                                    defaultReason = '最吉方位';
                                     break;
                                 case 'auspicious':
                                     bgColor = 'rgba(90, 138, 110, 0.10)';
                                     textColor = '#3d7a56';
                                     icon = '✿';
+                                    defaultReason = '吉方位';
                                     break;
                                 case 'inauspicious':
                                     bgColor = 'rgba(192, 82, 77, 0.08)';
                                     textColor = '#b04a46';
                                     icon = '✕';
+                                    defaultReason = '凶方位';
                                     break;
                                 default: // neutral
                                     bgColor = 'transparent';
@@ -170,13 +176,17 @@ const MonthlyFortuneSection: React.FC<MonthlyFortuneSectionProps> = ({
                             }
 
                             return (
-                                <div key={dir} style={{
-                                    aspectRatio: '1/1', borderRadius: '14px',
-                                    backgroundColor: bgColor,
-                                    display: 'flex', flexDirection: 'column',
-                                    alignItems: 'center', justifyContent: 'center',
-                                    border: '1px solid #ffffff'
-                                }}>
+                                <div
+                                    key={dir}
+                                    style={{
+                                        aspectRatio: '1/1', borderRadius: '14px',
+                                        backgroundColor: bgColor,
+                                        display: 'flex', flexDirection: 'column',
+                                        alignItems: 'center', justifyContent: 'center',
+                                        border: '1px solid #ffffff',
+                                    }}
+                                    title={info?.reason || defaultReason}
+                                >
                                     <span style={{
                                         fontSize: '10px', color: textColor, fontWeight: 700,
                                         marginBottom: '4px', fontFamily: '"Montserrat", sans-serif'

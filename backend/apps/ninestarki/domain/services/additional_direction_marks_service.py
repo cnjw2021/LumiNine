@@ -92,6 +92,17 @@ class AdditionalDirectionMarksService:
     吉方判定済みの方位をダウングレードする。
     """
 
+    @staticmethod
+    def _append_reason(
+        result: Dict[str, Any], label: str,
+    ) -> None:
+        """Append *label* to the ``reason`` field of *result* (comma-separated, dedup)."""
+        reason = result.get("reason")
+        if not reason:
+            result["reason"] = label
+        elif label not in reason.split(", "):
+            result["reason"] = reason + ", " + label
+
     def enrich(
         self,
         directions: Dict[str, Dict[str, Any]],
@@ -135,6 +146,7 @@ class AdditionalDirectionMarksService:
                     result["is_auspicious"] = None
                 if result:
                     result.setdefault("additional_marks", []).append("teii_taichuu")
+                    self._append_reason(result, "定位対冲")
 
         # ── 2) 小児殺 ──
         shouni_dir = SHOUNI_SATSU.get(month_branch)
@@ -144,6 +156,7 @@ class AdditionalDirectionMarksService:
                 result["fortune_level"] = "neutral"
                 result["is_auspicious"] = None
             result.setdefault("additional_marks", []).append("shouni_satsu")
+            self._append_reason(result, "小児殺")
 
         # ── 3) 天道 (参考情報のみ) ──
         tendo_dir = TENDO_DIRECTION.get(month_branch)
@@ -151,3 +164,4 @@ class AdditionalDirectionMarksService:
             directions[tendo_dir].setdefault(
                 "additional_marks", [],
             ).append("tendo")
+            self._append_reason(directions[tendo_dir], "天道")
