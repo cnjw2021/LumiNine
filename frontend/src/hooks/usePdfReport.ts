@@ -108,16 +108,11 @@ export const usePdfReport = ({ resultData, contentRef, onActionComplete }: UsePd
 
         try {
             // ── 0. Wait for all web fonts to finish loading ──
-            if (typeof document !== 'undefined') {
-                const docWithFonts = document as Document & { fonts?: FontFaceSet };
-                if (docWithFonts.fonts?.ready) {
-                    await docWithFonts.fonts.ready;
-                } else {
-                    // Fallback: small delay to give fonts a chance to load in environments without Font Loading API
-                    await new Promise<void>(resolve => setTimeout(resolve, 50));
-                }
+            // This hook is 'use client' — it only runs in a browser context.
+            // Use fonts.ready directly; fallback for legacy browsers without Font Loading API.
+            if (document.fonts?.ready) {
+                await document.fonts.ready;
             } else {
-                // Fallback: small delay to give fonts a chance to load when `document` is not available
                 await new Promise<void>(resolve => setTimeout(resolve, 50));
             }
 
@@ -167,22 +162,23 @@ export const usePdfReport = ({ resultData, contentRef, onActionComplete }: UsePd
                 const pageHeightPx = Math.floor((A4_HEIGHT_PT * canvas.width) / A4_WIDTH_PT);
                 const totalPages = Math.ceil(canvas.height / pageHeightPx);
 
+                // Reuse a single offscreen canvas across all pages to reduce allocation/GC pressure
+                const sliceCanvas = document.createElement('canvas');
+                const sliceCtx = sliceCanvas.getContext('2d');
+                if (!sliceCtx) {
+                    throw new Error('Failed to acquire 2D context for slice canvas during PDF generation.');
+                }
+
                 for (let page = 0; page < totalPages; page++) {
                     if (page > 0) pdf.addPage();
                     pdf.setFillColor(249, 247, 242);
                     pdf.rect(0, 0, A4_WIDTH_PT, A4_HEIGHT_PT, 'F');
 
-                    // Create a temporary canvas for this page's slice
-                    const sliceCanvas = document.createElement('canvas');
-                    sliceCanvas.width = canvas.width;
+                    // Resize the shared slice canvas for this page's slice
                     const yStart = page * pageHeightPx;
                     const sliceHeight = Math.min(pageHeightPx, canvas.height - yStart);
+                    sliceCanvas.width = canvas.width;
                     sliceCanvas.height = sliceHeight;
-
-                    const sliceCtx = sliceCanvas.getContext('2d');
-                    if (!sliceCtx) {
-                        throw new Error('Failed to acquire 2D context for slice canvas during PDF generation.');
-                    }
 
                     sliceCtx.drawImage(
                         canvas,
@@ -197,7 +193,9 @@ export const usePdfReport = ({ resultData, contentRef, onActionComplete }: UsePd
             }
 
             // ── 6. Trigger download (Safari fallback) ──
-            const fileName = `${resultData.fullName || 'User'}_NineStarKi_Report.pdf`;
+            // Sanitize user-provided name to remove OS-forbidden filename characters
+            const safeName = (resultData.fullName || 'User').replace(/[/\\:*?"<>|]/g, '_').slice(0, 100);
+            const fileName = `${safeName}_NineStarKi_Report.pdf`;
 
             if (isSafari()) {
                 // Safari may block pdf.save() blob downloads.
