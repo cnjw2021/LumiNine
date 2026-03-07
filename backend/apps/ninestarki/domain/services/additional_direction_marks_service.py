@@ -135,6 +135,13 @@ class AdditionalDirectionMarksService:
                     result["is_auspicious"] = None
                 if result:
                     result.setdefault("additional_marks", []).append("teii_taichuu")
+                    
+                    # Update reason string for display
+                    reason = result.get("reason")
+                    if not reason:
+                        result["reason"] = "定位対冲"
+                    elif "定位対冲" not in reason:
+                        result["reason"] = reason + ", 定位対冲"
 
         # ── 2) 小児殺 ──
         shouni_dir = SHOUNI_SATSU.get(month_branch)
@@ -144,6 +151,13 @@ class AdditionalDirectionMarksService:
                 result["fortune_level"] = "neutral"
                 result["is_auspicious"] = None
             result.setdefault("additional_marks", []).append("shouni_satsu")
+            
+            # Update reason string for display
+            reason = result.get("reason")
+            if not reason:
+                result["reason"] = "小児殺"
+            elif "小児殺" not in reason:
+                result["reason"] = reason + ", 小児殺"
 
         # ── 3) 天道 (参考情報のみ) ──
         tendo_dir = TENDO_DIRECTION.get(month_branch)
@@ -151,3 +165,10 @@ class AdditionalDirectionMarksService:
             directions[tendo_dir].setdefault(
                 "additional_marks", [],
             ).append("tendo")
+            
+            # Update reason string for display
+            reason = directions[tendo_dir].get("reason")
+            if not reason:
+                directions[tendo_dir]["reason"] = "天道"
+            elif "天道" not in reason:
+                directions[tendo_dir]["reason"] = reason + ", 天道"
