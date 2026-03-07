@@ -106,6 +106,9 @@ export const usePdfReport = ({ resultData, contentRef, onActionComplete }: UsePd
         const header = target.querySelector('.result-header') as HTMLElement | null;
         const originalPosition = header?.style.position ?? '';
         const originalMinHeight = target.style.minHeight;
+        // Capture original inline display values before hiding (to restore in finally)
+        const hiddenEls = target.querySelectorAll('.hide-on-pdf');
+        const originalDisplays = Array.from(hiddenEls).map(el => (el as HTMLElement).style.display);
 
         try {
             // ── 0. Wait for all web fonts to finish loading ──
@@ -121,7 +124,6 @@ export const usePdfReport = ({ resultData, contentRef, onActionComplete }: UsePd
             const { jsPDF } = await import('jspdf');
 
             // ── 1. Hide non-PDF elements & disable sticky header ──
-            const hiddenEls = target.querySelectorAll('.hide-on-pdf');
             hiddenEls.forEach(el => (el as HTMLElement).style.display = 'none');
 
             if (header) header.style.position = 'static';
@@ -208,8 +210,7 @@ export const usePdfReport = ({ resultData, contentRef, onActionComplete }: UsePd
             alert('PDFの生成に失敗しました。もう一度お試しください。');
         } finally {
             // ── Always restore hidden elements & sticky header ──
-            const hiddenEls = target.querySelectorAll('.hide-on-pdf');
-            hiddenEls.forEach(el => (el as HTMLElement).style.display = '');
+            hiddenEls.forEach((el, i) => (el as HTMLElement).style.display = originalDisplays[i] ?? '');
             if (header) header.style.position = originalPosition;
             target.style.minHeight = originalMinHeight;
             setIsGeneratingPdf(false);
