@@ -46,13 +46,23 @@ const getSafeScale = (el: HTMLElement, preferredScale: number): number => {
 
     if (pixels <= IOS_CANVAS_MAX_PIXELS) return preferredScale;
 
-    // Derive the largest integer-friendly scale that fits.
+    // Derive the largest scale that fits within the pixel limit.
     const maxScale = Math.sqrt(IOS_CANVAS_MAX_PIXELS / (w * h));
-    const safeScale = Math.max(1, Math.floor(maxScale));
+
+    // If even scale=1 cannot fit, fail fast with a clear error.
+    if (!Number.isFinite(maxScale) || maxScale <= 0) {
+        const message =
+            `[PDF] iOS canvas limit exceeded even at scale=1. ` +
+            `Element size ${w}×${h} (~${(w * h / 1e6).toFixed(1)} MP) is too large for the canvas.`;
+        console.error(message);
+        throw new Error(message);
+    }
+
+    const safeScale = Math.min(preferredScale, maxScale);
 
     console.warn(
         `[PDF] iOS canvas limit hit: ${(pixels / 1e6).toFixed(1)} MP > 16 MP. ` +
-        `Reducing scale from ${preferredScale} to ${safeScale}.`
+        `Reducing scale from ${preferredScale} to ${safeScale.toFixed(2)}.`
     );
     return safeScale;
 };
@@ -95,7 +105,12 @@ export const usePdfReport = ({ resultData, contentRef, onActionComplete }: UsePd
 
         try {
             // ── 0. Wait for all web fonts to finish loading ──
-            await document.fonts.ready;
+            if (typeof document !== 'undefined' && (document as any).fonts?.ready) {
+                await (document as any).fonts.ready;
+            } else {
+                // Fallback: small delay to give fonts a chance to load in environments without Font Loading API
+                await new Promise<void>(resolve => setTimeout(resolve, 50));
+            }
 
             const html2canvas = (await import('html2canvas')).default;
             const { jsPDF } = await import('jspdf');
@@ -134,11 +149,10 @@ export const usePdfReport = ({ resultData, contentRef, onActionComplete }: UsePd
             const imgData = canvas.toDataURL('image/png');
 
             if (imgHeight <= A4_HEIGHT_PT) {
-                // Single page — centre content
-                const xOffset = (A4_WIDTH_PT - imgWidth) / 2;
+                // Single page — fill background and draw image
                 pdf.setFillColor(249, 247, 242); // #f9f7f2
                 pdf.rect(0, 0, A4_WIDTH_PT, A4_HEIGHT_PT, 'F');
-                pdf.addImage(imgData, 'PNG', xOffset, 0, imgWidth, imgHeight);
+                pdf.addImage(imgData, 'PNG', 0, 0, imgWidth, imgHeight);
             } else {
                 // Multi-page — slice by A4 height
                 const totalPages = Math.ceil(imgHeight / A4_HEIGHT_PT);
@@ -162,8 +176,20 @@ export const usePdfReport = ({ resultData, contentRef, onActionComplete }: UsePd
                 // Open the PDF in a new tab instead, which Safari handles reliably.
                 const blob = pdf.output('blob');
                 const blobUrl = URL.createObjectURL(blob);
-                window.open(blobUrl, '_blank');
-                // Revoke after a short delay so the tab can load
+                const newWindow = window.open(blobUrl, '_blank', 'noopener,noreferrer');
+                if (newWindow) {
+                    // Ensure no access to the opener, even if browser ignores features string.
+                    newWindow.opener = null;
+                } else {
+                    // Popup was blocked — fall back to a programmatic download link.
+                    const link = document.createElement('a');
+                    link.href = blobUrl;
+                    link.download = fileName;
+                    document.body.appendChild(link);
+                    link.click();
+                    document.body.removeChild(link);
+                }
+                // Revoke after a short delay so the tab or download can complete
                 setTimeout(() => URL.revokeObjectURL(blobUrl), 10_000);
             } else {
                 pdf.save(fileName);
