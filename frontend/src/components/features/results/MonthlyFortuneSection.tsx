@@ -81,8 +81,6 @@ const MonthlyFortuneSection: React.FC<MonthlyFortuneSectionProps> = ({
     monthlyStone,
     protectionStone,
 }) => {
-
-
     return (
         <section>
             {/* Directional Guide Header */}
