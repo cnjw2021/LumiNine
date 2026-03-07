@@ -1,6 +1,6 @@
 'use client';
 
-import React from 'react';
+import React, { useState } from 'react';
 import Image from 'next/image';
 import { GogyoStone, PeriodFortuneData } from '@/types/directionFortune';
 import { getStoneImagePath } from '@/utils/stoneImageMap';
@@ -83,6 +83,8 @@ const MonthlyFortuneSection: React.FC<MonthlyFortuneSectionProps> = ({
     monthlyStone,
     protectionStone,
 }) => {
+    const [selectedDirection, setSelectedDirection] = useState<string | null>(null);
+
     return (
         <section>
             {/* Directional Guide Header */}
@@ -122,14 +124,22 @@ const MonthlyFortuneSection: React.FC<MonthlyFortuneSectionProps> = ({
                         {DIRECTION_ORDER.map((dir) => {
                             if (dir === 'center') {
                                 return (
-                                    <div key={dir} style={{
-                                        aspectRatio: '1/1', borderRadius: '14px',
-                                        backgroundColor: '#ffffff',
-                                        display: 'flex', flexDirection: 'column',
-                                        alignItems: 'center', justifyContent: 'center',
-                                        border: '1px solid rgba(212, 175, 55, 0.2)',
-                                        boxShadow: 'inset 0 2px 4px 0 rgba(0, 0, 0, 0.06)'
-                                    }}>
+                                    <div
+                                        key={dir}
+                                        onClick={() => setSelectedDirection(dir)}
+                                        style={{
+                                            aspectRatio: '1/1', borderRadius: '14px',
+                                            backgroundColor: '#ffffff',
+                                            display: 'flex', flexDirection: 'column',
+                                            alignItems: 'center', justifyContent: 'center',
+                                            border: '1px solid rgba(212, 175, 55, 0.2)',
+                                            boxShadow: selectedDirection === dir
+                                                ? '0 0 0 2px rgba(212, 175, 55, 0.6), inset 0 2px 4px 0 rgba(0, 0, 0, 0.06)'
+                                                : 'inset 0 2px 4px 0 rgba(0, 0, 0, 0.06)',
+                                            cursor: 'pointer',
+                                            transition: 'all 0.2s ease'
+                                        }}
+                                    >
                                         <span style={{ fontSize: '10px', color: '#d4af37', fontWeight: 700, marginBottom: '4px', fontFamily: '"Noto Serif JP", serif' }}>中宮</span>
                                         <span style={{ color: '#d4af37', fontSize: '20px' }}>○</span>
                                     </div>
@@ -170,14 +180,21 @@ const MonthlyFortuneSection: React.FC<MonthlyFortuneSectionProps> = ({
                             }
 
                             return (
-                                <div key={dir} style={{
-                                    aspectRatio: '1/1', borderRadius: '14px',
-                                    backgroundColor: bgColor,
-                                    display: 'flex', flexDirection: 'column',
-                                    alignItems: 'center', justifyContent: 'center',
-                                    border: '1px solid #ffffff',
-                                    cursor: 'help'
-                                }} title={info?.reason || '無難'}>
+                                <div
+                                    key={dir}
+                                    onClick={() => setSelectedDirection(dir)}
+                                    style={{
+                                        aspectRatio: '1/1', borderRadius: '14px',
+                                        backgroundColor: bgColor,
+                                        display: 'flex', flexDirection: 'column',
+                                        alignItems: 'center', justifyContent: 'center',
+                                        border: '1px solid #ffffff',
+                                        boxShadow: selectedDirection === dir ? '0 0 0 2px rgba(212, 175, 55, 0.6)' : 'none',
+                                        cursor: 'pointer',
+                                        transition: 'all 0.2s ease'
+                                    }}
+                                    title={info?.reason || '無難'}
+                                >
                                     <span style={{
                                         fontSize: '10px', color: textColor, fontWeight: 700,
                                         marginBottom: '4px', fontFamily: '"Montserrat", sans-serif'
@@ -188,6 +205,49 @@ const MonthlyFortuneSection: React.FC<MonthlyFortuneSectionProps> = ({
                                 </div>
                             );
                         })}
+                    </div>
+                </div>
+            )}
+
+            {/* Selected Direction Detail Box (Mobile Friendly Tooltip alternative) */}
+            {selectedDirection && currentMonthData && (
+                <div style={{
+                    marginTop: '-20px',
+                    marginBottom: '36px',
+                    padding: '16px 20px',
+                    backgroundColor: '#ffffff',
+                    borderRadius: '16px',
+                    border: '1px solid rgba(212, 175, 55, 0.2)',
+                    boxShadow: '0 4px 12px rgba(0,0,0,0.03)',
+                    display: 'flex',
+                    alignItems: 'center',
+                    gap: '16px',
+                    animation: 'fadeIn 0.3s ease'
+                }}>
+                    <div style={{
+                        fontFamily: '"Montserrat", sans-serif',
+                        fontSize: '16px',
+                        fontWeight: 700,
+                        color: '#d4af37',
+                        width: '40px',
+                        textAlign: 'center',
+                        flexShrink: 0
+                    }}>
+                        {DIRECTION_ABBR[selectedDirection]}
+                    </div>
+                    <div style={{ width: '1px', alignSelf: 'stretch', backgroundColor: 'rgba(212, 175, 55, 0.2)' }}></div>
+                    <div style={{ flex: 1 }}>
+                        <p style={{
+                            margin: 0,
+                            fontFamily: '"Noto Serif JP", serif',
+                            fontSize: '13px',
+                            color: '#4a4a4a',
+                            lineHeight: 1.6
+                        }}>
+                            {selectedDirection === 'center'
+                                ? '無難'
+                                : (currentMonthData.directions?.[selectedDirection]?.reason || '無難')}
+                        </p>
                     </div>
                 </div>
             )}
