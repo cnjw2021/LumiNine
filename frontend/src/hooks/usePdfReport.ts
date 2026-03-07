@@ -88,7 +88,7 @@ interface UsePdfReportProps {
  * 2. iOS Safari canvas memory — auto scale reduction
  * 3. Empty canvas validation — throws on 0×0 capture
  * 4. Safari download fallback — Blob + window.open
- * 5. Multi-page auto-split — A4-height slicing
+ * 5. Fit-to-page scaling — proportional shrink if content exceeds A4 height
  */
 export const usePdfReport = ({ resultData, contentRef, onActionComplete }: UsePdfReportProps) => {
     const [isGeneratingPdf, setIsGeneratingPdf] = useState<boolean>(false);
@@ -105,6 +105,10 @@ export const usePdfReport = ({ resultData, contentRef, onActionComplete }: UsePd
         // Query header outside try so finally can restore its original position
         const header = target.querySelector('.result-header') as HTMLElement | null;
         const originalPosition = header?.style.position ?? '';
+        const originalMinHeight = target.style.minHeight;
+        // Capture original inline display values before hiding (to restore in finally)
+        const hiddenEls = target.querySelectorAll('.hide-on-pdf');
+        const originalDisplays = Array.from(hiddenEls).map(el => (el as HTMLElement).style.display);
 
         try {
             // ── 0. Wait for all web fonts to finish loading ──
@@ -120,10 +124,13 @@ export const usePdfReport = ({ resultData, contentRef, onActionComplete }: UsePd
             const { jsPDF } = await import('jspdf');
 
             // ── 1. Hide non-PDF elements & disable sticky header ──
-            const hiddenEls = target.querySelectorAll('.hide-on-pdf');
             hiddenEls.forEach(el => (el as HTMLElement).style.display = 'none');
 
             if (header) header.style.position = 'static';
+
+            // Temporarily remove minHeight so html2canvas captures only the
+            // actual content height and does not add viewport-sized blank space.
+            target.style.minHeight = 'unset';
 
             // ── 2. Determine safe scale (iOS canvas memory defense) ──
             const preferredScale = 2;
@@ -145,52 +152,28 @@ export const usePdfReport = ({ resultData, contentRef, onActionComplete }: UsePd
                 );
             }
 
-            // ── 5. Map image onto A4 — multi-page auto-split ──
+            // ── 5. Map image onto A4 — fit-to-page scaling ──
             const imgWidth = A4_WIDTH_PT;
             const imgHeight = (canvas.height * A4_WIDTH_PT) / canvas.width;
 
             const pdf = new jsPDF({ orientation: 'portrait', unit: 'pt', format: 'a4' });
 
-            if (imgHeight <= A4_HEIGHT_PT) {
-                // Single page — pass canvas directly (avoids base64 memory overhead)
-                pdf.setFillColor(249, 247, 242); // #f9f7f2
-                pdf.rect(0, 0, A4_WIDTH_PT, A4_HEIGHT_PT, 'F');
-                pdf.addImage(canvas, 'PNG', 0, 0, imgWidth, imgHeight);
-            } else {
-                // Multi-page — slice canvas into per-page chunks to reduce memory
-                // Use integer pixel boundaries to avoid off-by-one gaps/overlaps between slices
-                const pageHeightPx = Math.floor((A4_HEIGHT_PT * canvas.width) / A4_WIDTH_PT);
-                const totalPages = Math.ceil(canvas.height / pageHeightPx);
+            // Always fit to single A4 page.
+            // If content exceeds A4 height (e.g. Safari renders taller than Chrome),
+            // scale down proportionally so everything fits on one page.
+            pdf.setFillColor(249, 247, 242); // #f9f7f2
+            pdf.rect(0, 0, A4_WIDTH_PT, A4_HEIGHT_PT, 'F');
 
-                // Reuse a single offscreen canvas across all pages to reduce allocation/GC pressure
-                const sliceCanvas = document.createElement('canvas');
-                const sliceCtx = sliceCanvas.getContext('2d');
-                if (!sliceCtx) {
-                    throw new Error('Failed to acquire 2D context for slice canvas during PDF generation.');
-                }
-
-                for (let page = 0; page < totalPages; page++) {
-                    if (page > 0) pdf.addPage();
-                    pdf.setFillColor(249, 247, 242);
-                    pdf.rect(0, 0, A4_WIDTH_PT, A4_HEIGHT_PT, 'F');
-
-                    // Resize the shared slice canvas for this page's slice
-                    const yStart = page * pageHeightPx;
-                    const sliceHeight = Math.min(pageHeightPx, canvas.height - yStart);
-                    sliceCanvas.width = canvas.width;
-                    sliceCanvas.height = sliceHeight;
-
-                    sliceCtx.drawImage(
-                        canvas,
-                        0, yStart, canvas.width, sliceHeight,
-                        0, 0, canvas.width, sliceHeight
-                    );
-
-                    // Derive PDF height from the actual integer canvas height to stay consistent
-                    const sliceImgHeight = (sliceCanvas.height * A4_WIDTH_PT) / canvas.width;
-                    pdf.addImage(sliceCanvas, 'PNG', 0, 0, imgWidth, sliceImgHeight);
-                }
+            let finalWidth = imgWidth;
+            let finalHeight = imgHeight;
+            if (imgHeight > A4_HEIGHT_PT) {
+                const ratio = A4_HEIGHT_PT / imgHeight;
+                finalWidth = imgWidth * ratio;
+                finalHeight = A4_HEIGHT_PT;
             }
+            // Center horizontally if scaled down (content narrower than A4)
+            const xOffset = (A4_WIDTH_PT - finalWidth) / 2;
+            pdf.addImage(canvas, 'PNG', xOffset, 0, finalWidth, finalHeight);
 
             // ── 6. Trigger download (Safari fallback) ──
             // Sanitize user-provided name to remove OS-forbidden filename characters
@@ -227,9 +210,9 @@ export const usePdfReport = ({ resultData, contentRef, onActionComplete }: UsePd
             alert('PDFの生成に失敗しました。もう一度お試しください。');
         } finally {
             // ── Always restore hidden elements & sticky header ──
-            const hiddenEls = target.querySelectorAll('.hide-on-pdf');
-            hiddenEls.forEach(el => (el as HTMLElement).style.display = '');
+            hiddenEls.forEach((el, i) => (el as HTMLElement).style.display = originalDisplays[i] ?? '');
             if (header) header.style.position = originalPosition;
+            target.style.minHeight = originalMinHeight;
             setIsGeneratingPdf(false);
         }
     };
