@@ -1,3 +1,5 @@
+'use client';
+
 import React from 'react';
 import Image from 'next/image';
 import { GogyoStone, PeriodFortuneData } from '@/types/directionFortune';
@@ -200,7 +202,6 @@ const MonthlyFortuneSection: React.FC<MonthlyFortuneSectionProps> = ({
                     </div>
                 </div>
             )}
-
 
             {/* Monthly and Protection Stones */}
             {(monthlyStone || protectionStone) && (
