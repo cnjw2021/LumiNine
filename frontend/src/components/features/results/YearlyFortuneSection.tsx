@@ -1,7 +1,7 @@
 'use client';
 
 import React from 'react';
-import Image from 'next/image';
+
 import { NumerologyStone } from '@/types/directionFortune';
 import { getStoneImagePath } from '@/utils/stoneImageMap';
 
@@ -67,12 +67,13 @@ const YearlyFortuneSection: React.FC<YearlyFortuneSectionProps> = ({
                             printColorAdjust: 'exact',
                             WebkitPrintColorAdjust: 'exact',
                         }}>
-                            <Image
+                            {/* eslint-disable-next-line @next/next/no-img-element */}
+                            <img
                                 src={getStoneImagePath(yearlyStone.stone_id)}
                                 alt={yearlyStone.stone_name}
                                 width={92}
                                 height={92}
-                                style={{ objectFit: 'cover', borderRadius: '50%' }}
+                                style={{ objectFit: 'cover', borderRadius: '50%', display: 'block' }}
                             />
                         </div>
                         <span style={{
