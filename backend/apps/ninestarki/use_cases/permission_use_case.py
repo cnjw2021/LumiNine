@@ -46,88 +46,78 @@ class PermissionUseCase:
             'permissions': permissions_by_category
         }
 
-    def update_user_permissions(self, current_user_email: str, target_user_id: int, permission_names: List[str]):
-        """ユーザーの権限を更新します."""
+    def update_user_permissions(self, current_user_email: str, target_user_id: int, permission_codes: List[str]):
+        """사용자의 권한을 업데이트합니다."""
         current_user = self.user_repo.find_by_email(current_user_email)
         target_user = self.user_repo.find_by_id(target_user_id)
 
+        if not current_user:
+            raise PermissionError("현재 사용자 정보를 찾을 수 없습니다.")
         if not target_user:
-            raise UserNotFoundError(f"ID {target_user_id}のユーザーを見つけることができませんでした.")
-        if target_user.is_superuser:
-            raise PermissionError("スーパーユーザーの権限は変更できません.")
-
-        user = self.user_repo.find_by_id(user_id)
+            raise UserNotFoundError(f"ID {target_user_id}의 사용자를 찾을 수 없습니다.")
         
-        # スーパーユーザーの権限は変更不可
-        if user.is_superuser:
-            return jsonify({'error': 'スーパーユーザーの権限は変更できません'}), 400
-            
-        current_user_email = get_jwt_identity()
-        current_user = self.user_repo.find_by_email(current_user_email)
+        # 슈퍼유저의 권한은 변경 불가
+        if target_user.is_superuser:
+            raise PermissionError("슈퍼유저의 권한은 변경할 수 없습니다.")
 
-        # システム権限の変更はスーパーユーザーのみ可能
+        # 시스템 권한 변경은 슈퍼유저만 가능
         system_permissions = self.perm_repo.find_by_category('system')
         system_permission_codes = [p.code for p in system_permissions]
         
-        # 現在のシステム権限を取得
-        current_permissions = user.get_permissions()
+        # 현재 시스템 권한 추출
+        current_permissions = target_user.get_permissions()
         current_system_permissions = [p.code for p in current_permissions if p.code in system_permission_codes]
         
-        # 更新後のシステム権限を取得
+        # 요청된 새로운 시스템 권한 추출
         new_system_permissions = [code for code in permission_codes if code in system_permission_codes]
         
-        # システム権限に変更がある場合はスーパーユーザーチェック
+        # 시스템 권한에 변경이 있는 경우 현재 사용자가 슈퍼유저인지 확인
         if set(current_system_permissions) != set(new_system_permissions):
             if not current_user.is_superuser:
-                return jsonify({
-                    'error': 'システム権限の変更にはスーパーユーザー権限が必要です',
-                    'code': 'permission_denied'
-                }), 403
+                raise PermissionError("시스템 권한 변경에는 슈퍼유저 권한이 필요합니다.")
         
-        # 現在の権限を取得
+        # 현재 권한 코드 목록
         current_permission_codes = [p.code for p in current_permissions]
         
-        # 追加する権限
+        # 추가할 권한과 제거할 권한 계산
         permissions_to_add = [code for code in permission_codes if code not in current_permission_codes]
+        permissions_to_remove = [code for code in current_permission_codes if code not in permission_codes]
         
-        # 削除する権限
-        permissions_to_remove = [code for code in current_permission_codes 
-                               if code not in permission_codes]
-        
-        # 権限を追加
+        # 권한 추가
         for code in permissions_to_add:
-            user.grant_permission(code, current_user)
+            target_user.grant_permission(code, current_user)
             
-        # 権限を削除
+        # 권한 제거
         for code in permissions_to_remove:
-            user.revoke_permission(code, current_user)
+            target_user.revoke_permission(code, current_user)
 
     def create_permission(self, data: Dict[str, Any]) -> Permission:
-        """新しい権限を作成します."""
+        """새로운 권한을 생성합니다."""
         code = data.get('code')
         name = data.get('name')
         category = data.get('category')
         if not all([code, name, category]):
-            raise ValueError("必須フィールドが不足しています.")
+            raise ValueError("필수 필드(code, name, category)가 누락되었습니다.")
 
         existing = self.perm_repo.find_by_name(code)
         if existing:
-            raise PermissionError(f"'{code}' 権限はすでに存在します.")
+            raise PermissionError(f"'{code}' 권한이 이미 존재합니다.")
 
         permission = Permission(
-            name=code, # 'name' フィールドに 'code' を使用
+            name=name,
             description=data.get('description'),
-            category=category
+            category=category,
+            code=code
         )
         return self.perm_repo.save(permission)
 
     def check_user_permission(self, email: str, permission_code: str) -> bool:
-        """ユーザーが特定の権限を持っているかどうかを確認します."""
+        """사용자가 특정 권한을 가졌는지 확인합니다."""
         if not permission_code:
-            raise ValueError("権限コードが指定されていません.")
+            raise ValueError("권한 코드가 지정되지 않았습니다.")
             
         user = self.user_repo.find_by_email(email)
         if not user:
-            raise UserNotFoundError("ユーザーを見つけることができませんでした.")
+            raise UserNotFoundError("사용자를 찾을 수 없습니다.")
 
         return user.has_permission(permission_code)
