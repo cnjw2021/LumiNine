@@ -150,7 +150,7 @@ export const usePdfReport = ({ resultData, contentRef, onActionComplete }: UsePd
                 );
             }
 
-            // ── 5. Map image onto A4 — multi-page auto-split ──
+            // ── 5. Map image onto A4 — fit-to-page scaling ──
             const imgWidth = A4_WIDTH_PT;
             const imgHeight = (canvas.height * A4_WIDTH_PT) / canvas.width;
 
