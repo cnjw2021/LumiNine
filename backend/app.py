@@ -130,9 +130,6 @@ def create_app() -> Flask:
                     "/api/nine-star/monthly-chart",
                     "/api/auth/login",
                     "/api/auth/me",
-                    "/api/admin/stars",
-                    "/api/admin/solar/solar-starts",
-                    "/api/admin/solar/solar-terms",
                     "/api/monthly/directions"
                 ]
             }, cls=CustomJSONEncoder, ensure_ascii=False),

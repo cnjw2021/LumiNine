@@ -55,32 +55,6 @@ CREATE TABLE IF NOT EXISTS daily_astrology (
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci COMMENT='日付ごとの干支と九星の情報';
 
 
--- 時の運気メッセージテーブル
-CREATE TABLE IF NOT EXISTS `main_star_acquired_fortune_message` (
-  `id` INT AUTO_INCREMENT PRIMARY KEY COMMENT 'ID',
-  `star_number` INT NOT NULL COMMENT '九星番号（1-9）',
-  `luck_title` VARCHAR(100) NOT NULL COMMENT '吉運タイトル',
-  `luck_details` TEXT NOT NULL COMMENT '吉運の詳細説明',
-  `unluck_title` VARCHAR(100) NOT NULL COMMENT '凶運タイトル',
-  `unluck_details` TEXT NOT NULL COMMENT '凶運の詳細説明',
-  `created_at` TIMESTAMP DEFAULT CURRENT_TIMESTAMP COMMENT '作成日時',
-  `updated_at` TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP COMMENT '更新日時',
-  FOREIGN KEY (`star_number`) REFERENCES `stars` (`star_number`) ON DELETE CASCADE,
-  UNIQUE KEY `unique_star_message` (`star_number`) COMMENT '星番号の一意制約'
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
-
-
--- 星と人生のガイダンス情報を格納するテーブル
-CREATE TABLE IF NOT EXISTS `star_life_guidance` (
-  `id` INT AUTO_INCREMENT PRIMARY KEY,
-  `main_star` INT NOT NULL COMMENT '本命星',
-  `month_star` INT NOT NULL COMMENT '月命星',
-  `category` ENUM('job', 'lucky_color', 'lucky_item') NOT NULL COMMENT 'カテゴリ',
-  `content` TEXT NOT NULL COMMENT '内容',
-  `created_at` TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
-  `updated_at` TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
-  UNIQUE KEY `idx_main_month_star_category` (`main_star`, `month_star`, `category`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
 
 

@@ -118,8 +118,6 @@ def _get_existing_tables(cursor) -> set:
 # 新しいテーブルを追加した場合はここにも追加してください
 _EXPECTED_TABLES = {
     'stars', 'solar_starts', 'solar_terms', 'daily_astrology',
-    'main_star_acquired_fortune_message',
-    'star_life_guidance',
     'star_groups',
     'star_grid_patterns', 'star_compatibility_matrix', 'monthly_directions',
     'moving_auspicious_dates',
