@@ -32,6 +32,10 @@ export const usePdfReport = ({ resultData, contentRef, onActionComplete }: UsePd
 
         setIsGeneratingPdf(true);
 
+        // Query header outside try so finally can restore its original position
+        const header = target.querySelector('.result-header') as HTMLElement | null;
+        const originalPosition = header?.style.position ?? '';
+
         try {
             const html2canvas = (await import('html2canvas')).default;
             const { jsPDF } = await import('jspdf');
@@ -40,8 +44,6 @@ export const usePdfReport = ({ resultData, contentRef, onActionComplete }: UsePd
             const hiddenEls = target.querySelectorAll('.hide-on-pdf');
             hiddenEls.forEach(el => (el as HTMLElement).style.display = 'none');
 
-            const header = target.querySelector('.result-header') as HTMLElement | null;
-            const originalPosition = header?.style.position ?? '';
             if (header) header.style.position = 'static';
 
             // ── 2. Capture the DOM element ──
@@ -92,8 +94,7 @@ export const usePdfReport = ({ resultData, contentRef, onActionComplete }: UsePd
             // ── Always restore hidden elements & sticky header ──
             const hiddenEls = target.querySelectorAll('.hide-on-pdf');
             hiddenEls.forEach(el => (el as HTMLElement).style.display = '');
-            const header = target.querySelector('.result-header') as HTMLElement | null;
-            if (header) header.style.position = '';
+            if (header) header.style.position = originalPosition;
             setIsGeneratingPdf(false);
         }
     };
