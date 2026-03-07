@@ -5,17 +5,16 @@
 
 ## 주요 변경 사항
 
-### 1. 백엔드 정리 (Phase 4)
-- **파일 삭제**:
-  - `core/admin/routes.py`: 사용되지 않는 관리자 전용 라우트 삭제
-  - `data/csv/star_life_guidance.csv`, `main_star_acquired_fortune_message.csv`: 레거시 데이터 파일 삭제
-  - `core/models/main_star_acquired_fortune_message.py`: 삭제된 데이터에 대응하는 모델 삭제
-  - `apps/ninestarki/__init__.py`: 레거시 앱 엔트리 포인트 삭제
-- **코드 리팩토링**:
-  - `backend/app.py`: 인덱스(`/`) 응답에서 삭제된 관리자 엔드포인트 제거
-  - `backend/db_manage.py`: `_EXPECTED_TABLES`에서 삭제된 테이블 제외
-  - `backend/scripts/csv_file_loader.py`: 삭제된 CSV 파일 로딩 로직 제거
-  - `mysql/init/000_create_tables.sql`: 불필요한 테이블 생성 구문 제거
+### 1. 백엔드 정리 및 스키마 최적화 (Phase 4, 8 & 9)
+- **추가 스크립트 삭제 (Phase 9)**:
+  - `backend/scripts/fortune_direction_year.py`: 연반 기준 방위 계산을 수행하던 레거시 독립형 스크립트 삭제. 현재는 `StarGridPattern` 모델 및 도메인 서비스를 통해 통합 관리되고 있습니다.
+- **추가 테이블 및 모델 삭제 (Phase 8)**:
+  - `moving_auspicious_dates`, `compatibility_symbol_pattern_master`, `compatibility_symbol_master`, `compatibility_readings_master` 테이블 및 관련 모델(`backend/core/models/`) 삭제.
+  - `backend/scripts/generate_compatibility_readings.py` (데이터 생성 스크립트) 삭제.
+- **기존 정리 내용**:
+  - `core/admin/routes.py`: 사용되지 않는 관리자 전용 라우트 삭제.
+  - `data/csv/` 내의 레거시 CSV 데이터 파일 삭제.
+  - `db_manage.py`, `csv_file_loader.py`, `000_create_tables.sql` 등에서 위 테이블 및 파일에 대한 모든 참조 제거.
 
 ### 2. 프런트엔드 정리 (Phase 6)
 - **데드 코드 제거**:
