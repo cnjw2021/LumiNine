@@ -70,24 +70,6 @@ def load_daily_astrology_data(connection=None):
         raise
 
 
-def load_star_compatibility_matrix_data(connection=None):
-    """star_compatibility_matrix CSVデータをロードする関数"""
-    try:
-        load_dotenv()
-        print("star_compatibility_matrixデータのロードを開始します...")
-        row_count = load_csv_to_table(
-            csv_filename='star_compatibility_matrix.csv',
-            table_name='star_compatibility_matrix',
-            truncate_table=True,
-            use_load_data_infile=True,
-            connection=connection
-        )
-        print(f"star_compatibility_matrixのデータ挿入完了: {row_count}行")
-        return row_count
-    except Exception as e:
-        print(f"エラーが発生しました: {e}")
-        raise
-
 def load_user_account_data(connection=None):
     """user_account CSVデータをロードする関数"""
     try:
@@ -123,7 +105,6 @@ def load_all_csv_data(target_tables=None):
                 'solar_starts_data.csv': 'solar_starts',
                 'daily_astrology_data.csv': 'daily_astrology',
 
-                'star_compatibility_matrix.csv': 'star_compatibility_matrix',
                 'pattern_switch_dates.csv': 'pattern_switch_dates',
             }
             
