@@ -24,9 +24,7 @@ logger = get_logger(__name__)
 def create_nine_star_bp():
 
     nine_star_bp = Blueprint('nine_star', __name__, 
-                           url_prefix='/api/nine-star',
-                           static_folder='../static',
-                           static_url_path='/static')
+                           url_prefix='/api/nine-star')
 
     @nine_star_bp.route('/calculate', methods=['POST'])
     @inject
@@ -70,92 +68,5 @@ def create_nine_star_bp():
     
 
 
-    @nine_star_bp.route('/preview-report', methods=['POST'])
-    @inject
-    def preview_report(use_case: 'GenerateReportUseCase'):
-        """
-        九星気学鑑定結果のHTMLプレビューを生成するAPI
-        
-        リクエスト例:
-        {
-            "resultData": {
-                "result": {
-                    "main_star": {...},
-                    "month_star": {...},
-                    "day_star": {...},
-                    "year_star": {...},
-                    "birth_datetime": "1980-02-04 15:30",
-                    "target_year": 2025
-                },
-                "fullName": "山田太郎",
-                "birthdate": "1980-02-04",
-                "birthtime": "15:30",
-                "gender": "male",
-                "targetYear": 2025
-            },
-            "templateId": 1,
-            "backgroundId": 1
-        }
-        """
-        try:
-            data = request.get_json()
-            
-            if not data or 'resultData' not in data:
-                logger.error("Missing resultData in request")
-                return jsonify({
-                    'error': '鑑定結果データが必要です'
-                }), 400
-            
-            result_data = data['resultData']
-            template_id = data.get('templateId', 1)
-            background_id = data.get('backgroundId', 1)
-            
-            # 必須パラメータの検証
-            if not all(key in result_data for key in ['result', 'fullName', 'birthdate', 'gender']):
-                missing_fields = []
-                for field in ['result', 'fullName', 'birthdate', 'gender']:
-                    if field not in result_data:
-                        missing_fields.append(field)
-                
-                logger.error(f"Missing required fields: {', '.join(missing_fields)}")
-                return jsonify({
-                    'error': f'必須パラメータが不足しています: {", ".join(missing_fields)}'
-                }), 400
-            
-            # useSimpleパラメータを取得
-            use_simple = data.get('useSimple', False)
-            
-            # リクエストデータをログに出力
-            logger.info(f"Generating HTML preview for: {result_data['fullName']}")
-            logger.info(f"Birthdate: {result_data['birthdate']}, Gender: {result_data['gender']}")
-            logger.info(f"Template ID: {template_id}, Background ID: {background_id}, Use Simple: {use_simple}")
-            
-            # HTML生成サービスを呼び出し
-            try:
-                # HTML 렌더러를 직접 사용
-                html_content = use_case.execute_html_preview({
-                    'result_data': result_data['result'],
-                    'full_name': result_data['fullName'],
-                    'birthdate': result_data['birthdate'],
-                    'gender': result_data['gender'],
-                    'target_year': result_data.get('targetYear'),
-                    'template_id': template_id,
-                    'background_id': background_id,
-                    'use_simple': use_simple
-                })
-                
-                # HTMLコンテンツを直接返す
-                return html_content, {'Content-Type': 'text/html; charset=utf-8'}
-            except Exception as e:
-                logger.error(f"Error in HTML preview generation: {str(e)}")
-                import traceback
-                logger.error(f"Traceback: {traceback.format_exc()}")
-                return jsonify({'error': str(e)}), 500
-        
-        except Exception as e:
-            logger.error(f"Error in HTML preview route: {str(e)}")
-            import traceback
-            logger.error(f"Traceback: {traceback.format_exc()}")
-            return jsonify({'error': str(e)}), 500
 
     return nine_star_bp

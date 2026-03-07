@@ -14,17 +14,6 @@ touch /app/logs/access.log /app/logs/error.log /app/logs/app.log
 chmod -R 755 /app/logs
 chown -R appuser:appgroup /app/logs
 
-echo "Copying SVG images..."
-# /app/frontend_imagesはdocker-composeでマウントしたボリュームです。
-mkdir -p /app/apps/ninestarki/static/images/main_star/simple
-# cp コマンドに -n (no-clobber) オプションを追加して、上書きしないようにします。
-cp -f /app/frontend_images/*.svg /app/apps/ninestarki/static/images/main_star/ 2>/dev/null || true
-cp -f /app/frontend_images/simple/*.svg /app/apps/ninestarki/static/images/main_star/simple/ 2>/dev/null || true
-echo "SVG images copied."
-
-echo "Initializing database..."
-cd /app
-python db_manage.py init
 echo "Database initialization completed."
 
 echo "Starting cron service..."
