@@ -82,7 +82,7 @@ cd backend && pip install -r requirements.txt && flask run
 | 폰트 로딩 대기 | `document.fonts.ready` 완료 후 캡처하여 시스템 폰트 폴백 방지 |
 | iOS Safari 메모리 방어 | canvas 픽셀 수가 16MP 초과 시 `scale` 자동 하향 조절 |
 | 빈 canvas 검증 | `html2canvas` 반환값이 0×0이면 에러 처리 |
-| Safari 다운로드 폴백 | `pdf.save()` 차단 시 Blob → `window.open()`으로 새 탭 오픈 |
+| Safari 다운로드 폴백 | Safari 환경에서는 Blob 생성 후 `window.open()`으로 항상 새 탭 오픈 |
 | 다중 페이지 분할 | 컨텐츠가 A4 높이 초과 시 축소 대신 자동 페이지 분할 |
 
 ## 로드맵

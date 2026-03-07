@@ -198,8 +198,8 @@ export const usePdfReport = ({ resultData, contentRef, onActionComplete }: UsePd
             const fileName = `${safeName}_NineStarKi_Report.pdf`;
 
             if (isSafari()) {
-                // Safari may block pdf.save() blob downloads.
-                // Open the PDF in a new tab instead, which Safari handles reliably.
+                // Safari has inconsistent pdf.save() behavior (Blob downloads may be blocked).
+                // Always use Blob → window.open() for a reliable experience on Safari.
                 const blob = pdf.output('blob');
                 const blobUrl = URL.createObjectURL(blob);
                 const newWindow = window.open(blobUrl, '_blank', 'noopener,noreferrer');
