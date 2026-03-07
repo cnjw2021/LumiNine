@@ -150,22 +150,26 @@ const MonthlyFortuneSection: React.FC<MonthlyFortuneSectionProps> = ({
                             let bgColor = 'transparent';
                             let textColor = '#a0a0a0';
                             let icon = '·';
+                            let defaultReason = '無難';
 
                             switch (fortuneLevel) {
                                 case 'best_auspicious':
                                     bgColor = 'rgba(212, 175, 55, 0.12)';
                                     textColor = '#b8860b';
                                     icon = '✿';
+                                    defaultReason = '最吉方位';
                                     break;
                                 case 'auspicious':
                                     bgColor = 'rgba(90, 138, 110, 0.10)';
                                     textColor = '#3d7a56';
                                     icon = '✿';
+                                    defaultReason = '吉方位';
                                     break;
                                 case 'inauspicious':
                                     bgColor = 'rgba(192, 82, 77, 0.08)';
                                     textColor = '#b04a46';
                                     icon = '✕';
+                                    defaultReason = '凶方位';
                                     break;
                                 default: // neutral
                                     bgColor = 'transparent';
@@ -183,7 +187,7 @@ const MonthlyFortuneSection: React.FC<MonthlyFortuneSectionProps> = ({
                                         alignItems: 'center', justifyContent: 'center',
                                         border: '1px solid #ffffff',
                                     }}
-                                    title={info?.reason || '無難'}
+                                    title={info?.reason || defaultReason}
                                 >
                                     <span style={{
                                         fontSize: '10px', color: textColor, fontWeight: 700,
