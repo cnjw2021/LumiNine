@@ -124,7 +124,6 @@ const MonthlyFortuneSection: React.FC<MonthlyFortuneSectionProps> = ({
                                 return (
                                     <div
                                         key={dir}
-                                        title="無難"
                                         style={{
                                             aspectRatio: '1/1', borderRadius: '14px',
                                             backgroundColor: '#ffffff',
@@ -134,8 +133,7 @@ const MonthlyFortuneSection: React.FC<MonthlyFortuneSectionProps> = ({
                                             boxShadow: 'inset 0 2px 4px 0 rgba(0, 0, 0, 0.06)',
                                         }}
                                     >
-                                        <span style={{ fontSize: '10px', color: '#d4af37', fontWeight: 700, marginBottom: '4px', fontFamily: '"Noto Serif JP", serif' }}>中宮</span>
-                                        <span style={{ color: '#d4af37', fontSize: '20px' }}>○</span>
+                                        <span style={{ fontSize: '10px', color: '#d4af37', fontWeight: 700, fontFamily: '"Noto Serif JP", serif' }}>中宮</span>
                                     </div>
                                 );
                             }
