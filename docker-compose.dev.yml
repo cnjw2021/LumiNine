@@ -18,25 +18,22 @@ services:
 
   backend:
     volumes:
-      - ./backend:/app # コードのリアルタイム同期化
+      - ./backend:/app
     env_file:
       - ./backend/.env.development.backend
     build:
       context: ./backend
       dockerfile: Dockerfile
       target: development
-    # pdf_tmp ボリュームの権限問題を解決するために、root ユーザーでコンテナを起動します。
     user: root
-    # DB準備 > DB初期化 > 権限変更 > Gunicorn実行(一般ユーザー) の順番ですべての作業を統合します。
+    # DB準備 > DB初期化 > Gunicorn実行 の順番
     command: >
-      sh -c "python /app/wait_for_db.py && 
+      sh -c "python /app/wait_for_db.py &&
              python /app/db_manage.py init &&
-             chown -R appuser:appgroup /tmp/pdf &&
              chown -R appuser:appgroup /app/logs &&
              exec gunicorn --bind 0.0.0.0:5001 --reload --user appuser --group appgroup 'app:app'"
     depends_on:
-      - mysql
-      - redis
+      - postgres
     healthcheck:
       test: ["CMD", "curl", "-f", "http://localhost:5001/auth/health"]
       interval: 10s
@@ -45,7 +42,6 @@ services:
       start_period: 30s
 
   nginx:
-    # container_name: nginx-local-container
     ports:
       - "80:80"
     build:
@@ -53,35 +49,40 @@ services:
       dockerfile: Dockerfile.dev
     volumes:
       - ./nginx/conf.d/local.conf:/etc/nginx/conf.d/default.conf
-    # frontendとbackendがhealthyな状態になるまで待ちます。
     depends_on:
       frontend:
         condition: service_healthy
       backend:
         condition: service_healthy
 
-  mysql:
-    # container_name: mysql-local-container
+  # ── PostgreSQL (MySQL の代替) ──────────────────────────────────────
+  postgres:
+    image: postgres:16-alpine
     environment:
-      MYSQL_ROOT_PASSWORD: ${DB_ROOT_PASSWORD}
-      MYSQL_DATABASE: ${DB_NAME}
-      MYSQL_USER: ${DB_USER}
-      MYSQL_PASSWORD: ${DB_PASSWORD}
+      POSTGRES_DB: ${DB_NAME:-luminine}
+      POSTGRES_USER: ${DB_USER:-superuser}
+      POSTGRES_PASSWORD: ${DB_PASSWORD:-superpass!}
+    ports:
+      - "5432:5432"
     volumes:
-      - mysql_data_local:/var/lib/mysql
+      - postgres_data_local:/var/lib/postgresql/data
+      - ./db/init:/docker-entrypoint-initdb.d  # 初期化 SQL をマウント
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U ${DB_USER:-superuser} -d ${DB_NAME:-luminine}"]
+      interval: 5s
+      timeout: 5s
+      retries: 10
 
-
-  # --- テスト 専用 サービス ---
+  # --- テスト専用サービス ---
   backend-test:
     user: root
     build:
       context: ./backend
       dockerfile: Dockerfile
-      target: development # pytestがインストールされたdevelopmentステージを使用
+      target: development
     volumes:
       - ./backend:/app
-      - ./mysql/init:/app/mysql/init      # SQL seed scripts for db_manage.py reset
-      - ./backend/data:/var/lib/mysql-files  # CSV files for LOAD DATA INFILE
+      - ./db/init:/app/db/init
     env_file:
       - ./backend/.env.development.backend
     environment:
@@ -89,16 +90,13 @@ services:
     depends_on:
       backend:
         condition: service_healthy
-    # コンテナが起動された時に、何もしないように待たせるコマンド
-    # 通常は何もしないで待機するが、make testコマンドで上書きされた時にのみ一時的に使用される
-    command: ["tail", "-f", "/dev/null"] 
+    command: ["tail", "-f", "/dev/null"]
     networks:
       - app-network
 
 networks:
   app-network:
-    # ネットワーク名を明示的に指定して一貫性を保ちます。
     name: app-network
 
 volumes:
-  mysql_data_local:
+  postgres_data_local:

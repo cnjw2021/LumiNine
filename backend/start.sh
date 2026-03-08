@@ -1,48 +1,28 @@
 #!/bin/sh
 
-# スクリプト実行中にエラーが発生した場合、即座に停止
+# Cloud Run 전용 시작 스크립트
+# - wait_for_db: Cloud Run은 DB에 직접 연결하므로 불필요 (제거)
+# - cron/logrotate: Cloud Run은 임시 파일시스템, 로그는 stdout으로 출력 (제거)
+# - New Relic: 환경변수 NEW_RELIC_LICENSE_KEY 미설정 시 비활성화
+
 set -e
 
-echo "Waiting for MySQL to be ready..."
-python /app/wait_for_db.py
-echo "MySQL is ready!"
+echo "Starting LumiNine backend (Cloud Run mode)..."
+echo "PORT: ${PORT:-5001}"
 
-echo "Setting up log directories..."
-# ボリュームでマウントされる可能性があるため、コンテナ起動時のディレクトリ構造と権限を保証します。
-mkdir -p /app/logs/archive/access /app/logs/archive/error /app/logs/archive/app
-touch /app/logs/access.log /app/logs/error.log /app/logs/app.log
-chmod -R 755 /app/logs
-chown -R appuser:appgroup /app/logs
+# Cloud Run이 주입하는 $PORT를 사용, 없으면 5001 (로컬 개발)
+BIND_PORT="${PORT:-5001}"
 
-echo "Database initialization completed."
-
-echo "Starting cron service..."
-service cron start
-
-echo "Forcing logrotate to run once to check status..."
-# 初回の state file 作成に root 権限が必要
-/usr/sbin/logrotate -f /etc/logrotate.d/gunicorn || true
-# logrotate が root で作成したファイルを appuser が書き込めるように再設定
-chown -R appuser:appgroup /app/logs
-
-echo "Preparing /tmp/pdf permissions..."
-mkdir -p /tmp/pdf
-chown -R appuser:appgroup /tmp/pdf || true
-
-echo "Starting gunicorn (as appuser)..."
-# exec で PID1 を gunicorn にしつつ、実行ユーザーを appuser へ降格
-# New Relic エージェント経由で起動
-exec su -s /bin/sh -c "newrelic-admin run-program gunicorn \
-  --bind 0.0.0.0:5001 \
-  --log-level debug \
-  --access-logfile /app/logs/access.log \
-  --error-logfile /app/logs/error.log \
+exec gunicorn \
+  --bind "0.0.0.0:${BIND_PORT}" \
+  --log-level info \
+  --access-logfile - \
+  --error-logfile - \
   --capture-output \
-  --access-logformat '%(h)s %(l)s %(u)s \"%(r)s\" %(s)s %(b)s \"%(f)s\" \"%(a)s\" forwarded_for=\"%({X-Forwarded-For}i)s\"' \
+  --access-logformat '%(h)s %(l)s %(u)s "%(r)s" %(s)s %(b)s "%(f)s" "%(a)s" forwarded_for="%({X-Forwarded-For}i)s"' \
   --chdir /app \
   --workers 2 \
   --timeout 120 \
   --worker-class sync \
   --preload \
-  'app:app'" appuser
-
+  'app:app'

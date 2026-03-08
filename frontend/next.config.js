@@ -2,7 +2,7 @@
 const path = require('path');
 
 const nextConfig = {
-  output: 'standalone', // [성능] 960MB RAM 환경에서 필수 설정
+  output: 'standalone', // [Cloud Run / Cloudflare Workers] Server-side rendering 지원
   poweredByHeader: false,
   compress: true,
   reactStrictMode: true,
@@ -17,7 +17,6 @@ const nextConfig = {
     optimizePackageImports: ['@mantine/core', '@mantine/hooks']
   },
   images: {
-    // [보안/경고 해결] 'domains'는 폐지 예정이므로 'remotePatterns'로 통합합니다.
     remotePatterns: [
       {
         protocol: 'http',
@@ -25,7 +24,12 @@ const nextConfig = {
         port: '5001',
         pathname: '/api/nine-star/static/**',
       },
-      // 필요하다면 여기에 다른 허용 도메인을 추가하세요.
+      {
+        // Cloud Run 백엔드 이미지 URL 허용 (프로덕션)
+        protocol: 'https',
+        hostname: '*.run.app',
+        pathname: '/api/nine-star/static/**',
+      },
     ],
   },
   webpack: (config, { isServer }) => {
@@ -35,7 +39,6 @@ const nextConfig = {
       '@': path.resolve(__dirname, 'src'),
     };
 
-    // RCE 취약점 및 보안 강화를 위한 브라우저 측 모듈 차단
     if (!isServer) {
       config.resolve.fallback = {
         ...config.resolve.fallback,
@@ -48,14 +51,20 @@ const nextConfig = {
 
     return config;
   },
-  async rewrites() {
-    return [
-      {
-        source: '/api/:path*',
-        destination: 'http://backend:5001/api/:path*' // 백엔드 경로 포함
-      }
-    ]
-  }
+  // [중요] Cloudflare Pages / Cloud Run 배포 시
+  // API 경로는 NEXT_PUBLIC_API_URL 환경변수로 직접 지정합니다.
+  // 로컬 개발 시에는 NEXT_PUBLIC_API_URL 미설정 → localhost:5001 폴백을 사용하세요.
+  // (docker-compose 환경에서는 아래 rewrites가 자동으로 적용됩니다)
+  ...(process.env.NODE_ENV !== 'production' && {
+    async rewrites() {
+      return [
+        {
+          source: '/api/:path*',
+          destination: 'http://backend:5001/api/:path*'
+        }
+      ]
+    }
+  })
 }
 
 module.exports = nextConfig;
