@@ -33,12 +33,16 @@ const theme = createTheme({
   },
 });
 
+import { usePathname } from 'next/navigation';
+
 export default function RootLayout({
   children,
 }: {
   children: React.ReactNode;
 }) {
   const [opened, { toggle }] = useDisclosure();
+  const pathname = usePathname();
+  const isLandingPage = pathname === '/';
 
   return (
     <html lang="ja">
@@ -53,50 +57,56 @@ export default function RootLayout({
           <AuthProvider>
             <Notifications />
             <AppShell
-              header={{ height: { base: 60, sm: 0 } }}
+              header={{ height: isLandingPage ? 0 : { base: 60, sm: 0 } }}
               navbar={{
-                width: { base: 320, sm: 320, lg: 320 },
+                width: isLandingPage ? 0 : { base: 320, sm: 320, lg: 320 },
                 breakpoint: 'sm',
-                collapsed: { desktop: false, mobile: !opened }
+                collapsed: { desktop: isLandingPage, mobile: isLandingPage || !opened }
               }}
-              padding={{ base: 6, sm: 12, md: 16, lg: 24 }}
+              padding={isLandingPage ? 0 : { base: 6, sm: 12, md: 16, lg: 24 }}
               styles={{
                 main: {
                   backgroundColor: COLORS.primaryBg,
                   backgroundImage: GRADIENTS.pageBg,
                   width: '100%',
                   maxWidth: '100%',
-                  overflowX: 'hidden'
+                  overflowX: 'hidden',
+                  padding: isLandingPage ? 0 : undefined // Ensure no padding on landing page
                 },
                 navbar: {
                   backgroundColor: 'rgba(245, 247, 243, 0.95)',
                   backdropFilter: 'blur(10px)',
-                  border: 'none'
+                  border: 'none',
+                  display: isLandingPage ? 'none' : undefined // Hide navbar completely on landing
                 }
               }}
             >
-              <AppShell.Header hiddenFrom="sm">
-                <Group h="100%" px="20px" style={{ backgroundColor: 'rgba(245, 247, 243, 0.95)', backdropFilter: 'blur(10px)' }}>
-                  <Burger
-                    opened={opened}
-                    onClick={toggle}
-                    hiddenFrom="sm"
-                    size="sm"
-                    color={COLORS.accent}
-                  />
-                  <Text
-                    size="xl"
-                    fw={400}
-                    c={COLORS.text}
-                    style={{ fontFamily: FONTS.title, letterSpacing: '0.05em' }}
-                  >
-                    九星気学
-                  </Text>
-                </Group>
-              </AppShell.Header>
-              <AppShell.Navbar>
-                <Navigation opened={opened} onClose={toggle} />
-              </AppShell.Navbar>
+              {!isLandingPage && (
+                <>
+                  <AppShell.Header hiddenFrom="sm">
+                    <Group h="100%" px="20px" style={{ backgroundColor: 'rgba(245, 247, 243, 0.95)', backdropFilter: 'blur(10px)' }}>
+                      <Burger
+                        opened={opened}
+                        onClick={toggle}
+                        hiddenFrom="sm"
+                        size="sm"
+                        color={COLORS.accent}
+                      />
+                      <Text
+                        size="xl"
+                        fw={400}
+                        c={COLORS.text}
+                        style={{ fontFamily: FONTS.title, letterSpacing: '0.05em' }}
+                      >
+                        九星気学
+                      </Text>
+                    </Group>
+                  </AppShell.Header>
+                  <AppShell.Navbar>
+                    <Navigation opened={opened} onClose={toggle} />
+                  </AppShell.Navbar>
+                </>
+              )}
               <AppShell.Main>
                 {children}
               </AppShell.Main>
