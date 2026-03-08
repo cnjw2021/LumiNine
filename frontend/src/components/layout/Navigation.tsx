@@ -281,7 +281,7 @@ export const Navigation = ({ opened, onClose }: NavigationProps) => {
           flexDirection: 'column'
         }}
       >
-        <Text size="xl" fw={400} c={COLORS.text} mb="md" style={{ fontFamily: FONTS.title, letterSpacing: '0.05em' }}>LumiNine</Text>
+        <Text size="xl" mb="md" style={{ fontSize: 20, fontWeight: 700, letterSpacing: '0.1em', textTransform: 'uppercase', color: COLORS.text }}>LumiNine</Text>
         <Box style={{ position: 'relative', flexGrow: 1, overflow: 'auto' }}>
           <Stack gap="lg">
             {defaultMenuItems.length > 0 && (

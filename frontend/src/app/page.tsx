@@ -67,11 +67,11 @@ export default function LandingPage() {
       </Box>
 
       {/* Top Navigation */}
-      <Box component="header" style={{ position: 'fixed', top: 0, zIndex: 50, width: '100%', backgroundColor: 'rgba(249, 247, 242, 0.8)', backdropFilter: 'blur(12px)', borderBottom: `1px solid ${theme.primary}1a`, padding: '16px 24px' }}>
+      <Box component="header" visibleFrom="md" style={{ position: 'fixed', top: 0, zIndex: 50, width: '100%', backgroundColor: 'rgba(249, 247, 242, 0.8)', backdropFilter: 'blur(12px)', borderBottom: `1px solid ${theme.primary}1a`, padding: '16px 24px' }}>
         <Box style={{ maxWidth: 1440, margin: '0 auto', display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
           <Flex align="center" gap={12}>
             <IconSparkles size={32} color={theme.primary} />
-            <Text style={{ fontSize: 24, fontWeight: 'normal', letterSpacing: '0.05em', fontFamily: '"Shippori Mincho", "Noto Serif JP", serif' }}>LumiNine</Text>
+            <Text style={{ fontSize: 20, fontWeight: 700, letterSpacing: '0.1em', textTransform: 'uppercase' }}>LumiNine</Text>
           </Flex>
           <Flex align="center" gap={{ base: 16, md: 48 }}>
             <UnstyledButton visibleFrom="md" style={{ fontSize: 14, fontWeight: 500, letterSpacing: '0.05em', transition: 'color 0.2s', '&:hover': { color: theme.primary } }}>お問い合わせ</UnstyledButton>
