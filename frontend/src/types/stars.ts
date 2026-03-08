@@ -29,6 +29,7 @@ export interface CalculationResult {
   year_star: Star;
   birth_datetime: string;
   target_year: number;
+  recommended_foods?: string[];
   numerology?: NumerologyResult;
 }
 

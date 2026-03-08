@@ -172,6 +172,19 @@ CREATE TABLE IF NOT EXISTS `hourly_star_zodiacs` (
   FOREIGN KEY (`group_id`) REFERENCES `zodiac_groups` (`id`) ON DELETE CASCADE
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci COMMENT='時盤(干支グループ×九星→時十二支) マスタ'; 
 
+-- 九星の詳細属性テーブル (色、食べ物、身体部位、場所など)
+CREATE TABLE IF NOT EXISTS `star_attributes` (
+  `id` INT AUTO_INCREMENT PRIMARY KEY COMMENT 'ID',
+  `star_number` INT NOT NULL COMMENT '九星番号 (1-9)',
+  `attribute_type` VARCHAR(30) NOT NULL COMMENT '属性タイプ (color, food, body, place等)',
+  `attribute_value` TEXT NOT NULL COMMENT '属性値',
+  `description` VARCHAR(255) DEFAULT NULL COMMENT '説明',
+  `created_at` TIMESTAMP DEFAULT CURRENT_TIMESTAMP COMMENT '作成日時',
+  `updated_at` TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP COMMENT '更新日時',
+  FOREIGN KEY (`star_number`) REFERENCES `stars` (`star_number`) ON DELETE CASCADE,
+  INDEX `idx_star_type` (`star_number`, `attribute_type`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci COMMENT='九星の詳細属性データ';
+
 -- システム設定テーブル
 CREATE TABLE IF NOT EXISTS `system_config` (
   `id` INT AUTO_INCREMENT PRIMARY KEY COMMENT 'ID',

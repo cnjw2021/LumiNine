@@ -8,6 +8,7 @@ import { useMonthFortuneData } from '@/hooks/useMonthFortuneData';
 import { isSixLayer } from '@/types/directionFortune';
 import BasePowerstonesSection from './BasePowerstonesSection';
 import NumerologyProfileSection from './NumerologyProfileSection';
+import FoodRecommendationSection from './FoodRecommendationSection';
 import { ResultProps } from '@/types/results';
 
 export default function Result({ resultData, onReset }: ResultProps) {
@@ -125,6 +126,14 @@ export default function Result({ resultData, onReset }: ResultProps) {
                     </p>
                   )}
                 </div>
+
+                {/* ── Recommended Foods ── */}
+                {result.recommended_foods && result.recommended_foods.length > 0 && (
+                  <FoodRecommendationSection
+                    foods={result.recommended_foods}
+                    element={main_star.element}
+                  />
+                )}
 
                 {/* ── Action Buttons ── */}
                 <div className="hide-on-pdf" style={{ display: 'flex', flexDirection: 'column', gap: '12px', marginTop: '16px' }}>
