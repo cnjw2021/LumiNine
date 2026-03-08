@@ -73,8 +73,8 @@ export default function LandingPage() {
             <IconSparkles size={32} color={theme.primary} />
             <Text style={{ fontSize: 20, fontWeight: 700, letterSpacing: '0.1em', textTransform: 'uppercase' }}>LumiNine</Text>
           </Flex>
-          <Flex align="center" gap={48} visibleFrom="md">
-            <UnstyledButton style={{ fontSize: 14, fontWeight: 500, letterSpacing: '0.05em', transition: 'color 0.2s', '&:hover': { color: theme.primary } }}>お問い合わせ</UnstyledButton>
+          <Flex align="center" gap={{ base: 16, md: 48 }}>
+            <UnstyledButton visibleFrom="md" style={{ fontSize: 14, fontWeight: 500, letterSpacing: '0.05em', transition: 'color 0.2s', '&:hover': { color: theme.primary } }}>お問い合わせ</UnstyledButton>
             {!token && (
               <UnstyledButton onClick={() => router.push('/login')} style={{ fontSize: 14, fontWeight: 500, letterSpacing: '0.05em', transition: 'color 0.2s', '&:hover': { color: theme.primary } }}>ログイン</UnstyledButton>
             )}
@@ -90,29 +90,19 @@ export default function LandingPage() {
 
       {/* Main Editorial Content */}
       <Box component="main" style={{ position: 'relative', display: 'flex', flex: 1, alignItems: 'center', justifyContent: 'center', paddingTop: 96, paddingBottom: 64, minHeight: 'calc(100vh - 200px)' }}>
-        <Box style={{ position: 'relative', zIndex: 10, width: '100%', maxWidth: 1200, margin: '0 auto', display: 'flex', flexDirection: 'row', alignItems: 'center', justifyContent: 'space-between', gap: 64, padding: '0 24px', flexWrap: 'wrap' }}>
 
-          {/* Visual Composition Area (Mobile Only) */}
-          <Box hiddenFrom="md" style={{ width: '100%', position: 'relative', height: 400, marginBottom: 40 }}>
-            <Box style={{ position: 'absolute', top: '10%', right: '10%', width: 140, height: 140, display: 'flex', alignItems: 'center', justifyContent: 'center', transform: 'rotate(20deg)', filter: 'drop-shadow(0 20px 30px rgba(0,0,0,0.1))', opacity: 0.9 }}>
-              <Box style={{ width: '100%', height: '100%', backgroundImage: `url('/images/stones/fluorite.png')`, backgroundSize: 'contain', backgroundRepeat: 'no-repeat', backgroundPosition: 'center' }} />
-            </Box>
-            <Box style={{ position: 'absolute', top: '40%', left: '10%', width: 180, height: 180, display: 'flex', alignItems: 'center', justifyContent: 'center', transform: 'rotate(-10deg)', filter: 'drop-shadow(0 25px 35px rgba(0,0,0,0.12))', opacity: 0.95 }}>
-              <Box style={{ width: '100%', height: '100%', backgroundImage: `url('/images/stones/lapis_lazuli.png')`, backgroundSize: 'contain', backgroundRepeat: 'no-repeat', backgroundPosition: 'center' }} />
-            </Box>
-          </Box>
-
+        {/* --- DESKTOP LAYOUT --- */}
+        <Box visibleFrom="md" style={{ position: 'relative', zIndex: 10, width: '100%', maxWidth: 1200, margin: '0 auto', display: 'flex', flexDirection: 'row', alignItems: 'center', justifyContent: 'space-between', gap: 64, padding: '0 24px' }}>
           {/* Visual Composition Area (Left, PC Only) */}
-          <Box visibleFrom="md" style={{ width: '45%', position: 'relative', height: 600, minWidth: 400 }} />
+          <Box style={{ width: '45%', position: 'relative', height: 600, minWidth: 400 }} />
 
-          {/* Editorial Text Area (Right on PC, Full width on Mobile) */}
-          <Box style={{ flex: 1, display: 'flex', flexDirection: 'column', alignItems: 'center', gap: 48, minWidth: '100%', '@media (min-width: 992px)': { flexDirection: 'row-reverse', minWidth: 400 } }}>
-
-            <Box style={{ writingMode: 'vertical-rl', display: 'flex', flexDirection: 'column', gap: 32, height: 'auto', minHeight: 400, alignItems: 'center' }}>
-              <Title order={2} style={{ fontSize: 'clamp(32px, 5vw, 48px)', fontWeight: 700, lineHeight: 1.6, letterSpacing: '0.2em' }}>
+          {/* Editorial Text Area (Right on PC) */}
+          <Box style={{ flex: 1, display: 'flex', flexDirection: 'row-reverse', alignItems: 'center', gap: 48, minWidth: 400 }}>
+            <Box style={{ writingMode: 'vertical-rl', display: 'flex', flexDirection: 'column', gap: 32, height: 500 }}>
+              <Title order={2} style={{ fontSize: 48, fontWeight: 700, lineHeight: 1.6, letterSpacing: '0.2em' }}>
                 導かれた者だけの、<br />特別な輝き。
               </Title>
-              <Text style={{ fontSize: 'clamp(14px, 2vw, 18px)', fontWeight: 300, lineHeight: 2, letterSpacing: '0.1em', opacity: 0.8, paddingTop: 16 }}>
+              <Text style={{ fontSize: 18, fontWeight: 300, lineHeight: 2, letterSpacing: '0.1em', opacity: 0.8, paddingTop: 16 }}>
                 東洋と西洋の叡智が導き出す、<br />
                 あなただけのパーソナル・ストーン。<br />
                 ご自身の本質と深く向き合う、<br />
@@ -120,24 +110,66 @@ export default function LandingPage() {
               </Text>
             </Box>
 
-            <Box style={{ display: 'flex', flexDirection: 'column', gap: 40, width: '100%', alignItems: 'center', '@media (min-width: 992px)': { width: 'auto', alignItems: 'flex-start' } }}>
-              <Box style={{ display: 'flex', flexDirection: 'column', gap: 16, textAlign: 'center', '@media (min-width: 992px)': { textAlign: 'left' } }}>
+            <Box style={{ display: 'flex', flexDirection: 'column', gap: 40 }}>
+              <Box style={{ display: 'flex', flexDirection: 'column', gap: 16 }}>
                 <Text style={{ fontSize: 12, textTransform: 'uppercase', letterSpacing: '0.3em', color: theme.primary, fontWeight: 700, fontFamily: '"Noto Sans JP", sans-serif' }}>LumiNine Exclusive</Text>
-                <Title order={3} style={{ fontSize: 'clamp(20px, 3vw, 24px)', fontWeight: 700, borderLeft: `2px solid ${theme.primary}`, paddingLeft: 16 }}>魂が共鳴する、あなただけのストーン鑑定。</Title>
+                <Title order={3} style={{ fontSize: 24, fontWeight: 700, borderLeft: `2px solid ${theme.primary}`, paddingLeft: 16 }}>魂が共鳴する、あなただけのストーン鑑定。</Title>
               </Box>
 
               <Button
                 onClick={handleStart}
                 radius="xl"
                 size="xl"
-                style={{ backgroundColor: theme.primary, color: '#fff', fontSize: 'clamp(14px, 2vw, 18px)', fontWeight: 700, letterSpacing: '0.1em', boxShadow: '0 10px 15px -3px rgba(0,0,0,0.1)', height: 56, width: '100%', maxWidth: 320, fontFamily: '"Noto Sans JP", sans-serif' }}
+                style={{ backgroundColor: theme.primary, color: '#fff', fontSize: 18, fontWeight: 700, letterSpacing: '0.1em', boxShadow: '0 10px 15px -3px rgba(0,0,0,0.1)', height: 56, minWidth: 280, fontFamily: '"Noto Sans JP", sans-serif' }}
               >
                 {token ? 'メンバーズ鑑定へ進む' : 'メンバーズ・ログイン'}
               </Button>
             </Box>
-
           </Box>
         </Box>
+
+        {/* --- MOBILE LAYOUT --- */}
+        <Box hiddenFrom="md" style={{ position: 'relative', zIndex: 10, width: '100%', display: 'flex', flexDirection: 'column', alignItems: 'center', gap: 48, padding: '0 24px' }}>
+
+          <Box style={{ display: 'flex', flexDirection: 'column', gap: 32, alignItems: 'center', textAlign: 'center' }}>
+            <Title order={2} style={{ fontSize: 32, fontWeight: 700, lineHeight: 1.6, letterSpacing: '0.2em' }}>
+              導かれた者だけの、<br />特別な輝き。
+            </Title>
+            <Text style={{ fontSize: 14, fontWeight: 300, lineHeight: 2, letterSpacing: '0.1em', opacity: 0.8 }}>
+              東洋と西洋の叡智が導き出す、<br />
+              あなただけのパーソナル・ストーン。<br />
+              ご自身の本質と深く向き合う、<br />
+              特別な旅の証として。
+            </Text>
+          </Box>
+
+          {/* Visual Composition Area (Mobile Only) */}
+          <Box style={{ width: '100%', position: 'relative', height: 320, display: 'flex', justifyContent: 'center', alignItems: 'center' }}>
+            <Box style={{ position: 'absolute', top: 0, right: '15%', width: 140, height: 140, display: 'flex', alignItems: 'center', justifyContent: 'center', transform: 'rotate(20deg)', filter: 'drop-shadow(0 20px 30px rgba(0,0,0,0.1))', opacity: 0.9, zIndex: 2 }}>
+              <Box style={{ width: '100%', height: '100%', backgroundImage: `url('/images/stones/fluorite.png')`, backgroundSize: 'contain', backgroundRepeat: 'no-repeat', backgroundPosition: 'center' }} />
+            </Box>
+            <Box style={{ position: 'absolute', bottom: 0, left: '15%', width: 180, height: 180, display: 'flex', alignItems: 'center', justifyContent: 'center', transform: 'rotate(-10deg)', filter: 'drop-shadow(0 25px 35px rgba(0,0,0,0.12))', opacity: 0.95, zIndex: 3 }}>
+              <Box style={{ width: '100%', height: '100%', backgroundImage: `url('/images/stones/lapis_lazuli.png')`, backgroundSize: 'contain', backgroundRepeat: 'no-repeat', backgroundPosition: 'center' }} />
+            </Box>
+          </Box>
+
+          <Box style={{ display: 'flex', flexDirection: 'column', gap: 32, width: '100%', alignItems: 'center' }}>
+            <Box style={{ display: 'flex', flexDirection: 'column', gap: 16, textAlign: 'center' }}>
+              <Text style={{ fontSize: 12, textTransform: 'uppercase', letterSpacing: '0.3em', color: theme.primary, fontWeight: 700, fontFamily: '"Noto Sans JP", sans-serif' }}>LumiNine Exclusive</Text>
+              <Title order={3} style={{ fontSize: 20, fontWeight: 700, lineHeight: 1.5 }}>魂が共鳴する、<br />あなただけのストーン鑑定。</Title>
+            </Box>
+
+            <Button
+              onClick={handleStart}
+              radius="xl"
+              size="lg"
+              style={{ backgroundColor: theme.primary, color: '#fff', fontSize: 16, fontWeight: 700, letterSpacing: '0.1em', boxShadow: '0 10px 15px -3px rgba(0,0,0,0.1)', height: 56, width: '100%', maxWidth: 320, fontFamily: '"Noto Sans JP", sans-serif' }}
+            >
+              {token ? 'メンバーズ鑑定へ進む' : 'メンバーズ・ログイン'}
+            </Button>
+          </Box>
+        </Box>
+
       </Box>
 
       {/* Newsletter / CTA */}
