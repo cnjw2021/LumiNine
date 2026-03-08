@@ -25,7 +25,7 @@ export default function AppraisalPage() {
             console.log('鑑定ページで九星気学ストアをリセットします');
             useNineStarKiStore.getState().reset();
             // セッションストレージも削除
-            sessionStorage.removeItem('ninestarki_data');
+            sessionStorage.removeItem('luminine_data');
         }
     }, [nineStarKiResult]);
 

@@ -1,4 +1,4 @@
-# apps/ninestarki/domain/constants.py
+# apps/reading/shared/domain/constants.py
 
 # 干支リスト（60種）
 ETO_LIST = [

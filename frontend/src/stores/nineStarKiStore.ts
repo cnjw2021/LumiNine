@@ -117,7 +117,7 @@ export const useNineStarKiStore = create<NineStarKiState>()(
       }, true), // trueを追加してステート全体を置き換え
     }),
     {
-      name: 'ninestarki-storage', // ローカルストレージのキー
+      name: 'luminine-storage', // ローカルストレージのキー
       partialize: (state) => ({
         // 保存するステートを選択
         birthDateTime: state.birthDateTime,

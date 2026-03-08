@@ -44,7 +44,7 @@ class CustomJSONEncoder(json.JSONEncoder):
         return super().encode(obj)
 
 # テンプレートディレクトリを含むパスを計算
-template_folder_path = os.path.join(PROJECT_ROOT, 'apps', 'fortunetelling', 'ninestarki', 'templates')
+template_folder_path = os.path.join(PROJECT_ROOT, 'apps', 'reading', 'ninestarki', 'templates')
 
 def create_app() -> Flask:
     # DIコンテナを作成し、必要なユースケースを取得
