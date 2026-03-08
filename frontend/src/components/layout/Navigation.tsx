@@ -55,7 +55,7 @@ export const Navigation = ({ opened, onClose }: NavigationProps) => {
     if (!isLoggedIn && !authLoading) return [];
     return [
       { icon: IconQuestionMark, label: '数秘術について', href: '/about/numerology' },
-      { icon: IconQuestionMark, label: 'ストーン診断', href: '/about/ninestarki' },
+      { icon: IconQuestionMark, label: '九星気学について', href: '/about/ninestarki' },
       { icon: IconQuestionMark, label: 'パワーストーンについて', href: '/about/powerstone' }
     ];
   }, [isLoggedIn, authLoading]);
