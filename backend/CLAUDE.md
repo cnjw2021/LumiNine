@@ -9,14 +9,11 @@
 ## 📂 주요 파일별 역할
 - `app.py`: FastAPI 애플리케이션의 엔트리포인트. 미들웨어 설정 및 최상위 Router 연결.
 - `core/`: 애플리케이션 전반에 적용되는 설정(`config.py`), 데이터베이스 세션 관리(`database.py`), 예외 처리(`exceptions.py`), 유틸리티 등을 포함.
-- `apps/`: 도메인 기반으로 분리된 기능 모듈. 특히 `apps/ninestarki/`는 가장 핵심 비즈니스 로직을 담고 있음.
-  - `apps/ninestarki/domain/`: 핵심 비즈니스 객체 및 레포지토리 인터페이스.
-  - `apps/ninestarki/use_cases/`: 애플리케이션 서비스 로직 (비즈니스 흐름 제어).
-  - `apps/ninestarki/infrastructure/`: 리포지토리의 구체적인 구현 및 외부 API/DB 연동.
-  - `apps/ninestarki/presentation/` & `routes/`: API 엔드포인트(FastAPI Router) 및 Pydantic Request/Response 스키마.
-  - `apps/ninestarki/services/`: 외부 연동 및 부가적인 도메인 서비스를 관장.
-  - `apps/ninestarki/templates/` & `static/`: 생성 결과물(PDF 등)을 위한 HTML 템플릿과 정적 자원.
-  - `apps/ninestarki/constants/` & `utils/`: 도메인 내에서 공통으로 사용되는 상수 및 헬퍼 함수.
+- `apps/`: 도메인 기반으로 분리된 기능 모듈. `apps/reading/` 하위에 3개 서브도메인과 공통 모듈이 있음.
+  - `apps/reading/ninestarki/`: 구성기학(九星気学) 도메인 — 방위 길흉·연월반 계산.
+  - `apps/reading/numerology/`: 수비술(Numerology) 도메인 — Life Path Number 기반 파워스톤.
+  - `apps/reading/powerstone/`: 파워스톤 추천 도메인 — 6-레이어 추천 엔진.
+  - `apps/reading/shared/`: 공통 모듈 — user, permission, 예외(exceptions.py), 상수(constants.py).
 - `db_manage.py`: 데이터베이스 초기화(init) 및 리셋(reset) 등을 수행하기 위한 유틸리티 스크립트.
 
 ## 📦 외부 의존성

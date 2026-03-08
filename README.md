@@ -47,10 +47,11 @@ LumiNine/
 │   │   └── features/visualization/ # 방위판·스톤카드
 │   └── public/images/stones/       # 파워스톤 이미지 (30종)
 ├── backend/            # Flask 백엔드
-│   └── apps/ninestarki/
-│       ├── domain/services/    # 도메인 서비스 (구성기학·수비술 엔진)
-│       ├── data/               # 스톤 카탈로그 JSON
-│       └── use_cases/          # 유스케이스
+│   └── apps/reading/
+│       ├── ninestarki/ # 구성기학 도메인 (방위·운세 계산)
+│       ├── numerology/ # 수비술 도메인 (Life Path Number)
+│       ├── powerstone/ # 파워스톤 추천 도메인
+│       └── shared/     # 공통 (user, permission, 예외/상수)
 ├── mysql/init/         # DB 초기화 스크립트
 ├── nginx/              # Nginx 설정
 ├── docs/               # 프로젝트 문서
