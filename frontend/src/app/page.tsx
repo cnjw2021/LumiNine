@@ -57,15 +57,13 @@ export default function LandingPage() {
             <Text style={{ fontSize: 20, fontWeight: 700, letterSpacing: '0.1em', textTransform: 'uppercase' }}>LumiNine</Text>
           </Flex>
           <Flex align="center" gap={48} visibleFrom="md">
-            <UnstyledButton style={{ fontSize: 14, fontWeight: 500, letterSpacing: '0.05em', transition: 'color 0.2s', '&:hover': { color: theme.primary } }}>Collections</UnstyledButton>
-            <UnstyledButton style={{ fontSize: 14, fontWeight: 500, letterSpacing: '0.05em', transition: 'color 0.2s', '&:hover': { color: theme.primary } }}>Philosophy</UnstyledButton>
-            <UnstyledButton style={{ fontSize: 14, fontWeight: 500, letterSpacing: '0.05em', transition: 'color 0.2s', '&:hover': { color: theme.primary } }}>Materials</UnstyledButton>
-            <UnstyledButton style={{ fontSize: 14, fontWeight: 500, letterSpacing: '0.05em', transition: 'color 0.2s', '&:hover': { color: theme.primary } }}>Stores</UnstyledButton>
+            <UnstyledButton style={{ fontSize: 14, fontWeight: 500, letterSpacing: '0.05em', transition: 'color 0.2s', '&:hover': { color: theme.primary } }}>お問い合わせ</UnstyledButton>
+            {!token && (
+              <UnstyledButton onClick={() => router.push('/login')} style={{ fontSize: 14, fontWeight: 500, letterSpacing: '0.05em', transition: 'color 0.2s', '&:hover': { color: theme.primary } }}>ログイン</UnstyledButton>
+            )}
           </Flex>
           <Flex align="center" gap={24}>
-            {!token ? (
-              <Button onClick={() => router.push('/login')} radius="xl" size="md" color={theme.primary} style={{ backgroundColor: theme.primary, fontWeight: 700, padding: '0 32px' }}>ログイン</Button>
-            ) : (
+            {token && (
               <Button onClick={() => router.push('/appraisal')} variant="outline" radius="xl" size="md" color={theme.primary} style={{ fontWeight: 700, padding: '0 32px' }}>鑑定へ戻る</Button>
             )}
             <Box style={{ width: 40, height: 40, borderRadius: '50%', border: `1px solid ${theme.primary}33`, backgroundImage: `url('https://lh3.googleusercontent.com/aida-public/AB6AXuBb0WVjXt15W807V6ixd80YNHdVN-RJwV2-f8WRn2IbZFI9Ar1MSUa2C7om3OohF7tsQJY0J5cjr2XOKfAUErgxnUPqhISJc4Hl_6nNrqivyrAZlN96fojVN85a5gG6oUSTw8X0o-GLtFfPjPsj42FKuqyLtwk-0I4C9EIk7YXdusQrQOllha4dU0lKgygigWDGRMd70SETeVWItAV5tgXmIdiYi6PHL5PBJTCt7R8cXSETZhs_W-jzpwgS3WzGzm1xJ6p2v8d04pyz')`, backgroundSize: 'cover', backgroundPosition: 'center' }} />
