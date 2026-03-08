@@ -35,7 +35,7 @@ export const Navigation = ({ opened, onClose }: NavigationProps) => {
   const defaultMenuItems: MenuItem[] = useMemo(() => {
     if (!isLoggedIn && !authLoading) return [];
     return [
-      { icon: IconHome2, label: '九星気学鑑定', href: '/' }
+      { icon: IconHome2, label: '九星気学鑑定', href: '/appraisal' }
     ];
   }, [isLoggedIn, authLoading]);
 
