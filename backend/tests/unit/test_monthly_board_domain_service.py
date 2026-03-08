@@ -8,7 +8,7 @@ from __future__ import annotations
 import pytest
 from datetime import date
 
-from apps.ninestarki.domain.services.monthly_board_domain_service import (
+from apps.fortunetelling.ninestarki.domain.services.monthly_board_domain_service import (
     MonthlyBoardDomainService,
     MonthlyBoardResult,
 )

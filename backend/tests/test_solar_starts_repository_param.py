@@ -3,7 +3,7 @@ from __future__ import annotations
 from datetime import date
 import pytest
 
-from apps.ninestarki.domain.repositories.solar_starts_repository_interface import ISolarStartsRepository
+from apps.fortunetelling.ninestarki.domain.repositories.solar_starts_repository_interface import ISolarStartsRepository
 
 
 @pytest.mark.parametrize(

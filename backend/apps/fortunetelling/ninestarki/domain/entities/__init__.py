@@ -1,0 +1,1 @@
+# ninestarki/domain/entities package

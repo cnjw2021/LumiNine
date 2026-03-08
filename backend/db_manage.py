@@ -32,7 +32,7 @@ def create_superuser():
     app = create_app()
     with app.app_context():
         try:
-            from apps.ninestarki.domain.entities.user import User
+            from apps.fortunetelling.shared.domain.entities.user import User
             email = os.environ.get('SUPERUSER_EMAIL')
             password = os.environ.get('SUPERUSER_PASSWORD')
 

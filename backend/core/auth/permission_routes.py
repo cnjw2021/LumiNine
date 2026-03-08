@@ -2,7 +2,7 @@ from flask import Blueprint, request, jsonify
 from flask_jwt_extended import jwt_required, get_jwt_identity
 from functools import wraps
 
-from apps.ninestarki.use_cases.permission_use_case import PermissionUseCase
+from apps.fortunetelling.shared.use_cases.permission_use_case import PermissionUseCase
 from core.models.exceptions import UserNotFoundError, PermissionError
 from core.utils.logger import get_logger
 
