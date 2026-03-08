@@ -100,21 +100,21 @@ export default function LandingPage() {
 
             <Box style={{ writingMode: 'vertical-rl', display: 'flex', flexDirection: 'column', gap: 32, height: 500 }}>
               <Title order={2} style={{ fontSize: 'clamp(36px, 4vw, 48px)', fontWeight: 700, lineHeight: 1.6, letterSpacing: '0.2em' }}>
-                輝きが、私を語り出す。
+                導かれた者だけの、<br />特別な輝き。
               </Title>
               <Text style={{ fontSize: 18, fontWeight: 300, lineHeight: 2, letterSpacing: '0.1em', opacity: 0.8, paddingTop: 16 }}>
-                洗練された大人の女性に贈る、<br />
-                天然石とゴールドの調べ。<br />
-                ルミネーインの鑑定で、<br />
-                あなただけの運命の一石を<br />
-                見つけてください。
+                東洋と西洋の叡智が導き出す、<br />
+                あなただけのパーソナル・ストーン。<br />
+                選ばれたメンバー様へ贈る、<br />
+                究極のオーダーメイド・<br />
+                キュレーション。
               </Text>
             </Box>
 
             <Box style={{ display: 'flex', flexDirection: 'column', gap: 40 }}>
               <Box style={{ display: 'flex', flexDirection: 'column', gap: 16 }}>
-                <Text style={{ fontSize: 12, textTransform: 'uppercase', letterSpacing: '0.3em', color: theme.primary, fontWeight: 700, fontFamily: '"Noto Sans JP", sans-serif' }}>LumiNine Editorial</Text>
-                <Title order={3} style={{ fontSize: 24, fontWeight: 700, borderLeft: `2px solid ${theme.primary}`, paddingLeft: 16 }}>運命を彩る、唯一無二の輝き。</Title>
+                <Text style={{ fontSize: 12, textTransform: 'uppercase', letterSpacing: '0.3em', color: theme.primary, fontWeight: 700, fontFamily: '"Noto Sans JP", sans-serif' }}>LumiNine Exclusive</Text>
+                <Title order={3} style={{ fontSize: 24, fontWeight: 700, borderLeft: `2px solid ${theme.primary}`, paddingLeft: 16 }}>魂が共鳴する、あなただけのストーン鑑定。</Title>
               </Box>
 
               <Button
@@ -123,7 +123,7 @@ export default function LandingPage() {
                 size="xl"
                 style={{ backgroundColor: theme.primary, color: '#fff', fontSize: 18, fontWeight: 700, letterSpacing: '0.1em', boxShadow: '0 10px 15px -3px rgba(0,0,0,0.1)', height: 56, minWidth: 280, fontFamily: '"Noto Sans JP", sans-serif' }}
               >
-                {token ? '鑑定を開始する' : 'ログインして鑑定を始める'}
+                {token ? 'メンバーズ鑑定へ進む' : 'メンバーズ・ログイン'}
               </Button>
 
               <Box style={{ display: 'grid', gridTemplateColumns: 'repeat(3, 1fr)', gap: 24, paddingTop: 40, borderTop: `1px solid ${theme.primary}1a` }}>
@@ -150,12 +150,12 @@ export default function LandingPage() {
       <Box component="footer" style={{ padding: '80px 24px', backgroundColor: theme.bgLight, borderTop: `1px solid ${theme.primary}0d` }}>
         <Box style={{ maxWidth: 720, margin: '0 auto', textAlign: 'center', display: 'flex', flexDirection: 'column', alignItems: 'center', gap: 32 }}>
           <IconWand size={48} color={theme.primary} />
-          <Title order={2} style={{ fontSize: 30, fontWeight: 700, letterSpacing: '0.2em' }}>美しさは、内側から。</Title>
+          <Title order={2} style={{ fontSize: 30, fontWeight: 700, letterSpacing: '0.2em' }}>真の美しさは、自らの運命を知ることから。</Title>
           <Text style={{ color: 'rgba(29, 21, 21, 0.7)', lineHeight: 1.6, fontWeight: 300 }}>
-            最新のコレクション情報や、限定イベントのご案内、<br />
-            あなたにふさわしい宝石の物語をお届けします。
+            ルミネーインは、ご縁のある限られた皆様にのみ、<br />
+            特別なパーソナル・ストーン・キュレーションをご提供しております。
           </Text>
-          <Text style={{ fontSize: 10, opacity: 0.4, marginTop: 40, letterSpacing: '0.1em' }}>© 2024 LumiNine Editorial. All Rights Reserved.</Text>
+          <Text style={{ fontSize: 10, opacity: 0.4, marginTop: 40, letterSpacing: '0.1em' }}>© 2026 LumiNine Exclusive. All Rights Reserved.</Text>
         </Box>
       </Box>
     </Box>
