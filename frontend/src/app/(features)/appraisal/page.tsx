@@ -3,7 +3,7 @@
 import React, { useEffect } from "react";
 import { useRouter } from "next/navigation";
 import { Container, Loader } from '@mantine/core';
-import { NineStarKiForm } from '@/components/features/form';
+import { ReadingForm } from '@/components/features/form';
 import { useAuth } from '@/contexts/auth/AuthContext';
 import { useNineStarKiStore } from '@/stores/nineStarKiStore';
 
@@ -53,7 +53,7 @@ export default function AppraisalPage() {
                 minHeight: '100vh',
             }}
         >
-            <NineStarKiForm token={token} />
+            <ReadingForm token={token} />
         </Container>
     );
 }

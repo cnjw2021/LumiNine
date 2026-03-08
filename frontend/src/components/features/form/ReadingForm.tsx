@@ -19,7 +19,7 @@ dayjs.locale('ja');
 const STORAGE_KEY = 'ninestarki-result-data';
 
 // 入力データの型
-export interface NineStarKiFormInput {
+export interface ReadingFormInput {
   birthdate: string;
   fullname: string;
   gender: Gender;
@@ -31,11 +31,11 @@ export interface ApiErrorResponse {
   message?: string;
 }
 
-interface NineStarKiFormProps {
+interface ReadingFormProps {
   token: string;
 }
 
-const NineStarKiForm: React.FC<NineStarKiFormProps> = ({ token }) => {
+const ReadingForm: React.FC<ReadingFormProps> = ({ token }) => {
   // Auth contextからスーパーユーザー権限を取得
   const { isSuperuser } = useAuth();
   const currentYear = new Date().getFullYear();
@@ -337,4 +337,4 @@ const NineStarKiForm: React.FC<NineStarKiFormProps> = ({ token }) => {
   );
 };
 
-export default NineStarKiForm;
+export default ReadingForm;
