@@ -1,6 +1,7 @@
 import React from 'react';
 import { UnstyledButton, Group, Text } from '@mantine/core';
 import { IconX } from '@tabler/icons-react';
+import { COLORS, FONTS, NAV } from '@/utils/theme';
 
 interface DrawerHeaderProps {
   title: string;
@@ -22,17 +23,18 @@ export const DrawerHeader = ({ title, onClose }: DrawerHeaderProps) => {
             borderRadius: '4px',
             transition: 'background-color 0.2s ease',
             '&:hover': {
-              backgroundColor: 'rgba(75, 163, 227, 0.1)',
+              backgroundColor: NAV.hoverBg,
             },
           }}
         >
-          <IconX size={24} color="#4BA3E3" stroke={1.5} />
+          <IconX size={24} color={COLORS.accent} stroke={1.5} />
         </UnstyledButton>
-        <Text 
-          size="xl" 
-          fw={600} 
-          c="#4BA3E3" 
-          style={{ 
+        <Text
+          size="xl"
+          fw={600}
+          c={COLORS.accent}
+          style={{
+            fontFamily: FONTS.title,
             letterSpacing: '0.5px',
             whiteSpace: 'nowrap',
             overflow: 'hidden',
@@ -44,4 +46,4 @@ export const DrawerHeader = ({ title, onClose }: DrawerHeaderProps) => {
       </Group>
     </Group>
   );
-}; 
+};

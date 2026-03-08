@@ -7,6 +7,7 @@ import { IconDashboard, IconUsers } from '@tabler/icons-react';
 import { useAdminCheck } from '../../../hooks/useAdminCheck';
 import { NavigationMenu, MenuItem } from '@/components/layout/NavigationMenu';
 import { DrawerHeader } from '@/components/layout/DrawerHeader';
+import { COLORS, FONTS, NAV } from '@/utils/theme';
 
 // 管理メニューの項目を定義
 const MENU_ITEMS: MenuItem[] = [
@@ -42,9 +43,9 @@ export default function AdminLayout({ children }: { children: ReactNode }) {
         }}
       >
         <AppShell.Header style={{
-          backgroundColor: 'rgba(255, 255, 255, 0.9)',
+          backgroundColor: 'rgba(249, 247, 242, 0.95)',
           backdropFilter: 'blur(10px)',
-          borderBottom: '2px solid rgba(75, 163, 227, 0.1)'
+          borderBottom: `2px solid ${NAV.borderColor}`
         }}>
           <Group h={60} px="20px" justify="space-between" w="100%">
             <Group gap="sm">
@@ -53,13 +54,14 @@ export default function AdminLayout({ children }: { children: ReactNode }) {
                 onClick={toggle}
                 hiddenFrom="sm"
                 size="sm"
-                color="#4BA3E3"
+                color={COLORS.accent}
               />
               <Text
                 size="xl"
                 fw={600}
-                c="#4BA3E3"
+                c={COLORS.accent}
                 style={{
+                  fontFamily: FONTS.title,
                   letterSpacing: '0.5px',
                   whiteSpace: 'nowrap',
                   overflow: 'hidden',
@@ -73,9 +75,9 @@ export default function AdminLayout({ children }: { children: ReactNode }) {
         </AppShell.Header>
 
         <AppShell.Navbar p="md" style={{
-          backgroundColor: 'rgba(255, 255, 255, 0.9)',
+          backgroundColor: 'rgba(249, 247, 242, 0.95)',
           backdropFilter: 'blur(10px)',
-          borderRight: '2px solid rgba(75, 163, 227, 0.1)'
+          borderRight: `2px solid ${NAV.borderColor}`
         }}>
           <Stack gap="xs">
             <NavigationMenu
@@ -106,13 +108,13 @@ export default function AdminLayout({ children }: { children: ReactNode }) {
           header: {
             padding: 0,
             margin: 0,
-            borderBottom: '2px solid rgba(75, 163, 227, 0.1)',
-            backgroundColor: 'rgba(255, 255, 255, 0.9)',
+            borderBottom: `2px solid ${NAV.borderColor}`,
+            backgroundColor: 'rgba(249, 247, 242, 0.95)',
             backdropFilter: 'blur(10px)'
           },
           body: {
             padding: '20px',
-            backgroundColor: 'rgba(255, 255, 255, 0.9)',
+            backgroundColor: 'rgba(249, 247, 242, 0.95)',
             backdropFilter: 'blur(10px)'
           }
         }}
