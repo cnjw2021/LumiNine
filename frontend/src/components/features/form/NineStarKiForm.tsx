@@ -692,7 +692,6 @@ const NineStarKiForm: React.FC<NineStarKiFormProps> = ({ token }) => {
             loaderProps={{ color: 'white', size: 'sm' }}
             style={{
               ...BUTTON.primary,
-              padding: '14px 48px',
               cursor: 'pointer',
               transition: 'all 0.3s ease',
             }}

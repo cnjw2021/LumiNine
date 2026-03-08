@@ -166,7 +166,6 @@ export default function PasswordChangePage() {
               loading={loading}
               style={{
                 ...BUTTON.primary,
-                padding: '14px',
                 cursor: 'pointer',
                 transition: 'all 0.3s ease',
               }}

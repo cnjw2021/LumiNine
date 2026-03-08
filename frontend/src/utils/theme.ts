@@ -74,6 +74,8 @@ export const BUTTON = {
         fontWeight: 600,
         lineHeight: 1.5,
         padding: '12px 24px',
+        height: 'auto',
+        minHeight: '50px',
         letterSpacing: '0.2em',
         fontFamily: FONTS.body,
         boxShadow: '0 10px 20px -5px rgba(212, 176, 176, 0.2)',
