@@ -58,11 +58,11 @@ export default function AdminLayout({ children }: { children: ReactNode }) {
               />
               <Text
                 size="xl"
-                fw={600}
-                c={COLORS.accent}
+                fw={400}
+                c={COLORS.text}
                 style={{
                   fontFamily: FONTS.title,
-                  letterSpacing: '0.5px',
+                  letterSpacing: '0.05em',
                   whiteSpace: 'nowrap',
                   overflow: 'hidden',
                   textOverflow: 'ellipsis'

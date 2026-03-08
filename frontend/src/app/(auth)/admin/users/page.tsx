@@ -527,7 +527,7 @@ export default function UserManagement() {
   return (
     <Container size="lg" mt="xl">
       <Group justify="space-between" mb="xl">
-        <Title order={2} c={COLORS.text} style={{ fontFamily: FONTS.title }}>ユーザー管理</Title>
+        <Title order={2} c={COLORS.text} style={{ fontFamily: FONTS.title, fontWeight: 'normal', letterSpacing: '0.05em' }}>ユーザー管理</Title>
         <Group>
           <Switch
             label="削除済みユーザーを表示"
@@ -549,7 +549,7 @@ export default function UserManagement() {
       {isSuperuser && (
         <Paper p="md" mb="xl" radius={CARD.borderRadius} shadow="none" style={{ border: CARD.border, boxShadow: CARD.boxShadow }}>
           <Group justify="apart" mb="xs">
-            <Title order={4} c={COLORS.text} style={{ fontFamily: FONTS.title }}>システム利用状況</Title>
+            <Title order={4} c={COLORS.text} style={{ fontFamily: FONTS.title, fontWeight: 'normal' }}>システム利用状況</Title>
             <Group>
               <Button
                 variant="light"
@@ -618,9 +618,9 @@ export default function UserManagement() {
               <Table.Td>{user.email}</Table.Td>
               <Table.Td>
                 {user.is_superuser ? (
-                  <Text fw={500} c={COLORS.accent}>スーパーユーザー</Text>
+                  <Text fw={500} c={COLORS.rose}>スーパーユーザー</Text>
                 ) : user.is_admin ? (
-                  <Text fw={500} c={COLORS.secondary}>管理者</Text>
+                  <Text fw={500} c={COLORS.rose}>管理者</Text>
                 ) : (
                   <Text>一般ユーザー</Text>
                 )}

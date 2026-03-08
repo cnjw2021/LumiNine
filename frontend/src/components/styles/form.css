@@ -7,21 +7,26 @@
   box-shadow: 0 5px 20px -5px rgba(0, 0, 0, 0.03);
 }
 
-input, button {
+input,
+button {
   width: 100%;
   margin-top: 10px;
 }
 
 button {
-  background-color: #d4af37;
+  background-color: #d8a7a7;
   color: white;
   border: none;
   padding: 10px 15px;
-  border-radius: 8px;
+  border-radius: 9999px;
   cursor: pointer;
-  font-size: 16px;
+  font-size: 13px;
+  letter-spacing: 0.2em;
+  font-family: "Noto Serif JP", serif;
+  box-shadow: 0 10px 20px -5px rgba(216, 167, 167, 0.25);
+  transition: all 0.3s ease;
 }
 
 button:hover {
-  background-color: #c5975a;
+  opacity: 0.9;
 }

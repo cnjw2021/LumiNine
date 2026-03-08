@@ -5,7 +5,7 @@ import { PasswordInput, Button, Paper, Title, Container, Stack, Text } from '@ma
 import { notifications } from '@mantine/notifications';
 import api from '@/utils/api';
 import { AxiosError } from 'axios';
-import { COLORS, FONTS, GRADIENTS, CARD } from '@/utils/theme';
+import { COLORS, FONTS, GRADIENTS, CARD, BUTTON } from '@/utils/theme';
 
 export default function PasswordChangePage() {
   const router = useRouter();
@@ -94,8 +94,8 @@ export default function PasswordChangePage() {
           order={1}
           ta="center"
           mb="lg"
-          c={COLORS.accent}
-          style={{ fontFamily: FONTS.title }}
+          c={COLORS.text}
+          style={{ fontFamily: FONTS.title, fontWeight: 'normal', letterSpacing: '0.05em' }}
         >
           パスワード変更
         </Title>
@@ -162,11 +162,14 @@ export default function PasswordChangePage() {
             <Button
               type="submit"
               fullWidth
-              variant="gradient"
-              gradient={GRADIENTS.button}
               mt="md"
               loading={loading}
-              style={{ fontFamily: FONTS.body }}
+              style={{
+                ...BUTTON.primary,
+                padding: '14px',
+                cursor: 'pointer',
+                transition: 'all 0.3s ease',
+              }}
             >
               パスワードを変更
             </Button>

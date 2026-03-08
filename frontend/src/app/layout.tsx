@@ -86,9 +86,9 @@ export default function RootLayout({
                   />
                   <Text
                     size="xl"
-                    fw={600}
-                    c={COLORS.accent}
-                    style={{ fontFamily: FONTS.title }}
+                    fw={400}
+                    c={COLORS.text}
+                    style={{ fontFamily: FONTS.title, letterSpacing: '0.05em' }}
                   >
                     九星気学
                   </Text>

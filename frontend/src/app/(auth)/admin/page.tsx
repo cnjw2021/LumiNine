@@ -25,7 +25,7 @@ export default function AdminDashboard() {
         order={2}
         mb="md"
         c={COLORS.text}
-        style={{ fontFamily: FONTS.title }}
+        style={{ fontFamily: FONTS.title, fontWeight: 'normal', letterSpacing: '0.05em' }}
       >
         管理者ダッシュボード
       </Title>

@@ -5,7 +5,7 @@ import { useAuth } from '@/contexts/auth/AuthContext';
 import { TextInput, PasswordInput, Button, Paper, Title, Container, Stack, Text } from '@mantine/core';
 import axios from '@/utils/api'; // Flaskとの通信に使うaxiosインスタンスを想定
 import { AxiosError } from 'axios';
-import { COLORS, FONTS, GRADIENTS, CARD, INPUT_STYLES } from '@/utils/theme';
+import { COLORS, FONTS, GRADIENTS, CARD, BUTTON } from '@/utils/theme';
 
 export default function LoginPage() {
   const router = useRouter();
@@ -93,8 +93,8 @@ export default function LoginPage() {
           order={1}
           ta="center"
           mb="lg"
-          c={COLORS.accent}
-          style={{ fontFamily: FONTS.title }}
+          c={COLORS.text}
+          style={{ fontFamily: FONTS.title, fontWeight: 'normal', letterSpacing: '0.05em' }}
         >
           ログイン
         </Title>
@@ -144,11 +144,14 @@ export default function LoginPage() {
             <Button
               type="submit"
               fullWidth
-              variant="gradient"
-              gradient={GRADIENTS.button}
               mt="md"
               loading={loading}
-              style={{ fontFamily: FONTS.body }}
+              style={{
+                ...BUTTON.primary,
+                padding: '14px',
+                cursor: 'pointer',
+                transition: 'all 0.3s ease',
+              }}
             >
               ログイン
             </Button>

@@ -11,7 +11,7 @@ import dayjs from 'dayjs';
 import 'dayjs/locale/ja';
 import { useRouter } from 'next/navigation';
 import { useAuth } from '@/contexts/auth/AuthContext';
-import { COLORS, FONTS, GRADIENTS } from '@/utils/theme';
+import { COLORS, FONTS, GRADIENTS, BUTTON } from '@/utils/theme';
 
 // 日本語ロケールを設定
 dayjs.locale('ja');
@@ -38,7 +38,7 @@ export interface ApiErrorResponse {
 
 // スタイル用の定数
 const ACTIVE_TAB_STYLE = {
-  backgroundColor: COLORS.accent as string,
+  backgroundColor: COLORS.rose as string,
   color: 'white',
   fontWeight: 'bold' as const,
   padding: '10px',
@@ -432,13 +432,13 @@ const NineStarKiForm: React.FC<NineStarKiFormProps> = ({ token }) => {
         }}
       >
         <Stack gap={0} align="center" mb={{ base: 'xs', sm: 'md' }}>
-          <Title order={1} ta="center" c={COLORS.accent} style={{ fontSize: '1.8rem', whiteSpace: 'nowrap', fontFamily: FONTS.title }}>九星気学占い</Title>
+          <Title order={1} ta="center" c={COLORS.text} style={{ fontSize: '1.8rem', whiteSpace: 'nowrap', fontFamily: FONTS.title, fontWeight: 'normal', letterSpacing: '0.05em' }}>九星気学占い</Title>
         </Stack>
 
         <Tabs
           value={fortuneType}
           onChange={(value) => setFortuneType(value as FortuneType)}
-          color={COLORS.accent}
+          color={COLORS.rose}
           variant="default"
           radius="md"
           mb={{ base: 'xs', sm: 'md' }}
@@ -685,13 +685,17 @@ const NineStarKiForm: React.FC<NineStarKiFormProps> = ({ token }) => {
 
           <Button
             size="md"
-            variant="gradient"
-            gradient={GRADIENTS.button}
             onClick={handleSubmit}
             mt={{ base: 'sm', sm: 'md' }}
             loading={isLoading}
             disabled={isLoading}
-            loaderProps={{ color: COLORS.accent, size: 'sm' }}
+            loaderProps={{ color: 'white', size: 'sm' }}
+            style={{
+              ...BUTTON.primary,
+              padding: '14px 48px',
+              cursor: 'pointer',
+              transition: 'all 0.3s ease',
+            }}
           >
             {isLoading ? '鑑定中...' : fortuneType === 'normal' ? '占い結果を見る' : '相性を鑑定する'}
           </Button>
