@@ -48,7 +48,7 @@ export const NavigationMenu = ({ items, onNavigate, navigating }: NavigationMenu
             '&:hover': {
               backgroundColor: NAV.hoverBg,
               transform: 'translateX(4px)',
-              color: isActive ? activeColor : COLORS.accent
+              color: isActive ? activeColor : COLORS.rose
             },
           },
         }}
@@ -57,7 +57,7 @@ export const NavigationMenu = ({ items, onNavigate, navigating }: NavigationMenu
           {isNavigating ? (
             <Loader size="xs" color={activeColor} />
           ) : (
-            <item.icon size={18} style={{ color: isActive ? activeColor : NAV.iconColor, flexShrink: 0 }} stroke={1.5} />
+            <item.icon size={18} style={{ color: isActive ? activeColor : COLORS.rose, flexShrink: 0 }} stroke={1.5} />
           )}
           <Text size="sm" fw={isActive ? 600 : 500} style={{ whiteSpace: 'nowrap', overflow: 'hidden', textOverflow: 'ellipsis', lineHeight: 1.3 }}>
             {item.label}

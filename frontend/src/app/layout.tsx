@@ -87,7 +87,7 @@ export default function RootLayout({
                     onClick={toggle}
                     hiddenFrom="sm"
                     size="sm"
-                    color={COLORS.accent}
+                    color={COLORS.rose}
                   />
                   <Text
                     style={{ fontSize: 20, fontWeight: 700, letterSpacing: '0.1em', textTransform: 'uppercase', color: COLORS.text }}
