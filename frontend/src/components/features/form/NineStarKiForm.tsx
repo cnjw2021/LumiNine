@@ -432,7 +432,7 @@ const NineStarKiForm: React.FC<NineStarKiFormProps> = ({ token }) => {
         }}
       >
         <Stack gap={0} align="center" mb={{ base: 'xs', sm: 'md' }}>
-          <Title order={1} ta="center" c={COLORS.text} style={{ fontSize: '1.8rem', whiteSpace: 'nowrap', fontFamily: FONTS.title, fontWeight: 'normal', letterSpacing: '0.05em' }}>九星気学鑑定</Title>
+          <Title order={1} ta="center" c={COLORS.text} style={{ fontSize: '1.8rem', whiteSpace: 'nowrap', fontFamily: FONTS.title, fontWeight: 'normal', letterSpacing: '0.05em' }}>パーソナルストーン鑑定</Title>
         </Stack>
 
         <Tabs
