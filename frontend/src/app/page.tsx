@@ -42,20 +42,25 @@ export default function LandingPage() {
         <Box style={{ position: 'absolute', top: '25%', left: '25%', width: 256, height: 256, borderRadius: '50%', backgroundColor: `${theme.primary}33`, filter: 'blur(40px)', opacity: 0.4 }} />
         <Box style={{ position: 'absolute', bottom: '25%', left: 40, width: 384, height: 384, borderRadius: '50%', backgroundColor: `${theme.accentGold}1a`, filter: 'blur(40px)', opacity: 0.4 }} />
 
-        {/* Floating Stones Layer (Fills left half vertically) */}
+        {/* Floating Stones Layer (Fills left half vertically, all visible above the fold) */}
         <Box style={{ position: 'absolute', top: 0, left: 0, bottom: 0, width: '50%', pointerEvents: 'none', zIndex: 1, minHeight: 800 }}>
-          {/* Top Stone: Appears higher up to fill empty space */}
-          <Box style={{ position: 'absolute', top: '15%', left: '35%', width: 160, height: 160, display: 'flex', alignItems: 'center', justifyContent: 'center', transform: 'rotate(15deg)', filter: 'drop-shadow(0 20px 30px rgba(0,0,0,0.1))', opacity: 0.9 }}>
+          {/* Top Stone: Moonstone */}
+          <Box style={{ position: 'absolute', top: '10%', left: '44%', width: 140, height: 140, display: 'flex', alignItems: 'center', justifyContent: 'center', transform: 'rotate(20deg)', filter: 'drop-shadow(0 20px 30px rgba(0,0,0,0.1))', opacity: 0.9 }}>
             <Box style={{ width: '100%', height: '100%', backgroundImage: `url('/images/stones/moonstone.png')`, backgroundSize: 'contain', backgroundRepeat: 'no-repeat', backgroundPosition: 'center' }} />
           </Box>
 
+          {/* Upper Left Stone: Citrine (Yellow/Gold color contrast) */}
+          <Box style={{ position: 'absolute', top: '22%', left: '10%', width: 160, height: 160, display: 'flex', alignItems: 'center', justifyContent: 'center', transform: 'rotate(-10deg)', filter: 'drop-shadow(0 25px 35px rgba(0,0,0,0.12))', opacity: 0.95 }}>
+            <Box style={{ width: '100%', height: '100%', backgroundImage: `url('/images/stones/citrine.png')`, backgroundSize: 'contain', backgroundRepeat: 'no-repeat', backgroundPosition: 'center' }} />
+          </Box>
+
           {/* Center Main Stone: Rose Quartz (biggest) */}
-          <Box style={{ position: 'absolute', top: '40%', left: '15%', width: 280, height: 280, display: 'flex', alignItems: 'center', justifyContent: 'center', transform: 'rotate(-5deg)', filter: 'drop-shadow(0 40px 50px rgba(0,0,0,0.15))', opacity: 0.95 }}>
+          <Box style={{ position: 'absolute', top: '42%', left: '35%', width: 260, height: 260, display: 'flex', alignItems: 'center', justifyContent: 'center', transform: 'rotate(5deg)', filter: 'drop-shadow(0 40px 50px rgba(0,0,0,0.15))', opacity: 0.95 }}>
             <Box style={{ width: '100%', height: '100%', backgroundImage: `url('/images/stones/rose_quartz.png')`, backgroundSize: 'contain', backgroundRepeat: 'no-repeat', backgroundPosition: 'center' }} />
           </Box>
 
-          {/* Bottom Stone: Aquamarine */}
-          <Box style={{ position: 'absolute', top: '75%', left: '42%', width: 180, height: 180, display: 'flex', alignItems: 'center', justifyContent: 'center', transform: 'rotate(-20deg)', filter: 'drop-shadow(0 25px 35px rgba(0,0,0,0.12))', opacity: 0.9 }}>
+          {/* Bottom Left Stone: Aquamarine (Moved up to be visible) */}
+          <Box style={{ position: 'absolute', top: '65%', left: '12%', width: 180, height: 180, display: 'flex', alignItems: 'center', justifyContent: 'center', transform: 'rotate(-20deg)', filter: 'drop-shadow(0 25px 35px rgba(0,0,0,0.12))', opacity: 0.9 }}>
             <Box style={{ width: '100%', height: '100%', backgroundImage: `url('/images/stones/aquamarine.png')`, backgroundSize: 'contain', backgroundRepeat: 'no-repeat', backgroundPosition: 'center' }} />
           </Box>
         </Box>
