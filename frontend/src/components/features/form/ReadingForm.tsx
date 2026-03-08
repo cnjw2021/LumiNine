@@ -5,7 +5,7 @@ import { Button, Stack, Text, Title, Paper, TextInput, Radio, Group, NumberInput
 import CustomDatePicker from '@/components/common/ui/Datepicker';
 import api from '@/utils/api';
 import { AxiosError } from 'axios';
-import { Gender } from '@/stores/nineStarKiStore';
+import { Gender } from '@/types';
 import dayjs from 'dayjs';
 import 'dayjs/locale/ja';
 import { useRouter } from 'next/navigation';

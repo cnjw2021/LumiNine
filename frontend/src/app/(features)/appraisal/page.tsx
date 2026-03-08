@@ -5,12 +5,10 @@ import { useRouter } from "next/navigation";
 import { Container, Loader } from '@mantine/core';
 import { ReadingForm } from '@/components/features/form';
 import { useAuth } from '@/contexts/auth/AuthContext';
-import { useNineStarKiStore } from '@/stores/nineStarKiStore';
 
 export default function AppraisalPage() {
     const { token, isLoading } = useAuth();
     const router = useRouter();
-    const nineStarKiResult = useNineStarKiStore((state) => state.result);
 
     useEffect(() => {
         if (!isLoading && !token) {
@@ -18,16 +16,6 @@ export default function AppraisalPage() {
         }
     }, [isLoading, token, router]);
 
-    // ページロード時に九星気学ストアの状態をリセット
-    useEffect(() => {
-        // ストアに結果がある場合、鑑定ページに来たらリセット
-        if (nineStarKiResult) {
-            console.log('鑑定ページで九星気学ストアをリセットします');
-            useNineStarKiStore.getState().reset();
-            // セッションストレージも削除
-            sessionStorage.removeItem('luminine_data');
-        }
-    }, [nineStarKiResult]);
 
     if (isLoading) {
         return (
