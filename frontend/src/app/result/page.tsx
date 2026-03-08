@@ -9,7 +9,7 @@ import { HiArrowUp, HiArrowDown } from 'react-icons/hi';
 import { ResultData } from '@/types';
 
 // ローカルストレージキー
-const STORAGE_KEY = 'ninestarki-result-data';
+const STORAGE_KEY = 'luminine-result-data';
 
 export default function ResultPage() {
   const router = useRouter();

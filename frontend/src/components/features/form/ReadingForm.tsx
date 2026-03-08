@@ -16,7 +16,7 @@ import { COLORS, FONTS, BUTTON } from '@/utils/theme';
 dayjs.locale('ja');
 
 // ローカルストレージキー
-const STORAGE_KEY = 'ninestarki-result-data';
+const STORAGE_KEY = 'luminine-result-data';
 
 // 入力データの型
 export interface ReadingFormInput {
