@@ -16,7 +16,7 @@ endif
 .DEFAULT_GOAL := help
 
 # 待機対象とする主要サービス（certbot は除外してエラーを回避）
-SERVICES ?= backend frontend rq-worker nginx
+SERVICES ?= backend frontend nginx
 
 # PR 리뷰 자동화 설정
 PR_REVIEW_DIR ?= .pr-review
@@ -94,14 +94,9 @@ rebuild-be: ## 🔄 バックエンドのみをキャッシュなしで再構築
 	$(COMPOSE) build --no-cache backend
 	$(COMPOSE) up -d backend
 
-restart-be: ## 🔄 バックエンド+ワーカーを再起動します。(例: make restart-be ENV=dev)
-	@echo "### [$(ENV)] 環境のバックエンド+ワーカーを再起動します... ###"
-	$(COMPOSE) restart backend rq-worker
-
-restart-worker: ## 🔄 ワーカーのみを再起動します。(例: make restart-worker ENV=dev)
-	@echo "### [$(ENV)] 環境のワーカーのみを再起動します... ###"
-	$(COMPOSE) restart rq-worker
-
+restart-be: ## 🔄 バックエンドを再起動します。(例: make restart-be ENV=dev)
+	@echo "### [$(ENV)] 環境のバックエンドを再起動します... ###"
+	$(COMPOSE) restart backend
 gen-pngs: ## 🖼️ PDF用の九星盤PNGを事前生成します。(例: make gen-pngs ENV=dev)
 	@echo "### [$(ENV)] 環境で九星盤PNGを事前生成します... ###"
 	$(COMPOSE) run --rm backend python scripts/generate_main_star_pngs.py --size 900
