@@ -24,6 +24,7 @@ class StarAttributeRepository(IStarAttributeRepository):
                 results = (
                     read_session.query(StarAttribute)
                     .filter_by(star_number=star_number, attribute_type=attribute_type)
+                    .order_by(StarAttribute.id)
                     .all()
                 )
                 return [r.attribute_value for r in results]

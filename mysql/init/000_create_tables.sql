@@ -182,7 +182,8 @@ CREATE TABLE IF NOT EXISTS `star_attributes` (
   `created_at` TIMESTAMP DEFAULT CURRENT_TIMESTAMP COMMENT '作成日時',
   `updated_at` TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP COMMENT '更新日時',
   FOREIGN KEY (`star_number`) REFERENCES `stars` (`star_number`) ON DELETE CASCADE,
-  INDEX `idx_star_type` (`star_number`, `attribute_type`)
+  INDEX `idx_star_type` (`star_number`, `attribute_type`),
+  UNIQUE KEY `uniq_star_attribute` (`star_number`, `attribute_type`, `attribute_value`(100))
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci COMMENT='九星の詳細属性データ';
 
 -- システム設定テーブル

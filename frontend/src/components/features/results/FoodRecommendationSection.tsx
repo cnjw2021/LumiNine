@@ -55,7 +55,7 @@ const FoodRecommendationSection: React.FC<FoodRecommendationSectionProps> = ({ f
             {/* Food Cards */}
             <div style={{ display: 'flex', flexDirection: 'column', gap: '10px' }}>
                 {foods.map((food, i) => (
-                    <div key={i} style={{
+                    <div key={`${food}-${i}`} style={{
                         display: 'flex', alignItems: 'center',
                         backgroundColor: 'rgba(255, 255, 255, 0.6)',
                         padding: '14px 20px',
