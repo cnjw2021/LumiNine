@@ -4,5 +4,4 @@ export * from './stars';
 // 結果表示用の型定義をエクスポート
 export * from './results';
 
-// 共通型定義
-export type Gender = 'male' | 'female';
+// 共通型定義は results.ts で定義済み
