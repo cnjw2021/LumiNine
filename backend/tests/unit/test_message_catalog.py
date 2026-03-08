@@ -10,7 +10,7 @@ from __future__ import annotations
 
 import pytest
 
-from apps.fortunetelling.powerstone.infrastructure.services.message_catalog import MessageCatalog
+from apps.reading.powerstone.infrastructure.services.message_catalog import MessageCatalog
 
 
 @pytest.fixture

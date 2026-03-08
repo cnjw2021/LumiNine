@@ -10,17 +10,17 @@ import json
 from datetime import datetime, date
 import logging
 from flask_injector import FlaskInjector
-from apps.fortunetelling.dependency_module import AppModule
+from apps.reading.dependency_module import AppModule
 from injector import Injector
 
-from apps.fortunetelling.shared.use_cases.permission_use_case import PermissionUseCase
+from apps.reading.shared.use_cases.permission_use_case import PermissionUseCase
 
 # パスを追加
 PROJECT_ROOT = os.path.dirname(os.path.abspath(__file__))
 
 # 絶対パスでインポート
-from apps.fortunetelling.ninestarki.routes.nine_star_routes import create_nine_star_bp
-from apps.fortunetelling.ninestarki.routes.monthly_routes import create_monthly_bp
+from apps.reading.ninestarki.routes.nine_star_routes import create_nine_star_bp
+from apps.reading.ninestarki.routes.monthly_routes import create_monthly_bp
 from core.exceptions import AppError
 
 from core.auth import auth_bp

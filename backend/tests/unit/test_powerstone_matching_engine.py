@@ -14,16 +14,16 @@ from __future__ import annotations
 
 import pytest
 
-from apps.fortunetelling.shared.domain.exceptions import (
+from apps.reading.shared.domain.exceptions import (
     NoAuspiciousDirectionError,
     PowerStoneMatchingError,
 )
-from apps.fortunetelling.powerstone.domain.services.gogyo_service import GogyoService
-from apps.fortunetelling.powerstone.domain.services.powerstone_matching_engine import (
+from apps.reading.powerstone.domain.services.gogyo_service import GogyoService
+from apps.reading.powerstone.domain.services.powerstone_matching_engine import (
     PowerStoneMatchingEngine,
 )
-from apps.fortunetelling.powerstone.domain.value_objects.powerstone import PowerStoneResult
-from apps.fortunetelling.powerstone.infrastructure.persistence.powerstone_repository import (
+from apps.reading.powerstone.domain.value_objects.powerstone import PowerStoneResult
+from apps.reading.powerstone.infrastructure.persistence.powerstone_repository import (
     PowerStoneRepository,
 )
 

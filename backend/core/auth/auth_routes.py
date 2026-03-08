@@ -6,9 +6,9 @@ from flask_jwt_extended import (
 )
 # werkzeug.securityの代わりにbcryptを使用
 import bcrypt
-from apps.fortunetelling.shared.domain.entities.user import User
-from apps.fortunetelling.shared.domain.entities.permission import Permission
-from apps.fortunetelling.shared.domain.entities.user_permission import UserPermission
+from apps.reading.shared.domain.entities.user import User
+from apps.reading.shared.domain.entities.permission import Permission
+from apps.reading.shared.domain.entities.user_permission import UserPermission
 from core.models.system_config import SystemConfig
 from core.models.exceptions import (
     UserNotFoundError,
@@ -27,7 +27,7 @@ import json
 from core.auth.auth_utils import permission_required
 from core.models.admin_account_limit import AdminAccountLimit
 
-from apps.fortunetelling.shared.infrastructure.persistence.user_repository import UserRepository
+from apps.reading.shared.infrastructure.persistence.user_repository import UserRepository
 
 # 臨時：この Blueprintは app.py で生成されるため、Repositoryはここで直接生成します。
 # TODO: Usecaseで生成するように修正する

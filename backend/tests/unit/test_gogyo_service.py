@@ -11,9 +11,9 @@ from __future__ import annotations
 
 import pytest
 
-from apps.fortunetelling.shared.domain.exceptions import PowerStoneMatchingError
-from apps.fortunetelling.powerstone.domain.services.gogyo_service import GogyoService
-from apps.fortunetelling.ninestarki.domain.value_objects.gogyo import Gogyo, GogyoRelation
+from apps.reading.shared.domain.exceptions import PowerStoneMatchingError
+from apps.reading.powerstone.domain.services.gogyo_service import GogyoService
+from apps.reading.ninestarki.domain.value_objects.gogyo import Gogyo, GogyoRelation
 
 
 @pytest.fixture

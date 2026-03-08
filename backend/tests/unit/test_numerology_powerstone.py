@@ -1,15 +1,15 @@
 """수비술 파워스톤 카탈로그 · 리포지토리 · 엔진 유닛 테스트."""
 import pytest
 
-from apps.fortunetelling.powerstone.domain.value_objects.numerology_powerstone import (
+from apps.reading.powerstone.domain.value_objects.numerology_powerstone import (
     NumerologyPowerStoneResult,
     NumerologyStone,
     NumerologyStoneRecommendation,
 )
-from apps.fortunetelling.powerstone.infrastructure.persistence.numerology_powerstone_repository import (
+from apps.reading.powerstone.infrastructure.persistence.numerology_powerstone_repository import (
     NumerologyPowerStoneRepository,
 )
-from apps.fortunetelling.powerstone.domain.services.numerology_powerstone_engine import (
+from apps.reading.powerstone.domain.services.numerology_powerstone_engine import (
     NumerologyPowerStoneEngine,
 )
 
