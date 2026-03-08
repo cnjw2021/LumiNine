@@ -76,7 +76,7 @@ fortune_level 확정 → 프론트엔드 전달
 | **auspicious** (길방) | 동일 오행 (비화) | 7(금) = 6(금) |
 | **neutral** (중립) | 상극 등, 상생이 아닌 관계 | 목↔금(상극): 3,4 vs 7 |
 
-> **소스파일**: [`backend/apps/ninestarki/domain/services/five_elements_fortune_service.py`](../backend/apps/ninestarki/domain/services/five_elements_fortune_service.py)
+> **소스파일**: [`backend/apps/reading/ninestarki/domain/services/five_elements_fortune_service.py`](../backend/apps/reading/ninestarki/domain/services/five_elements_fortune_service.py)
 
 ---
 
@@ -139,7 +139,7 @@ fortune_level 확정 → 프론트엔드 전달
 | 자(子) | 북서 (Northwest) |
 | 축(丑) | 북 (North) |
 
-> **소스파일**: [`backend/apps/ninestarki/domain/services/additional_direction_marks_service.py`](../backend/apps/ninestarki/domain/services/additional_direction_marks_service.py)
+> **소스파일**: [`backend/apps/reading/ninestarki/domain/services/additional_direction_marks_service.py`](../backend/apps/reading/ninestarki/domain/services/additional_direction_marks_service.py)
 
 ---
 
@@ -180,7 +180,7 @@ NW(8) · 중립        ← 소아살 (묘월→NW)
 
 새로운 룰을 추가하는 경우:
 
-1. `backend/apps/ninestarki/domain/services/`에 새 서비스 파일 생성
+1. `backend/apps/reading/ninestarki/domain/services/`에 새 서비스 파일 생성
 2. `enrich(directions, ...)` 메서드 구현 (in-place로 dict 업데이트)
 3. `MonthlyDirectionsUseCase`의 `execute()`에서 체인에 추가
 4. `dependency_module.py`에 DI 등록

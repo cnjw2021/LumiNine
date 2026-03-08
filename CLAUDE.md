@@ -1,13 +1,13 @@
-# Nine Star Ki (구성기학) 프로젝트 가이드
+# LumiNine (루미나인) 프로젝트 가이드
 
 ## 🏗 아키텍처 개요 (Architecture Overview)
 
 - **Tech Stack (기술 스택)**:
-  - Backend: Python, FastAPI, SQLAlchemy
-  - Frontend: Next.js, TypeScript, Mantine UI
-  - Database: MySQL 8.0, Redis (for Task Queue)
-  - PDF 생성: WeasyPrint (Worker Queue 경유)
-  - Infrastructure: Docker, Docker Compose, Nginx, Certbot (HTTPS), New Relic (Monitoring)
+  - Backend: Python, Flask, SQLAlchemy
+  - Frontend: Next.js (App Router), TypeScript, Mantine UI
+  - Database: MySQL 8.0
+  - PDF 생성: html2canvas + jsPDF (프론트엔드 클라이언트 사이드)
+  - Infrastructure: Docker, Docker Compose, Nginx, Certbot (HTTPS)
 - **Deployment Environment (배포 환경)**:
   - Docker Compose를 이용한 컨테이너 기반 배포 (`docker-compose.yml`, `docker-compose.dev.yml`, `docker-compose.prod.yml`)
   - Nginx 리버스 프록시 및 Certbot을 통한 SSL 자동 갱신 지원 환경
@@ -20,17 +20,18 @@
   3. 클라이언트는 이후 API 요청 시 `Authorization: Bearer <token>` 헤더에 토큰을 포함
   4. 서버는 보호된 라우트(예: `/api/auth/me`)에서 토큰을 검증해 사용자 인가 처리
 
-## 🔮 주요 감정 API 경로 (Fortune Telling API)
+## 🔮 주요 API 경로
 
 - **구성기학 기본 계산**: `/api/nine-star/calculate` (생년월일 기반 본명성, 월명성 등 계산 및 감정)
 - **상성(궁합) 감정**: `/api/nine-star/compatibility` (두 사람의 별을 기반으로 상성 결과 반환)
-- **월반/연반(방위) 차트**: `/api/nine-star/monthly-chart`, `/api/monthly/directions` (월별 길방위/흉방위 계산 및 길흉방 산출 로직)
+- **월반/연반(방위) 차트**: `/api/nine-star/monthly-chart`, `/api/monthly/directions` (월별 길방위/흉방위 계산)
 - **운세 및 가이던스**: `/api/star-life-guidance` (별자리별 삶의 지침 및 운세 제공)
-- **파워스톤 매핑**: (본명성/월명성 및 필요 기운에 따른 맞춤형 파워스톤(원석) 매핑 및 추천 로직 추가 예정)
+- **파워스톤 추천**: `/api/nine-star/calculate` 응답에 6-레이어 파워스톤 추천 결과 포함
 
 ## 📁 디렉토리별 역할 1줄 요약
 
-- `backend/`: FastAPI 기반의 백엔드 API 서버 (Clean Architecture 적용)
+- `backend/`: Flask 기반의 백엔드 API 서버 (Clean Architecture 적용)
+  - `backend/apps/reading/`: 3개 서브도메인(ninestarki, numerology, powerstone) + shared
 - `frontend/`: Next.js(App Router) 기반의 프론트엔드 UI 및 클라이언트 애플리케이션
 - `mysql/`: MySQL 데이터베이스 초기화 스크립트 및 설정 (DDL/DML)
 - `nginx/`: Nginx 웹 서버 및 리버스 프록시 설정 파일
@@ -49,7 +50,7 @@
 ## ✍️ 코딩 컨벤션
 
 - **Backend (Python)**: PEP 8 스타일 가이드를 따르며, Clean Architecture를 지향하여 비즈니스 로직(Domain/Use Cases)과 프레임워크(Web/Infrastructure)를 분리.
-- **Frontend (TypeScript)**: `eslint`와 `prettier` (`eslint-config-next`) 규칙을 준수. 가급적 App Router 패턴의 Server Component와 Client Component(`"use client"`)를 명확히 분리하여 사용. Custom hooks 및 Mantine UI 컴포넌트 활용.
+- **Frontend (TypeScript)**: `eslint`와 `prettier` (`eslint-config-next`) 규칙을 준수. App Router 패턴의 Server Component와 Client Component(`"use client"`)를 명확히 분리. Custom hooks 및 Mantine UI 컴포넌트 활용.
 - **DB**: MySQL DDL/DML은 `mysql/` 디렉토리에서 버전 관리
 - **공통**: 변수명/함수명은 영어, 주석은 한국어 OK
 - **📌 코드 리뷰 가이드라인**: 과거 리뷰에서 반복된 실수를 방지하기 위한 체크리스트 → [docs/CODE_REVIEW_GUIDELINES.md](docs/CODE_REVIEW_GUIDELINES.md) 를 코드 작성 전 반드시 참조

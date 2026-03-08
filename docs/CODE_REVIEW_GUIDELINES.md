@@ -243,7 +243,7 @@ execSync(`gh api graphql -f query='mutation { ... threadId: "${id}" }'`);
 
 | # | 항목 |
 |---|------|
-| CA1 | **안쪽 계층이 바깥 계층을 import하지 않는가?** `domain/` → ✅ 순수 Python만 사용, ❌ FastAPI/SQLAlchemy/외부 라이브러리 import 금지 |
+| CA1 | **안쪽 계층이 바깥 계층을 import하지 않는가?** `domain/` → ✅ 순수 Python만 사용, ❌ Flask/SQLAlchemy/외부 라이브러리 import 금지 |
 | CA2 | `domain/services/`에서 `infrastructure/` 또는 `routes/`의 모듈을 직접 참조하지 않는가? |
 | CA3 | `use_cases/`에서 `routes/`를 import하지 않는가? |
 | CA4 | 데이터베이스 세부사항(SQL, ORM 모델)이 **`infrastructure/` 계층에만 존재**하는가? |

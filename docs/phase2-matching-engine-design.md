@@ -394,7 +394,7 @@ binder.bind(PowerStoneRecommendationUseCase, to=PowerStoneRecommendationUseCase,
 ## 8. 파일 구조 (신규/수정 대상)
 
 ```
-backend/apps/ninestarki/
+backend/apps/reading/
 ├── domain/
 │   ├── value_objects/               [NEW 디렉토리]
 │   │   ├── __init__.py
