@@ -432,7 +432,7 @@ const NineStarKiForm: React.FC<NineStarKiFormProps> = ({ token }) => {
         }}
       >
         <Stack gap={0} align="center" mb={{ base: 'xs', sm: 'md' }}>
-          <Title order={1} ta="center" c={COLORS.text} style={{ fontSize: '1.8rem', whiteSpace: 'nowrap', fontFamily: FONTS.title, fontWeight: 'normal', letterSpacing: '0.05em' }}>九星気学占い</Title>
+          <Title order={1} ta="center" c={COLORS.text} style={{ fontSize: '1.8rem', whiteSpace: 'nowrap', fontFamily: FONTS.title, fontWeight: 'normal', letterSpacing: '0.05em' }}>九星気学鑑定</Title>
         </Stack>
 
         <Tabs
@@ -696,7 +696,7 @@ const NineStarKiForm: React.FC<NineStarKiFormProps> = ({ token }) => {
               transition: 'all 0.3s ease',
             }}
           >
-            {isLoading ? '鑑定中...' : fortuneType === 'normal' ? '占い結果を見る' : '相性を鑑定する'}
+            {isLoading ? '鑑定中...' : fortuneType === 'normal' ? '鑑定結果を見る' : '相性を鑑定する'}
           </Button>
         </Stack>
       </Paper>
