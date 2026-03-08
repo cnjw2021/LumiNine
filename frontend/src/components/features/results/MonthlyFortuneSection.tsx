@@ -91,14 +91,14 @@ const MonthlyFortuneSection: React.FC<MonthlyFortuneSectionProps> = ({
             {/* Directional Guide Header */}
             <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', gap: '8px', marginBottom: '24px' }}>
                 <h3 style={{
-                    color: '#d4af37', fontSize: '11px', letterSpacing: '0.3em',
-                    fontWeight: 500, textTransform: 'uppercase' as const,
+                    color: '#b8952b', fontSize: '11px', letterSpacing: '0.3em',
+                    fontWeight: 600, textTransform: 'uppercase' as const,
                     fontFamily: '"Montserrat", sans-serif', margin: 0
                 }}>
                     Directional Guide
                 </h3>
                 <span style={{
-                    color: 'rgba(74, 74, 74, 0.5)', fontSize: '10px',
+                    color: '#666666', fontSize: '10px', fontWeight: 500,
                     fontFamily: '"Montserrat", sans-serif', letterSpacing: '0.1em'
                 }}>
                     {currentMonthData?.display_month || '今月'}
@@ -135,7 +135,7 @@ const MonthlyFortuneSection: React.FC<MonthlyFortuneSectionProps> = ({
                                             border: '1px solid rgba(212, 175, 55, 0.15)',
                                         }}
                                     >
-                                        <span style={{ fontSize: '10px', color: '#d4af37', fontWeight: 700, fontFamily: '"Noto Serif JP", serif' }}>中宮</span>
+                                        <span style={{ fontSize: '10px', color: '#b8952b', fontWeight: 700, fontFamily: '"Noto Serif JP", serif' }}>中宮</span>
                                     </div>
                                 );
                             }
@@ -173,7 +173,7 @@ const MonthlyFortuneSection: React.FC<MonthlyFortuneSectionProps> = ({
                                     break;
                                 default: // neutral
                                     bgColor = 'rgba(255, 255, 255, 0)';
-                                    textColor = '#a0a0a0';
+                                    textColor = '#7a7a7a';
                                     icon = '·';
                             }
 
@@ -208,8 +208,8 @@ const MonthlyFortuneSection: React.FC<MonthlyFortuneSectionProps> = ({
                 <div>
                     <div style={{ display: 'flex', alignItems: 'center', gap: '8px', marginBottom: '20px' }}>
                         <h3 style={{
-                            fontFamily: '"Montserrat", sans-serif', color: '#d4af37',
-                            fontSize: '11px', letterSpacing: '0.3em', fontWeight: 500,
+                            fontFamily: '"Montserrat", sans-serif', color: '#b8952b',
+                            fontSize: '11px', letterSpacing: '0.3em', fontWeight: 600,
                             textTransform: 'uppercase' as const, margin: 0
                         }}>
                             Monthly Guidance Stones

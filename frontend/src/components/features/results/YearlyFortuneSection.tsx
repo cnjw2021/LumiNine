@@ -21,8 +21,8 @@ const YearlyFortuneSection: React.FC<YearlyFortuneSectionProps> = ({
             {/* Header */}
             <div style={{ display: 'flex', alignItems: 'center', gap: '16px', marginBottom: '20px' }}>
                 <h3 style={{
-                    color: '#d4af37', fontSize: '11px', letterSpacing: '0.3em',
-                    fontWeight: 500, textTransform: 'uppercase' as const,
+                    color: '#b8952b', fontSize: '11px', letterSpacing: '0.3em',
+                    fontWeight: 600, textTransform: 'uppercase' as const,
                     flexShrink: 0, fontFamily: '"Montserrat", sans-serif', margin: 0
                 }}>
                     Yearly Fortune {currentYear}
@@ -87,7 +87,7 @@ const YearlyFortuneSection: React.FC<YearlyFortuneSectionProps> = ({
                     {/* Right: Description */}
                     <div style={{ borderLeft: '1px solid rgba(212, 175, 55, 0.1)', paddingLeft: '24px' }}>
                         <p style={{
-                            color: 'rgba(74, 74, 74, 0.8)',
+                            color: '#4a4a4a',
                             fontFamily: '"Noto Serif JP", serif',
                             fontSize: '15px', lineHeight: 1.8, margin: 0
                         }}>

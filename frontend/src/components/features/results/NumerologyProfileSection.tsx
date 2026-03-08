@@ -29,14 +29,14 @@ const NumerologyProfileSection: React.FC<NumerologyProfileSectionProps> = ({ sto
             }}>
                 <span style={{
                     fontSize: '10px', fontFamily: '"Montserrat", sans-serif',
-                    letterSpacing: '0.4em', color: '#d4af37', marginBottom: '8px'
+                    letterSpacing: '0.4em', color: '#b8952b', marginBottom: '8px', fontWeight: 600
                 }}>
                     NUMEROLOGY
                 </span>
                 <span style={{
                     fontSize: '36px', fontWeight: 700,
                     fontFamily: '"Noto Serif JP", serif',
-                    color: '#d8a7a7', lineHeight: 1
+                    color: '#c28b8b', lineHeight: 1
                 }}>
                     {stoneData.life_path_number}
                 </span>
@@ -54,7 +54,7 @@ const NumerologyProfileSection: React.FC<NumerologyProfileSectionProps> = ({ sto
             {/* Description Text */}
             {stoneData.traits && (
                 <p style={{
-                    color: 'rgba(74, 74, 74, 0.85)',
+                    color: '#4a4a4a',
                     fontSize: '13px', lineHeight: 1.7,
                     fontFamily: '"Noto Serif JP", serif',
                     maxWidth: '280px', margin: 0,
