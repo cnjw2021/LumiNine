@@ -105,9 +105,8 @@ export default function LandingPage() {
               <Text style={{ fontSize: 18, fontWeight: 300, lineHeight: 2, letterSpacing: '0.1em', opacity: 0.8, paddingTop: 16 }}>
                 東洋と西洋の叡智が導き出す、<br />
                 あなただけのパーソナル・ストーン。<br />
-                選ばれたメンバー様へ贈る、<br />
-                究極のオーダーメイド・<br />
-                キュレーション。
+                ご自身の本質と深く向き合う、<br />
+                特別な旅の証として。
               </Text>
             </Box>
 
