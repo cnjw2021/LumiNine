@@ -4,7 +4,6 @@ from core.database import db
 from core.utils.logger import get_logger
 from core.utils.calendar_utils import get_opposite_zodiac_direction
 from typing import Dict, List, Tuple, Optional, Any
-from core.models.compatibility_level import CompatibilityLevel
 logger = get_logger(__name__)
 
 class StarGridPattern(db.Model):
@@ -80,7 +79,7 @@ class StarGridPattern(db.Model):
                     "north": {
                         "is_auspicious": bool,
                         "reason": str or None,
-                        "marks": [str, ...] // "dark_sword", "main_star", "month_star", "water_fire", "zodiac_branch_position", "compatibility_matrix" など
+                        "marks": [str, ...] // "dark_sword", "main_star", "month_star", "water_fire", "zodiac_branch_position" など
                     },
                     "northeast": {...},
                     ...
@@ -240,7 +239,7 @@ class StarGridPattern(db.Model):
                     "north": {
                         "is_auspicious": bool,
                         "reason": str or None,
-                        "marks": [str, ...] // "dark_sword", "main_star", "month_star", "water_fire", "zodiac_branch_position", "compatibility_matrix" など
+                        "marks": [str, ...] // "dark_sword", "main_star", "month_star", "water_fire", "zodiac_branch_position" など
                         "is_main_star": bool
                     },
                     "northeast": {...},

@@ -225,7 +225,6 @@ class TestLayer3ProtectionStone:
         assert exc_info.value.code == "NO_THREAT_FOUND"
 
     @pytest.mark.parametrize("alias_code, canonical_code", [
-        ("compatibility_matrix", "bad_star"),
         ("main_star_opposite", "main_opposite"),
         ("month_star_opposite", "month_opposite"),
     ])
@@ -245,11 +244,11 @@ class TestLayer3ProtectionStone:
         assert result.protection_stone.reason_params["threat_key"] == f"threat.{canonical_code}"
 
     def test_alias_severity_ordering(self, engine: PowerStoneMatchingEngine):
-        """five_yellow(1) > compatibility_matrix(7) 우선순위 정상 동작."""
+        """five_yellow(1) > main_star_opposite(8) 우선순위 정상 동작."""
         directions = _make_directions(
             auspicious={"south": True},
             marks={
-                "north": ["compatibility_matrix"],
+                "north": ["main_star_opposite"],
                 "east": ["five_yellow"],
             },
         )
@@ -261,7 +260,7 @@ class TestLayer3ProtectionStone:
         directions = _make_directions(
             auspicious={"south": True},
             marks={
-                "east": ["compatibility_matrix"],  # 이 방위를 neutral 으로 설정
+                "east": ["main_star_opposite"],  # 이 방위를 neutral 으로 설정
                 "north": ["dark_sword"],             # 이 방위는 False(=흉)
             },
         )

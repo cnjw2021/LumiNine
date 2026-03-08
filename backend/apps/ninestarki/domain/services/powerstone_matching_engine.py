@@ -50,7 +50,6 @@ _THREAT_SEVERITY: Dict[str, int] = {
     "water_fire": 5,        # 水火殺
     "opposite_zodiac": 6,   # 破
     "bad_star": 7,          # 凶方星
-    "compatibility_matrix": 7,  # 凶方星 (direction-fortune source alias)
     "main_opposite": 8,     # 本命的殺
     "main_star_opposite": 8,    # 本命的殺 (direction-fortune source alias)
     "month_opposite": 9,    # 月命的殺
@@ -59,7 +58,6 @@ _THREAT_SEVERITY: Dict[str, int] = {
 
 # ── alias → canonical 正規化マップ (MessageCatalog キー解決用) ────
 _THREAT_ALIAS_MAP: Dict[str, str] = {
-    "compatibility_matrix": "bad_star",
     "main_star_opposite": "main_opposite",
     "month_star_opposite": "month_opposite",
 }
