@@ -76,8 +76,8 @@ services:
       - ./.env.production.backend
     environment:
       MYSQL_ROOT_PASSWORD: ${DB_ROOT_PASSWORD}
-      MYSQL_DATABASE: ${DB_NAME:-ninestarki}
-      MYSQL_USER: ${DB_USER:-ninestarki}
+      MYSQL_DATABASE: ${DB_NAME:-luminine}
+      MYSQL_USER: ${DB_USER:-luminine}
       MYSQL_PASSWORD: ${DB_PASSWORD}
       LANG: en_US.UTF-8
       LC_CTYPE: en_US.UTF-8

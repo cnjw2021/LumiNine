@@ -23,7 +23,7 @@ jobs:
 
     env:
       DB_ROOT_PASSWORD: rootpassword
-      DB_NAME: ninestarki
+      DB_NAME: luminine
       DB_USER: superuser
       DB_PASSWORD: superpass!
 
