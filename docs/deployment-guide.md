@@ -32,12 +32,11 @@ CI가 빌드하여 Push하는 이미지:
 | 이미지 | 서비스 | 설명 |
 |--------|--------|------|
 | `ghcr.io/cnjw2021/ninestar-compact-frontend:latest` | Next.js 프론트엔드 | SSR 렌더링, 정적 자산 서빙 |
-| `ghcr.io/cnjw2021/ninestar-compact-backend:latest` | Flask 백엔드 + rq-worker | REST API 제공, Gunicorn으로 멀티워커 실행 |
+| `ghcr.io/cnjw2021/ninestar-compact-backend:latest` | Flask 백엔드 | REST API 제공, Gunicorn으로 멀티워커 실행 |
 | `ghcr.io/cnjw2021/ninestar-compact-nginx:latest` | Nginx 리버스 프록시 | SSL 종단, frontend/backend로 요청 라우팅 |
 
 그 외 서비스는 공개 이미지를 사용합니다:
 - `mysql:8.0` — 메인 데이터 저장소 (구성·점괘 데이터)
-- `redis:7-alpine` — RQ(Redis Queue) 작업 큐 브로커
 - `certbot/certbot` — Let's Encrypt SSL 인증서 자동 갱신
 - `newrelic/infrastructure:latest` — 서버 모니터링 에이전트
 
@@ -71,12 +70,12 @@ CI가 빌드하여 Push하는 이미지:
 ```env
 # 데이터베이스
 DB_ROOT_PASSWORD=<루트 비밀번호>        # MySQL root 계정 비밀번호 (docker-compose에서 MYSQL_ROOT_PASSWORD로 전달)
-DB_NAME=ninestarki                      # 기본 데이터베이스명
+DB_NAME=luminine                      # 기본 데이터베이스명
 DB_USER=<DB 사용자명>                   # 애플리케이션용 MySQL 사용자
 DB_PASSWORD=<DB 비밀번호>               # 애플리케이션용 MySQL 비밀번호
 DB_HOST=mysql                           # Docker 네트워크 내부의 서비스명 (컨테이너명이 아님)
 DB_PORT=3306
-DATABASE_URL=mysql+pymysql://<DB_USER>:<DB_PASSWORD>@mysql:3306/ninestarki?charset=utf8mb4
+DATABASE_URL=mysql+pymysql://<DB_USER>:<DB_PASSWORD>@mysql:3306/luminine?charset=utf8mb4
 # ⚠️ DATABASE_URL이 설정되면 DB_USER/DB_PASSWORD보다 우선됩니다 (core/db_config.py 참조)
 
 # 앱 시크릿
@@ -135,9 +134,9 @@ cd /opt/ninestar
 ### 특정 서비스만 업데이트
 
 ```bash
-# 백엔드만 업데이트 (rq-worker도 같은 이미지를 사용하므로 함께 재시작)
+# 백엔드만 업데이트
 docker pull ghcr.io/cnjw2021/ninestar-compact-backend:latest
-docker compose -f docker-compose.prod.yml up -d backend rq-worker
+docker compose -f docker-compose.prod.yml up -d backend
 
 # 프론트엔드만 업데이트
 docker pull ghcr.io/cnjw2021/ninestar-compact-frontend:latest
