@@ -154,7 +154,6 @@ export default function NumerologyPage() {
                         <ul style={{ margin: 0, paddingLeft: '24px', display: 'flex', flexDirection: 'column', gap: '4px' }}>
                             <li>自己の本質と可能性の理解</li>
                             <li>人生の転機やチャンスの把握</li>
-                            <li>対人関係における相性の理解</li>
                             <li>キャリアや人生の方向性の選択</li>
                             <li>精神的な成長と自己実現のガイド</li>
                         </ul>
