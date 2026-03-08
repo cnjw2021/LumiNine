@@ -4,6 +4,7 @@ from apps.reading.ninestarki.domain.services.star_calculator_service import Star
 from apps.reading.numerology.domain.services.numerology_service import NumerologyService
 from apps.reading.ninestarki.domain.repositories.nine_star_repository_interface import INineStarRepository
 from apps.reading.ninestarki.domain.repositories.solar_terms_repository_interface import ISolarTermsRepository
+from apps.reading.ninestarki.domain.repositories.star_attribute_repository_interface import IStarAttributeRepository
 from apps.reading.numerology.domain.repositories.numerology_reading_repository_interface import (
     INumerologyReadingRepository,
 )
@@ -23,6 +24,7 @@ class CalculateStarsUseCase:
         nine_star_repo: INineStarRepository,
         solar_terms_repo: ISolarTermsRepository,
         numerology_reading_repo: INumerologyReadingRepository,
+        star_attr_repo: IStarAttributeRepository,
     ):
         """
         コンストラクタを通じてリポジトリの実装オブジェクトを自動的に注入します.
@@ -31,6 +33,7 @@ class CalculateStarsUseCase:
         self.solar_terms_repo = solar_terms_repo
         self.calculator = StarCalculatorService()
         self._numerology_reading_repo = numerology_reading_repo
+        self._star_attr_repo = star_attr_repo
 
     def execute(self, birth_datetime_str: str, gender: str, target_year: int, locale: str = "ja") -> dict:
         logger.info(f"Executing CalculateStarsUseCase for {birth_datetime_str}")
@@ -71,6 +74,11 @@ class CalculateStarsUseCase:
 
         is_master = numerology_num.number != reading_number
 
+        # ── 본명성 기반 추천 음식 조회 ──────────
+        recommended_foods = self._star_attr_repo.find_by_star_and_type(
+            main_star.star_number, "food"
+        )
+
         return {
             "birth_datetime": birth_datetime_str,
             "gender": gender,
@@ -79,6 +87,7 @@ class CalculateStarsUseCase:
             "month_star": month_star.to_dict(),
             "day_star": day_star.to_dict(),
             "year_star": year_star.to_dict(),
+            "recommended_foods": recommended_foods,
             "numerology": {
                 "life_path_number": numerology_num.number,
                 "is_master_number": is_master,

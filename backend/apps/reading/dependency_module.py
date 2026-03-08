@@ -33,6 +33,9 @@ from apps.reading.ninestarki.infrastructure.persistence.star_grid_pattern_reposi
 from apps.reading.ninestarki.domain.repositories.monthly_directions_repository_interface import IMonthlyDirectionsRepository
 from apps.reading.ninestarki.infrastructure.persistence.monthly_directions_repository import MonthlyDirectionsRepository
 
+from apps.reading.ninestarki.domain.repositories.star_attribute_repository_interface import IStarAttributeRepository
+from apps.reading.ninestarki.infrastructure.persistence.star_attribute_repository import StarAttributeRepository
+
 from apps.reading.ninestarki.domain.services.monthly_board_domain_service import MonthlyBoardDomainService
 from apps.reading.ninestarki.domain.services.interfaces.monthly_board_service_interface import IMonthlyBoardDomainService
 from apps.reading.ninestarki.domain.services.year_star_domain_service import YearStarDomainService
@@ -102,8 +105,9 @@ class AppModule(Module):
         repo: INineStarRepository,
         solar_terms_repo: ISolarTermsRepository,
         numerology_reading_repo: INumerologyReadingRepository,
+        star_attr_repo: IStarAttributeRepository,
     ) -> CalculateStarsUseCase:
-        return CalculateStarsUseCase(repo, solar_terms_repo, numerology_reading_repo)
+        return CalculateStarsUseCase(repo, solar_terms_repo, numerology_reading_repo, star_attr_repo)
 
     # ── shared ──────────────────────────────────────────────
     @singleton
@@ -127,6 +131,7 @@ class AppModule(Module):
         binder.bind(YearStarDomainService, to=YearStarDomainService, scope=singleton)
         binder.bind(FiveElementsFortuneService, to=FiveElementsFortuneService, scope=singleton)
         binder.bind(AdditionalDirectionMarksService, to=AdditionalDirectionMarksService, scope=singleton)
+        binder.bind(IStarAttributeRepository, to=StarAttributeRepository, scope=singleton)
         binder.bind(MonthlyDirectionsUseCase, to=MonthlyDirectionsUseCase, scope=singleton)
 
         # ── numerology ────────────────────────────────────
