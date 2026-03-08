@@ -70,21 +70,6 @@ services:
     volumes:
       - mysql_data_local:/var/lib/mysql
 
-  rq-worker:
-    env_file:
-      - ./backend/.env.development.backend
-    build:
-      context: ./backend
-      dockerfile: Dockerfile
-      target: development
-    volumes:
-      - ./backend:/app # コードのリアルタイム同期化
-    user: root
-    command: >
-      sh -c "su -s /bin/sh -c 'python -m apps.ninestarki.worker_entrypoint' appuser"
-    depends_on:
-      - redis
-      - mysql
 
   # --- テスト 専用 サービス ---
   backend-test:
