@@ -3,7 +3,7 @@
 import React from "react";
 import { useRouter } from "next/navigation";
 import { useAuth } from '@/contexts/auth/AuthContext';
-import { Box, Container, Flex, Text, Title, UnstyledButton, TextInput, Button } from '@mantine/core';
+import { Box, Container, Flex, Text, Title, UnstyledButton, Button } from '@mantine/core';
 import { IconSparkles, IconDiamond, IconShieldCheck, IconWand } from '@tabler/icons-react';
 
 export default function LandingPage() {
@@ -78,15 +78,7 @@ export default function LandingPage() {
         <Box style={{ position: 'relative', zIndex: 10, width: '100%', maxWidth: 1200, margin: '0 auto', display: 'flex', flexDirection: 'row', alignItems: 'center', justifyContent: 'space-between', gap: 64, padding: '0 24px', flexWrap: 'wrap' }}>
 
           {/* Visual Composition Area (Left) */}
-          <Box visibleFrom="md" style={{ width: '45%', position: 'relative', height: 600, minWidth: 400 }}>
-            <Box style={{ position: 'absolute', top: 0, right: 0, width: '100%', height: '100%', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
-              <Box style={{ position: 'relative' }}>
-                <Box style={{ width: 256, height: 320, backgroundColor: 'rgba(255,255,255,0.3)', backdropFilter: 'blur(4px)', borderRadius: 16, border: '1px solid rgba(255,255,255,0.4)', boxShadow: 'inset 0 2px 4px 0 rgba(0,0,0,0.06)', display: 'flex', alignItems: 'center', justifyContent: 'center', overflow: 'hidden' }}>
-                  <img src="https://lh3.googleusercontent.com/aida-public/AB6AXuDnsl-OYpYL1rKHE0maqfHkz8ZDoxkIEGREwenSibE-Xh-5wI5hcev7_ZR7YH7AQExxJvFOfy4d6KHjWyAgubHwcnxI4SjVGSU0l-wHxDhE4F6nlX2vEL0BlB3BLnrqwAAklImyqx-lng30KxV-AsN9GnobEw0SScQfrEoB2RgOklbGyRzGZuIHJTitrO4QXDRsS9_SAEcg_g0TBtUTrjfLaZ0epIw6oy_tN_IA8t6qKm0lz4Ki3U9cDwSe1-qLFjAHRZQgvJnxHNYP" alt="Fine gold necklace with gemstone" style={{ objectFit: 'cover', width: '100%', height: '100%', opacity: 0.9 }} />
-                </Box>
-              </Box>
-            </Box>
-          </Box>
+          <Box visibleFrom="md" style={{ width: '45%', position: 'relative', height: 600, minWidth: 400 }} />
 
           {/* Editorial Text Area (Right) */}
           <Box style={{ flex: 1, display: 'flex', flexDirection: 'row-reverse', alignItems: 'center', gap: 48, minWidth: 400 }}>
@@ -148,18 +140,6 @@ export default function LandingPage() {
             最新のコレクション情報や、限定イベントのご案内、<br />
             あなたにふさわしい宝石の物語をお届けします。
           </Text>
-          <Flex direction={{ base: 'column', md: 'row' }} gap={16} mt={16} style={{ width: '100%' }}>
-            <TextInput
-              placeholder="メールアドレスを入力"
-              radius="xl"
-              size="md"
-              style={{ flex: 1, fontFamily: '"Noto Sans JP", sans-serif' }}
-              styles={{ input: { height: 56, backgroundColor: '#fff', border: `1px solid ${theme.primary}33` } }}
-            />
-            <Button radius="xl" size="md" style={{ backgroundColor: theme.charcoal, color: '#fff', fontWeight: 700, letterSpacing: '0.1em', height: 56, padding: '0 40px' }}>
-              購読する
-            </Button>
-          </Flex>
           <Text style={{ fontSize: 10, opacity: 0.4, marginTop: 40, letterSpacing: '0.1em' }}>© 2024 LumiNine Editorial. All Rights Reserved.</Text>
         </Box>
       </Box>
