@@ -81,6 +81,7 @@ def execute_sql_file(cursor, file_path):
 _SQL_SEED_FILE_TABLE_MAP = {
     '100_stars.sql': {'stars'},
 
+    '200_star_attributes.sql': {'star_attributes'},
     '210_star_grid_patterns.sql': {'star_grid_patterns'},
     '300_monthly_directions.sql': {'monthly_directions'},
     '310_star_number_group.sql': {'star_groups'},
@@ -118,7 +119,7 @@ def _get_existing_tables(cursor) -> set:
 # 新しいテーブルを追加した場合はここにも追加してください
 _EXPECTED_TABLES = {
     'stars', 'solar_starts', 'solar_terms', 'daily_astrology',
-    'star_groups',
+    'star_groups', 'star_attributes',
     'star_grid_patterns', 'monthly_directions',
     'zodiac_groups', 'zodiac_group_members',
     'hourly_star_zodiacs', 'system_config', 'admin_account_limit',
