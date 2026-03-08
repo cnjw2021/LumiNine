@@ -23,30 +23,30 @@ def get_db_connection_info():
             parsed = urlparse(db_url.replace('mysql+pymysql://', 'http://').replace('mysql+mysqldb://', 'http://'))
             
             host = parsed.hostname or os.environ.get('DB_HOST', 'mysql')
-            user = parsed.username or os.environ.get('DB_USER', 'ninestarki')
-            password = parsed.password or os.environ.get('DB_PASSWORD', 'ninestarki_password')
+            user = parsed.username or os.environ.get('DB_USER', 'luminine')
+            password = parsed.password or os.environ.get('DB_PASSWORD', 'luminine_password')
             port = str(parsed.port) if parsed.port else os.environ.get('DB_PORT', '3306')
             
             if parsed.path:
-                database = parsed.path.strip('/').split('?')[0] or os.environ.get('DB_NAME', 'ninestarki')
+                database = parsed.path.strip('/').split('?')[0] or os.environ.get('DB_NAME', 'luminine')
             else:
-                database = os.environ.get('DB_NAME', 'ninestarki')
+                database = os.environ.get('DB_NAME', 'luminine')
                 
             logger.debug(f"DATABASE_URLから接続情報を解析: host={host}, user={user}, database={database}")
         except Exception as e:
             logger.error(f"DATABASE_URLの解析に失敗しました: {e}")
             # 解析に失敗した場合は個別の環境変数を使用
             host = os.environ.get('DB_HOST', 'mysql')
-            user = os.environ.get('DB_USER', 'ninestarki')
-            password = os.environ.get('DB_PASSWORD', 'ninestarki_password')
-            database = os.environ.get('DB_NAME', 'ninestarki')
+            user = os.environ.get('DB_USER', 'luminine')
+            password = os.environ.get('DB_PASSWORD', 'luminine_password')
+            database = os.environ.get('DB_NAME', 'luminine')
             port = os.environ.get('DB_PORT', '3306')
     else:
         # 個別の環境変数から接続情報を取得（DB_*の命名規則を優先）
         host = os.environ.get('DB_HOST', 'mysql')
-        user = os.environ.get('DB_USER', 'ninestarki') 
-        password = os.environ.get('DB_PASSWORD', 'ninestarki_password')
-        database = os.environ.get('DB_NAME', 'ninestarki')
+        user = os.environ.get('DB_USER', 'luminine') 
+        password = os.environ.get('DB_PASSWORD', 'luminine_password')
+        database = os.environ.get('DB_NAME', 'luminine')
         port = os.environ.get('DB_PORT', '3306')
         
         # 注: 以下は後方互換性のための対応です。
