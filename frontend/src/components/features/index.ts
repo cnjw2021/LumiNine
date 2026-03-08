@@ -4,7 +4,7 @@ export { default as ResultFortuneSection } from './results/ResultFortuneSection'
 
 
 // Form
-export { default as NineStarKiForm } from './form/NineStarKiForm';
+export { default as ReadingForm } from './form/ReadingForm';
 
 // Visualization
 

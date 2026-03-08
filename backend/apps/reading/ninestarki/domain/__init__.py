@@ -1,0 +1,1 @@
+# ninestarki/domain package

@@ -59,9 +59,9 @@
 `.env` 파일 등을 통해 다음 주요 환경변수가 관리됩니다:
 
 - `DB_HOST`: 데이터베이스 호스트 (default: mysql)
-- `DB_USER`: DB 사용자 (default: ninestarki)
+- `DB_USER`: DB 사용자 (default: luminine)
 - `DB_PASSWORD`: DB 비밀번호
-- `DB_NAME`: 데이터베이스명 (default: ninestarki)
+- `DB_NAME`: 데이터베이스명 (default: luminine)
 - `DB_PORT`: 데이터베이스 포트 (default: 3306)
 - `DB_ROOT_PASSWORD`: MySQL root 암호
 - `SECRET_KEY`: 백엔드 애플리케이션 시크릿 키 (본번환경 필수)

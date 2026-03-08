@@ -1,1 +1,1 @@
-export { default as NineStarKiForm } from './NineStarKiForm'; 
+export { default as ReadingForm } from './ReadingForm'; 

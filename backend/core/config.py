@@ -22,9 +22,9 @@ class BaseConfig:
     
     # データベース接続情報（デフォルト）
     DB_HOST = os.environ.get('DB_HOST', 'mysql')
-    DB_USER = os.environ.get('DB_USER', 'ninestarki')
-    DB_PASSWORD = os.environ.get('DB_PASSWORD', 'ninestarki_password')
-    DB_NAME = os.environ.get('DB_NAME', 'ninestarki')
+    DB_USER = os.environ.get('DB_USER', 'luminine')
+    DB_PASSWORD = os.environ.get('DB_PASSWORD', 'luminine_password')
+    DB_NAME = os.environ.get('DB_NAME', 'luminine')
     DB_PORT = os.environ.get('DB_PORT', '3306')
     DB_CHARSET = os.environ.get('DB_CHARSET', 'utf8mb4')
     DEFAULT_NOON_TIME = os.environ.get('DEFAULT_NOON_TIME', '12:00')  # 例: 12:00

@@ -4,9 +4,9 @@ from datetime import datetime, date, time
 
 import pytest
 
-from apps.ninestarki.domain.services.star_calculator_service import StarCalculatorService
-from apps.ninestarki.domain.repositories.solar_terms_repository_interface import ISolarTermsRepository
-from apps.ninestarki.domain.entities.solar_term import SolarTerm
+from apps.reading.ninestarki.domain.services.star_calculator_service import StarCalculatorService
+from apps.reading.ninestarki.domain.repositories.solar_terms_repository_interface import ISolarTermsRepository
+from apps.reading.ninestarki.domain.entities.solar_term import SolarTerm
 
 # --- テストケース ---
 

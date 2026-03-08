@@ -9,18 +9,18 @@ from __future__ import annotations
 
 import pytest
 
-from apps.ninestarki.domain.exceptions import (
+from apps.reading.shared.domain.exceptions import (
     NoAuspiciousDirectionError,
 )
-from apps.ninestarki.domain.services.gogyo_service import GogyoService
-from apps.ninestarki.domain.services.powerstone_matching_engine import (
+from apps.reading.powerstone.domain.services.gogyo_service import GogyoService
+from apps.reading.powerstone.domain.services.powerstone_matching_engine import (
     PowerStoneMatchingEngine,
 )
-from apps.ninestarki.infrastructure.persistence.powerstone_repository import (
+from apps.reading.powerstone.infrastructure.persistence.powerstone_repository import (
     PowerStoneRepository,
 )
-from apps.ninestarki.infrastructure.services.message_catalog import MessageCatalog
-from apps.ninestarki.use_cases.powerstone_recommendation_use_case import (
+from apps.reading.powerstone.infrastructure.services.message_catalog import MessageCatalog
+from apps.reading.powerstone.use_cases.powerstone_recommendation_use_case import (
     PowerStoneRecommendationUseCase,
 )
 

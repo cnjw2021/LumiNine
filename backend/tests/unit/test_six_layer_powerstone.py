@@ -8,7 +8,7 @@ from __future__ import annotations
 from typing import Any, Dict
 from unittest.mock import MagicMock, patch
 
-from apps.ninestarki.use_cases.six_layer_powerstone_use_case import (
+from apps.reading.powerstone.use_cases.six_layer_powerstone_use_case import (
     SixLayerPowerStoneUseCase,
 )
 
@@ -149,7 +149,7 @@ class TestSixLayerPowerStoneUseCase:
     # ── birth_date 있으면 6-Layer ─────────────────────
 
     @patch(
-        "apps.ninestarki.use_cases.six_layer_powerstone_use_case"
+        "apps.reading.powerstone.use_cases.six_layer_powerstone_use_case"
         ".NumerologyService.calculate_life_path_number"
     )
     def test_with_birth_date_returns_6_layer(self, mock_calc: MagicMock) -> None:
@@ -204,11 +204,11 @@ class TestSixLayerPowerStoneUseCase:
     # ── 양 유즈케이스 모두 호출 확인 ─────────────────
 
     @patch(
-        "apps.ninestarki.use_cases.six_layer_powerstone_use_case"
+        "apps.reading.powerstone.use_cases.six_layer_powerstone_use_case"
         ".NumerologyService.calculate_personal_year_number"
     )
     @patch(
-        "apps.ninestarki.use_cases.six_layer_powerstone_use_case"
+        "apps.reading.powerstone.use_cases.six_layer_powerstone_use_case"
         ".NumerologyService.calculate_life_path_number"
     )
     def test_both_engines_called(self, mock_calc: MagicMock, mock_pyn: MagicMock) -> None:
@@ -244,7 +244,7 @@ class TestSixLayerPowerStoneUseCase:
     # ── base_stone 은 6-Layer 에서 제외 ───────────────
 
     @patch(
-        "apps.ninestarki.use_cases.six_layer_powerstone_use_case"
+        "apps.reading.powerstone.use_cases.six_layer_powerstone_use_case"
         ".NumerologyService.calculate_life_path_number"
     )
     def test_base_stone_excluded_in_6_layer(self, mock_calc: MagicMock) -> None:
@@ -287,11 +287,11 @@ class TestSixLayerPowerStoneUseCase:
     # ── 7-Layer: yearly_stone 포함 검증 ─────────────
 
     @patch(
-        "apps.ninestarki.use_cases.six_layer_powerstone_use_case"
+        "apps.reading.powerstone.use_cases.six_layer_powerstone_use_case"
         ".NumerologyService.calculate_personal_year_number"
     )
     @patch(
-        "apps.ninestarki.use_cases.six_layer_powerstone_use_case"
+        "apps.reading.powerstone.use_cases.six_layer_powerstone_use_case"
         ".NumerologyService.calculate_life_path_number"
     )
     def test_7_layer_includes_yearly_stone(self, mock_calc: MagicMock, mock_pyn: MagicMock) -> None:
@@ -330,7 +330,7 @@ class TestSixLayerPowerStoneUseCase:
         assert result["personal_year_number"] == 5
 
     @patch(
-        "apps.ninestarki.use_cases.six_layer_powerstone_use_case"
+        "apps.reading.powerstone.use_cases.six_layer_powerstone_use_case"
         ".NumerologyService.calculate_life_path_number"
     )
     def test_6_layer_no_target_year_excludes_yearly(self, mock_calc: MagicMock) -> None:
@@ -350,11 +350,11 @@ class TestSixLayerPowerStoneUseCase:
         assert "personal_year_number" not in result or result.get("personal_year_number") is None
 
     @patch(
-        "apps.ninestarki.use_cases.six_layer_powerstone_use_case"
+        "apps.reading.powerstone.use_cases.six_layer_powerstone_use_case"
         ".get_numerology_traits"
     )
     @patch(
-        "apps.ninestarki.use_cases.six_layer_powerstone_use_case"
+        "apps.reading.powerstone.use_cases.six_layer_powerstone_use_case"
         ".NumerologyService.calculate_life_path_number"
     )
     def test_traits_included_in_response(
@@ -376,11 +376,11 @@ class TestSixLayerPowerStoneUseCase:
         assert result["traits"] == "独立心が強い"
 
     @patch(
-        "apps.ninestarki.use_cases.six_layer_powerstone_use_case"
+        "apps.reading.powerstone.use_cases.six_layer_powerstone_use_case"
         ".get_numerology_traits"
     )
     @patch(
-        "apps.ninestarki.use_cases.six_layer_powerstone_use_case"
+        "apps.reading.powerstone.use_cases.six_layer_powerstone_use_case"
         ".NumerologyService.calculate_life_path_number"
     )
     def test_traits_absent_when_not_found(

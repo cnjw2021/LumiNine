@@ -14,7 +14,7 @@ from typing import Optional
 
 import pytest
 
-from apps.ninestarki.domain.services.additional_direction_marks_service import (
+from apps.reading.ninestarki.domain.services.additional_direction_marks_service import (
     AdditionalDirectionMarksService,
 )
 

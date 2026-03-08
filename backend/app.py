@@ -10,18 +10,17 @@ import json
 from datetime import datetime, date
 import logging
 from flask_injector import FlaskInjector
-from apps.ninestarki.dependency_module import AppModule
+from apps.reading.dependency_module import AppModule
 from injector import Injector
 
-from apps.ninestarki.use_cases.permission_use_case import PermissionUseCase
-from apps.ninestarki.use_cases.permission_use_case import PermissionUseCase
+from apps.reading.shared.use_cases.permission_use_case import PermissionUseCase
 
 # パスを追加
 PROJECT_ROOT = os.path.dirname(os.path.abspath(__file__))
 
 # 絶対パスでインポート
-from apps.ninestarki.routes.nine_star_routes import create_nine_star_bp
-from apps.ninestarki.routes.monthly_routes import create_monthly_bp
+from apps.reading.ninestarki.routes.nine_star_routes import create_nine_star_bp
+from apps.reading.ninestarki.routes.monthly_routes import create_monthly_bp
 from core.exceptions import AppError
 
 from core.auth import auth_bp
@@ -45,7 +44,7 @@ class CustomJSONEncoder(json.JSONEncoder):
         return super().encode(obj)
 
 # テンプレートディレクトリを含むパスを計算
-template_folder_path = os.path.join(PROJECT_ROOT, 'apps', 'ninestarki', 'templates')
+template_folder_path = os.path.join(PROJECT_ROOT, 'apps', 'reading', 'ninestarki', 'templates')
 
 def create_app() -> Flask:
     # DIコンテナを作成し、必要なユースケースを取得

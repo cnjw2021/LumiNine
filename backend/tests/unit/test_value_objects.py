@@ -11,9 +11,9 @@ from __future__ import annotations
 
 import pytest
 
-from apps.ninestarki.domain.value_objects.locale import Locale
-from apps.ninestarki.domain.value_objects.gogyo import Gogyo, GogyoRelation
-from apps.ninestarki.domain.value_objects.powerstone import (
+from apps.reading.ninestarki.domain.value_objects.locale import Locale
+from apps.reading.ninestarki.domain.value_objects.gogyo import Gogyo, GogyoRelation
+from apps.reading.powerstone.domain.value_objects.powerstone import (
     PowerStone,
     StoneRecommendation,
     PowerStoneResult,

@@ -10,10 +10,10 @@ from __future__ import annotations
 
 import pytest
 
-from apps.ninestarki.domain.exceptions import PowerStoneMatchingError
-from apps.ninestarki.domain.value_objects.gogyo import Gogyo
-from apps.ninestarki.domain.value_objects.powerstone import PowerStone
-from apps.ninestarki.infrastructure.persistence.powerstone_repository import (
+from apps.reading.shared.domain.exceptions import PowerStoneMatchingError
+from apps.reading.ninestarki.domain.value_objects.gogyo import Gogyo
+from apps.reading.powerstone.domain.value_objects.powerstone import PowerStone
+from apps.reading.powerstone.infrastructure.persistence.powerstone_repository import (
     PowerStoneRepository,
 )
 

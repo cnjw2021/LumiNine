@@ -11,13 +11,13 @@ from __future__ import annotations
 
 import pytest
 
-from apps.ninestarki.domain.services.numerology_service import NumerologyService
-from apps.ninestarki.domain.value_objects.numerology import (
+from apps.reading.numerology.domain.services.numerology_service import NumerologyService
+from apps.reading.numerology.domain.value_objects.numerology import (
     NumerologyNumber,
     NumerologyReading,
     Planet,
 )
-from apps.ninestarki.infrastructure.persistence.numerology_reading_repository import (
+from apps.reading.numerology.infrastructure.persistence.numerology_reading_repository import (
     NumerologyReadingRepository,
 )
 
