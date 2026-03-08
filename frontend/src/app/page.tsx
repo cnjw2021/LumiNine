@@ -100,7 +100,7 @@ export default function LandingPage() {
           <Box style={{ flex: 1, display: 'flex', flexDirection: 'row-reverse', alignItems: 'center', gap: 48, minWidth: 400 }}>
             <Box style={{ writingMode: 'vertical-rl', display: 'flex', flexDirection: 'column', gap: 32, height: 500 }}>
               <Title order={2} style={{ fontSize: 48, fontWeight: 700, lineHeight: 1.6, letterSpacing: '0.2em' }}>
-                導かれた者だけの、<br />特別な輝き。
+                導かれた者だけの、特別な輝き。
               </Title>
               <Text style={{ fontSize: 18, fontWeight: 300, lineHeight: 2, letterSpacing: '0.1em', opacity: 0.8, paddingTop: 16 }}>
                 東洋と西洋の叡智が導き出す、<br />
@@ -133,7 +133,7 @@ export default function LandingPage() {
 
           <Box style={{ display: 'flex', flexDirection: 'column', gap: 32, alignItems: 'center', textAlign: 'center' }}>
             <Title order={2} style={{ fontSize: 32, fontWeight: 700, lineHeight: 1.6, letterSpacing: '0.2em' }}>
-              導かれた者だけの、<br />特別な輝き。
+              導かれた者だけの、特別な輝き。
             </Title>
             <Text style={{ fontSize: 14, fontWeight: 300, lineHeight: 2, letterSpacing: '0.1em', opacity: 0.8 }}>
               東洋と西洋の叡智が導き出す、<br />
