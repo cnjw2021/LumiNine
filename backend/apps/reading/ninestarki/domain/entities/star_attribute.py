@@ -13,7 +13,7 @@ class StarAttribute(db.Model):
     id = Column(Integer, primary_key=True, autoincrement=True)
     star_number = Column(Integer, nullable=False)
     attribute_type = Column(String(30), nullable=False)
-    attribute_value = Column(Text, nullable=False)
+    attribute_value = Column(String(255), nullable=False)
     description = Column(String(255), nullable=True)
     created_at = Column(DateTime, nullable=False, default=lambda: datetime.now(timezone.utc))
     updated_at = Column(DateTime, nullable=False, default=lambda: datetime.now(timezone.utc), onupdate=lambda: datetime.now(timezone.utc))
