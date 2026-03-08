@@ -10,7 +10,6 @@ from __future__ import annotations
 
 from typing import List
 
-import pytest
 
 from apps.reading.ninestarki.domain.repositories.star_attribute_repository_interface import (
     IStarAttributeRepository,
@@ -31,12 +30,6 @@ class StubStarAttributeRepository(IStarAttributeRepository):
     def find_by_star_and_type(self, star_number: int, attribute_type: str) -> List[str]:
         return self._data.get((star_number, attribute_type), [])
 
-
-class RaisingStubRepository(IStarAttributeRepository):
-    """find_by_star_and_type 호출 시 예외를 발생시키는 스텁."""
-
-    def find_by_star_and_type(self, star_number: int, attribute_type: str) -> List[str]:
-        raise RuntimeError("DB connection error")
 
 
 # ══════════════════════════════════════════════════════
