@@ -35,7 +35,7 @@ export const Navigation = ({ opened, onClose }: NavigationProps) => {
   const defaultMenuItems: MenuItem[] = useMemo(() => {
     if (!isLoggedIn && !authLoading) return [];
     return [
-      { icon: IconHome2, label: '九星気学鑑定', href: '/appraisal' }
+      { icon: IconHome2, label: 'パーソナルストーン鑑定', href: '/appraisal' }
     ];
   }, [isLoggedIn, authLoading]);
 
@@ -55,7 +55,7 @@ export const Navigation = ({ opened, onClose }: NavigationProps) => {
     if (!isLoggedIn && !authLoading) return [];
     return [
       { icon: IconQuestionMark, label: '数秘術について', href: '/about/numerology' },
-      { icon: IconQuestionMark, label: '九星気学について', href: '/about/ninestarki' },
+      { icon: IconQuestionMark, label: 'ストーン診断', href: '/about/ninestarki' },
       { icon: IconQuestionMark, label: 'パワーストーンについて', href: '/about/powerstone' }
     ];
   }, [isLoggedIn, authLoading]);
@@ -171,7 +171,7 @@ export const Navigation = ({ opened, onClose }: NavigationProps) => {
         padding="0"
         hiddenFrom="sm"
         withCloseButton={false}
-        title={<DrawerHeader title="九星気学" onClose={onClose} />}
+        title={<DrawerHeader title="LumiNine" onClose={onClose} />}
         styles={{
           header: {
             padding: 0,
@@ -281,7 +281,7 @@ export const Navigation = ({ opened, onClose }: NavigationProps) => {
           flexDirection: 'column'
         }}
       >
-        <Text size="xl" fw={400} c={COLORS.text} mb="md" style={{ fontFamily: FONTS.title, letterSpacing: '0.05em' }}>九星気学</Text>
+        <Text size="xl" fw={400} c={COLORS.text} mb="md" style={{ fontFamily: FONTS.title, letterSpacing: '0.05em' }}>LumiNine</Text>
         <Box style={{ position: 'relative', flexGrow: 1, overflow: 'auto' }}>
           <Stack gap="lg">
             {defaultMenuItems.length > 0 && (
