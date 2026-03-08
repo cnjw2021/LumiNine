@@ -44,24 +44,24 @@ export default function LandingPage() {
 
         {/* Floating Stones Layer (Fills left half vertically, all visible above the fold) */}
         <Box style={{ position: 'absolute', top: 0, left: 0, bottom: 0, width: '50%', pointerEvents: 'none', zIndex: 1, minHeight: 800 }}>
-          {/* Top Stone: Moonstone */}
+          {/* Top Stone: Fluorite (Mystical purple/green) */}
           <Box style={{ position: 'absolute', top: '10%', left: '44%', width: 140, height: 140, display: 'flex', alignItems: 'center', justifyContent: 'center', transform: 'rotate(20deg)', filter: 'drop-shadow(0 20px 30px rgba(0,0,0,0.1))', opacity: 0.9 }}>
-            <Box style={{ width: '100%', height: '100%', backgroundImage: `url('/images/stones/moonstone.png')`, backgroundSize: 'contain', backgroundRepeat: 'no-repeat', backgroundPosition: 'center' }} />
+            <Box style={{ width: '100%', height: '100%', backgroundImage: `url('/images/stones/fluorite.png')`, backgroundSize: 'contain', backgroundRepeat: 'no-repeat', backgroundPosition: 'center' }} />
           </Box>
 
-          {/* Upper Left Stone: Citrine (Yellow/Gold color contrast) */}
+          {/* Upper Left Stone: Lapis Lazuli (Deep blue, very powerstone-like) */}
           <Box style={{ position: 'absolute', top: '22%', left: '10%', width: 160, height: 160, display: 'flex', alignItems: 'center', justifyContent: 'center', transform: 'rotate(-10deg)', filter: 'drop-shadow(0 25px 35px rgba(0,0,0,0.12))', opacity: 0.95 }}>
-            <Box style={{ width: '100%', height: '100%', backgroundImage: `url('/images/stones/citrine.png')`, backgroundSize: 'contain', backgroundRepeat: 'no-repeat', backgroundPosition: 'center' }} />
+            <Box style={{ width: '100%', height: '100%', backgroundImage: `url('/images/stones/lapis_lazuli.png')`, backgroundSize: 'contain', backgroundRepeat: 'no-repeat', backgroundPosition: 'center' }} />
           </Box>
 
-          {/* Center Main Stone: Rose Quartz (biggest) */}
+          {/* Center Main Stone: Rose Quartz (biggest, for soft contrast) */}
           <Box style={{ position: 'absolute', top: '42%', left: '35%', width: 260, height: 260, display: 'flex', alignItems: 'center', justifyContent: 'center', transform: 'rotate(5deg)', filter: 'drop-shadow(0 40px 50px rgba(0,0,0,0.15))', opacity: 0.95 }}>
             <Box style={{ width: '100%', height: '100%', backgroundImage: `url('/images/stones/rose_quartz.png')`, backgroundSize: 'contain', backgroundRepeat: 'no-repeat', backgroundPosition: 'center' }} />
           </Box>
 
-          {/* Bottom Left Stone: Aquamarine (Moved up to be visible) */}
+          {/* Bottom Left Stone: Jade (Classic green Oriental powerstone) */}
           <Box style={{ position: 'absolute', top: '65%', left: '12%', width: 180, height: 180, display: 'flex', alignItems: 'center', justifyContent: 'center', transform: 'rotate(-20deg)', filter: 'drop-shadow(0 25px 35px rgba(0,0,0,0.12))', opacity: 0.9 }}>
-            <Box style={{ width: '100%', height: '100%', backgroundImage: `url('/images/stones/aquamarine.png')`, backgroundSize: 'contain', backgroundRepeat: 'no-repeat', backgroundPosition: 'center' }} />
+            <Box style={{ width: '100%', height: '100%', backgroundImage: `url('/images/stones/jade.png')`, backgroundSize: 'contain', backgroundRepeat: 'no-repeat', backgroundPosition: 'center' }} />
           </Box>
         </Box>
       </Box>
