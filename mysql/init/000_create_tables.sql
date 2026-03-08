@@ -177,13 +177,13 @@ CREATE TABLE IF NOT EXISTS `star_attributes` (
   `id` INT AUTO_INCREMENT PRIMARY KEY COMMENT 'ID',
   `star_number` INT NOT NULL COMMENT '九星番号 (1-9)',
   `attribute_type` VARCHAR(30) NOT NULL COMMENT '属性タイプ (color, food, body, place等)',
-  `attribute_value` TEXT NOT NULL COMMENT '属性値',
+  `attribute_value` VARCHAR(255) NOT NULL COMMENT '属性値',
   `description` VARCHAR(255) DEFAULT NULL COMMENT '説明',
   `created_at` TIMESTAMP DEFAULT CURRENT_TIMESTAMP COMMENT '作成日時',
   `updated_at` TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP COMMENT '更新日時',
   FOREIGN KEY (`star_number`) REFERENCES `stars` (`star_number`) ON DELETE CASCADE,
   INDEX `idx_star_type` (`star_number`, `attribute_type`),
-  UNIQUE KEY `uniq_star_attribute` (`star_number`, `attribute_type`, `attribute_value`(100))
+  UNIQUE KEY `uniq_star_attribute` (`star_number`, `attribute_type`, `attribute_value`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci COMMENT='九星の詳細属性データ';
 
 -- システム設定テーブル
