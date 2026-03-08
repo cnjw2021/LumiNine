@@ -109,12 +109,12 @@ export default function AdminLayout({ children }: { children: ReactNode }) {
             padding: 0,
             margin: 0,
             borderBottom: `2px solid ${NAV.borderColor}`,
-            backgroundColor: 'rgba(249, 247, 242, 0.95)',
+            backgroundColor: 'rgba(245, 247, 243, 0.95)',
             backdropFilter: 'blur(10px)'
           },
           body: {
             padding: '20px',
-            backgroundColor: 'rgba(249, 247, 242, 0.95)',
+            backgroundColor: 'rgba(245, 247, 243, 0.95)',
             backdropFilter: 'blur(10px)'
           }
         }}

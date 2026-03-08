@@ -177,12 +177,12 @@ export const Navigation = ({ opened, onClose }: NavigationProps) => {
             padding: 0,
             margin: 0,
             borderBottom: `2px solid ${NAV.borderColor}`,
-            backgroundColor: 'rgba(249, 247, 242, 0.95)',
+            backgroundColor: 'rgba(245, 247, 243, 0.95)',
             backdropFilter: 'blur(10px)'
           },
           body: {
             padding: '20px',
-            backgroundColor: 'rgba(249, 247, 242, 0.95)',
+            backgroundColor: 'rgba(245, 247, 243, 0.95)',
             backdropFilter: 'blur(10px)'
           }
         }}
@@ -274,7 +274,7 @@ export const Navigation = ({ opened, onClose }: NavigationProps) => {
         style={{
           height: '100%',
           width: '320px',
-          backgroundColor: 'rgba(249, 247, 242, 0.95)',
+          backgroundColor: 'rgba(245, 247, 243, 0.95)',
           backdropFilter: 'blur(10px)',
           borderRight: `1px solid ${NAV.borderColor}`,
           display: 'flex',

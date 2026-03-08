@@ -69,14 +69,14 @@ export default function RootLayout({
                   overflowX: 'hidden'
                 },
                 navbar: {
-                  backgroundColor: 'rgba(249, 247, 242, 0.95)',
+                  backgroundColor: 'rgba(245, 247, 243, 0.95)',
                   backdropFilter: 'blur(10px)',
                   border: 'none'
                 }
               }}
             >
               <AppShell.Header hiddenFrom="sm">
-                <Group h="100%" px="20px" style={{ backgroundColor: 'rgba(249, 247, 242, 0.95)', backdropFilter: 'blur(10px)' }}>
+                <Group h="100%" px="20px" style={{ backgroundColor: 'rgba(245, 247, 243, 0.95)', backdropFilter: 'blur(10px)' }}>
                   <Burger
                     opened={opened}
                     onClick={toggle}

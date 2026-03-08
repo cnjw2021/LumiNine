@@ -3,9 +3,11 @@
  * 감정결과/인사이트 페이지의 "Premium Healing" 비주얼 랭귀지를 전체 앱에 통일
  *
  * 핵심 원칙:
- *  - gold(#d4af37)는 **서브 악센트** (섹션 라벨, 미세한 보더, 작은 아이콘)
- *  - dusty rose(#d8a7a7)는 **CTA / 주요 인터랙션** (버튼, 활성 탭)
- *  - 타이틀/본문은 **soft charcoal(#4a4a4a)** — 골드로 쓰지 않음
+ *  - gold(#d4af37)는 **미세 보더, 구분선** 에만 사용
+ *  - dusty rose(#d4b0b0)는 **CTA / 주요 인터랙션** (버튼, 활성 탭)
+ *  - sage green(#5a8a6e)은 **네비/아이콘** 악센트 (길흉방위 그리드 톤)
+ *  - 타이틀/본문은 **soft charcoal(#4a4a4a)**
+ *  - 섹션 라벨은 **dimmed charcoal(#9a9a9a)**
  */
 
 // ─── Colors ──────────────────────────────────────────────────────────
@@ -14,10 +16,12 @@ export const COLORS = {
     primaryBg: '#f9f7f2',
     /** 카드/컨테이너 배경 */
     cardBg: '#ffffff',
-    /** 서브 악센트 (brass / gold) — 섹션 라벨, 미세 보더, 아이콘 */
+    /** 서브 악센트 (brass / gold) — 미세 보더, 구분선 */
     accent: '#d4af37',
-    /** CTA / 주요 버튼 (dusty rose) */
-    rose: '#d8a7a7',
+    /** CTA / 주요 버튼 (밝은 dusty rose) */
+    rose: '#d4b0b0',
+    /** 세이지 그린 (방위 그리드 톤) — 네비 아이콘 */
+    sage: '#5a8a6e',
     /** 본문 텍스트 (soft charcoal) — 타이틀도 이 색상 사용 */
     text: '#4a4a4a',
     /** 라벨/캡션 텍스트 */
@@ -30,15 +34,15 @@ export const COLORS = {
 
 // ─── Gradients ───────────────────────────────────────────────────────
 export const GRADIENTS = {
-    /** 페이지 배경 그라데이션 (subtle radial) */
+    /** 페이지 배경 그라데이션 — sage green tint 포함 */
     pageBg: `
-    radial-gradient(circle at 10% 10%, rgba(216, 167, 167, 0.03) 0%, transparent 40%),
-    radial-gradient(circle at 90% 90%, rgba(155, 176, 165, 0.03) 0%, transparent 40%)
+    radial-gradient(circle at 10% 10%, rgba(90, 138, 110, 0.04) 0%, transparent 40%),
+    radial-gradient(circle at 90% 90%, rgba(212, 176, 176, 0.03) 0%, transparent 40%)
   `,
-    /** CTA 버튼 — 단색 rose (Result 페이지와 동일) */
-    button: { from: '#d8a7a7', to: '#d8a7a7' },
-    /** 관리자 버튼 — 미묘한 rose 그라데이션 */
-    adminButton: { from: '#d8a7a7', to: '#c9a0a0' },
+    /** CTA 버튼 — 밝은 rose */
+    button: { from: '#d4b0b0', to: '#d4b0b0' },
+    /** 관리자 버튼 */
+    adminButton: { from: '#d4b0b0', to: '#c9a6a6' },
 } as const;
 
 // ─── Typography ──────────────────────────────────────────────────────
@@ -54,36 +58,36 @@ export const FONTS = {
 // ─── Card Styling ────────────────────────────────────────────────────
 export const CARD = {
     borderRadius: '16px',
-    border: '1px solid rgba(212, 175, 55, 0.08)',
+    border: '1px solid rgba(90, 138, 110, 0.06)',
     boxShadow: '0 5px 20px -5px rgba(0, 0, 0, 0.03)',
 } as const;
 
-// ─── Button Styling (Result 페이지와 동일) ─────────────────────────
+// ─── Button Styling (Result 페이지 기반) ─────────────────────────
 export const BUTTON = {
-    /** CTA (primary) — pill 형태, dusty rose */
+    /** CTA (primary) — pill 형태, 밝은 dusty rose */
     primary: {
-        backgroundColor: COLORS.rose,
+        backgroundColor: '#d4b0b0',
         color: '#FFF',
         borderRadius: '9999px',
         border: 'none',
         fontSize: '13px',
         letterSpacing: '0.2em',
         fontFamily: FONTS.body,
-        boxShadow: '0 10px 20px -5px rgba(216, 167, 167, 0.25)',
+        boxShadow: '0 10px 20px -5px rgba(212, 176, 176, 0.2)',
     },
-    /** Secondary — ghost pill, gold border */
+    /** Secondary — ghost pill, sage border */
     secondary: {
         backgroundColor: 'transparent',
-        color: COLORS.accent,
+        color: COLORS.sage,
         borderRadius: '9999px',
-        border: '1px solid rgba(212, 175, 55, 0.3)',
+        border: '1px solid rgba(90, 138, 110, 0.25)',
         fontSize: '13px',
         letterSpacing: '0.2em',
         fontFamily: FONTS.body,
     },
 } as const;
 
-// ─── Section Header (Result의 "YEARLY FORTUNE", "RECOMMENDED STONES" 스타일) ─
+// ─── Section Header (Result의 "YEARLY FORTUNE" 스타일) ──────────────
 export const SECTION_HEADER = {
     color: COLORS.accent,
     fontSize: '11px',
@@ -95,14 +99,16 @@ export const SECTION_HEADER = {
 
 // ─── Navigation Tokens ──────────────────────────────────────────────
 export const NAV = {
-    /** 사이드바 border */
-    borderColor: `rgba(212, 175, 55, 0.1)`,
-    /** 섹션 제목 — gold 서브 악센트 */
-    sectionTitle: COLORS.accent,
-    /** 아이콘 default — muted gold */
-    iconColor: 'rgba(212, 175, 55, 0.6)',
-    /** 호버 배경 */
-    hoverBg: 'rgba(212, 175, 55, 0.06)',
+    /** 사이드바 border — sage tint */
+    borderColor: 'rgba(90, 138, 110, 0.08)',
+    /** 섹션 제목 — dimmed charcoal (금색 X) */
+    sectionTitle: '#9a9a9a',
+    /** 아이콘 default — sage green */
+    iconColor: 'rgba(90, 138, 110, 0.5)',
+    /** 호버 배경 — subtle sage */
+    hoverBg: 'rgba(90, 138, 110, 0.06)',
     /** Active 항목 — dusty rose */
-    activeColor: COLORS.rose,
+    activeColor: '#d4b0b0',
+    /** 네비게이션 배경 — warm beige + sage tint */
+    bgColor: 'rgba(245, 247, 243, 0.95)',
 } as const;
