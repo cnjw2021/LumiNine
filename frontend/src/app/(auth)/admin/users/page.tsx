@@ -25,6 +25,7 @@ import 'dayjs/locale/ja';
 import timezone from 'dayjs/plugin/timezone';
 import utc from 'dayjs/plugin/utc';
 import CustomDatePicker from '@/components/common/ui/Datepicker';
+import { COLORS, FONTS, GRADIENTS, CARD } from '@/utils/theme';
 
 // プラグインを設定
 dayjs.extend(utc);
@@ -158,7 +159,7 @@ export default function UserManagement() {
 
   const validateDates = (start: string, end: string): boolean => {
     setDateError({});
-    
+
     if (!start || !end) {
       setDateError({
         startDate: '日付を入力してください',
@@ -179,7 +180,7 @@ export default function UserManagement() {
 
     const startDate = dayjs(start);
     const endDate = dayjs(end);
-    
+
     if (!startDate.isValid() || !endDate.isValid()) {
       setDateError({
         startDate: '有効な日付を入力してください',
@@ -200,7 +201,7 @@ export default function UserManagement() {
 
   const validateEmail = (email: string): boolean => {
     setEmailError('');
-    
+
     if (!email) {
       setEmailError('メールアドレスを入力してください');
       return false;
@@ -276,12 +277,12 @@ export default function UserManagement() {
       setSubscriptionStart('');
       setSubscriptionEnd('');
       setIsAdmin(false);
-      
+
       // ユーザー作成後に統計情報を再取得
       await fetchSystemStats();
       // ユーザーリストを再取得
       await fetchUsers();
-      
+
       notifications.show({
         title: '成功',
         message: 'ユーザーを作成しました',
@@ -289,7 +290,7 @@ export default function UserManagement() {
       });
     } catch (error) {
       console.error('Error creating user:', error);
-      const axiosError = error as AxiosError<{error: string}>;
+      const axiosError = error as AxiosError<{ error: string }>;
       setEmailError(axiosError.response?.data.error || '予期せぬエラーが発生しました');
     }
   };
@@ -313,10 +314,10 @@ export default function UserManagement() {
       setSystemLimit(statsResponse.data.account_limit || 0);
       setTotalActiveUsers(statsResponse.data.total_active_users || 0);
       setDeletedUsersCount(statsResponse.data.deleted_users_count || 0);
-      
+
       // ユーザーリストを再取得
       await fetchUsers();
-      
+
       notifications.show({
         title: '成功',
         message: 'ユーザーを削除しました',
@@ -324,7 +325,7 @@ export default function UserManagement() {
       });
     } catch (error) {
       console.error('Error deleting user:', error);
-      const axiosError = error as AxiosError<{error: string}>;
+      const axiosError = error as AxiosError<{ error: string }>;
       notifications.show({
         title: 'エラー',
         message: axiosError.response?.data.error || '予期せぬエラーが発生しました',
@@ -397,12 +398,12 @@ export default function UserManagement() {
       setSubscriptionStart('');
       setSubscriptionEnd('');
       setIsAdmin(false);
-      
+
       // ユーザー更新後に統計情報を再取得
       await fetchSystemStats();
       // ユーザーリストを再取得
       await fetchUsers();
-      
+
       notifications.show({
         title: '成功',
         message: 'ユーザー情報を更新しました',
@@ -410,7 +411,7 @@ export default function UserManagement() {
       });
     } catch (error) {
       console.error('Error updating user:', error);
-      const axiosError = error as AxiosError<{error: string}>;
+      const axiosError = error as AxiosError<{ error: string }>;
       setEmailError(axiosError.response?.data.error || '予期せぬエラーが発生しました');
     }
   };
@@ -471,7 +472,7 @@ export default function UserManagement() {
       });
     } catch (error) {
       console.error('Error updating account limit:', error);
-      const axiosError = error as AxiosError<{error: string}>;
+      const axiosError = error as AxiosError<{ error: string }>;
       notifications.show({
         title: 'エラー',
         message: axiosError.response?.data.error || 'アカウント制限数の更新中にエラーが発生しました',
@@ -514,7 +515,7 @@ export default function UserManagement() {
       fetchSystemStats();
     } catch (error) {
       console.error('Error updating system limit:', error);
-      const axiosError = error as AxiosError<{error: string}>;
+      const axiosError = error as AxiosError<{ error: string }>;
       notifications.show({
         title: 'エラー',
         message: axiosError.response?.data.error || 'アカウント制限数の更新中にエラーが発生しました',
@@ -526,17 +527,17 @@ export default function UserManagement() {
   return (
     <Container size="lg" mt="xl">
       <Group justify="space-between" mb="xl">
-        <Title order={2}>ユーザー管理</Title>
+        <Title order={2} c={COLORS.text} style={{ fontFamily: FONTS.title, fontWeight: 'normal', letterSpacing: '0.05em' }}>ユーザー管理</Title>
         <Group>
           <Switch
             label="削除済みユーザーを表示"
             checked={showDeleted}
             onChange={(event) => setShowDeleted(event.currentTarget.checked)}
           />
-          <Button 
+          <Button
             onClick={() => setCreateModalOpened(true)}
             variant="gradient"
-            gradient={{ from: 'pink', to: 'grape' }}
+            gradient={GRADIENTS.adminButton}
             disabled={systemLimit <= totalActiveUsers}
             title={systemLimit <= totalActiveUsers ? "アカウント制限数に達しているため、新規ユーザーを作成できません" : ""}
           >
@@ -546,12 +547,12 @@ export default function UserManagement() {
       </Group>
 
       {isSuperuser && (
-        <Paper withBorder p="md" mb="xl" radius="md" shadow="sm">
+        <Paper p="md" mb="xl" radius={CARD.borderRadius} shadow="none" style={{ border: CARD.border, boxShadow: CARD.boxShadow }}>
           <Group justify="apart" mb="xs">
-            <Title order={4}>システム利用状況</Title>
+            <Title order={4} c={COLORS.text} style={{ fontFamily: FONTS.title, fontWeight: 'normal' }}>システム利用状況</Title>
             <Group>
-              <Button 
-                variant="light" 
+              <Button
+                variant="light"
                 size="sm"
                 onClick={() => setSystemLimitModalOpened(true)}
               >
@@ -560,7 +561,7 @@ export default function UserManagement() {
             </Group>
           </Group>
           <Group grow>
-            <Paper withBorder p="md" radius="md">
+            <Paper p="md" radius="md" style={{ border: CARD.border }}>
               <Text size="sm" c="dimmed">現在の利用アカウント数</Text>
               <Text size="xl" fw={700}>{totalActiveUsers}</Text>
             </Paper>
@@ -574,13 +575,13 @@ export default function UserManagement() {
             </Paper>
             <Paper withBorder p="md" radius="md">
               <Text size="sm" c="dimmed">残り利用可能数</Text>
-              <Text 
-                size="xl" 
-                fw={700} 
+              <Text
+                size="xl"
+                fw={700}
                 c={systemLimit - totalActiveUsers > 5 ? 'green' : systemLimit - totalActiveUsers > 0 ? 'orange' : 'red'}
               >
-                {systemLimit - totalActiveUsers >= 0 ? 
-                  (systemLimit - totalActiveUsers) : 
+                {systemLimit - totalActiveUsers >= 0 ?
+                  (systemLimit - totalActiveUsers) :
                   `0（超過: ${Math.abs(systemLimit - totalActiveUsers)}）`}
               </Text>
             </Paper>
@@ -617,9 +618,9 @@ export default function UserManagement() {
               <Table.Td>{user.email}</Table.Td>
               <Table.Td>
                 {user.is_superuser ? (
-                  <Text fw={500} c="grape">スーパーユーザー</Text>
+                  <Text fw={500} c={COLORS.rose}>スーパーユーザー</Text>
                 ) : user.is_admin ? (
-                  <Text fw={500} c="pink">管理者</Text>
+                  <Text fw={500} c={COLORS.rose}>管理者</Text>
                 ) : (
                   <Text>一般ユーザー</Text>
                 )}
@@ -736,10 +737,10 @@ export default function UserManagement() {
             <Button variant="light" onClick={handleCloseCreateModal}>
               キャンセル
             </Button>
-            <Button 
+            <Button
               onClick={handleCreateUser}
               variant="gradient"
-              gradient={{ from: 'pink', to: 'grape' }}
+              gradient={GRADIENTS.adminButton}
               disabled={systemLimit <= totalActiveUsers}
             >
               作成
@@ -802,10 +803,10 @@ export default function UserManagement() {
             <Button variant="light" onClick={handleCloseEditModal}>
               キャンセル
             </Button>
-            <Button 
+            <Button
               onClick={handleUpdateUser}
               variant="gradient"
-              gradient={{ from: 'pink', to: 'grape' }}
+              gradient={GRADIENTS.adminButton}
             >
               更新
             </Button>

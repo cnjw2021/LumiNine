@@ -16,6 +16,7 @@ import {
 } from '@tabler/icons-react';
 import { NavigationMenu, MenuItem } from './NavigationMenu';
 import { DrawerHeader } from './DrawerHeader';
+import { COLORS, FONTS, NAV } from '@/utils/theme';
 
 interface NavigationProps {
   opened: boolean;
@@ -34,7 +35,7 @@ export const Navigation = ({ opened, onClose }: NavigationProps) => {
   const defaultMenuItems: MenuItem[] = useMemo(() => {
     if (!isLoggedIn && !authLoading) return [];
     return [
-      { icon: IconHome2, label: '九星気学鑑定', href: '/' }
+      { icon: IconHome2, label: 'パーソナルストーン鑑定', href: '/appraisal' }
     ];
   }, [isLoggedIn, authLoading]);
 
@@ -170,18 +171,18 @@ export const Navigation = ({ opened, onClose }: NavigationProps) => {
         padding="0"
         hiddenFrom="sm"
         withCloseButton={false}
-        title={<DrawerHeader title="九星気学" onClose={onClose} />}
+        title={<DrawerHeader title="LumiNine" onClose={onClose} />}
         styles={{
           header: {
             padding: 0,
             margin: 0,
-            borderBottom: '2px solid rgba(75, 163, 227, 0.1)',
-            backgroundColor: 'rgba(255, 255, 255, 0.9)',
+            borderBottom: `2px solid ${NAV.borderColor}`,
+            backgroundColor: 'rgba(245, 247, 243, 0.95)',
             backdropFilter: 'blur(10px)'
           },
           body: {
             padding: '20px',
-            backgroundColor: 'rgba(255, 255, 255, 0.9)',
+            backgroundColor: 'rgba(245, 247, 243, 0.95)',
             backdropFilter: 'blur(10px)'
           }
         }}
@@ -200,7 +201,7 @@ export const Navigation = ({ opened, onClose }: NavigationProps) => {
 
             {aboutItems.length > 0 && (
               <Stack gap="xs">
-                <Text size="sm" fw={700} c="#4BA3E3" style={{ letterSpacing: '0.5px' }}>
+                <Text size="sm" fw={700} c={NAV.sectionTitle} style={{ letterSpacing: '0.5px', fontFamily: FONTS.caption }}>
                   鑑定のインサイト
                 </Text>
                 <NavigationMenu
@@ -212,7 +213,7 @@ export const Navigation = ({ opened, onClose }: NavigationProps) => {
             )}
 
             <Stack gap="xs">
-              <Text size="sm" fw={700} c="#4BA3E3" style={{ letterSpacing: '0.5px' }}>
+              <Text size="sm" fw={700} c={NAV.sectionTitle} style={{ letterSpacing: '0.5px', fontFamily: FONTS.caption }}>
                 アカウント
               </Text>
               <NavigationMenu
@@ -224,7 +225,7 @@ export const Navigation = ({ opened, onClose }: NavigationProps) => {
 
             {isLoggedIn && (isAdmin || isSuperuser) && hasAnyAdminPermission && (
               <Stack gap="xs">
-                <Text size="sm" fw={700} c="#4BA3E3" style={{ letterSpacing: '0.5px' }}>
+                <Text size="sm" fw={700} c={NAV.sectionTitle} style={{ letterSpacing: '0.5px', fontFamily: FONTS.caption }}>
                   管理者メニュー
                   {!permissionsLoaded && (
                     <Text component="span" size="xs" c="dimmed" style={{ marginLeft: '5px' }}>
@@ -256,11 +257,11 @@ export const Navigation = ({ opened, onClose }: NavigationProps) => {
                   left: 0,
                   right: 0,
                   padding: '10px',
-                  background: 'linear-gradient(to top, rgba(255, 255, 255, 0.9) 0%, rgba(255, 255, 255, 0) 100%)',
+                  background: 'linear-gradient(to top, rgba(249, 247, 242, 0.95) 0%, rgba(249, 247, 242, 0) 100%)',
                   pointerEvents: 'none',
                 }}
               >
-                <IconChevronDown size={20} color="#4BA3E3" style={{ opacity: 0.7 }} />
+                <IconChevronDown size={20} color={COLORS.accent} style={{ opacity: 0.7 }} />
               </Flex>
             )}
           </Transition>
@@ -273,14 +274,14 @@ export const Navigation = ({ opened, onClose }: NavigationProps) => {
         style={{
           height: '100%',
           width: '320px',
-          backgroundColor: 'rgba(255, 255, 255, 0.9)',
+          backgroundColor: 'rgba(245, 247, 243, 0.95)',
           backdropFilter: 'blur(10px)',
-          borderRight: '1px solid rgba(75, 163, 227, 0.1)',
+          borderRight: `1px solid ${NAV.borderColor}`,
           display: 'flex',
           flexDirection: 'column'
         }}
       >
-        <Text size="xl" fw={600} c="#4BA3E3" mb="md">九星気学</Text>
+        <Text size="xl" mb="md" style={{ fontSize: 20, fontWeight: 700, letterSpacing: '0.1em', textTransform: 'uppercase', color: COLORS.text }}>LumiNine</Text>
         <Box style={{ position: 'relative', flexGrow: 1, overflow: 'auto' }}>
           <Stack gap="lg">
             {defaultMenuItems.length > 0 && (
@@ -295,7 +296,7 @@ export const Navigation = ({ opened, onClose }: NavigationProps) => {
 
             {aboutItems.length > 0 && (
               <Stack gap="xs">
-                <Text size="sm" fw={700} c="#4BA3E3" style={{ letterSpacing: '0.5px' }}>
+                <Text size="sm" fw={700} c={NAV.sectionTitle} style={{ letterSpacing: '0.5px', fontFamily: FONTS.caption }}>
                   鑑定のインサイト
                 </Text>
                 <NavigationMenu
@@ -307,7 +308,7 @@ export const Navigation = ({ opened, onClose }: NavigationProps) => {
             )}
 
             <Stack gap="xs">
-              <Text size="sm" fw={700} c="#4BA3E3" style={{ letterSpacing: '0.5px' }}>
+              <Text size="sm" fw={700} c={NAV.sectionTitle} style={{ letterSpacing: '0.5px', fontFamily: FONTS.caption }}>
                 アカウント
               </Text>
               <NavigationMenu
@@ -319,7 +320,7 @@ export const Navigation = ({ opened, onClose }: NavigationProps) => {
 
             {isLoggedIn && (isAdmin || isSuperuser) && hasAnyAdminPermission && (
               <Stack gap="xs">
-                <Text size="sm" fw={700} c="#4BA3E3" style={{ letterSpacing: '0.5px' }}>
+                <Text size="sm" fw={700} c={NAV.sectionTitle} style={{ letterSpacing: '0.5px', fontFamily: FONTS.caption }}>
                   管理者メニュー
                   {!permissionsLoaded && (
                     <Text component="span" size="xs" c="dimmed" style={{ marginLeft: '5px' }}>
@@ -341,4 +342,4 @@ export const Navigation = ({ opened, onClose }: NavigationProps) => {
       </Stack>
     </>
   );
-}; 
+};

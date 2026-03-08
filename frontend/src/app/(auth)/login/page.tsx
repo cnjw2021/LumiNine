@@ -5,6 +5,7 @@ import { useAuth } from '@/contexts/auth/AuthContext';
 import { TextInput, PasswordInput, Button, Paper, Title, Container, Stack, Text } from '@mantine/core';
 import axios from '@/utils/api'; // Flaskとの通信に使うaxiosインスタンスを想定
 import { AxiosError } from 'axios';
+import { COLORS, FONTS, GRADIENTS, CARD, BUTTON } from '@/utils/theme';
 
 export default function LoginPage() {
   const router = useRouter();
@@ -23,7 +24,7 @@ export default function LoginPage() {
 
   const handleLogin = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault(); // フォームのデフォルト送信を確実に防ぐ
-    
+
     if (loading) {
       return;
     }
@@ -33,15 +34,15 @@ export default function LoginPage() {
 
     try {
       const response = await axios.post('/auth/login', { email, password });
-      
+
       // バックエンドから返されたレスポンスをチェック
       if (response.data?.access_token) {
         // access_tokenフィールドを使用（バックエンドのレスポンス形式に合わせる）
         const refreshToken = response.data.refresh_token || null;
-        
+
         // ログイン成功時の処理
         setLoginStatus(true, response.data.access_token, refreshToken);
-        
+
         // 画面をリロード
         window.location.href = '/';
       } else {
@@ -51,7 +52,7 @@ export default function LoginPage() {
     } catch (error: unknown) {
       // エラー時はログイン状態をリセット
       setLoginStatus(false);
-      
+
       if (error instanceof AxiosError) {
         // 401エラー（認証失敗）の場合の特別処理
         if (error.response?.status === 401) {
@@ -78,24 +79,30 @@ export default function LoginPage() {
 
   return (
     <Container size="xs" py="xl">
-      <Paper 
-        shadow="md" 
-        p="xl" 
-        radius="md"
-        style={{ 
-          backgroundColor: 'rgba(255, 255, 255, 0.9)',
-          backdropFilter: 'blur(10px)',
-          border: '1px solid rgba(75, 163, 227, 0.1)'
+      <Paper
+        shadow="none"
+        p="xl"
+        radius={CARD.borderRadius}
+        style={{
+          backgroundColor: COLORS.cardBg,
+          border: CARD.border,
+          boxShadow: CARD.boxShadow,
         }}
       >
-        <Title order={1} ta="center" mb="lg" c="#4BA3E3">
+        <Title
+          order={1}
+          ta="center"
+          mb="lg"
+          c={COLORS.text}
+          style={{ fontFamily: FONTS.title, fontWeight: 'normal', letterSpacing: '0.05em' }}
+        >
           ログイン
         </Title>
 
         <form onSubmit={handleSubmit} noValidate>
           <Stack>
             {error && (
-              <Text color="red" mb="md" ta="center">
+              <Text c={COLORS.error} mb="md" ta="center" size="sm">
                 {error}
               </Text>
             )}
@@ -108,12 +115,10 @@ export default function LoginPage() {
               onChange={(e) => setEmail(e.target.value)}
               disabled={loading}
               styles={{
-                label: {
-                  color: '#4a5568'
-                },
+                label: { color: COLORS.text },
                 input: {
                   '&:focus': {
-                    borderColor: '#4BA3E3'
+                    borderColor: COLORS.accent
                   }
                 }
               }}
@@ -127,12 +132,10 @@ export default function LoginPage() {
               onChange={(e) => setPassword(e.target.value)}
               disabled={loading}
               styles={{
-                label: {
-                  color: '#4a5568'
-                },
+                label: { color: COLORS.text },
                 input: {
                   '&:focus': {
-                    borderColor: '#4BA3E3'
+                    borderColor: COLORS.accent
                   }
                 }
               }}
@@ -141,10 +144,13 @@ export default function LoginPage() {
             <Button
               type="submit"
               fullWidth
-              variant="gradient"
-              gradient={{ from: '#4BA3E3', to: '#FFE45C' }}
               mt="md"
               loading={loading}
+              style={{
+                ...BUTTON.primary,
+                cursor: 'pointer',
+                transition: 'all 0.3s ease',
+              }}
             >
               ログイン
             </Button>

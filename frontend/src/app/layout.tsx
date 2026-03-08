@@ -9,24 +9,31 @@ import '@/components/styles/paragraph.css';
 import '@/components/styles/result.css';
 import { Notifications } from '@mantine/notifications';
 import { useDisclosure } from '@mantine/hooks';
+import { COLORS, GRADIENTS, FONTS, NAV } from '@/utils/theme';
 
 const theme = createTheme({
-  primaryColor: 'pink',
+  primaryColor: 'gold',
   colors: {
-    pink: [
-      '#fff5f7',
-      '#fdf2f8',
-      '#fce7f3',
-      '#fbcfe8',
-      '#f9a8d4',
-      '#f472b6',
-      '#ec4899',
-      '#db2777',
-      '#be185d',
-      '#9d174d',
+    gold: [
+      '#fdfaf0',
+      '#f9f3d5',
+      '#f0e4a8',
+      '#e6d27a',
+      '#d4af37',
+      '#c5975a',
+      '#b07d2e',
+      '#9a6a24',
+      '#7d551d',
+      '#604016',
     ],
   },
+  fontFamily: FONTS.body,
+  headings: {
+    fontFamily: FONTS.title,
+  },
 });
+
+import { usePathname } from 'next/navigation';
 
 export default function RootLayout({
   children,
@@ -34,10 +41,18 @@ export default function RootLayout({
   children: React.ReactNode;
 }) {
   const [opened, { toggle }] = useDisclosure();
+  const pathname = usePathname();
+  const isLandingPage = pathname === '/';
 
   return (
     <html lang="ja">
-      <body style={{ margin: 0, backgroundColor: '#fff' }}>
+      <head>
+        <link
+          href="https://fonts.googleapis.com/css2?family=Shippori+Mincho:wght@400;500;600;700&family=Noto+Serif+JP:wght@400;500;600;700&family=Montserrat:wght@400;500;600;700&display=swap"
+          rel="stylesheet"
+        />
+      </head>
+      <body style={{ margin: 0, backgroundColor: COLORS.primaryBg }}>
         <MantineProvider theme={theme} defaultColorScheme="light">
           <AuthProvider>
             <Notifications />
@@ -46,34 +61,38 @@ export default function RootLayout({
               navbar={{
                 width: { base: 320, sm: 320, lg: 320 },
                 breakpoint: 'sm',
-                collapsed: { desktop: false, mobile: !opened }
+                collapsed: { desktop: isLandingPage, mobile: !opened }
               }}
-              padding={{ base: 6, sm: 12, md: 16, lg: 24 }}
+              padding={isLandingPage ? 0 : { base: 6, sm: 12, md: 16, lg: 24 }}
               styles={{
                 main: {
-                  background: 'linear-gradient(45deg, rgba(75, 163, 227, 0.2) 0%, rgba(255, 228, 92, 0.2) 50%, rgba(75, 163, 227, 0.2) 100%)',
+                  backgroundColor: COLORS.primaryBg,
+                  backgroundImage: GRADIENTS.pageBg,
                   width: '100%',
                   maxWidth: '100%',
-                  overflowX: 'hidden'
+                  overflowX: 'hidden',
+                  padding: isLandingPage ? 0 : undefined // Ensure no padding on landing page
                 },
                 navbar: {
-                  background: 'rgba(255, 255, 255, 0.8)',
+                  backgroundColor: 'rgba(245, 247, 243, 0.95)',
                   backdropFilter: 'blur(10px)',
-                  border: 'none'
+                  border: 'none',
                 }
               }}
             >
               <AppShell.Header hiddenFrom="sm">
-                <Group h="100%" px="20px" style={{ backgroundColor: 'rgba(255, 255, 255, 0.8)', backdropFilter: 'blur(10px)' }}>
+                <Group h="100%" px="20px" style={{ backgroundColor: 'rgba(245, 247, 243, 0.95)', backdropFilter: 'blur(10px)' }}>
                   <Burger
                     opened={opened}
                     onClick={toggle}
                     hiddenFrom="sm"
                     size="sm"
-                    color="#4BA3E3"
+                    color={COLORS.rose}
                   />
-                  <Text size="xl" fw={600} c="#4BA3E3">
-                    九星気学
+                  <Text
+                    style={{ fontSize: 20, fontWeight: 700, letterSpacing: '0.1em', textTransform: 'uppercase', color: COLORS.text }}
+                  >
+                    LumiNine
                   </Text>
                 </Group>
               </AppShell.Header>

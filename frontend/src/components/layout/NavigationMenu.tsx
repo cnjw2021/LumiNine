@@ -1,6 +1,7 @@
 import React from 'react';
 import { UnstyledButton, Group, Text, Loader } from '@mantine/core';
 import { usePathname } from 'next/navigation';
+import { NAV, COLORS } from '@/utils/theme';
 
 export interface MenuItem {
   icon: React.ComponentType<{ size?: number; stroke?: number; style?: React.CSSProperties }>;
@@ -20,11 +21,11 @@ export const NavigationMenu = ({ items, onNavigate, navigating }: NavigationMenu
   const pathname = usePathname();
 
   const renderMenuItem = (item: MenuItem) => {
-    const isActive = pathname === item.href || 
-                    (item.href !== '/' && pathname?.startsWith(item.href));
-    const activeColor = '#d53f8c';
+    const isActive = pathname === item.href ||
+      (item.href !== '/' && pathname?.startsWith(item.href));
+    const activeColor = NAV.activeColor;
     const isNavigating = navigating === item.href;
-    
+
     return (
       <UnstyledButton
         onClick={() => {
@@ -39,15 +40,15 @@ export const NavigationMenu = ({ items, onNavigate, navigating }: NavigationMenu
             width: '100%',
             margin: '0 auto',
             padding: '10px 8px',
-            color: isActive ? activeColor : '#4a5568',
+            color: isActive ? activeColor : COLORS.text,
             transition: 'all 0.2s ease',
             borderRadius: '8px',
             backgroundColor: 'rgba(255, 255, 255, 0.5)',
             backdropFilter: 'blur(5px)',
             '&:hover': {
-              backgroundColor: 'rgba(75, 163, 227, 0.08)',
+              backgroundColor: NAV.hoverBg,
               transform: 'translateX(4px)',
-              color: isActive ? activeColor : '#4BA3E3'
+              color: isActive ? activeColor : COLORS.rose
             },
           },
         }}
@@ -56,7 +57,7 @@ export const NavigationMenu = ({ items, onNavigate, navigating }: NavigationMenu
           {isNavigating ? (
             <Loader size="xs" color={activeColor} />
           ) : (
-            <item.icon size={18} style={{ color: isActive ? activeColor : '#4BA3E3', flexShrink: 0 }} stroke={1.5} />
+            <item.icon size={18} style={{ color: isActive ? activeColor : COLORS.rose, flexShrink: 0 }} stroke={1.5} />
           )}
           <Text size="sm" fw={isActive ? 600 : 500} style={{ whiteSpace: 'nowrap', overflow: 'hidden', textOverflow: 'ellipsis', lineHeight: 1.3 }}>
             {item.label}
@@ -75,4 +76,4 @@ export const NavigationMenu = ({ items, onNavigate, navigating }: NavigationMenu
       ))}
     </>
   );
-}; 
+};

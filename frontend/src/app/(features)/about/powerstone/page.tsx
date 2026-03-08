@@ -143,7 +143,7 @@ export default function PowerstonePage() {
                 position: 'sticky', top: 0, zIndex: 50
             }}>
                 <div style={{ maxWidth: '1000px', margin: '0 auto', display: 'flex', alignItems: 'center', gap: '12px' }}>
-                    <span style={{ color: '#d4af37', fontSize: '20px' }}>✦</span>
+                    <span style={{ color: '#D8A7A7', fontSize: '20px' }}>✦</span>
                     <h1 style={{
                         fontSize: 'clamp(16px, 4vw, 20px)', fontWeight: 'normal', color: '#4a4a4a',
                         fontFamily: '"Shippori Mincho", "Noto Serif JP", serif',

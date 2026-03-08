@@ -55,13 +55,13 @@ const PowerstoneCard: React.FC<{
         <div style={{ flex: 1, minWidth: 0 }}>
             <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'baseline', marginBottom: '2px' }}>
                 <span style={{
-                    fontSize: '10px', color: '#d4af37', fontWeight: 700,
+                    fontSize: '10px', color: '#b8952b', fontWeight: 700,
                     letterSpacing: '0.12em', fontFamily: '"Montserrat", sans-serif',
                 }}>
                     {labelEn}
                 </span>
                 <span style={{
-                    fontSize: '11px', color: 'rgba(74, 74, 74, 0.6)',
+                    fontSize: '11px', color: '#666666', fontWeight: 500,
                     fontFamily: '"Noto Serif JP", serif',
                 }}>
                     {labelJp}

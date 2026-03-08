@@ -33,7 +33,7 @@ interface AuthContextType {
 
 const AuthContext = createContext<AuthContextType | undefined>(undefined);
 
-const PUBLIC_PATHS = ['/login', '/register', '/forgot-password'];
+const PUBLIC_PATHS = ['/', '/login', '/register', '/forgot-password'];
 
 export function AuthProvider({ children }: { children: React.ReactNode }) {
   const router = useRouter();
@@ -97,7 +97,7 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
       // ログアウトAPIを呼び出す前に状態をクリア
       clearAuthState();
       // APIエラーが発生してもログアウト処理は続行
-      await api.post('/auth/logout').catch(() => {});
+      await api.post('/auth/logout').catch(() => { });
     } finally {
       // router.pushの代わりにwindow.location.hrefを使用して即時遷移
       window.location.href = '/login';
@@ -107,15 +107,15 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
   // ログイン状態変更関数
   const setLoginStatus = (status: boolean, newToken?: string, refreshToken?: string) => {
     setIsLoggedIn(status);
-    
+
     if (status && newToken) {
       localStorage.setItem('token', newToken);
       setToken(newToken);
-      
+
       if (refreshToken) {
         localStorage.setItem('refresh_token', refreshToken);
       }
-      
+
       // ログイン成功時に権限キャッシュをクリア
       clearPermissionCache();
     } else {
@@ -127,13 +127,13 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
   const checkAdminStatus = async () => {
     try {
       const storedToken = localStorage.getItem('token');
-      
+
       if (!storedToken) {
         setIsAdmin(false);
         setIsSuperuser(false);
         return;
       }
-      
+
       const response = await api.get('/auth/admin-status', {
         headers: {
           Authorization: `Bearer ${storedToken}`
@@ -141,7 +141,7 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
       });
       setIsAdmin(response.data.is_admin);
       setIsSuperuser(response.data.is_superuser);
-      
+
       // 管理者ステータスが変更された場合、権限キャッシュをクリア
       if (isAdmin !== response.data.is_admin || isSuperuser !== response.data.is_superuser) {
         clearPermissionCache();
@@ -171,7 +171,7 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
           const userPermissionsResponse = await api.get(`/permissions/${userResponse.data.id}`);
           const permissions = userPermissionsResponse?.data?.permissions || {};
           setUserPermissions(permissions);
-          
+
           // permission_manage権限を持っているか確認
           hasPermissionManage = Object.values(permissions as Record<string, Permission[]>).some(
             permissionList => permissionList.some(
@@ -224,18 +224,18 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
         });
         return allPermissions;
       }
-      
+
       // 管理者の場合、基本権限を自動付与
       if (isAdmin) {
         const adminBasicPermissions = ['user_view', 'user_create', 'user_edit', 'user_delete'];
         const results: Record<string, boolean> = {};
-        
+
         try {
           // すべての権限をAPIで確認
           const response = await api.post('/auth/permissions/check-multiple', {
             permission_codes: permissionCodes
           });
-          
+
           if (response.data && response.data.permissions) {
             // 各権限をチェック
             permissionCodes.forEach(code => {
@@ -263,15 +263,15 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
             }));
           });
         }
-        
+
         return results;
       }
-      
+
       // 一般ユーザーの場合はAPIで確認
       const response = await api.post('/auth/permissions/check-multiple', {
         permission_codes: permissionCodes
       });
-      
+
       if (response.data && response.data.permissions) {
         const permissions = response.data.permissions;
         Object.entries(permissions).forEach(([code, hasPermission]) => {
@@ -282,7 +282,7 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
         });
         return permissions;
       }
-      
+
       return {};
     } catch {
       return {};
@@ -295,27 +295,27 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
       if (isSuperuser) {
         return true;
       }
-      
+
       if (isAdmin) {
         const adminBasicPermissions = ['user_view', 'user_create', 'user_edit', 'user_delete'];
-        
+
         // 管理者の基本権限（ユーザー管理）のみを自動付与
         if (adminBasicPermissions.includes(permissionCode)) {
           return true;
         }
       }
-      
+
       if (permissionCache[permissionCode] !== undefined) {
         return permissionCache[permissionCode];
       }
-      
+
       const response = await api.post('/permissions/check', {
         permission_code: permissionCode
       });
-      
+
       const hasPermission = response.data.has_permission === true;
       permissionCache[permissionCode] = hasPermission;
-      
+
       return hasPermission;
     } catch {
       return false;
@@ -363,7 +363,7 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
   }, [isLoading, isLoggedIn, pathname, router]);
 
   return (
-    <AuthContext.Provider value={{ 
+    <AuthContext.Provider value={{
       isLoggedIn,
       isAdmin,
       isSuperuser,
