@@ -125,20 +125,7 @@ export default function LandingPage() {
                 {token ? 'メンバーズ鑑定へ進む' : 'メンバーズ・ログイン'}
               </Button>
 
-              <Box style={{ display: 'grid', gridTemplateColumns: 'repeat(3, 1fr)', gap: 24, paddingTop: 40, borderTop: `1px solid ${theme.primary}1a` }}>
-                <Flex direction="column" gap={8}>
-                  <IconDiamond color={theme.primary} size={24} />
-                  <Text style={{ fontSize: 10, fontWeight: 700, letterSpacing: '-0em', textTransform: 'uppercase', fontFamily: '"Noto Sans JP", sans-serif' }}>Authentic</Text>
-                </Flex>
-                <Flex direction="column" gap={8}>
-                  <IconSparkles color={theme.primary} size={24} />
-                  <Text style={{ fontSize: 10, fontWeight: 700, letterSpacing: '-0em', textTransform: 'uppercase', fontFamily: '"Noto Sans JP", sans-serif' }}>Personal</Text>
-                </Flex>
-                <Flex direction="column" gap={8}>
-                  <IconShieldCheck color={theme.primary} size={24} />
-                  <Text style={{ fontSize: 10, fontWeight: 700, letterSpacing: '-0em', textTransform: 'uppercase', fontFamily: '"Noto Sans JP", sans-serif' }}>Quality</Text>
-                </Flex>
-              </Box>
+
             </Box>
 
           </Box>
@@ -148,13 +135,53 @@ export default function LandingPage() {
       {/* Newsletter / CTA */}
       <Box component="footer" style={{ padding: '80px 24px', backgroundColor: theme.bgLight, borderTop: `1px solid ${theme.primary}0d` }}>
         <Box style={{ maxWidth: 720, margin: '0 auto', textAlign: 'center', display: 'flex', flexDirection: 'column', alignItems: 'center', gap: 32 }}>
-          <IconWand size={48} color={theme.primary} />
-          <Title order={2} style={{ fontSize: 30, fontWeight: 700, letterSpacing: '0.2em' }}>真の美しさは、自らの運命を知ることから。</Title>
-          <Text style={{ color: 'rgba(29, 21, 21, 0.7)', lineHeight: 1.6, fontWeight: 300 }}>
-            ルミネーインは、ご縁のある限られた皆様にのみ、<br />
-            特別なパーソナル・ストーン・キュレーションをご提供しております。
-          </Text>
-          <Text style={{ fontSize: 10, opacity: 0.4, marginTop: 40, letterSpacing: '0.1em' }}>© 2026 LumiNine Exclusive. All Rights Reserved.</Text>
+          <Title order={2} style={{ fontSize: 24, fontWeight: 700, letterSpacing: '0.2em', marginBottom: 24 }}>LumiNine Philosophy</Title>
+
+          <Box style={{ display: 'flex', flexDirection: 'column', gap: 40, width: '100%', maxWidth: 800, textAlign: 'left', marginTop: 16 }}>
+            {/* 1. Guidance */}
+            <Flex gap={24} align="flex-start">
+              <Box style={{ width: 48, height: 48, borderRadius: '50%', backgroundColor: `${theme.primary}1a`, display: 'flex', alignItems: 'center', justifyContent: 'center', flexShrink: 0 }}>
+                <Text style={{ fontSize: 20 }}>🧭</Text>
+              </Box>
+              <Box>
+                <Text style={{ fontSize: 14, fontWeight: 700, letterSpacing: '0.1em', color: theme.primary, textTransform: 'uppercase', fontFamily: '"Noto Sans JP", sans-serif' }}>Guidance</Text>
+                <Text style={{ fontSize: 18, fontWeight: 700, marginTop: 4, marginBottom: 8 }}>運命の道標</Text>
+                <Text style={{ fontSize: 14, fontWeight: 300, lineHeight: 1.8, opacity: 0.8 }}>
+                  九星気学と数秘術の叡智を重ね合わせ、あなたの魂が持つ本来のエネルギーの形を優しく紐解きます。
+                </Text>
+              </Box>
+            </Flex>
+
+            {/* 2. Resonance */}
+            <Flex gap={24} align="flex-start">
+              <Box style={{ width: 48, height: 48, borderRadius: '50%', backgroundColor: `${theme.primary}1a`, display: 'flex', alignItems: 'center', justifyContent: 'center', flexShrink: 0 }}>
+                <Text style={{ fontSize: 20 }}>✨</Text>
+              </Box>
+              <Box>
+                <Text style={{ fontSize: 14, fontWeight: 700, letterSpacing: '0.1em', color: theme.primary, textTransform: 'uppercase', fontFamily: '"Noto Sans JP", sans-serif' }}>Resonance</Text>
+                <Text style={{ fontSize: 18, fontWeight: 700, marginTop: 4, marginBottom: 8 }}>魂の共鳴</Text>
+                <Text style={{ fontSize: 14, fontWeight: 300, lineHeight: 1.8, opacity: 0.8 }}>
+                  8つのレイヤーからなる多角的なアプローチで、今のあなたに最も必要な波長を持つパーソナル・ストーンを導き出します。
+                </Text>
+              </Box>
+            </Flex>
+
+            {/* 3. Harmony */}
+            <Flex gap={24} align="flex-start">
+              <Box style={{ width: 48, height: 48, borderRadius: '50%', backgroundColor: `${theme.primary}1a`, display: 'flex', alignItems: 'center', justifyContent: 'center', flexShrink: 0 }}>
+                <Text style={{ fontSize: 20 }}>🌿</Text>
+              </Box>
+              <Box>
+                <Text style={{ fontSize: 14, fontWeight: 700, letterSpacing: '0.1em', color: theme.primary, textTransform: 'uppercase', fontFamily: '"Noto Sans JP", sans-serif' }}>Harmony</Text>
+                <Text style={{ fontSize: 18, fontWeight: 700, marginTop: 4, marginBottom: 8 }}>生への調和</Text>
+                <Text style={{ fontSize: 14, fontWeight: 300, lineHeight: 1.8, opacity: 0.8 }}>
+                  プライベート・セッションを通じて内なる声に耳を傾け、日常のなかに本来の美しいバランスと調和を取り戻します。
+                </Text>
+              </Box>
+            </Flex>
+          </Box>
+
+          <Text style={{ fontSize: 10, opacity: 0.4, marginTop: 64, letterSpacing: '0.1em' }}>© 2026 LumiNine Exclusive. All Rights Reserved.</Text>
         </Box>
       </Box>
     </Box>
