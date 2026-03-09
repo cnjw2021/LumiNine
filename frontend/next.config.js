@@ -2,7 +2,8 @@
 const path = require('path');
 
 const nextConfig = {
-  output: 'standalone', // [Cloud Run / Cloudflare Workers] Server-side rendering 지원
+  // Cloudflare Pages (next-on-pages) ではstandalone不可 → CF_PAGES未設定時のみstandalone
+  ...(process.env.CF_PAGES ? {} : { output: 'standalone' }),
   poweredByHeader: false,
   compress: true,
   reactStrictMode: true,

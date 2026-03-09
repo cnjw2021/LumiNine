@@ -33,7 +33,8 @@ services:
              chown -R appuser:appgroup /app/logs &&
              exec gunicorn --bind 0.0.0.0:5001 --reload --user appuser --group appgroup 'app:app'"
     depends_on:
-      - postgres
+      postgres:
+        condition: service_healthy
     healthcheck:
       test: ["CMD", "curl", "-f", "http://localhost:5001/auth/health"]
       interval: 10s
