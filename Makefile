@@ -166,7 +166,32 @@ db-reset: ## 💥 [注意] DBを完全に初期化します。すべてのデー
 	@echo "### データベースをリセットします! すべてのデータが削除されます... ###"
 	$(COMPOSE) run --rm backend python db_manage.py reset
 
-# --- 🚀 プロダクション(本番)環境専用コマンド ---
+# --- � Alembic 마이그레이션 ---
+db-upgrade: ## 🔄 마이그레이션을 최신까지 적용합니다. (flask db upgrade)
+	@echo "### DB 마이그레이션 적용 중... ###"
+	cd backend && PYTHONPATH=. FLASK_APP=app.py flask db upgrade
+
+db-migrate: ## 📝 모델 변경을 감지하여 새 마이그레이션을 생성합니다. (사용법: make db-migrate MSG="설명")
+	@if [ -z "$(MSG)" ]; then echo "사용법: make db-migrate MSG=\"마이그레이션 설명\""; exit 1; fi
+	@echo "### 새 마이그레이션 생성: $(MSG) ###"
+	cd backend && PYTHONPATH=. FLASK_APP=app.py flask db migrate -m "$(MSG)"
+
+db-downgrade: ## ⬇️ 마이그레이션을 1단계 롤백합니다. (flask db downgrade)
+	@echo "### DB 마이그레이션 1단계 롤백 중... ###"
+	cd backend && PYTHONPATH=. FLASK_APP=app.py flask db downgrade
+
+db-stamp: ## 🏷️ 기존 DB에 현재 마이그레이션 버전을 마킹합니다. (사용법: make db-stamp REV=head)
+	@if [ -z "$(REV)" ]; then echo "사용법: make db-stamp REV=head (또는 리비전 ID)"; exit 1; fi
+	@echo "### DB에 마이그레이션 버전 마킹: $(REV) ###"
+	cd backend && PYTHONPATH=. FLASK_APP=app.py flask db stamp $(REV)
+
+db-history: ## 📜 마이그레이션 이력을 확인합니다. (flask db history)
+	@cd backend && PYTHONPATH=. FLASK_APP=app.py flask db history
+
+db-current: ## 📍 현재 적용된 마이그레이션 버전을 확인합니다. (flask db current)
+	@cd backend && PYTHONPATH=. FLASK_APP=app.py flask db current
+
+# --- �🚀 プロダクション(本番)環境専用コマンド ---
 prod-mysql-restart: ## 🔄 [運用] 本番環境のMySQLコンテナを再起動します。
 	@echo "### 本番環境のMySQLを再起動します... ###"
 	docker compose --env-file .env.production.backend -f docker-compose.prod.yml down mysql
