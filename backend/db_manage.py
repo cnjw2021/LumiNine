@@ -28,12 +28,15 @@ def create_app():
     return app
 
 def create_superuser():
-    """環境変数を使用してスーパーユーザーを作成します。 (モデルのハッシュリグが適用されます)"""
+    """環境変数を使用してスーパーユーザーを作成し、全権限を付与します。"""
     logger.info("スーパーユーザーの作成を開始します...")
     app = create_app()
     with app.app_context():
         try:
             from apps.reading.shared.domain.entities.user import User
+            from apps.reading.shared.domain.entities.permission import Permission
+            from apps.reading.shared.domain.entities.user_permission import UserPermission
+
             email = os.environ.get('SUPERUSER_EMAIL')
             password = os.environ.get('SUPERUSER_PASSWORD')
 
@@ -41,21 +44,43 @@ def create_superuser():
                 logger.warning("SUPERUSER 環境変数が設定されていません。スーパーユーザーの作成をスキップします。")
                 return
 
-            if User.query.filter_by(email=email).first():
+            superuser = User.query.filter_by(email=email).first()
+            if superuser:
                 logger.info(f"スーパーユーザー '{email}'は既に存在します。")
-                return
-            
-            # User モデルを通して作成すると、モデル内部のパスワードハッシュリグが自動的に適用されます。
-            superuser = User(
-                name='Super User',
-                email=email,
-                password=password,
-                is_admin=True,
-                is_superuser=True
-            )
-            db.session.add(superuser)
-            db.session.commit()
-            logger.info(f"スーパーユーザー '{email}'が成功して作成されました。")
+            else:
+                # User モデルを通して作成すると、モデル内部のパスワードハッシュリグが自動的に適用されます。
+                superuser = User(
+                    name='Super User',
+                    email=email,
+                    password=password,
+                    is_admin=True,
+                    is_superuser=True
+                )
+                db.session.add(superuser)
+                db.session.commit()
+                logger.info(f"スーパーユーザー '{email}'が成功して作成されました。")
+
+            # ── 全権限を付与 (冪等) ──────────────────────────────────
+            all_permissions = Permission.query.all()
+            if all_permissions:
+                assigned = 0
+                for perm in all_permissions:
+                    exists = UserPermission.query.filter_by(
+                        user_id=superuser.id, permission_id=perm.id
+                    ).first()
+                    if not exists:
+                        db.session.add(UserPermission(
+                            user_id=superuser.id, permission_id=perm.id
+                        ))
+                        assigned += 1
+                if assigned > 0:
+                    db.session.commit()
+                    logger.info(f"スーパーユーザーに {assigned} 件の権限を付与しました。")
+                else:
+                    logger.info("スーパーユーザーの権限は既に全て付与済みです。")
+            else:
+                logger.warning("permissions テーブルにデータがありません。権限付与をスキップします。")
+
         except Exception as e:
             logger.error(f"スーパーユーザー作成中にエラーが発生しました: {e}")
             db.session.rollback()
