@@ -50,10 +50,7 @@ jobs:
 
       - name: Run DB migrations
         working-directory: backend
-        run: |
-          # GitHub Actions 러너는 IPv6 미지원 — Supabase가 IPv6로 응답하면 연결 실패
-          sudo sysctl -w net.ipv6.conf.all.disable_ipv6=1
-          PYTHONPATH=. flask db upgrade
+        run: PYTHONPATH=. flask db upgrade
         env:
           FLASK_APP: app.py
           DATABASE_URL: ${{ secrets.DATABASE_URL }}
