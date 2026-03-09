@@ -42,6 +42,7 @@ jobs:
         env:
           NODE_ENV: production
           CF_PAGES: '1'
+          NEXT_PUBLIC_API_URL: ${{ secrets.NEXT_PUBLIC_API_URL }}
 
       - name: Deploy to Cloudflare Pages
         uses: cloudflare/pages-action@v1
