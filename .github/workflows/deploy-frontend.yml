@@ -38,7 +38,7 @@ jobs:
 
       - name: Build for Cloudflare Pages
         working-directory: frontend
-        run: npx @cloudflare/next-on-pages
+        run: npx @cloudflare/next-on-pages@1
         env:
           NODE_ENV: production
 

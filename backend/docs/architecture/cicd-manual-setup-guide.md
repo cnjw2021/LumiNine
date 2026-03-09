@@ -30,7 +30,7 @@
 | `CLOUDFLARE_API_TOKEN` | [Cloudflare Dashboard](https://dash.cloudflare.com/profile/api-tokens) → **Create Token** → "Edit Cloudflare Pages" 템플릿 선택 |
 | `CLOUDFLARE_ACCOUNT_ID` | Cloudflare Dashboard 우측 사이드바 → **Account ID** 복사 |
 | `CF_PAGES_PROJECT_NAME` | Cloudflare Pages 프로젝트명 (예: `luminine-frontend`) |
-| `NEXT_PUBLIC_API_URL` | Cloud Run 배포 완료 후 발급되는 URL (예: `https://luminine-backend-xxxx-an.a.run.app`) |
+| `NEXT_PUBLIC_API_URL` | Cloud Run 배포 완료 후 발급되는 기본 URL (예: `https://luminine-backend-xxxx-an.a.run.app`). `api.ts`에서 자동으로 `/api` 접미사를 추가합니다. |
 
 ### 1-2. Google Cloud 관련
 
@@ -210,7 +210,7 @@ curl https://YOUR_CLOUD_RUN_URL/api/health
 
 | 변수 이름 | 값 | 환경 |
 |-----------|-----|------|
-| `NEXT_PUBLIC_API_URL` | Cloud Run URL (예: `https://luminine-backend-xxxx.run.app`) | Production |
+| `NEXT_PUBLIC_API_URL` | Cloud Run 기본 URL (예: `https://luminine-backend-xxxx.run.app`). `/api`는 자동 추가됩니다. | Production |
 | `NODE_VERSION` | `20` | Production + Preview |
 
 5. **Save and Deploy** 클릭
