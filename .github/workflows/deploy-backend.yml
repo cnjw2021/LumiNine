@@ -42,7 +42,7 @@ jobs:
         uses: docker/setup-buildx-action@v3
 
       - name: Copy seed SQL files into Docker build context
-        run: cp -r db/init backend/db/init
+        run: mkdir -p backend/db && cp -r db/init backend/db/init
 
       - name: Build and push Backend image
         uses: docker/build-push-action@v5
