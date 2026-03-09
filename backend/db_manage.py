@@ -81,6 +81,7 @@ def execute_sql_file(cursor, file_path):
 _SQL_SEED_FILE_TABLE_MAP = {
     '100_stars.sql': {'stars'},
 
+    '200_star_attributes.sql': {'star_attributes'},
     '210_star_grid_patterns.sql': {'star_grid_patterns'},
     '300_monthly_directions.sql': {'monthly_directions'},
     '310_star_number_group.sql': {'star_groups'},
