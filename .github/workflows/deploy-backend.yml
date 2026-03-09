@@ -18,7 +18,7 @@ jobs:
 
     env:
       # Artifact Registry 경로: {REGION}-docker.pkg.dev/{PROJECT}/{REPO}/{IMAGE}
-      AR_REPO: ${{ secrets.GCP_REGION }}-docker.pkg.dev/${{ secrets.GCP_PROJECT_ID }}/backend/luminine-backend
+      AR_REPO: ${{ secrets.GCP_REGION }}-docker.pkg.dev/${{ secrets.GCP_PROJECT_ID }}/luminine-docker-repo/luminine-backend
 
     steps:
       - name: Checkout repository
