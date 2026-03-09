@@ -7,6 +7,7 @@ from core.database import init_db, db
 import os
 import sys
 import json
+import re
 from datetime import datetime, date
 import logging
 from flask_injector import FlaskInjector
@@ -68,7 +69,13 @@ def create_app() -> Flask:
     # CORS 설정
     CORS(app, 
          resources={r"/*": {
-             "origins": ["http://localhost:3000", "http://localhost", "http://localhost:80", "https://[My Domain]", "https://www.[My Domain]"],
+             "origins": [
+                 "http://localhost:3000",
+                 "http://localhost",
+                 "http://localhost:80",
+                 "https://luminine-frontend.pages.dev",
+                 re.compile(r'https://[a-z0-9]+\.luminine-frontend\.pages\.dev'),
+             ],
              "methods": ["GET", "POST", "PUT", "DELETE", "OPTIONS"],
              "allow_headers": ["Content-Type", "Authorization"],
              "supports_credentials": True,
