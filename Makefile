@@ -166,7 +166,7 @@ db-reset: ## 💥 [注意] DBを完全に初期化します。すべてのデー
 	@echo "### データベースをリセットします! すべてのデータが削除されます... ###"
 	$(COMPOSE) run --rm backend python db_manage.py reset
 
-# --- � Alembic 마이그레이션 ---
+# --- 🔄 Alembic 마이그레이션 ---
 db-upgrade: ## 🔄 마이그레이션을 최신까지 적용합니다. (flask db upgrade)
 	@echo "### DB 마이그레이션 적용 중... ###"
 	cd backend && PYTHONPATH=. FLASK_APP=app.py flask db upgrade

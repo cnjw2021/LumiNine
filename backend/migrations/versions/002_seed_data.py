@@ -50,6 +50,14 @@ def _find_sql_file(filename):
     return None  # ファイルが見つからない場合 (既にシード済み等)
 
 
+def _get_connection():
+    """Alembic 1.x / 2.x 互換のコネクション取得"""
+    try:
+        return op.get_bind()  # Alembic 1.x
+    except AttributeError:
+        return op.get_context().connection  # Alembic 2.x
+
+
 def upgrade():
     # ── 1. SQL シードデータ ──────────────────────────────────────
     for sql_file in _SEED_FILES:
@@ -78,7 +86,7 @@ def _create_superuser():
         return
 
     # 既に存在するかチェック
-    conn = op.get_bind()
+    conn = _get_connection()
     result = conn.execute(sa.text("SELECT id FROM users WHERE email = :email"), {"email": email})
     if result.fetchone():
         print(f"Superuser '{email}' already exists — skipping creation")
@@ -105,7 +113,7 @@ def _assign_superuser_permissions():
     if not email:
         return
 
-    conn = op.get_bind()
+    conn = _get_connection()
     conn.execute(
         sa.text(
             "INSERT INTO user_permissions (user_id, permission_id) "
