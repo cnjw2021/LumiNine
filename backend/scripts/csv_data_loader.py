@@ -1,6 +1,6 @@
 import os
 import time
-import pandas as pd
+import csv
 import psycopg2
 from core.utils.logger import get_logger
 from core.db_config import get_postgres_connection, get_db_connection_info
@@ -45,8 +45,10 @@ def load_csv_to_table(connection, csv_filename, table_name, column_mapping=None,
             if column_mapping:
                 columns = list(column_mapping.values())
             else:
-                df_header = pd.read_csv(csv_path, nrows=0)
-                columns = df_header.columns.tolist()
+                with open(csv_path, 'r', encoding='utf-8') as f:
+                    reader = csv.reader(f)
+                    columns = next(reader)
+            
             
             # created_at, updated_at はCSVに含まれないため除外してCOPY
             copy_columns = [c for c in columns if c not in ('created_at', 'updated_at')]
