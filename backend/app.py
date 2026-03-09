@@ -148,7 +148,7 @@ def create_app() -> Flask:
             return jsonify({"status": "ok", "db": "connected"}), 200
         except Exception as e:
             logger.warning(f"health_check db error: {e}")
-            return jsonify({"status": "ok", "db": "disconnected"}), 200
+            return jsonify({"status": "error", "db": "disconnected"}), 503
 
     return app
 

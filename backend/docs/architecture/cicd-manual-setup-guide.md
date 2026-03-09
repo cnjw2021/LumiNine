@@ -143,11 +143,10 @@ sed "s/\`//g; s/INSERT IGNORE INTO/INSERT INTO/g; s/) ENGINE=InnoDB.*;//g" \
 gcloud services enable run.googleapis.com --project=YOUR_PROJECT_ID
 ```
 
-### 3-2. 서비스 첫 배포 (Secrets 등록 후 GitHub Actions로 자동 배포)
+### 3-2. Placeholder 서비스 생성
 
-Secrets 등록이 완료되면 `main` 브랜치에 push/merge 시 `.github/workflows/deploy-backend.yml`이 자동으로 Cloud Run 배포를 수행합니다.
+GitHub Actions가 배포할 Cloud Run 서비스를 먼저 만들어 둡니다:
 
-**수동으로 먼저 서비스를 만들고 싶다면:**
 ```bash
 gcloud run deploy luminine-backend \
   --image gcr.io/cloudrun/placeholder \
@@ -158,6 +157,8 @@ gcloud run deploy luminine-backend \
 ```
 
 ### 3-3. 환경변수 설정 (Cloud Run Console)
+
+> ⚠️ **반드시 자동 배포 전에 설정하세요.** 환경변수가 없으면 컨테이너가 시작 직후 crash합니다.
 
 Cloud Run Console → 서비스 → 편집 → 컨테이너 → 환경 변수:
 
@@ -171,14 +172,18 @@ Cloud Run Console → 서비스 → 편집 → 컨테이너 → 환경 변수:
 | `FLASK_ENV` | `production` |
 | `PORT` | `5001` (Cloud Run에서 자동 주입, 명시 불필요) |
 
-### 3-4. 헬스체크 확인
+### 3-4. 자동 배포 트리거
+
+3-2, 3-3이 완료된 상태에서 `main` 브랜치에 push/merge하면 `.github/workflows/deploy-backend.yml`이 자동으로 Cloud Run 배포를 수행합니다.
+
+### 3-5. 헬스체크 확인
 
 배포 완료 후 아래로 정상 응답(`{"status": "ok", "db": "connected"}`) 확인:
 ```bash
 curl https://YOUR_CLOUD_RUN_URL/api/health
 ```
 
-### 3-5. CORS 설정 업데이트
+### 3-6. CORS 설정 업데이트
 
 `backend/app.py`의 CORS origins에 Cloudflare Pages 도메인을 추가:
 ```python

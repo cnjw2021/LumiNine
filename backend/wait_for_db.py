@@ -8,6 +8,9 @@ def check_postgres_connection():
         import psycopg2
         db_url = os.environ.get('DATABASE_URL', '')
         if db_url:
+            # SQLAlchemy形式のURL (postgresql+psycopg2://) をpsycopg2用に変換
+            if db_url.startswith('postgresql+'):
+                db_url = 'postgresql' + db_url[db_url.index('://'):]
             conn = psycopg2.connect(db_url, connect_timeout=10)
             conn.close()
             return True

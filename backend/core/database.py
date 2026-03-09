@@ -3,7 +3,7 @@ from flask import current_app
 import os
 from dotenv import load_dotenv
 from core.utils.logger import get_logger
-from core.db_config import get_sqlalchemy_uri, get_db_connection_info
+from core.db_config import get_sqlalchemy_uri
 
 # 環境変数の読み込み
 load_dotenv()
@@ -64,16 +64,9 @@ def init_db(app):
         app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
     
     if 'SQLALCHEMY_ENGINE_OPTIONS' not in app.config:
-        # データベース接続情報を取得
-        db_config = get_db_connection_info()
-        db_charset = db_config['charset']
-                
         app.config['SQLALCHEMY_ENGINE_OPTIONS'] = {
             'pool_pre_ping': True,
             'pool_recycle': 3600,
-            'connect_args': {
-                'charset': db_charset
-            }
         }
     
     logger.info(f"データベース接続を初期化: {app.config.get('SQLALCHEMY_DATABASE_URI')}")

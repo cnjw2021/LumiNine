@@ -267,6 +267,8 @@ CREATE TABLE IF NOT EXISTS powerstone_master (
   created_at  TIMESTAMPTZ  NOT NULL DEFAULT NOW(),
   updated_at  TIMESTAMPTZ  NOT NULL DEFAULT NOW(),
   CONSTRAINT uq_powerstone_stone_id UNIQUE (stone_id),
+  -- NOTE: PostgreSQL UNIQUE制約はNULL値を複数許容します。
+  -- base_starがNULLの行は一意性チェックの対象外（設計通り）。
   CONSTRAINT uq_powerstone_base_star UNIQUE (base_star)
 );
 CREATE INDEX IF NOT EXISTS idx_pm_gogyo      ON powerstone_master (gogyo);

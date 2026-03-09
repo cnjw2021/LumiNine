@@ -4,10 +4,11 @@ import traceback
 import argparse
 from flask import Flask
 from sqlalchemy import text
-from mysql.connector import Error
+
+import psycopg2
 
 from core.database import db
-from core.db_config import get_mysql_connection
+from core.db_config import get_postgres_connection
 from core.utils.logger import get_logger
 from scripts.csv_file_loader import load_all_csv_data
 
@@ -19,7 +20,7 @@ def create_app():
     
     # 環境変数からデータベース URIを構成
     db_uri = os.environ.get('DATABASE_URL') or \
-        f"mysql+pymysql://{os.environ.get('DB_USER')}:{os.environ.get('DB_PASSWORD')}@{os.environ.get('DB_HOST')}/{os.environ.get('DB_NAME')}?charset=utf8mb4"
+        f"postgresql+psycopg2://{os.environ.get('DB_USER')}:{os.environ.get('DB_PASSWORD')}@{os.environ.get('DB_HOST')}/{os.environ.get('DB_NAME')}"
     
     app.config['SQLALCHEMY_DATABASE_URI'] = db_uri
     app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
@@ -68,10 +69,9 @@ def execute_sql_file(cursor, file_path):
     try:
         with open(file_path, 'r', encoding='utf-8') as file:
             sql_content = file.read()
-            for result in cursor.execute(sql_content, multi=True):
-                pass
+            cursor.execute(sql_content)
         logger.info(f"SQLファイル '{os.path.basename(file_path)}'が成功して実行されました。")
-    except Error as e:
+    except psycopg2.Error as e:
         logger.error(f"SQLファイル '{file_path}'実行中にエラーが発生しました: {e}")
         raise
 
@@ -103,7 +103,7 @@ def seed_database(cursor, target_tables=None):
         if target_tables and not tables & target_tables:
             logger.debug("スキップ: %s (対象テーブルに該当なし)", sql_file)
             continue
-        sql_file_path = os.path.join('mysql', 'init', sql_file)
+        sql_file_path = os.path.join('db', 'init', sql_file)
         execute_sql_file(cursor, sql_file_path)
 
     logger.info("CSV データをロードします...")
@@ -112,7 +112,10 @@ def seed_database(cursor, target_tables=None):
 
 def _get_existing_tables(cursor) -> set:
     """現在のデータベースに存在するテーブル名の集合を返します。"""
-    cursor.execute("SHOW TABLES")
+    cursor.execute("""
+        SELECT table_name FROM information_schema.tables
+        WHERE table_schema = 'public'
+    """)
     return {row[0] for row in cursor.fetchall()}
 
 # 000_create_tables.sql およびシードSQLファイルに定義されている全テーブルのリスト
@@ -132,14 +135,15 @@ _EXPECTED_TABLES = {
 def run_init():
     """
     [役割 変更]
-    DB 初期化はMySQL コンテナが担当しますが、ボリュームの問題等でテーブルがない場合は
+    DB 初期化はPostgreSQLコンテナが担当しますが、ボリュームの問題等でテーブルがない場合は
     安全のためにテーブル作成と初期データシードを実行します。
     既存DBで一部テーブルが不足している場合は、DDL (CREATE TABLE IF NOT EXISTS) と
     シードを増分適用します。その後、スーパーユーザー作成を担当します。
     """
     logger.info("DB init script started: Checking database state...")
     
-    conn = get_mysql_connection()
+    conn = get_postgres_connection()
+    conn.autocommit = False
     cursor = conn.cursor()
     
     existing = _get_existing_tables(cursor)
@@ -147,7 +151,7 @@ def run_init():
     if not existing:
         # 完全初期化: テーブルもデータもない
         logger.warning("テーブルが存在しません。テーブルの作成とデータのシードを開始します...")
-        execute_sql_file(cursor, os.path.join('mysql', 'init', '000_create_tables.sql'))
+        execute_sql_file(cursor, os.path.join('db', 'init', '000_create_tables.sql'))
         seed_database(cursor)
         conn.commit()
     else:
@@ -155,7 +159,7 @@ def run_init():
         if missing:
             # 増分適用: 既存DBに不足テーブルがある場合
             logger.warning("不足テーブル検出: %s — DDL+シードを増分適用します。", missing)
-            execute_sql_file(cursor, os.path.join('mysql', 'init', '000_create_tables.sql'))
+            execute_sql_file(cursor, os.path.join('db', 'init', '000_create_tables.sql'))
             # 不足しているテーブルのみをターゲットにシードを実行
             seed_database(cursor, target_tables=missing)
             conn.commit()
@@ -175,20 +179,22 @@ def run_reset():
     すべてのテーブルを削除し、新規に作成した後、データを再度埋め込み、スーパーユーザーを作成します。
     """
     logger.warning("DB RESET 開始! すべてのデータが削除されます。")
-    conn = get_mysql_connection()
+    conn = get_postgres_connection()
+    conn.autocommit = False
     cursor = conn.cursor()
 
-    # すべてのテーブルを削除
-    cursor.execute("SET FOREIGN_key_CHECKS=0")
-    cursor.execute("SHOW TABLES")
-    tables = [table[0] for table in cursor.fetchall()]
+    # すべてのテーブルを削除 (CASCADE で依存関係も一括削除)
+    cursor.execute("""
+        SELECT table_name FROM information_schema.tables
+        WHERE table_schema = 'public'
+    """)
+    tables = [row[0] for row in cursor.fetchall()]
     for table in tables:
-        cursor.execute(f"DROP TABLE IF EXISTS `{table}`")
-    cursor.execute("SET FOREIGN_key_CHECKS=1")
+        cursor.execute(f'DROP TABLE IF EXISTS "{table}" CASCADE')
     logger.info("すべてのテーブルが削除されました。")
 
-    # テーブル 再作成 及び データ シード (MySQL initdb.dと同じロジックを実行)
-    execute_sql_file(cursor, os.path.join('mysql', 'init', '000_create_tables.sql'))
+    # テーブル 再作成 及び データ シード
+    execute_sql_file(cursor, os.path.join('db', 'init', '000_create_tables.sql'))
     conn.commit()  # CSV loader uses a separate connection, so tables must be committed first
     seed_database(cursor) # SQL 及び CSV データ
     
