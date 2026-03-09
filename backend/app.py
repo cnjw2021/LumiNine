@@ -1,6 +1,7 @@
 from flask import Flask, jsonify, request, Response
 from flask_cors import CORS
 from flask_jwt_extended import JWTManager
+from flask_migrate import Migrate
 from core.utils.logger import init_logger, get_logger
 from core.config import get_config
 from core.database import init_db, db
@@ -65,6 +66,9 @@ def create_app() -> Flask:
 
     # DB 초기화
     init_db(app)
+
+    # マイグレーション初期化 (flask db コマンド用)
+    Migrate(app, db)
 
     # CORS 설정
     CORS(app, 
