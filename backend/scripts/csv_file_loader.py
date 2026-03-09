@@ -1,11 +1,10 @@
 import pandas as pd
-import mysql.connector
-from mysql.connector import Error
+import psycopg2
 import os
 from dotenv import load_dotenv
 import sys
 import time
-from core.db_config import get_db_connection_info, get_mysql_connection
+from core.db_config import get_db_connection_info, get_postgres_connection
 from scripts.csv_data_loader import load_csv_to_table, load_multiple_csv_files
 
 # スクリプトのディレクトリパスを基準にしたCSVファイルパスを取得する関数
@@ -23,7 +22,6 @@ def load_solar_terms_data(connection=None):
             csv_filename='solar_terms_data.csv',
             table_name='solar_terms',
             truncate_table=True,
-            use_load_data_infile=True,
             connection=connection
         )
         print(f"solar_termsのデータ挿入完了: {row_count}行")
@@ -42,7 +40,6 @@ def load_solar_starts_data(connection=None):
             table_name='solar_starts',
             column_mapping=None,
             truncate_table=True,
-            use_load_data_infile=True,
             connection=connection
         )
         print(f"solar_startsのデータ挿入完了: {row_count}行")
@@ -60,7 +57,6 @@ def load_daily_astrology_data(connection=None):
             csv_filename='daily_astrology_data.csv',
             table_name='daily_astrology',
             truncate_table=True,
-            use_load_data_infile=True,
             connection=connection
         )
         print(f"daily_astrologyのデータ挿入完了: {row_count}行")
@@ -79,7 +75,6 @@ def load_user_account_data(connection=None):
             csv_filename='user_account.csv',
             table_name='users',
             truncate_table=False,
-            use_load_data_infile=True,
             connection=connection
         )
         print(f"user_accountのデータ挿入完了: {row_count}行")
@@ -93,8 +88,8 @@ def load_all_csv_data(target_tables=None):
     try:
         load_dotenv()
         print(f"CSVデータのロードを開始します... {'(Target: ' + ', '.join(target_tables) + ')' if target_tables else '(All)'}")
-        # FILE権限付きコネクションを1回だけ生成
-        connection = get_mysql_connection(require_file_privilege=True)
+        # PostgreSQL接続を1回だけ生成
+        connection = get_postgres_connection()
         try:
             # 基本的なCSVとテーブルのマッピング
             csv_table_mapping = {
@@ -122,28 +117,31 @@ def load_all_csv_data(target_tables=None):
                 results = load_multiple_csv_files(
                     connection,
                     csv_table_mapping,
-                    truncate_tables=True,
-                    use_load_data_infile=True
+                    truncate_tables=True
                 )
 
 
             
             # user_accountデータを個別にロード（truncateしない）
             if not target_tables or 'users' in target_tables:
-                user_connection = get_mysql_connection(require_file_privilege=True)
+                user_connection = get_postgres_connection()
                 try:
                     user_rows = load_user_account_data(user_connection)
                     results['users'] = user_rows
                 finally:
-                    if user_connection is not None and user_connection.is_connected():
+                    try:
                         user_connection.close()
+                    except Exception:
+                        pass
             
             for table, count in results.items():
                 print(f"{table}テーブルに{count}行のデータをロードしました")
             return results
         finally:
-            if connection is not None and connection.is_connected():
+            try:
                 connection.close()
+            except Exception:
+                pass
     except Exception as e:
         print(f"CSVデータロード中にエラーが発生しました: {e}")
         raise
@@ -165,4 +163,4 @@ if __name__ == "__main__":
     except Exception as e:
         print(f"予期せぬエラーが発生しましたが、ビルドを続行します: {e}")
         # ビルド時はエラーコード0で終了
-        sys.exit(0) 
+        sys.exit(0)

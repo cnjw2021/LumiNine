@@ -20,12 +20,19 @@ def get_db_connection_info():
     if db_url:
         try:
             from urllib.parse import urlparse
-            parsed = urlparse(db_url.replace('mysql+pymysql://', 'http://').replace('mysql+mysqldb://', 'http://'))
+            # SQLAlchemy形式のURLを標準形式に変換して解析
+            normalized = db_url
+            for prefix in ('postgresql+psycopg2://', 'postgresql+asyncpg://', 'mysql+pymysql://', 'mysql+mysqldb://'):
+                if db_url.startswith(prefix):
+                    scheme = prefix.split('+')[0]
+                    normalized = scheme + '://' + db_url[len(prefix):]
+                    break
+            parsed = urlparse(normalized)
             
-            host = parsed.hostname or os.environ.get('DB_HOST', 'mysql')
+            host = parsed.hostname or os.environ.get('DB_HOST', 'postgres')
             user = parsed.username or os.environ.get('DB_USER', 'luminine')
             password = parsed.password or os.environ.get('DB_PASSWORD', 'luminine_password')
-            port = str(parsed.port) if parsed.port else os.environ.get('DB_PORT', '3306')
+            port = str(parsed.port) if parsed.port else os.environ.get('DB_PORT', '5432')
             
             if parsed.path:
                 database = parsed.path.strip('/').split('?')[0] or os.environ.get('DB_NAME', 'luminine')
@@ -36,89 +43,60 @@ def get_db_connection_info():
         except Exception as e:
             logger.error(f"DATABASE_URLの解析に失敗しました: {e}")
             # 解析に失敗した場合は個別の環境変数を使用
-            host = os.environ.get('DB_HOST', 'mysql')
+            host = os.environ.get('DB_HOST', 'postgres')
             user = os.environ.get('DB_USER', 'luminine')
             password = os.environ.get('DB_PASSWORD', 'luminine_password')
             database = os.environ.get('DB_NAME', 'luminine')
-            port = os.environ.get('DB_PORT', '3306')
+            port = os.environ.get('DB_PORT', '5432')
     else:
         # 個別の環境変数から接続情報を取得（DB_*の命名規則を優先）
-        host = os.environ.get('DB_HOST', 'mysql')
+        host = os.environ.get('DB_HOST', 'postgres')
         user = os.environ.get('DB_USER', 'luminine') 
         password = os.environ.get('DB_PASSWORD', 'luminine_password')
         database = os.environ.get('DB_NAME', 'luminine')
-        port = os.environ.get('DB_PORT', '3306')
-        
-        # 注: 以下は後方互換性のための対応です。
-        # 将来的には DB_* 形式の環境変数のみを使用するように統一することをお勧めします。
-        # MySQLの環境変数が設定されている場合は、それも確認
-        mysql_host = os.environ.get('MYSQL_HOST')
-        mysql_user = os.environ.get('MYSQL_USER')
-        mysql_password = os.environ.get('MYSQL_PASSWORD')
-        mysql_database = os.environ.get('MYSQL_DATABASE')
-        
-        # MySQLの環境変数が設定されていれば、それを使用（DB_*が未設定の場合のフォールバック）
-        if mysql_host and not os.environ.get('DB_HOST'):
-            host = mysql_host
-            logger.warning(f"非推奨: MYSQL_HOST環境変数が使用されました。DB_HOSTに移行してください: {host}")
-        if mysql_user and not os.environ.get('DB_USER'):
-            user = mysql_user
-            logger.warning(f"非推奨: MYSQL_USER環境変数が使用されました。DB_USERに移行してください: {user}")
-        if mysql_password and not os.environ.get('DB_PASSWORD'):
-            password = mysql_password
-            logger.warning("非推奨: MYSQL_PASSWORD環境変数が使用されました。DB_PASSWORDに移行してください")
-        if mysql_database and not os.environ.get('DB_NAME'):
-            database = mysql_database
-            logger.warning(f"非推奨: MYSQL_DATABASE環境変数が使用されました。DB_NAMEに移行してください: {database}")
+        port = os.environ.get('DB_PORT', '5432')
     
     # 最終的な接続情報を返す
-    charset = os.environ.get('DB_CHARSET', 'utf8mb4')
     _db_conn_info_cache = {
         'host': host,
         'user': user,
         'password': password,
         'database': database,
         'port': port,
-        'charset': charset
     }
     return _db_conn_info_cache
 
 def get_sqlalchemy_uri():
     """SQLAlchemy接続文字列を生成"""
-    # DATABASE_URLが直接指定されている場合はそれを返す
+    # DATABASE_URLが直接指定されている場合はスキーム正規化して返す
     if 'DATABASE_URL' in os.environ:
-        return os.environ.get('DATABASE_URL')
+        url = os.environ.get('DATABASE_URL')
+        # Supabase等が返す postgres:// → SQLAlchemy 2.x が要求する postgresql+psycopg2://
+        if url.startswith('postgres://'):
+            url = url.replace('postgres://', 'postgresql+psycopg2://', 1)
+        return url
     
     # 接続情報から文字列を構築
     info = get_db_connection_info()
-    return f"mysql+pymysql://{info['user']}:{info['password']}@{info['host']}:{info['port']}/{info['database']}?charset={info['charset']}"
+    return f"postgresql+psycopg2://{info['user']}:{info['password']}@{info['host']}:{info['port']}/{info['database']}"
 
-def get_mysql_connection(require_file_privilege=False):
-    """mysql.connector接続を取得する"""
-    import mysql.connector
-    from mysql.connector import Error
+def get_postgres_connection():
+    """psycopg2接続を取得する"""
+    import psycopg2
     
     connection_info = get_db_connection_info()
     
-    # FILE権限が必要な場合はrootユーザーを使用
-    if require_file_privilege:
-        # rootアカウントもしくは適切な権限を持つ他のユーザーを使用
-        connection_info['user'] = os.environ.get('DB_ROOT_USER', os.environ.get('MYSQL_ROOT_USER', 'root'))
-        connection_info['password'] = os.environ.get('DB_ROOT_PASSWORD', os.environ.get('MYSQL_ROOT_PASSWORD', 'rootpassword'))
-        logger.debug(f"FILE権限のためrootユーザーを使用")
-    
     try:
-        connection = mysql.connector.connect(
+        connection = psycopg2.connect(
             host=connection_info['host'],
             user=connection_info['user'],
             password=connection_info['password'],
-            database=connection_info['database'],
+            dbname=connection_info['database'],
             port=connection_info['port'],
-            charset=connection_info['charset'],
             connect_timeout=10
         )
-        logger.debug(f"MySQLに接続しました: {connection_info['host']} - {connection_info['user']} - {connection_info['database']}")
+        logger.debug(f"PostgreSQLに接続しました: {connection_info['host']} - {connection_info['user']} - {connection_info['database']}")
         return connection
-    except Error as e:
-        logger.error(f"MySQL接続エラー: {e}")
-        raise 
+    except Exception as e:
+        logger.error(f"PostgreSQL接続エラー: {e}")
+        raise

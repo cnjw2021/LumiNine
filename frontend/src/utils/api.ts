@@ -1,8 +1,8 @@
 import axios, { AxiosRequestConfig } from 'axios';
 
 const api = axios.create({
-    // 開発環境と本番環境で同じ設定を使用
-    baseURL: '/api',
+    // NEXT_PUBLIC_API_URL: プロダクション環境ではCloud RunのURL+/api、ローカルでは'/api'にフォールバック
+    baseURL: process.env.NEXT_PUBLIC_API_URL ? `${process.env.NEXT_PUBLIC_API_URL}/api` : '/api',
     timeout: 30000,
     withCredentials: true,
     headers: {
@@ -12,18 +12,18 @@ const api = axios.create({
 });
 
 // getUri関数の追加 - リクエストURIを構築するための関数
-api.getUri = function(config?: AxiosRequestConfig): string {
+api.getUri = function (config?: AxiosRequestConfig): string {
     // 必要な設定のみを抽出して新しいconfigを作成
     const mergedConfig: AxiosRequestConfig = {
         baseURL: this.defaults.baseURL,
         url: config?.url
     };
-    
+
     if (config) {
         if (config.params) mergedConfig.params = config.params;
         if (config.paramsSerializer) mergedConfig.paramsSerializer = config.paramsSerializer;
     }
-    
+
     return axios.getUri(mergedConfig);
 };
 
@@ -62,12 +62,12 @@ api.interceptors.response.use(
             // トークンをクリア
             localStorage.removeItem('token');
             localStorage.removeItem('refresh_token');
-            
+
             // ログイン画面へリダイレクト（現在のパスがログイン画面でない場合のみ）
             if (typeof window !== 'undefined' && !window.location.pathname.includes('/login')) {
                 window.location.href = '/login';
             }
-            
+
             // エラーオブジェクトを変更して返す（必要な情報のみ）
             return Promise.reject({
                 response: {
@@ -76,7 +76,7 @@ api.interceptors.response.use(
                 }
             });
         }
-        
+
         // その他のエラーは詳細情報を取得
         const errorDetails: {
             status?: number;
@@ -86,20 +86,20 @@ api.interceptors.response.use(
             method?: string;
             message?: string;
         } = {};
-        
+
         // レスポンス関連の情報
         if (error.response) {
             errorDetails.status = error.response.status;
             errorDetails.statusText = error.response.statusText;
             errorDetails.data = error.response.data;
         }
-        
+
         // リクエスト設定関連の情報
         if (error.config) {
             errorDetails.url = error.config.url;
             errorDetails.method = error.config.method;
         }
-        
+
         // エラーメッセージ
         if (error.message) {
             errorDetails.message = error.message;

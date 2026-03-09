@@ -21,12 +21,11 @@ class BaseConfig:
     JWT_ACCESS_TOKEN_EXPIRES = timedelta(hours=1)
     
     # データベース接続情報（デフォルト）
-    DB_HOST = os.environ.get('DB_HOST', 'mysql')
+    DB_HOST = os.environ.get('DB_HOST', 'postgres')
     DB_USER = os.environ.get('DB_USER', 'luminine')
     DB_PASSWORD = os.environ.get('DB_PASSWORD', 'luminine_password')
     DB_NAME = os.environ.get('DB_NAME', 'luminine')
-    DB_PORT = os.environ.get('DB_PORT', '3306')
-    DB_CHARSET = os.environ.get('DB_CHARSET', 'utf8mb4')
+    DB_PORT = os.environ.get('DB_PORT', '5432')
     DEFAULT_NOON_TIME = os.environ.get('DEFAULT_NOON_TIME', '12:00')  # 例: 12:00
     
     @classmethod
@@ -35,12 +34,18 @@ class BaseConfig:
         if hasattr(cls, 'SQLALCHEMY_DATABASE_URI') and cls.SQLALCHEMY_DATABASE_URI:
             return cls.SQLALCHEMY_DATABASE_URI
         
-        # DATABASE_URLが環境変数にある場合はそれを使用
+        # DATABASE_URLが環境変数にある場合はスキーム正規化して使用
         if 'DATABASE_URL' in os.environ:
-            return os.environ.get('DATABASE_URL')
+            db_url = os.environ.get('DATABASE_URL')
+            # Supabase等が返す postgres:// / postgresql:// → SQLAlchemy 2.x が要求する postgresql+psycopg2://
+            if db_url.startswith('postgres://'):
+                db_url = db_url.replace('postgres://', 'postgresql+psycopg2://', 1)
+            elif db_url.startswith('postgresql://'):
+                db_url = db_url.replace('postgresql://', 'postgresql+psycopg2://', 1)
+            return db_url
         
         # 接続情報から接続URIを生成
-        return f"mysql+pymysql://{cls.DB_USER}:{cls.DB_PASSWORD}@{cls.DB_HOST}:{cls.DB_PORT}/{cls.DB_NAME}?charset={cls.DB_CHARSET}"
+        return f"postgresql+psycopg2://{cls.DB_USER}:{cls.DB_PASSWORD}@{cls.DB_HOST}:{cls.DB_PORT}/{cls.DB_NAME}"
 
 class DevelopmentConfig(BaseConfig):
     """開発環境設定"""

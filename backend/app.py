@@ -140,6 +140,16 @@ def create_app() -> Flask:
     def health_check():
         return jsonify({"status": "healthy"}), 200
 
+    @app.route('/api/health', methods=['GET'])
+    def api_health():
+        """Cloud Run 헬스체크 엔드포인트"""
+        try:
+            db.session.execute(db.text('SELECT 1'))
+            return jsonify({"status": "ok", "db": "connected"}), 200
+        except Exception as e:
+            logger.warning(f"health_check db error: {e}")
+            return jsonify({"status": "error", "db": "disconnected"}), 503
+
     return app
 
 

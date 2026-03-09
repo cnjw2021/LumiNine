@@ -1,13 +1,13 @@
 -- 九星の基本情報
-INSERT INTO `stars` (
-  `star_number`, 
-  `name_jp`, 
-  `name_en`, 
-  `element`, 
-  `keywords`,
-  `description`, 
-  `created_at`, 
-  `updated_at`
+INSERT INTO stars (
+  star_number, 
+  name_jp, 
+  name_en, 
+  element, 
+  keywords,
+  description, 
+  created_at, 
+  updated_at
 ) VALUES
 (1, '一白水星', 'Ichihaku Suisei', '水', 
 '知性,論理的,柔軟性,適応力,冷静,分析力,コミュニケーション,洞察力,情報収集,知識',
@@ -141,10 +141,10 @@ NOW(), NOW()),
 
 また、芸術的なセンスも持ち合わせており、表現活動や創造的な趣味を楽しむことが多いでしょう。色彩感覚に優れ、美しいものや印象的なものを創り出す能力があります。その情熱と活力は、周囲に刺激を与え、人生に彩りを加える力となります。九紫火星の人が周囲にいるだけで、場が明るく活気づき、皆が元気になる特別な力を持っています。その情熱的な生き方は、多くの人々に勇気と希望を与え、社会に新しい風をもたらすでしょう。', 
 NOW(), NOW())
-ON DUPLICATE KEY UPDATE
-`name_jp` = VALUES(`name_jp`),
-`name_en` = VALUES(`name_en`),
-`element` = VALUES(`element`),
-`keywords` = VALUES(`keywords`),
-`description` = VALUES(`description`),
-`updated_at` = NOW();
+ON CONFLICT (star_number) DO UPDATE SET
+  name_jp = EXCLUDED.name_jp,
+  name_en = EXCLUDED.name_en,
+  element = EXCLUDED.element,
+  keywords = EXCLUDED.keywords,
+  description = EXCLUDED.description,
+  updated_at = NOW();

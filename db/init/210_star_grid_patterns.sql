@@ -1,10 +1,10 @@
--- 月盤方位データの初期データ
--- 各グループの各月の方位データを設定
--- group_idは星グループID（1-3）を表し、monthは1-12の月を表す
+-- 九星盤パターン（star_grid_patterns）テーブルの初期データ
+-- 各九星を中宮（center_star）としたときの方位配置パターンを設定
+-- season_start / season_end はそれぞれのパターンが適用される節気期間を表す
 -- 注意: 九星気学では北と南、東と西が地図上の方位と逆になります
 
--- グループ1（一白水星、四緑木星、七赤金星）の月盤データ
-INSERT INTO `star_grid_patterns` (`center_star`, `north`, `northeast`, `east`, `southeast`, `south`, `southwest`, `west`, `northwest`, `season_start`, `season_end`, `created_at`, `updated_at`) 
+-- 各中宮星（1〜9）の九星盤パターン
+INSERT INTO star_grid_patterns (center_star, north, northeast, east, southeast, south, southwest, west, northwest, season_start, season_end, created_at, updated_at) 
 VALUES 
 -- 添付図に基づき、九星気学の方位を考慮して配置
 (1, 6, 4, 8, 9, 5, 7, 3, 2, '白露', '秋分', NOW(), NOW()),
@@ -15,4 +15,5 @@ VALUES
 (6, 2, 9, 4, 5, 1, 3, 8, 7, '小寒', '大寒', NOW(), NOW()),
 (7, 3, 1, 5, 6, 2, 4, 9, 8, '啓蟄', '春分', NOW(), NOW()),
 (8, 4, 2, 6, 7, 3, 5, 1, 9, '立春', '雨水', NOW(), NOW()),
-(9, 5, 3, 7, 8, 4, 6, 2, 1, '清明', '穀雨', NOW(), NOW());
+(9, 5, 3, 7, 8, 4, 6, 2, 1, '清明', '穀雨', NOW(), NOW())
+ON CONFLICT (center_star) DO NOTHING;

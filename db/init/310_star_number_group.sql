@@ -2,7 +2,7 @@
 -- 計算の際にグループごとに年運や方位などを判定するのに使用
 
 -- star_groupsテーブルにデータを挿入
-INSERT INTO `star_groups` (`star_number`, `group_id`, `name_jp`, `name_kanji`, `created_at`, `updated_at`)
+INSERT INTO star_groups (star_number, group_id, name_jp, name_kanji, created_at, updated_at)
 VALUES
 (1, 1, '', '', NOW(), NOW()),
 (4, 1, '', '', NOW(), NOW()),
@@ -12,7 +12,8 @@ VALUES
 (8, 2, '', '', NOW(), NOW()),
 (3, 3, '', '', NOW(), NOW()),
 (6, 3, '', '', NOW(), NOW()),
-(9, 3, '', '', NOW(), NOW());
+(9, 3, '', '', NOW(), NOW())
+ON CONFLICT (star_number) DO NOTHING;
 
 -- 確認: 同じ数字mod3で同じグループとなる（ただし0の場合は3）
 -- 1 % 3 = 1 → グループ1

@@ -4,8 +4,10 @@
 - 사용자에게 제공되는 웹 인터페이스(UI/UX) 구현.
 - 사용자의 정보(생년월일 등) 입력 폼 제공 및 감정 결과(백엔드 API 호출) 시각화·PDF 출력.
 - 클라이언트 측의 라우팅 처리 및 인증 상태 관리.
+- **배포**: Cloudflare Pages (GitHub Actions 자동 배포, `@cloudflare/next-on-pages` 어댑터 사용).
 
 ## 📂 주요 파일별 역할
+- `next.config.js`: Next.js 설정. `output: 'standalone'`은 Cloud Run/Docker 전용 (`CF_PAGES` 미설정 시). Cloudflare Pages 빌드 시(`CF_PAGES=1`) standalone 비활성화. 프로덕션 환경에서는 rewrites 비활성화 — `NEXT_PUBLIC_API_URL`로 백엔드 URL 직접 지정.
 - `src/app/`: Next.js App Router 구조의 페이지 컴포넌트들.
   - `(auth)/`: 인증 관련 페이지 — `login`, `admin`, `password-change`
   - `(features)/`: 기능 페이지 — `appraisal` (감정 폼), `about/*` (소개 페이지 3종)
@@ -34,8 +36,13 @@
 - **Axios**: HTTP 클라이언트 (백엔드 API 통신).
 - **Day.js**: 날짜 처리 라이브러리.
 
+## 🔐 환경변수
+- `NEXT_PUBLIC_API_URL`: 백엔드 API URL. 로컬에서는 미설정 시 docker-compose rewrite 사용. 프로덕션(Cloudflare Pages)에서는 Cloud Run URL 필수 설정.
+
 ## ⚠️ 수정 시 주의사항
-1. **App Router 활용**: Next.js 13+의 App Router를 사용하고 있으므로, Server Component 기반으로 동작하는 파일인지, Client Component(`"use client"`) 기반인지 명확하게 구분하여 작성해야 합니다. 상태(State)나 훅스(Hooks)가 필요한 경우는 반드시 Client Component로 선언하세요.
+1. **App Router 활용**: Server Component 기반으로 동작하는 파일인지, Client Component(`"use client"`) 기반인지 명확하게 구분. 상태(State)나 훅스(Hooks)가 필요한 경우는 반드시 Client Component로 선언하세요.
 2. **API 연동 분리**: 백엔드 API와의 통신을 각 컴포넌트 안에서 직접 처리하지 말고, `src/utils/api.ts`의 API 클라이언트나 `src/hooks/` 등을 통해 캡슐화하여 사용하세요.
-3. **타입 안전성 확보**: `any` 타입 사용을 지양하고 `src/types/` 하위에 명시된 타입을 활용하여 런타임 이전의 에러를 방지하세요.
+3. **타입 안전성 확보**: `any` 타입 사용을 지양하고 `src/types/` 하위에 명시된 타입을 활용하세요.
 4. **PDF 크로스브라우저**: `usePdfReport.ts`에 iOS Safari 메모리 방어, 폰트 로딩 대기, 빈 canvas 검증 등 방어 로직이 적용되어 있으므로, PDF 관련 수정 시 이 패턴을 유지하세요.
+5. **Cloudflare Pages 호환**: SSR이 필요한 경우 Cloudflare Workers(`@cloudflare/next-on-pages`) 어댑터 필요. API Route 추가 시 Edge Runtime 호환성 검토.
+6. **API URL**: 프로덕션 환경에서 `/api/` 요청은 `NEXT_PUBLIC_API_URL`을 기반으로 처리됩니다. `next.config.js`의 rewrites는 `NODE_ENV !== 'production'`일 때만 활성화됩니다.

@@ -33,8 +33,8 @@
 |------|------|
 | Frontend | Next.js, TypeScript, Mantine UI |
 | Backend | Flask, Python, SQLAlchemy |
-| Database | MySQL |
-| Infra | Docker Compose, Nginx, Let's Encrypt |
+| Database | PostgreSQL (Supabase) |
+| Infra | GitHub Actions, Cloudflare Pages, Google Cloud Run |
 
 ## 프로젝트 구조
 
@@ -52,8 +52,8 @@ LumiNine/
 │       ├── numerology/ # 수비술 도메인 (Life Path Number)
 │       ├── powerstone/ # 파워스톤 추천 도메인
 │       └── shared/     # 공통 (user, permission, 예외/상수)
-├── mysql/init/         # DB 초기화 스크립트
-├── nginx/              # Nginx 설정
+├── db/init/            # PostgreSQL 초기화 스크립트
+├── .github/workflows/  # GitHub Actions CI/CD
 ├── docs/               # 프로젝트 문서
 └── docker-compose.yml  # 컨테이너 오케스트레이션
 ```
@@ -64,11 +64,11 @@ LumiNine/
 # 환경 설정
 cp .env.example .env
 
-# Docker로 전체 실행
-docker compose up -d
+# Docker로 전체 실행 (PostgreSQL 포함)
+docker compose -f docker-compose.yml -f docker-compose.dev.yml up --build
 
 # 프론트엔드 개발 서버
-cd frontend && npm install && npm run dev
+cd frontend && npm install --legacy-peer-deps && npm run dev
 
 # 백엔드 개발 서버
 cd backend && pip install -r requirements.txt && flask run
@@ -86,11 +86,22 @@ cd backend && pip install -r requirements.txt && flask run
 | Safari 다운로드 폴백 | Safari 환경에서는 Blob 생성 후 `window.open()`으로 항상 새 탭 오픈 |
 | 단일 페이지 피팅 | 컨텐츠가 A4 높이 초과 시 비례 축소하여 단일 페이지에 피팅 |
 
+## 문서
+
+| 문서 | 설명 |
+|------|------|
+| [CI/CD 수동 설정 가이드](backend/docs/architecture/cicd-manual-setup-guide.md) | GitHub Secrets · Supabase · Cloud Run · Cloudflare Pages · VPS 정리 순서별 안내 |
+| [방위 길흉 판정 로직](docs/monthly-direction-marks-logic.md) | 오행 상생 + 정위대충·소아살 파이프라인 |
+| [파워스톤 카탈로그](frontend/public/images/stones/README.md) | AI 생성 보석 이미지 30종 |
+| [아키텍처 가이드](backend/docs/architecture/clean_architecture_guide.md) | Clean Architecture 적용 방식 |
+| [Docker 스택 가이드](backend/docs/architecture/docker_stack_guide.md) | 멀티스테이지 빌드 · 서비스 구성 |
+
 ## 로드맵
 
 GitHub Projects 및 Issues를 통해 가치 단위(Value Stream)로 관리됩니다.
 
 ### 진행 중 / 예정
 
+- [#92](https://github.com/cnjw2021/LumiNine/issues/92) — GitHub Actions CI/CD 파이프라인 구축 (Cloudflare Pages + Cloud Run)
 - [#83](https://github.com/cnjw2021/LumiNine/issues/83) — 크로스브라우저 PDF 생성 방어 코드 추가 (iOS Safari 메모리/폰트/다운로드)
 - [#67](https://github.com/cnjw2021/LumiNine/issues/67) — 수비술 마스터넘버(11/22/33) 전용 파워스톤 매핑 추가
