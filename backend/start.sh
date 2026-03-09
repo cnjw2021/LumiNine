@@ -13,6 +13,12 @@ echo "PORT: ${PORT:-5001}"
 # Cloud Run이 주입하는 $PORT를 사용, 없으면 5001 (로컬 개발)
 BIND_PORT="${PORT:-5001}"
 
+# DB 초기화: テーブル確認 → 不足分DDL+シード → スーパーユーザー作成
+# run_init() は冪等 (IF NOT EXISTS / ON CONFLICT) なのでコールドスタート毎に安全に実行可能
+echo "Running DB init..."
+python -c "from db_manage import run_init; run_init()"
+echo "DB init complete."
+
 exec gunicorn \
   --bind "0.0.0.0:${BIND_PORT}" \
   --log-level info \
