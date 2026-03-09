@@ -68,9 +68,13 @@ def get_db_connection_info():
 
 def get_sqlalchemy_uri():
     """SQLAlchemy接続文字列を生成"""
-    # DATABASE_URLが直接指定されている場合はそれを返す
+    # DATABASE_URLが直接指定されている場合はスキーム正規化して返す
     if 'DATABASE_URL' in os.environ:
-        return os.environ.get('DATABASE_URL')
+        url = os.environ.get('DATABASE_URL')
+        # Supabase等が返す postgres:// → SQLAlchemy 2.x が要求する postgresql+psycopg2://
+        if url.startswith('postgres://'):
+            url = url.replace('postgres://', 'postgresql+psycopg2://', 1)
+        return url
     
     # 接続情報から文字列を構築
     info = get_db_connection_info()
