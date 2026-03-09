@@ -7,9 +7,8 @@ Create Date: 2026-03-09
 既存の 000_create_tables.sql を実行してスキーマを作成します。
 既にテーブルが存在する場合は何もしません (CREATE TABLE IF NOT EXISTS)。
 
-SQL ファイルの検索パス:
-  1. backend/db/init/ (Docker コンテナ内)
-  2. db/init/ (リポジトリルートからの相対パス — CI/ローカル)
+マイグレーションは CI (GitHub Actions) またはローカル環境でのみ実行されます。
+Docker コンテナ内では実行されません (start.sh は gunicorn のみ起動)。
 """
 from alembic import op
 import sqlalchemy as sa
@@ -23,11 +22,11 @@ depends_on = None
 
 
 def _find_sql_file(filename):
-    """SQL ファイルをコンテナ内 / リポジトリルートの両方から検索"""
+    """SQL ファイルを CI / ローカル環境から検索"""
     candidates = [
-        # Docker コンテナ内: /app/db/init/
+        # backend/ 直下に db/init/ がある場合 (将来の構成変更に備えて)
         os.path.join(os.path.dirname(__file__), '..', '..', 'db', 'init', filename),
-        # リポジトリルート (CI / ローカル): ../../.. → repo root → db/init/
+        # リポジトリルート (CI / ローカル): versions/ → migrations/ → backend/ → repo root → db/init/
         os.path.join(os.path.dirname(__file__), '..', '..', '..', 'db', 'init', filename),
     ]
     for path in candidates:
