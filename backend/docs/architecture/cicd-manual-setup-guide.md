@@ -198,31 +198,16 @@ curl https://YOUR_CLOUD_RUN_URL/api/health
 
 ## 4단계: Cloudflare Pages 설정 + 도메인 연결
 
-### 4-1. Pages 프로젝트 생성
+### 4-1. Pages 프로젝트 생성 (빈 프로젝트)
+
+> ⚠️ **Connect to Git을 선택하지 마세요!** Git 연결은 Cloudflare 자체 CI/CD를 구성하며, 이미 존재하는 GitHub Actions 워크플로우(`deploy-frontend.yml`)와 충돌합니다.
 
 1. [Cloudflare Dashboard](https://dash.cloudflare.com/) → **Workers & Pages** → **Create application** → **Pages** 탭
-2. **Connect to Git** → GitHub 저장소 `cnjw2021/LumiNine` 선택
-3. 빌드 설정:
-   - **Framework preset**: `Next.js`
-   - **Build command**: `cd frontend && npm ci --legacy-peer-deps && npx @cloudflare/next-on-pages`
-   - **Build output directory**: `frontend/.vercel/output/static`
-4. **Environment variables** 탭:
+2. **Upload assets** (또는 "Drag and drop your files") → **Get started** 클릭
+3. 프로젝트 이름 입력 (예: `luminine-frontend`) → **Create project**
+4. 빈 프로젝트가 생성됩니다 — **실제 배포는 GitHub Actions가 자동으로 수행**합니다
 
-| 변수 이름 | 값 | 환경 |
-|-----------|-----|------|
-| `NEXT_PUBLIC_API_URL` | Cloud Run 기본 URL (예: `https://luminine-backend-xxxx.run.app`). `/api`는 자동 추가됩니다. | Production |
-| `NODE_VERSION` | `20` | Production + Preview |
-
-5. **Save and Deploy** 클릭
-
-> ⚠️ Cloudflare Pages에서 Next.js `standalone` 모드를 사용하려면 `@cloudflare/next-on-pages` 어댑터가 필요할 수 있습니다. 첫 배포에서 에러가 나면 아래를 참고하세요.
->
-> ```bash
-> cd frontend
-> npm install --save-dev @cloudflare/next-on-pages
-> # package.json scripts에 추가
-> # "pages:build": "npx @cloudflare/next-on-pages"
-> ```
+> 💡 프로젝트 이름은 GitHub Secret `CF_PAGES_PROJECT_NAME`에 등록한 값과 반드시 일치해야 합니다.
 
 ### 4-2. 커스텀 도메인 연결
 
