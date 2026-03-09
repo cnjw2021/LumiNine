@@ -1,9 +1,9 @@
--- 月盤方位データの初期データ
--- 各グループの各月の方位データを設定
--- group_idは星グループID（1-3）を表し、monthは1-12の月を表す
+-- 九星盤パターン（star_grid_patterns）テーブルの初期データ
+-- 各九星を中宮（center_star）としたときの方位配置パターンを設定
+-- season_start / season_end はそれぞれのパターンが適用される節気期間を表す
 -- 注意: 九星気学では北と南、東と西が地図上の方位と逆になります
 
--- グループ1（一白水星、四緑木星、七赤金星）の月盤データ
+-- 各中宮星（1〜9）の九星盤パターン
 INSERT INTO star_grid_patterns (center_star, north, northeast, east, southeast, south, southwest, west, northwest, season_start, season_end, created_at, updated_at) 
 VALUES 
 -- 添付図に基づき、九星気学の方位を考慮して配置

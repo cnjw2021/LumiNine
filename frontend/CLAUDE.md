@@ -4,10 +4,10 @@
 - 사용자에게 제공되는 웹 인터페이스(UI/UX) 구현.
 - 사용자의 정보(생년월일 등) 입력 폼 제공 및 감정 결과(백엔드 API 호출) 시각화·PDF 출력.
 - 클라이언트 측의 라우팅 처리 및 인증 상태 관리.
-- **배포**: Cloudflare Pages (Next.js standalone, GitHub Actions 자동 배포).
+- **배포**: Cloudflare Pages (GitHub Actions 자동 배포, `@cloudflare/next-on-pages` 어댑터 사용).
 
 ## 📂 주요 파일별 역할
-- `next.config.js`: Next.js 설정. `output: 'standalone'` (Cloud Run / Cloudflare Workers 호환). 프로덕션 환경에서는 rewrites 비활성화 — `NEXT_PUBLIC_API_URL`로 백엔드 URL 직접 지정.
+- `next.config.js`: Next.js 설정. `output: 'standalone'`은 Cloud Run/Docker 전용 (`CF_PAGES` 미설정 시). Cloudflare Pages 빌드 시(`CF_PAGES=1`) standalone 비활성화. 프로덕션 환경에서는 rewrites 비활성화 — `NEXT_PUBLIC_API_URL`로 백엔드 URL 직접 지정.
 - `src/app/`: Next.js App Router 구조의 페이지 컴포넌트들.
   - `(auth)/`: 인증 관련 페이지 — `login`, `admin`, `password-change`
   - `(features)/`: 기능 페이지 — `appraisal` (감정 폼), `about/*` (소개 페이지 3종)

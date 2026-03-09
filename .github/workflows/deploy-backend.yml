@@ -76,4 +76,4 @@ jobs:
             --max-instances 3 \
             --concurrency 80 \
             --timeout 60 \
-            --update-env-vars "DATABASE_URL=${{ secrets.DATABASE_URL }},SECRET_KEY=${{ secrets.SECRET_KEY }},JWT_SECRET_KEY=${{ secrets.JWT_SECRET_KEY }},SUPERUSER_EMAIL=${{ secrets.SUPERUSER_EMAIL }},SUPERUSER_PASSWORD=${{ secrets.SUPERUSER_PASSWORD }},FLASK_ENV=production"
+            --update-env-vars "^|^DATABASE_URL=${{ secrets.DATABASE_URL }}|SECRET_KEY=${{ secrets.SECRET_KEY }}|JWT_SECRET_KEY=${{ secrets.JWT_SECRET_KEY }}|SUPERUSER_EMAIL=${{ secrets.SUPERUSER_EMAIL }}|SUPERUSER_PASSWORD=${{ secrets.SUPERUSER_PASSWORD }}|FLASK_ENV=production"
