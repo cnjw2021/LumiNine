@@ -106,6 +106,9 @@ export const usePdfReport = ({ resultData, contentRef, onActionComplete }: UsePd
         const header = target.querySelector('.result-header') as HTMLElement | null;
         const originalPosition = header?.style.position ?? '';
         const originalMinHeight = target.style.minHeight;
+        // Save original width styles for mobile A4-width force
+        const originalWidth = target.style.width;
+        const originalMinWidth = target.style.minWidth;
         // Capture original inline display values before hiding (to restore in finally)
         const hiddenEls = target.querySelectorAll('.hide-on-pdf');
         const originalDisplays = Array.from(hiddenEls).map(el => (el as HTMLElement).style.display);
@@ -131,6 +134,15 @@ export const usePdfReport = ({ resultData, contentRef, onActionComplete }: UsePd
             // Temporarily remove minHeight so html2canvas captures only the
             // actual content height and does not add viewport-sized blank space.
             target.style.minHeight = 'unset';
+
+            // ── 1.5. Force A4-width desktop layout for mobile ──
+            // On mobile, the viewport is narrower than 794px, causing
+            // responsive CSS to stack content into a single column.
+            // By forcing 794px and adding a desktop-override class,
+            // html2canvas captures the full two-column layout.
+            target.style.width = '794px';
+            target.style.minWidth = '794px';
+            target.classList.add('pdf-capture-mode');
 
             // ── 2. Determine safe scale (iOS canvas memory defense) ──
             const preferredScale = 2;
@@ -209,10 +221,13 @@ export const usePdfReport = ({ resultData, contentRef, onActionComplete }: UsePd
             console.error('PDF generation failed:', error);
             alert('PDFの生成に失敗しました。もう一度お試しください。');
         } finally {
-            // ── Always restore hidden elements & sticky header ──
+            // ── Always restore hidden elements, sticky header & mobile layout ──
             hiddenEls.forEach((el, i) => (el as HTMLElement).style.display = originalDisplays[i] ?? '');
             if (header) header.style.position = originalPosition;
             target.style.minHeight = originalMinHeight;
+            target.style.width = originalWidth;
+            target.style.minWidth = originalMinWidth;
+            target.classList.remove('pdf-capture-mode');
             setIsGeneratingPdf(false);
         }
     };

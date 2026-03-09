@@ -92,3 +92,39 @@
     padding: 48px 32px;
   }
 }
+
+/* ═══ PDF Capture Mode: force desktop layout regardless of viewport ═══
+ * Applied programmatically by usePdfReport.ts before html2canvas capture.
+ * Ensures mobile devices render the full A4-width two-column layout.
+ */
+.pdf-capture-mode .result-grid {
+  display: grid;
+  grid-template-columns: 5fr 7fr;
+  gap: 48px;
+}
+
+.pdf-capture-mode .yearly-fortune-inner {
+  display: grid;
+  grid-template-columns: 1fr 2fr;
+  gap: 24px;
+  align-items: center;
+}
+
+.pdf-capture-mode .monthly-stones-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 20px;
+}
+
+.pdf-capture-mode .direction-grid-board {
+  max-width: 380px;
+  padding: 24px;
+}
+
+.pdf-capture-mode .result-header {
+  padding: 24px 32px;
+}
+
+.pdf-capture-mode .result-main {
+  padding: 48px 32px;
+}
