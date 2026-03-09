@@ -144,16 +144,35 @@ export const usePdfReport = ({ resultData, contentRef, onActionComplete }: UsePd
             target.style.minWidth = '794px';
             target.classList.add('pdf-capture-mode');
 
+            // Force synchronous reflow so the browser recalculates layout
+            // before html2canvas reads the DOM. Without this, the capture
+            // may still use the pre-change (mobile) layout.
+            void target.offsetHeight;
+
+            // Wait for two animation frames + a small delay to guarantee
+            // the browser has fully painted the desktop layout.
+            await new Promise<void>(resolve => {
+                requestAnimationFrame(() => {
+                    requestAnimationFrame(() => {
+                        setTimeout(resolve, 50);
+                    });
+                });
+            });
+
             // ── 2. Determine safe scale (iOS canvas memory defense) ──
             const preferredScale = 2;
             const safeScale = getSafeScale(target, preferredScale);
 
             // ── 3. Capture the DOM element ──
+            // windowWidth: tells html2canvas to evaluate CSS media queries
+            // as if the viewport were 794px wide (desktop breakpoint),
+            // regardless of the actual mobile viewport.
             const canvas = await html2canvas(target, {
                 scale: safeScale,
                 useCORS: true,
                 backgroundColor: '#f9f7f2',
                 logging: false,
+                windowWidth: 794,
             });
 
             // ── 4. Validate canvas (empty canvas defense) ──
