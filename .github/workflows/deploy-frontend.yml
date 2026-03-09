@@ -36,9 +36,9 @@ jobs:
         run: |
           echo "NEXT_PUBLIC_API_URL=${{ secrets.NEXT_PUBLIC_API_URL }}" > .env.local
 
-      - name: Build Next.js application
+      - name: Build for Cloudflare Pages
         working-directory: frontend
-        run: npm run build
+        run: npx @cloudflare/next-on-pages
         env:
           NODE_ENV: production
 
@@ -48,5 +48,5 @@ jobs:
           apiToken: ${{ secrets.CLOUDFLARE_API_TOKEN }}
           accountId: ${{ secrets.CLOUDFLARE_ACCOUNT_ID }}
           projectName: ${{ secrets.CF_PAGES_PROJECT_NAME }}
-          directory: frontend/.next
+          directory: frontend/.vercel/output/static
           gitHubToken: ${{ secrets.GITHUB_TOKEN }}

@@ -204,8 +204,8 @@ curl https://YOUR_CLOUD_RUN_URL/api/health
 2. **Connect to Git** → GitHub 저장소 `cnjw2021/LumiNine` 선택
 3. 빌드 설정:
    - **Framework preset**: `Next.js`
-   - **Build command**: `cd frontend && npm ci --legacy-peer-deps && npm run build`
-   - **Build output directory**: `frontend/.next`
+   - **Build command**: `cd frontend && npm ci --legacy-peer-deps && npx @cloudflare/next-on-pages`
+   - **Build output directory**: `frontend/.vercel/output/static`
 4. **Environment variables** 탭:
 
 | 변수 이름 | 값 | 환경 |
