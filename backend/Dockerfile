@@ -28,8 +28,7 @@ RUN apt-get update && apt-get install -y --no-install-recommends \
 
 WORKDIR /app
 COPY requirements.txt .
-RUN pip install --no-cache-dir --timeout=100 -r requirements.txt && \
-    pip install gunicorn
+RUN pip install --no-cache-dir --timeout=100 -r requirements.txt
 
 # ===================================================================
 #  3. development - 開発環境ステージ

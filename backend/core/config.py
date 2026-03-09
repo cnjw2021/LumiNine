@@ -37,9 +37,11 @@ class BaseConfig:
         # DATABASE_URLが環境変数にある場合はスキーム正規化して使用
         if 'DATABASE_URL' in os.environ:
             db_url = os.environ.get('DATABASE_URL')
-            # Supabase等が返す postgres:// → SQLAlchemy 2.x が要求する postgresql+psycopg2://
+            # Supabase等が返す postgres:// / postgresql:// → SQLAlchemy 2.x が要求する postgresql+psycopg2://
             if db_url.startswith('postgres://'):
                 db_url = db_url.replace('postgres://', 'postgresql+psycopg2://', 1)
+            elif db_url.startswith('postgresql://'):
+                db_url = db_url.replace('postgresql://', 'postgresql+psycopg2://', 1)
             return db_url
         
         # 接続情報から接続URIを生成
