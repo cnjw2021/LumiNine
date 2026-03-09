@@ -22,7 +22,7 @@ def get_csv_path(filename, base_dir=None):
     # 相対パスの場合はbase_dirからの相対パスとして扱う
     return os.path.join(base_dir, filename)
 
-def load_csv_to_table(connection, csv_filename, table_name, column_mapping=None, truncate_table=True, use_load_data_infile=True):
+def load_csv_to_table(connection, csv_filename, table_name, column_mapping=None, truncate_table=True):
     """CSVファイルからPostgreSQLテーブルにデータをロードする（connectionは必須・先頭）
     
     PostgreSQL版ではCOPYコマンドを使用して高速ローディングを行います。
@@ -75,7 +75,7 @@ def load_csv_to_table(connection, csv_filename, table_name, column_mapping=None,
         raise
     return row_count
 
-def load_multiple_csv_files(connection, csv_table_mapping, truncate_tables=True, use_load_data_infile=True):
+def load_multiple_csv_files(connection, csv_table_mapping, truncate_tables=True):
     """複数のCSVファイルをロードする（connectionは必須・先頭）"""
     results = {}
     try:
@@ -91,8 +91,7 @@ def load_multiple_csv_files(connection, csv_table_mapping, truncate_tables=True,
                 csv_file, 
                 table_name,
                 column_mapping=column_mapping,
-                truncate_table=truncate_tables,
-                use_load_data_infile=use_load_data_infile
+                truncate_table=truncate_tables
             )
             results[table_name] = row_count
     finally:

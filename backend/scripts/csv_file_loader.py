@@ -41,7 +41,6 @@ def load_solar_starts_data(connection=None):
             table_name='solar_starts',
             column_mapping=None,
             truncate_table=True,
-            use_load_data_infile=True,
             connection=connection
         )
         print(f"solar_startsのデータ挿入完了: {row_count}行")
@@ -59,7 +58,6 @@ def load_daily_astrology_data(connection=None):
             csv_filename='daily_astrology_data.csv',
             table_name='daily_astrology',
             truncate_table=True,
-            use_load_data_infile=True,
             connection=connection
         )
         print(f"daily_astrologyのデータ挿入完了: {row_count}行")
@@ -121,8 +119,7 @@ def load_all_csv_data(target_tables=None):
                 results = load_multiple_csv_files(
                     connection,
                     csv_table_mapping,
-                    truncate_tables=True,
-                    use_load_data_infile=True
+                    truncate_tables=True
                 )
 
 
