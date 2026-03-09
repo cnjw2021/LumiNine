@@ -7,6 +7,10 @@ Create Date: 2026-03-09
 シードデータ（星データ、属性、方位、パワーストーン等）挿入とスーパーユーザー作成。
 db/init/ 内の SQL ファイルを順番に実行 + SQL でスーパーユーザー作成。
 全て冪等 (ON CONFLICT DO NOTHING / IF NOT EXISTS)。
+
+SQL ファイルの検索パス:
+  1. backend/db/init/ (Docker コンテナ内)
+  2. db/init/ (リポジトリルートからの相対パス — CI/ローカル)
 """
 from alembic import op
 import sqlalchemy as sa
@@ -31,15 +35,31 @@ _SEED_FILES = [
 ]
 
 
+def _find_sql_file(filename):
+    """SQL ファイルをコンテナ内 / リポジトリルートの両方から検索"""
+    candidates = [
+        # Docker コンテナ内: /app/db/init/
+        os.path.join(os.path.dirname(__file__), '..', '..', 'db', 'init', filename),
+        # リポジトリルート (CI / ローカル): ../../.. → repo root → db/init/
+        os.path.join(os.path.dirname(__file__), '..', '..', '..', 'db', 'init', filename),
+    ]
+    for path in candidates:
+        resolved = os.path.normpath(path)
+        if os.path.exists(resolved):
+            return resolved
+    return None  # ファイルが見つからない場合 (既にシード済み等)
+
+
 def upgrade():
     # ── 1. SQL シードデータ ──────────────────────────────────────
-    db_init_dir = os.path.join(os.path.dirname(__file__), '..', '..', 'db', 'init')
     for sql_file in _SEED_FILES:
-        sql_path = os.path.join(db_init_dir, sql_file)
-        if os.path.exists(sql_path):
+        sql_path = _find_sql_file(sql_file)
+        if sql_path:
             with open(sql_path, 'r') as f:
                 sql = f.read()
             op.execute(sa.text(sql))
+        else:
+            print(f"WARN: {sql_file} not found — skipping")
 
     # ── 2. スーパーユーザー作成 (bcrypt ハッシュ) ────────────────────
     _create_superuser()
