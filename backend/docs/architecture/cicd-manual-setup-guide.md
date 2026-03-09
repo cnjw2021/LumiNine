@@ -100,38 +100,25 @@ postgresql+psycopg2://postgres.xxxx:password@aws-0-ap-northeast-1.pooler.supabas
 
 > `postgres://` → `postgresql+psycopg2://` 로만 바꾸면 됩니다.
 
-### 2-3. 스키마 초기화
+### 2-3. 스키마 초기화 + 마스터 데이터 이관
 
-Supabase Dashboard → **SQL Editor** 에서 아래 파일을 순서대로 실행:
+Supabase Dashboard → **SQL Editor** 에서 아래 파일을 **번호 순서대로** 실행:
 
 ```
-db/init/000_create_tables.sql   ← 테이블 생성 (반드시 먼저 실행)
-db/init/510_powerstone_seed.sql
-db/init/900_system_data.sql
-db/init/999_system_user.sql     ← 슈퍼유저 생성 후 실행
+db/init/000_create_tables.sql        ← 테이블 생성 (반드시 먼저 실행)
+db/init/001_setup_privileges.sql     ← 권한 설정
+db/init/100_stars.sql                ← 구성 마스터 데이터
+db/init/200_star_attributes.sql      ← 추천 음식 등 속성 데이터
+db/init/210_star_grid_patterns.sql   ← 구성판 패턴
+db/init/300_monthly_directions.sql   ← 월반 방위 데이터
+db/init/310_star_number_group.sql    ← 성 그룹
+db/init/320_pattern_switch_dates.sql ← 패턴 전환 절기 날짜
+db/init/510_powerstone_seed.sql      ← 파워스톤 마스터 데이터
+db/init/900_system_data.sql          ← 시스템 설정
+db/init/999_system_user.sql          ← 슈퍼유저 권한 (create_superuser() 실행 후)
 ```
 
-### 2-4. 대용량 마스터 데이터 이관
-
-기존 MySQL 전용 SQL 파일(`mysql/init/`)을 PostgreSQL 문법으로 변환 후 SQL Editor에서 실행:
-
-| 파일 | 주의 사항 |
-|------|-----------|
-| `mysql/init/100_stars.sql` | 백틱(`) 제거, `INSERT IGNORE` → `ON CONFLICT DO NOTHING` |
-| `mysql/init/210_star_grid_patterns.sql` | 동일 |
-| `mysql/init/300_monthly_directions.sql` | 동일 |
-| `mysql/init/310_star_number_group.sql` | 동일 |
-| `mysql/init/320_pattern_switch_dates.sql` | 동일 |
-
-**자동 변환 스크립트 (간이):**
-```bash
-# 백틱 제거 + INSERT IGNORE 변환
-sed "s/\`//g; s/INSERT IGNORE INTO/INSERT INTO/g; s/) ENGINE=InnoDB.*;//g" \
-  mysql/init/100_stars.sql > /tmp/100_stars_pg.sql
-# ⚠️ ON UPDATE CURRENT_TIMESTAMP 라인은 수동으로 제거 필요
-```
-
-> 변환 완료된 파일을 `db/init/` 에 추가하고 PR을 별도로 올리는 것을 권장합니다.
+> 💡 모든 파일은 PostgreSQL 호환 구문으로 작성되어 있습니다. `mysql/init/` 디렉토리의 MySQL 버전 파일은 레거시 참조용이며 사용하지 않습니다.
 
 ---
 
