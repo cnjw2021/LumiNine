@@ -81,7 +81,7 @@ def create_app() -> Flask:
                  re.compile(r'https://[a-z0-9]+\.luminine-frontend\.pages\.dev'),
              ],
              "methods": ["GET", "POST", "PUT", "DELETE", "OPTIONS"],
-             "allow_headers": ["Content-Type", "Authorization", "X-Request-ID", "Cache-Control", "Pragma", "Expires"],
+             "allow_headers": ["Content-Type", "Authorization", "X-Request-ID"],
              "supports_credentials": True,
              "expose_headers": ["Content-Type", "Authorization"]
          }},
