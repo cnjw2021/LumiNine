@@ -152,17 +152,17 @@ def run_init():
         # 完全初期化: テーブルもデータもない
         logger.warning("テーブルが存在しません。テーブルの作成とデータのシードを開始します...")
         execute_sql_file(cursor, os.path.join('db', 'init', '000_create_tables.sql'))
+        conn.commit()  # CSV loader uses a separate connection, so tables must be committed first
         seed_database(cursor)
-        conn.commit()
     else:
         missing = _EXPECTED_TABLES - existing
         if missing:
             # 増分適用: 既存DBに不足テーブルがある場合
             logger.warning("不足テーブル検出: %s — DDL+シードを増分適用します。", missing)
             execute_sql_file(cursor, os.path.join('db', 'init', '000_create_tables.sql'))
+            conn.commit()  # CSV loader uses a separate connection, so tables must be committed first
             # 不足しているテーブルのみをターゲットにシードを実行
             seed_database(cursor, target_tables=missing)
-            conn.commit()
         else:
             logger.info("テーブルは既に存在します。データシードはスキップします。")
         
