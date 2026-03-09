@@ -33,32 +33,6 @@ jobs:
       - name: Set up Cloud SDK
         uses: google-github-actions/setup-gcloud@v2
 
-      # ── 1.5. DB 마이그레이션 (배포 전 1회 실행) ────────────────────────
-      - name: Set up Python
-        uses: actions/setup-python@v5
-        with:
-          python-version: '3.11'
-          cache: 'pip'
-          cache-dependency-path: backend/requirements.txt
-
-      - name: Install backend dependencies
-        working-directory: backend
-        run: |
-          pip install --upgrade pip
-          pip install -r requirements.txt
-          pip install -e .
-
-      - name: Run DB migrations
-        working-directory: backend
-        run: PYTHONPATH=. flask db upgrade
-        env:
-          FLASK_APP: app.py
-          DATABASE_URL: ${{ secrets.DATABASE_URL }}
-          SECRET_KEY: ${{ secrets.SECRET_KEY }}
-          JWT_SECRET_KEY: ${{ secrets.JWT_SECRET_KEY }}
-          SUPERUSER_EMAIL: ${{ secrets.SUPERUSER_EMAIL }}
-          SUPERUSER_PASSWORD: ${{ secrets.SUPERUSER_PASSWORD }}
-          FLASK_ENV: production
 
       # ── 2. Artifact Registry 에 Docker 이미지 빌드 & 푸시 ──────────────
       - name: Configure Docker for Artifact Registry
@@ -66,6 +40,9 @@ jobs:
 
       - name: Set up Docker Buildx
         uses: docker/setup-buildx-action@v3
+
+      - name: Copy seed SQL files into Docker build context
+        run: cp -r db/init backend/db/init
 
       - name: Build and push Backend image
         uses: docker/build-push-action@v5
