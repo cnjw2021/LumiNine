@@ -22,7 +22,6 @@ def load_solar_terms_data(connection=None):
             csv_filename='solar_terms_data.csv',
             table_name='solar_terms',
             truncate_table=True,
-            use_load_data_infile=True,
             connection=connection
         )
         print(f"solar_termsのデータ挿入完了: {row_count}行")
@@ -76,7 +75,6 @@ def load_user_account_data(connection=None):
             csv_filename='user_account.csv',
             table_name='users',
             truncate_table=False,
-            use_load_data_infile=True,
             connection=connection
         )
         print(f"user_accountのデータ挿入完了: {row_count}行")
