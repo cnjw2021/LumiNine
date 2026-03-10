@@ -49,7 +49,7 @@
   - `backend/data/csv/`: 마스터 데이터 CSV 파일 (Alembic 시드 마이그레이션에서 사용)
   - `backend/docs/architecture/`: 아키텍처 가이드 및 CI/CD 수동 설정 가이드
 - `frontend/`: Next.js(App Router) 기반의 프론트엔드 UI 및 클라이언트 애플리케이션
-- `db/init/`: SQL 시드 파일 (Alembic 002에서 참조) — Docker entrypoint에서는 사용하지 않음
+- `db/init/`: SQL 파일 (Alembic 001 DDL + 002 시드에서 참조) — Docker entrypoint에서는 사용하지 않음
 - `.github/workflows/`: GitHub Actions CI/CD 워크플로우
 - `docs/`: 프로젝트 관련 문서 보관
 - `Makefile`: 로컬 개발 명령어 모음
@@ -62,7 +62,7 @@
 - **방위 및 배치 데이터**: `star_grid_patterns` (구성반), `monthly_directions` (월반 방위)
 - **파워스톤**: `powerstone_master`, `recommendation_history`
 - **시스템 및 인증 데이터**: `users`, `permissions`, `user_permissions`, `system_config`
-- **스키마 위치**: `backend/migrations/versions/` (Alembic — 001 스키마, 002 SQL 시드, 003 CSV 시드) / `db/init/*.sql` (Alembic 002에서 참조)
+- **스키마 위치**: `backend/migrations/versions/` (Alembic — 001 스키마, 002 SQL 시드, 003 CSV 시드) / `db/init/*.sql` (Alembic 001/002에서 참조)
 - **프로덕션 마이그레이션**: `flask db upgrade` (Cloud Run 배포 시 자동 적용)
 
 ## ✍️ 코딩 컨벤션
