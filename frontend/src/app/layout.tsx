@@ -45,13 +45,11 @@ function AppShellLayout({ children }: { children: React.ReactNode }) {
 
   useEffect(() => {
     // 1. 라우트 이동 시 강제로 최상단 스크롤 (원활한 화면 전환용)
-    window.scrollTo({ top: 0, left: 0, behavior: 'instant' });
+    window.scrollTo({ top: 0, left: 0 });
 
-    // 모바일 환경에서 라우팅이 일어났을 때 열려있던 Drawer를 강제로 닫음
-    if (opened) {
-      close();
-    }
-  }, [pathname]);
+    // 모바일 환경에서 라우팅이 일어났을 때 Drawer를 강제로 닫음
+    close();
+  }, [pathname, close]);
 
   return (
     <MantineProvider theme={theme} defaultColorScheme="light">

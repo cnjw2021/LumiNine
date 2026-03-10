@@ -122,6 +122,8 @@ export const Navigation = ({ opened, onClose }: NavigationProps) => {
       // lockScroll={false}를 적용했으므로 지연 없이 즉시 라우팅 가능
       router.push(href);
       onClose();
+      // Ensure navigating state is cleared after successful navigation
+      setTimeout(() => setNavigating(null), 500);
     } catch (error) {
       console.error('Navigation error:', error);
       setNavigating(null);
