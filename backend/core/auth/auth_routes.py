@@ -258,7 +258,7 @@ def admin_status():
 
 
 # ---------------------------------------------------------------------------
-# Sub-module Registration
+# Sub-module Registration (deferred to create_auth_bp factory)
 # ---------------------------------------------------------------------------
 
 from core.auth.debug_routes import register_debug_routes
@@ -266,12 +266,32 @@ from core.auth.token_routes import register_token_routes
 from core.auth.admin_user_routes import register_admin_user_routes
 from core.auth.admin_system_routes import register_admin_system_routes
 
-register_debug_routes(auth_bp)
-register_token_routes(auth_bp)
-register_admin_user_routes(auth_bp)
-register_admin_system_routes(auth_bp)
+_routes_registered = False
 
 
-def create_auth_bp():
-    """認証関連のBlueprint作成関数"""
+def create_auth_bp(admin_user_use_case=None):
+    """認証関連のBlueprint作成関数
+
+    すべてのサブモジュールのルート登録をここで行います。
+    app.py から register_blueprint() の前に呼び出してください。
+
+    Args:
+        admin_user_use_case: DI container에서 주입받는 AdminUserUseCase.
+            None이면 직접 인스턴스를 생성합니다 (하위 호환성).
+    """
+    global _routes_registered
+    if _routes_registered:
+        return auth_bp
+
+    if admin_user_use_case is None:
+        from apps.reading.shared.infrastructure.persistence.user_repository import UserRepository
+        from apps.reading.shared.use_cases.admin_user_use_case import AdminUserUseCase
+        admin_user_use_case = AdminUserUseCase(UserRepository())
+
+    register_debug_routes(auth_bp)
+    register_token_routes(auth_bp)
+    register_admin_system_routes(auth_bp)
+    register_admin_user_routes(auth_bp, admin_user_use_case)
+
+    _routes_registered = True
     return auth_bp
