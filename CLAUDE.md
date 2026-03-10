@@ -31,7 +31,7 @@
   2. 서버가 검증 후 JWT Access Token 발급
   3. 클라이언트는 이후 API 요청 시 `Authorization: Bearer <token>` 헤더에 토큰을 포함
   4. 서버는 보호된 라우트(예: `/api/auth/me`)에서 토큰을 검증해 사용자 인가 처리
-- **패스워드 암호화**: `core/auth/auth_utils.py`에서 `werkzeug.security`의 `generate_password_hash` / `check_password_hash` 사용
+- **패스워드 암호화**: `User` 모델(`apps/reading/shared/domain/entities/user.py`) 및 `auth_routes.py`에서 `bcrypt` 기반 해시/검증 사용
 
 ## 🔮 주요 API 경로
 

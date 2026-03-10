@@ -4,7 +4,7 @@
 
 ## 🎯 해당 모듈의 책임 범위
 - 구성기학(九星気学)·수비술(Numerology)·파워스톤 추천 등 비즈니스 로직 계산 및 데이터베이스 CRUD 처리.
-- 사용자 인증(Authentication/Authorization), JWT 발급, 패스워드 암호화(`werkzeug.security`) 등 세션 및 권한 관리.
+- 사용자 인증(Authentication/Authorization), JWT 발급, 패스워드 암호화(`bcrypt`) 등 세션 및 권한 관리.
 - 클라이언트(프론트엔드)에서 접근 가능한 RESTful API 엔드포인트 제공.
 - Cloud Run 배포: `$PORT` 환경변수 바인딩, `GET /api/health` 헬스체크 엔드포인트.
 - Alembic 기반 DB 마이그레이션: `flask db upgrade`로 스키마 + 시드 데이터 자동 적용.
@@ -15,7 +15,7 @@
 - `config.py`: 애플리케이션 설정. `DATABASE_URL`(`postgresql+psycopg2://`) 우선, 개별 환경변수 폴백.
 - `wait_for_db.py`: 로컬 개발환경 전용 PostgreSQL 연결 대기 스크립트 (psycopg2 사용).
 - `core/`: 설정(`config.py`), DB 세션(`database.py`), DB 설정(`db_config.py`), 예외 처리(`exceptions.py`), 유틸리티.
-  - `core/auth/`: 인증 모듈 — `auth_routes.py`(로그인·관리API), `auth_utils.py`(패스워드 해시), `jwt_helpers.py`(JWT), `permission_routes.py`(권한관리).
+  - `core/auth/`: 인증 모듈 — `auth_routes.py`(로그인·관리API, bcrypt 패스워드 해시), `auth_utils.py`(권한 체크 데코레이터), `jwt_helpers.py`(JWT), `permission_routes.py`(권한관리).
   - `core/models/`: SQLAlchemy 모델 정의.
   - `core/services/`: 공통 서비스 레이어.
 - `apps/reading/`: 도메인 기반으로 분리된 기능 모듈. 3개 서브도메인 + 공통 모듈.

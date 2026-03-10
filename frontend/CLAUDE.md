@@ -28,7 +28,7 @@
     - `TemplateSelectionModal.tsx`: PDF 템플릿 선택 모달
   - `features/visualization/`: `PowerStoneSection` — 파워스톤 시각화
   - `layout/`: `Navigation` — 전체 네비게이션
-  - `styles/`: CSS 파일 — `result.css` (결과 페이지 + PDF 캡처 모드 스타일)
+  - `components/styles/`: CSS 파일 — `result.css` (결과 페이지 + PDF 캡처 모드 스타일)
 - `src/contexts/auth/`: React Context 기반 인증 상태 관리 (`AuthContext`).
 - `src/hooks/`: Custom React Hooks.
   - `usePdfReport.ts`: html2canvas + jsPDF 기반 PDF 생성. **Off-screen clone 패턴** 사용 — 원본 DOM을 변경하지 않고 `cloneNode(true)` → `document.body`에 붙여 A4 폭(794px) 데스크톱 레이아웃으로 캡처. iOS Safari 메모리 방어, 폰트 로딩 대기, 빈 canvas 검증 등 크로스브라우저 방어 로직 포함.
