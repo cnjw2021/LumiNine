@@ -191,15 +191,6 @@ db-history: ## 📜 마이그레이션 이력을 확인합니다. (flask db hist
 db-current: ## 📍 현재 적용된 마이그레이션 버전을 확인합니다. (flask db current)
 	@cd backend && PYTHONPATH=. FLASK_APP=app.py flask db current
 
-# --- 🚀 プロダクション(本番)環境専用コマンド ---
-prod-mysql-restart: ## 🔄 [運用] 本番環境のMySQLコンテナを再起動します。
-	@echo "### 本番環境のMySQLを再起動します... ###"
-	docker compose --env-file .env.production.backend -f docker-compose.prod.yml down mysql
-	docker compose --env-file .env.production.backend -f docker-compose.prod.yml up -d mysql
-
-prod-db-reset: ## 💥 [注意/運用] 本番環境の稼働中コンテナでDBをリセットします。
-	@echo "### 本番環境のデータベースをリセットし、初期データをシードします... ###"
-	docker exec backend-container python db_manage.py reset
 # ---------------------------------------------
 
 renew: ## 🔐 [運用] SSL 証明書を手動で更新します。

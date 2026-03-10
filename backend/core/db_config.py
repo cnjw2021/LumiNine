@@ -22,7 +22,7 @@ def get_db_connection_info():
             from urllib.parse import urlparse
             # SQLAlchemy形式のURLを標準形式に変換して解析
             normalized = db_url
-            for prefix in ('postgresql+psycopg2://', 'postgresql+asyncpg://', 'mysql+pymysql://', 'mysql+mysqldb://'):
+            for prefix in ('postgresql+psycopg2://', 'postgresql+asyncpg://'):
                 if db_url.startswith(prefix):
                     scheme = prefix.split('+')[0]
                     normalized = scheme + '://' + db_url[len(prefix):]

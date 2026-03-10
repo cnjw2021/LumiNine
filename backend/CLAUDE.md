@@ -48,7 +48,7 @@
 ## ⚠️ 수정 시 주의사항
 1. **Clean Architecture 준수**: `use_cases`나 `domain` 레이어에 `Flask`나 `SQLAlchemy` 같은 특정 인프라 코드가 직접적으로 침투하지 않도록 유의하세요.
 2. **서브도메인 독립성**: `ninestarki`, `numerology`, `powerstone` 각 서브도메인은 서로 직접 import하지 않고, `dependency_module.py`를 통해 연결됩니다.
-3. **DB 스키마 변경**: 모델을 변경할 경우, `db/init/000_create_tables.sql` (PostgreSQL DDL)과 Alembic 마이그레이션(`migrations/versions/`)을 함께 수정하세요. (`mysql/init/`는 레거시이므로 참고용으로만 사용)
+3. **DB 스키마 변경**: 모델을 변경할 경우, `db/init/000_create_tables.sql` (PostgreSQL DDL)과 Alembic 마이그레이션(`migrations/versions/`)을 함께 수정하세요.
 4. **환경에 따른 설정 분리**: `config.py`는 단일 `Config` 클래스로 구성. 프로덕션은 `DATABASE_URL` 환경변수로 제어.
 5. **Cloud Run 호환성**: `start.sh`에서 `PORT` 환경변수를 반드시 사용. cron, logrotate, New Relic 등 VPS 전용 로직을 추가하지 마세요.
 6. **패키지 정리**: `requirements.txt`에서 WeasyPrint, Redis, RQ 등은 제거된 상태. 추가 시 Cloud Run 이미지 크기 증가에 유의.

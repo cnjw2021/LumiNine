@@ -118,7 +118,7 @@ db/init/900_system_data.sql          ← 시스템 설정
 db/init/999_system_user.sql          ← 슈퍼유저 권한 (create_superuser() 실행 후)
 ```
 
-> 💡 모든 파일은 PostgreSQL 호환 구문으로 작성되어 있습니다. `mysql/init/` 디렉토리의 MySQL 버전 파일은 레거시 참조용이며 사용하지 않습니다.
+> 💡 모든 파일은 PostgreSQL 호환 구문으로 작성되어 있습니다.
 
 ---
 
@@ -213,29 +213,10 @@ Cloudflare Pages 배포 확인 후 `NEXT_PUBLIC_API_URL` Secret에 Cloud Run URL
 모든 배포가 정상 동작한다면:
 
 1. **DNS 레코드 이전 확인** — 도메인이 Cloudflare로 완전히 이전되었는지 확인
-2. **VPS 컨테이너 중지**:
-   ```bash
-   ssh user@conoha-server
-   docker compose -f docker-compose.prod.yml down
-   ```
+2. **VPS 컨테이너 중지** — 서버에 접속하여 Docker 컨테이너 종료
 3. **서버 스냅샷 생성** — ConoHa 콘솔에서 스냅샷 저장 (데이터 유실 방지)
 4. **VPS 정지/삭제** — 스냅샷 확인 후 서버 정지
 
----
+> ⚠️ `docker-compose.prod.yml`, `deploy.sh` 등 구 VPS 배포 파일은 Issue #97에서 삭제되었습니다.
 
-## 로컬 개발환경 전환 (docker-compose)
 
-PR #96 merge 후 로컬에서 PostgreSQL로 첫 기동 시:
-
-```bash
-# 1. .env 파일 수정 (MySQL → PostgreSQL)
-cp .env.example .env
-# .env 에서 DB_HOST=postgres 확인
-
-# 2. 기존 MySQL 볼륨 삭제 후 PostgreSQL로 재기동
-docker compose -f docker-compose.yml -f docker-compose.dev.yml down -v
-docker compose -f docker-compose.yml -f docker-compose.dev.yml up --build
-
-# 3. 헬스체크
-curl http://localhost:5001/api/health
-```
