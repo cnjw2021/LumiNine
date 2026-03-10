@@ -1,4 +1,4 @@
-import React from 'react';
+
 import { Table, Text, Button, Group } from '@mantine/core';
 import { IconTrash } from '@tabler/icons-react';
 import dayjs from 'dayjs';

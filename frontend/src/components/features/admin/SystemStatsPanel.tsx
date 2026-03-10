@@ -1,4 +1,4 @@
-import React from 'react';
+
 import { Paper, Group, Title, Button, Text } from '@mantine/core';
 import { COLORS, FONTS, CARD } from '@/utils/theme';
 

@@ -46,7 +46,7 @@ export function validateDates(start: string, end: string): { valid: boolean; err
         };
     }
 
-    if (endDate.isBefore(startDate)) {
+    if (endDate.isBefore(startDate) || endDate.isSame(startDate)) {
         return {
             valid: false,
             errors: {
