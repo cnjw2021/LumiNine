@@ -92,6 +92,7 @@ def load_all_csv_data(target_tables=None):
         connection = get_postgres_connection()
         try:
             # 基本的なCSVとテーブルのマッピング
+            # ※ user_account.csv は除外 — スーパーユーザーは create_superuser() / Alembic 002 で作成
             csv_table_mapping = {
                 'zodiac_groups.csv': 'zodiac_groups',
                 'zodiac_group_members.csv': 'zodiac_group_members',
@@ -120,20 +121,6 @@ def load_all_csv_data(target_tables=None):
                     truncate_tables=True
                 )
 
-
-            
-            # user_accountデータを個別にロード（truncateしない）
-            if not target_tables or 'users' in target_tables:
-                user_connection = get_postgres_connection()
-                try:
-                    user_rows = load_user_account_data(user_connection)
-                    results['users'] = user_rows
-                finally:
-                    try:
-                        user_connection.close()
-                    except Exception:
-                        pass
-            
             for table, count in results.items():
                 print(f"{table}テーブルに{count}行のデータをロードしました")
             return results
