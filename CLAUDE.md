@@ -17,7 +17,7 @@
   - Frontend: Cloudflare Pages (Next.js standalone)
   - DB: Supabase (PostgreSQL 16, `postgresql+psycopg2://` 연결)
   - DB 마이그레이션: Alembic (`flask db upgrade` → 스키마 + 시드 데이터 자동 적용)
-  - 로컬 개발: Docker Compose (`docker-compose.yml` + `docker-compose.dev.yml`) — PostgreSQL 컨테이너 사용
+  - 로컬 개발: Docker Compose (`docker-compose.yml`) — PostgreSQL 컨테이너 사용
 
 - **CI/CD**:
   - `.github/workflows/ci.yml`: PR 테스트 (PostgreSQL 서비스 컨테이너 + pytest)

@@ -50,10 +50,7 @@ def load_csv_to_table(connection, csv_filename, table_name, column_mapping=None,
                     columns = next(reader)
             
             
-            # created_at, updated_at はCSVに含まれないため除外してCOPY
-            copy_columns = [c for c in columns if c not in ('created_at', 'updated_at')]
-            
-            columns_str = ', '.join(copy_columns)
+            columns_str = ', '.join(columns)
             logger.info(f"COPY {table_name} ({columns_str}) FROM {csv_path}")
             
             with open(csv_path, 'r', encoding='utf-8') as f:
