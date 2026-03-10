@@ -32,8 +32,8 @@
   - `migrations/versions/001_initial_schema.py`: 초기 스키마 생성.
   - `migrations/versions/002_seed_data.py`: SQL 파일 기반 시드 데이터 로드.
   - `migrations/versions/003_csv_seed_data.py`: CSV 파일 기반 마스터 데이터 시드 (대량 데이터용).
-- `data/csv/`: Alembic CSV 시드 마이그레이션에서 로드하는 마스터 데이터 CSV 파일 7종 (zodiac_groups, zodiac_group_members, hourly_star_zodiacs, solar_terms, solar_starts, daily_astrology, pattern_switch_dates). 그 외 CSV(star_compatibility_matrix, user_account)는 로컬 스크립트 전용.
-- `db_manage.py`: 데이터베이스 초기화(init) 및 리셋(reset) 유틸리티 스크립트 (로컬 개발/Docker용).
+- `data/csv/`: Alembic CSV 시드 마이그레이션에서 로드하는 마스터 데이터 CSV 파일 7종 (zodiac_groups, zodiac_group_members, hourly_star_zodiacs, solar_terms, solar_starts, daily_astrology, pattern_switch_dates).
+- `db_manage.py`: 데이터베이스 관리 유틸리티 — `init` (Alembic 마이그레이션 적용+슈퍼유저 생성), `reset` (전체 DROP+재구축), `create-superuser` (슈퍼유저만 생성).
 - `docs/architecture/cicd-manual-setup-guide.md`: CI/CD 수동 설정 가이드 (Secrets 등록부터 VPS 정리까지).
 
 ## 📦 외부 의존성
@@ -48,7 +48,7 @@
 ## ⚠️ 수정 시 주의사항
 1. **Clean Architecture 준수**: `use_cases`나 `domain` 레이어에 `Flask`나 `SQLAlchemy` 같은 특정 인프라 코드가 직접적으로 침투하지 않도록 유의하세요.
 2. **서브도메인 독립성**: `ninestarki`, `numerology`, `powerstone` 각 서브도메인은 서로 직접 import하지 않고, `dependency_module.py`를 통해 연결됩니다.
-3. **DB 스키마 변경**: 모델을 변경할 경우, `db/init/000_create_tables.sql` (PostgreSQL DDL)과 Alembic 마이그레이션(`migrations/versions/`)을 함께 수정하세요.
+3. **DB 스키마 변경**: 모델을 변경할 경우, Alembic 마이그레이션(`migrations/versions/`)을 생성하세요 (`make db-migrate MSG="설명"`).
 4. **환경에 따른 설정 분리**: `config.py`는 단일 `Config` 클래스로 구성. 프로덕션은 `DATABASE_URL` 환경변수로 제어.
 5. **Cloud Run 호환성**: `start.sh`에서 `PORT` 환경변수를 반드시 사용. cron, logrotate, New Relic 등 VPS 전용 로직을 추가하지 마세요.
 6. **패키지 정리**: `requirements.txt`에서 WeasyPrint, Redis, RQ 등은 제거된 상태. 추가 시 Cloud Run 이미지 크기 증가에 유의.

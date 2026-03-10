@@ -121,17 +121,17 @@ test-integration: ## 🧪 統合テストのみ実行します。(DB + バック
 # ==============================================================================
 # 🔐 データベース管理
 # ==============================================================================
-db-seed: ## 🌱 データベースを完全にリセットし、全データ（SQL + CSV）を再投入します。
-	@echo "### データベースを完全にシード（SQL + CSV）します... ###"
+db-seed: ## 🌱 データベースを完全にリセットし、Alembicマイグレーションで全データ（SQL + CSV）を再投入します。
+	@echo "### データベースを完全にシード（Alembic 統合）します... ###"
 	$(COMPOSE) run --rm backend-test python db_manage.py reset
 
-db-init: ## ✅ [安全] DBが空の場合にのみテーブル作成と初期データ挿入
-	@echo "### データベースを安全に初期化します... ###"
+db-init: ## ✅ [安全] Alembicマイグレーションを適用し、スーパーユーザーを作成します。
+	@echo "### Alembicマイグレーションを適用します... ###"
 	$(COMPOSE) run --rm backend python db_manage.py init
 
 db-reset: ## 💥 [注意] DBを完全に初期化します。すべてのデータが削除されます。
 	@echo "### データベースをリセットします! すべてのデータが削除されます... ###"
-	$(COMPOSE) run --rm backend python db_manage.py reset
+	$(COMPOSE) run --rm backend-test python db_manage.py reset
 
 # --- 🔄 Alembic マイグレーション ---
 db-upgrade: ## 🔄 マイグレーションを最新まで適用します。(flask db upgrade)

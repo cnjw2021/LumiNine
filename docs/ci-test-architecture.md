@@ -58,7 +58,7 @@ tests/test_direction_fortune_birthdate_2026.py
 - `backend-test` 컨테이너가 `appuser`로 실행되어 로그 디렉토리에 쓰기 불가
 
 **수정:**
-- `docker-compose.dev.yml`의 `backend-test`에 `user: root` 추가
+- `docker-compose.yml`의 `backend-test`에 `user: root` 추가
 - CI 워크플로우에서 `mkdir -p backend/logs backend/.pytest_cache && chmod -R 777` 실행
 
 ---
@@ -127,21 +127,21 @@ echo "DATABASE_URL=postgresql+psycopg2://${DB_USER}:${DB_PASSWORD}@postgres:5432
 
 **문제:** `make test-integration`을 실행해도 DB가 비어 있어 전체 테스트 실패
 
-**조사 결과 (3개의 버그를 단계적으로 발견):**
+**조사 결과 (3개의 버그를 단계적으로 발견 — ※ Alembic 통합 이전의 기록):**
 
 | # | 에러 메시지 | 원인 | 수정 |
 |---|------------|------|------|
-| 1 | `Access denied for user 'ninestarki'` | `backend-test`에 `env_file`이 없어 기본값 `ninestarki` 자격 증명 사용 | `docker-compose.dev.yml`에 `env_file: ./backend/.env.development.backend` 추가 |
+| 1 | `Access denied for user 'ninestarki'` | `backend-test`에 `env_file`이 없어 기본값 `ninestarki` 자격 증명 사용 | `docker-compose.yml`에 `env_file: ./backend/.env.development.backend` 추가 |
 | 2 | `Table 'ninestarki.zodiac_groups' doesn't exist` | `db_manage.py reset`이 테이블 생성 후 `commit()` 안 함 → 별도 커넥션의 CSV 로더에서 테이블이 보이지 않음 | `conn.commit()`을 테이블 생성 직후에 추가 |
 | 3 | `SQL 파일 'db/init/xxx.sql'을 찾을 수 없습니다` | `backend-test` 컨테이너 내 CWD는 `/app` (= `./backend`), 하지만 SQL 파일은 `./db/init/` (리포지토리 루트)에 위치 | 볼륨 마운트 `./db/init:/app/db/init` 추가 |
 
-**최종 `docker-compose.dev.yml`의 `backend-test` 설정:**
+**최종 `docker-compose.yml`의 `backend-test` 설정:**
 ```yaml
 backend-test:
   user: root
   volumes:
     - ./backend:/app
-    - ./db/init:/app/db/init          # SQL 시드 스크립트
+    - ./db/init:/app/db/init:ro  # Alembic 001/002이 참조하는 SQL 파일
   env_file:
     - ./backend/.env.development.backend
   environment:
@@ -152,19 +152,18 @@ backend-test:
 
 ## 데이터 시딩 파이프라인
 
-통합 테스트 실행 시, 아래 순서로 데이터가 투입됩니다:
+Alembic 마이그레이션이 단일 진실 원천(SSOT)으로 DDL, SQL시드, CSV시드를 모두 처리합니다:
 
 ```mermaid
 graph TD
-    A[PostgreSQL 컨테이너 기동] -->|docker-entrypoint-initdb.d| B[000_create_tables.sql<br/>테이블 생성]
-    B --> C[001_setup_privileges.sql<br/>권한 설정]
-    C --> D[100_stars.sql ~ 900_system_data.sql<br/>SQL INSERT 데이터]
-    D --> E[make db-seed]
-    E -->|db_manage.py reset| F[테이블 DROP & 재생성]
-    F -->|conn.commit| G[SQL 파일로 INSERT]
-    G --> H[CSV 데이터 로드]
-    H --> I[create_superuser<br/>슈퍼유저 생성]
-    I --> J[통합 테스트 실행<br/>make test-integration]
+    A[PostgreSQL 컨테이너 기동] --> B[make db-seed]
+    B -->|db_manage.py reset| C[테이블 DROP]
+    C --> D[flask db upgrade]
+    D --> E[Alembic 001: DDL 스키마]
+    E --> F[Alembic 002: SQL 시드 데이터]
+    F --> G[Alembic 003: CSV 시드 데이터]
+    G --> H[create_superuser<br/>슈퍼유저 생성]
+    H --> I[통합 테스트 실행<br/>make test-integration]
 ```
 
 ### CSV로 로드되는 데이터
@@ -218,8 +217,8 @@ make db-seed
 | `.github/workflows/ci.yml` | 자동 CI (단위 테스트만) |
 | `.github/workflows/integration-test.yml` | 수동 통합 테스트 |
 | `Makefile` | `test`, `test-unit`, `test-integration`, `db-seed` 타겟 |
-| `docker-compose.dev.yml` | `backend-test` 서비스 정의, PostgreSQL 서비스 |
-| `backend/db_manage.py` | `init` (슈퍼유저만) / `reset` (전체 데이터 재투입) |
-| `backend/scripts/csv_file_loader.py` | CSV 데이터 로더 |
-| `db/init/*.sql` | PostgreSQL 초기화 스크립트 |
+| `docker-compose.yml` | `backend-test` 서비스 정의, PostgreSQL 서비스 |
+| `backend/db_manage.py` | `init` (Alembic+슈퍼유저) / `reset` (전체 데이터 재투입) / `create-superuser` |
+| `backend/scripts/csv_data_loader.py` | CSV 데이터 로더 (Alembic 003에서 사용) |
+| `backend/migrations/versions/` | Alembic 마이그레이션 (001-DDL, 002-SQL시드, 003-CSV시드) |
 | `backend/core/db_config.py` | DB 접속 정보 관리 (`DATABASE_URL` 우선) |

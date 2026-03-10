@@ -49,7 +49,7 @@
   - `backend/data/csv/`: 마스터 데이터 CSV 파일 (Alembic 시드 마이그레이션에서 사용)
   - `backend/docs/architecture/`: 아키텍처 가이드 및 CI/CD 수동 설정 가이드
 - `frontend/`: Next.js(App Router) 기반의 프론트엔드 UI 및 클라이언트 애플리케이션
-- `db/init/`: PostgreSQL 초기화 스크립트 (DDL/DML) — Docker 로컬 개발용
+- `db/init/`: SQL 파일 (Alembic 001 DDL + 002 시드에서 참조) — Docker entrypoint에서는 사용하지 않음
 - `.github/workflows/`: GitHub Actions CI/CD 워크플로우
 - `docs/`: 프로젝트 관련 문서 보관
 - `Makefile`: 로컬 개발 명령어 모음
@@ -62,14 +62,14 @@
 - **방위 및 배치 데이터**: `star_grid_patterns` (구성반), `monthly_directions` (월반 방위)
 - **파워스톤**: `powerstone_master`, `recommendation_history`
 - **시스템 및 인증 데이터**: `users`, `permissions`, `user_permissions`, `system_config`
-- **스키마 위치**: `db/init/000_create_tables.sql` (PostgreSQL DDL)
-- **프로덕션 마이그레이션**: `backend/migrations/versions/` (Alembic — 001 스키마, 002 SQL 시드, 003 CSV 시드)
+- **스키마 위치**: `backend/migrations/versions/` (Alembic — 001 스키마, 002 SQL 시드, 003 CSV 시드) / `db/init/*.sql` (Alembic 001/002에서 참조)
+- **프로덕션 마이그레이션**: `flask db upgrade` (Cloud Run 배포 시 자동 적용)
 
 ## ✍️ 코딩 컨벤션
 
 - **Backend (Python)**: PEP 8 스타일 가이드를 따르며, Clean Architecture를 지향하여 비즈니스 로직(Domain/Use Cases)과 프레임워크(Web/Infrastructure)를 분리.
 - **Frontend (TypeScript)**: `eslint`와 `prettier` (`eslint-config-next`) 규칙을 준수. App Router 패턴의 Server Component와 Client Component(`"use client"`)를 명확히 분리.
-- **DB**: PostgreSQL DDL/DML은 `db/init/` 디렉터리에서 버전 관리. 프로덕션 환경은 Alembic으로 마이그레이션.
+- **DB**: Alembic 마이그레이션(`backend/migrations/versions/`)이 스키마와 시드 데이터의 단일 진실 원천(SSOT). 스키마 변경 시 `make db-migrate MSG="설명"` 사용.
 - **공통**: 변수명/함수명은 영어, 주석은 한국어 OK
 - **📌 코드 리뷰 가이드라인**: [docs/CODE_REVIEW_GUIDELINES.md](docs/CODE_REVIEW_GUIDELINES.md) 를 코드 작성 전 반드시 참조
 

@@ -53,9 +53,9 @@ jobs:
           mkdir -p backend/logs backend/.pytest_cache
           chmod -R 777 backend/logs backend/.pytest_cache
 
-      - name: Seed Database (SQL + CSV)
+      - name: Seed Database (Alembic migration)
         run: |
-          echo "### Seeding database with full data (SQL + CSV)... ###"
+          echo "### Seeding database via Alembic migration... ###"
           make db-seed
 
       - name: Run Integration Tests
