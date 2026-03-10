@@ -2,12 +2,6 @@
 
 import React from 'react';
 
-/**
- * Result ページ専用レイアウト。
- * ※ AppShell を使用しない — root layout.tsx の AppShell と二重に
- *   ネストすると、Mantine 内部のスクロールコンテナが競合し、
- *   client-side navigation 後にスクロール不能になるため (Issue #129)。
- */
 export default function ResultLayout({
   children,
 }: {
