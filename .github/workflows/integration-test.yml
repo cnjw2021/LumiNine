@@ -47,7 +47,6 @@ jobs:
           echo "DB_HOST=postgres" >> backend/.env.development.backend
           echo "DB_NAME=$DB_NAME" >> backend/.env.development.backend
           echo "DB_PORT=5432" >> backend/.env.development.backend
-          echo "DB_ROOT_USER=root" >> backend/.env.development.backend
           echo "DATABASE_URL=postgresql+psycopg2://${DB_USER}:${DB_PASSWORD}@postgres:5432/${DB_NAME}" >> backend/.env.development.backend
           echo "SUPERUSER_EMAIL=superuser" >> backend/.env.development.backend
           echo "SUPERUSER_PASSWORD=$DB_PASSWORD" >> backend/.env.development.backend

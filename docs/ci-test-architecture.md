@@ -220,5 +220,6 @@ make db-seed
 | `Makefile` | `test`, `test-unit`, `test-integration`, `db-seed` 타겟 |
 | `docker-compose.dev.yml` | `backend-test` 서비스 정의, PostgreSQL 서비스 |
 | `backend/db_manage.py` | `init` (슈퍼유저만) / `reset` (전체 데이터 재투입) |
+| `backend/scripts/csv_file_loader.py` | CSV 데이터 로더 |
 | `db/init/*.sql` | PostgreSQL 초기화 스크립트 |
 | `backend/core/db_config.py` | DB 접속 정보 관리 (`DATABASE_URL` 우선) |

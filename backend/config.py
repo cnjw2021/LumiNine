@@ -11,7 +11,7 @@ class Config:
     # DATABASE_URLから接続情報を抽出する関数
     @staticmethod
     def parse_db_url():
-        """DATABASE_URL環境変数からデータベース接続情報を抽出 (PostgreSQL/MySQL 両対応)"""
+        """DATABASE_URL環境変数からデータベース接続情報を抽出 (PostgreSQL)"""
         db_url = os.environ.get('DATABASE_URL')
         if db_url:
             try:
