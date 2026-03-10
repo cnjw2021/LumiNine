@@ -34,7 +34,11 @@ export function SystemLimitModal({
                     label="アカウント制限数"
                     placeholder="制限数を入力"
                     value={systemLimit}
-                    onChange={(e) => onSystemLimitChange(Number(e.target.value))}
+                    onChange={(e) => {
+                        const value = e.currentTarget.valueAsNumber;
+                        if (Number.isNaN(value)) return;
+                        onSystemLimitChange(value);
+                    }}
                     type="number"
                     min={totalActiveUsers}
                     required

@@ -66,9 +66,11 @@ export function UserTable({ users, showDeleted, onEdit, onDelete, onEditAccountL
                                 <Text fw={500} c="green">有効</Text>
                             ) : (
                                 <Text fw={500} c="red">
-                                    {dayjs().tz('Asia/Tokyo').isBefore(dayjs.tz(user.subscription_start, 'Asia/Tokyo'))
-                                        ? '利用開始前'
-                                        : '利用期間終了'}
+                                    {user.subscription_start
+                                        ? (dayjs().tz('Asia/Tokyo').isBefore(dayjs.tz(user.subscription_start, 'Asia/Tokyo'))
+                                            ? '利用開始前'
+                                            : '利用期間終了')
+                                        : '未設定'}
                                 </Text>
                             )}
                         </Table.Td>

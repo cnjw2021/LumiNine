@@ -41,6 +41,9 @@ interface UserFormModalProps {
 
     // 作成モード用: システム上限チェック
     isAtLimit?: boolean;
+
+    // スーパーユーザー権限（管理者権限スイッチの有効/無効制御用）
+    isSuperuser?: boolean;
 }
 
 export function UserFormModal({
@@ -63,6 +66,7 @@ export function UserFormModal({
     dateError,
     onSubmit,
     isAtLimit = false,
+    isSuperuser = false,
 }: UserFormModalProps) {
     const isCreate = mode === 'create';
     const title = isCreate ? '新規ユーザー作成' : 'ユーザー情報の編集';
@@ -120,6 +124,8 @@ export function UserFormModal({
                     label="管理者権限"
                     checked={isAdmin}
                     onChange={(event) => onIsAdminChange(event.currentTarget.checked)}
+                    disabled={!isSuperuser}
+                    description={!isSuperuser ? 'スーパーユーザーのみ変更可能' : undefined}
                 />
                 {emailError && (
                     <Text c="red" size="sm">

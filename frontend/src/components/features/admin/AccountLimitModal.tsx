@@ -34,7 +34,11 @@ export function AccountLimitModal({
                     label="アカウント作成制限数"
                     placeholder="制限数を入力"
                     value={accountLimit}
-                    onChange={(e) => onAccountLimitChange(Number(e.target.value))}
+                    onChange={(e) => {
+                        const value = e.currentTarget.valueAsNumber;
+                        if (Number.isNaN(value)) return;
+                        onAccountLimitChange(value);
+                    }}
                     type="number"
                     min={0}
                     required

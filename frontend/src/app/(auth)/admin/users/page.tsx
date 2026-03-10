@@ -55,11 +55,15 @@ export default function UserManagement() {
         showDeleted={userMgmt.showDeleted}
         onEdit={userMgmt.handleEditUser}
         onDelete={(userId) => userMgmt.handleDeleteUser(userId, stats.fetchSystemStats)}
-        onEditAccountLimit={(user) => {
-          stats.setSelectedLimitUser(user);
-          stats.setAccountLimit(user.account_limit || 0);
-          stats.setAccountLimitModalOpened(true);
-        }}
+        onEditAccountLimit={
+          stats.isSuperuser
+            ? (user) => {
+              stats.setSelectedLimitUser(user);
+              stats.setAccountLimit(user.account_limit || 0);
+              stats.setAccountLimitModalOpened(true);
+            }
+            : undefined
+        }
         formatDate={userMgmt.formatDate}
       />
 
@@ -84,6 +88,7 @@ export default function UserManagement() {
         dateError={userMgmt.dateError}
         onSubmit={() => userMgmt.handleCreateUser(stats.systemLimit, stats.totalActiveUsers, stats.fetchSystemStats)}
         isAtLimit={isAtLimit}
+        isSuperuser={stats.isSuperuser}
       />
 
       {/* ユーザー編集モーダル */}
@@ -106,6 +111,7 @@ export default function UserManagement() {
         emailError={userMgmt.emailError}
         dateError={userMgmt.dateError}
         onSubmit={() => userMgmt.handleUpdateUser(stats.fetchSystemStats)}
+        isSuperuser={stats.isSuperuser}
       />
 
       {/* アカウント制限数編集モーダル */}
