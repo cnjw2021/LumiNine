@@ -73,6 +73,8 @@ services:
       interval: 5s
       timeout: 5s
       retries: 10
+    networks:
+      - app-network  # backend から "postgres" ホスト名で接続できるように同一ネットワークに参加
 
   # --- テスト専用サービス ---
   backend-test:
