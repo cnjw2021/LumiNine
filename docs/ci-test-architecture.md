@@ -58,7 +58,7 @@ tests/test_direction_fortune_birthdate_2026.py
 - `backend-test` 컨테이너가 `appuser`로 실행되어 로그 디렉토리에 쓰기 불가
 
 **수정:**
-- `docker-compose.dev.yml`의 `backend-test`에 `user: root` 추가
+- `docker-compose.yml`의 `backend-test`에 `user: root` 추가
 - CI 워크플로우에서 `mkdir -p backend/logs backend/.pytest_cache && chmod -R 777` 실행
 
 ---
@@ -131,7 +131,7 @@ echo "DATABASE_URL=postgresql+psycopg2://${DB_USER}:${DB_PASSWORD}@postgres:5432
 
 | # | 에러 메시지 | 원인 | 수정 |
 |---|------------|------|------|
-| 1 | `Access denied for user 'ninestarki'` | `backend-test`에 `env_file`이 없어 기본값 `ninestarki` 자격 증명 사용 | `docker-compose.dev.yml`에 `env_file: ./backend/.env.development.backend` 추가 |
+| 1 | `Access denied for user 'ninestarki'` | `backend-test`에 `env_file`이 없어 기본값 `ninestarki` 자격 증명 사용 | `docker-compose.yml`에 `env_file: ./backend/.env.development.backend` 추가 |
 | 2 | `Table 'ninestarki.zodiac_groups' doesn't exist` | `db_manage.py reset`이 테이블 생성 후 `commit()` 안 함 → 별도 커넥션의 CSV 로더에서 테이블이 보이지 않음 | `conn.commit()`을 테이블 생성 직후에 추가 |
 | 3 | `SQL 파일 'db/init/xxx.sql'을 찾을 수 없습니다` | `backend-test` 컨테이너 내 CWD는 `/app` (= `./backend`), 하지만 SQL 파일은 `./db/init/` (리포지토리 루트)에 위치 | 볼륨 마운트 `./db/init:/app/db/init` 추가 |
 
