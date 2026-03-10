@@ -2,7 +2,7 @@
 
 import { MantineProvider, createTheme, AppShell, Group, Text, Burger } from '@mantine/core';
 import { Navigation } from '@/components/layout/Navigation';
-import { AuthProvider } from '@/contexts/auth/AuthContext';
+import { AuthProvider, useAuth } from '@/contexts/auth/AuthContext';
 import '@mantine/core/styles.css';
 import '@mantine/notifications/styles.css';
 import '@/components/styles/paragraph.css';
@@ -35,15 +35,72 @@ const theme = createTheme({
 
 import { usePathname } from 'next/navigation';
 
+function AppShellLayout({ children }: { children: React.ReactNode }) {
+  const [opened, { toggle }] = useDisclosure();
+  const pathname = usePathname();
+  const { isLoggedIn } = useAuth();
+  // ランディングページかつ未ログインの場合のみサイドバーを非表示にする
+  const hideSidebar = pathname === '/' && !isLoggedIn;
+
+  return (
+    <MantineProvider theme={theme} defaultColorScheme="light">
+      <Notifications />
+      <AppShell
+        header={{ height: { base: 60, sm: 0 } }}
+        navbar={{
+          width: { base: 320, sm: 320, lg: 320 },
+          breakpoint: 'sm',
+          collapsed: { desktop: hideSidebar, mobile: !opened }
+        }}
+        padding={hideSidebar ? 0 : { base: 6, sm: 12, md: 16, lg: 24 }}
+        styles={{
+          main: {
+            backgroundColor: COLORS.primaryBg,
+            backgroundImage: GRADIENTS.pageBg,
+            width: '100%',
+            maxWidth: '100%',
+            overflowX: 'hidden',
+            padding: hideSidebar ? 0 : undefined
+          },
+          navbar: {
+            backgroundColor: 'rgba(245, 247, 243, 0.95)',
+            backdropFilter: 'blur(10px)',
+            border: 'none',
+          }
+        }}
+      >
+        <AppShell.Header hiddenFrom="sm">
+          <Group h="100%" px="20px" style={{ backgroundColor: 'rgba(245, 247, 243, 0.95)', backdropFilter: 'blur(10px)' }}>
+            <Burger
+              opened={opened}
+              onClick={toggle}
+              hiddenFrom="sm"
+              size="sm"
+              color={COLORS.rose}
+            />
+            <Text
+              style={{ fontSize: 20, fontWeight: 700, letterSpacing: '0.1em', textTransform: 'uppercase', color: COLORS.text }}
+            >
+              LumiNine
+            </Text>
+          </Group>
+        </AppShell.Header>
+        <AppShell.Navbar>
+          <Navigation opened={opened} onClose={toggle} />
+        </AppShell.Navbar>
+        <AppShell.Main>
+          {children}
+        </AppShell.Main>
+      </AppShell>
+    </MantineProvider>
+  );
+}
+
 export default function RootLayout({
   children,
 }: {
   children: React.ReactNode;
 }) {
-  const [opened, { toggle }] = useDisclosure();
-  const pathname = usePathname();
-  const isLandingPage = pathname === '/';
-
   return (
     <html lang="ja">
       <head>
@@ -53,58 +110,9 @@ export default function RootLayout({
         />
       </head>
       <body style={{ margin: 0, backgroundColor: COLORS.primaryBg }}>
-        <MantineProvider theme={theme} defaultColorScheme="light">
-          <AuthProvider>
-            <Notifications />
-            <AppShell
-              header={{ height: { base: 60, sm: 0 } }}
-              navbar={{
-                width: { base: 320, sm: 320, lg: 320 },
-                breakpoint: 'sm',
-                collapsed: { desktop: isLandingPage, mobile: !opened }
-              }}
-              padding={isLandingPage ? 0 : { base: 6, sm: 12, md: 16, lg: 24 }}
-              styles={{
-                main: {
-                  backgroundColor: COLORS.primaryBg,
-                  backgroundImage: GRADIENTS.pageBg,
-                  width: '100%',
-                  maxWidth: '100%',
-                  overflowX: 'hidden',
-                  padding: isLandingPage ? 0 : undefined // Ensure no padding on landing page
-                },
-                navbar: {
-                  backgroundColor: 'rgba(245, 247, 243, 0.95)',
-                  backdropFilter: 'blur(10px)',
-                  border: 'none',
-                }
-              }}
-            >
-              <AppShell.Header hiddenFrom="sm">
-                <Group h="100%" px="20px" style={{ backgroundColor: 'rgba(245, 247, 243, 0.95)', backdropFilter: 'blur(10px)' }}>
-                  <Burger
-                    opened={opened}
-                    onClick={toggle}
-                    hiddenFrom="sm"
-                    size="sm"
-                    color={COLORS.rose}
-                  />
-                  <Text
-                    style={{ fontSize: 20, fontWeight: 700, letterSpacing: '0.1em', textTransform: 'uppercase', color: COLORS.text }}
-                  >
-                    LumiNine
-                  </Text>
-                </Group>
-              </AppShell.Header>
-              <AppShell.Navbar>
-                <Navigation opened={opened} onClose={toggle} />
-              </AppShell.Navbar>
-              <AppShell.Main>
-                {children}
-              </AppShell.Main>
-            </AppShell>
-          </AuthProvider>
-        </MantineProvider>
+        <AuthProvider>
+          <AppShellLayout>{children}</AppShellLayout>
+        </AuthProvider>
       </body>
     </html>
   );

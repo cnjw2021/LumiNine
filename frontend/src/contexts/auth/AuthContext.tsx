@@ -19,6 +19,7 @@ interface AuthContextType {
   isSuperuser: boolean;
   isLoading: boolean;
   token: string | null;
+  userName: string | null;
   setIsLoading: (status: boolean) => void;
   setLoginStatus: (status: boolean, newToken?: string, refreshToken?: string) => void;
   setIsLoggedIn: (status: boolean) => void;
@@ -43,6 +44,7 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
   const [isSuperuser, setIsSuperuser] = useState<boolean>(false);
   const [isLoading, setIsLoading] = useState<boolean>(true);
   const [token, setToken] = useState<string | null>(null);
+  const [userName, setUserName] = useState<string | null>(null);
   const [permissionCache, setPermissionCache] = useState<Record<string, boolean>>({});
   const [allPermissions, setAllPermissions] = useState<Record<string, Permission[]>>({});
   const [userPermissions, setUserPermissions] = useState<Record<string, Permission[]>>({});
@@ -89,6 +91,7 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
     setIsLoggedIn(false);
     setIsAdmin(false);
     setIsSuperuser(false);
+    setUserName(null);
     clearPermissionCache();
   }, [clearPermissionCache]);
 
@@ -341,6 +344,9 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
             setIsLoggedIn(true);
             setIsAdmin(response.data.is_admin);
             setIsSuperuser(response.data.is_superuser);
+            // ユーザー名を取得（full_name → name → email の優先順）
+            const name = response.data.full_name || response.data.name || response.data.email || null;
+            setUserName(name);
             await fetchPermissions();
           }
         }
@@ -369,6 +375,7 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
       isSuperuser,
       isLoading,
       token,
+      userName,
       setIsLoading,
       setLoginStatus,
       setIsLoggedIn,
