@@ -116,7 +116,7 @@ export function useUserManagement(): UseUserManagementReturn {
 
     useEffect(() => {
         fetchUsers();
-    }, [fetchUsers, showDeleted]);
+    }, [fetchUsers]);
 
     // ユーザー作成
     const handleCreateUser = useCallback(async (
@@ -125,6 +125,10 @@ export function useUserManagement(): UseUserManagementReturn {
         onSuccess: () => Promise<void>,
     ) => {
         try {
+            // バリデーション前にエラー状態をクリア
+            setEmailError('');
+            setDateError({});
+
             // システム上限チェック
             if (systemLimit <= totalActiveUsers) {
                 notifications.show({
@@ -187,6 +191,8 @@ export function useUserManagement(): UseUserManagementReturn {
             setSubscriptionStart('');
             setSubscriptionEnd('');
             setIsAdmin(false);
+            setEmailError('');
+            setDateError({});
 
             await onSuccess();
             await fetchUsers();
@@ -220,6 +226,10 @@ export function useUserManagement(): UseUserManagementReturn {
         if (!selectedUser) return;
 
         try {
+            // バリデーション前にエラー状態をクリア
+            setEmailError('');
+            setDateError({});
+
             if (!editName.trim()) {
                 notifications.show({
                     title: 'エラー',
@@ -271,6 +281,8 @@ export function useUserManagement(): UseUserManagementReturn {
             setSubscriptionStart('');
             setSubscriptionEnd('');
             setIsAdmin(false);
+            setEmailError('');
+            setDateError({});
 
             await onSuccess();
             await fetchUsers();

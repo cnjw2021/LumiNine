@@ -55,6 +55,11 @@ export default function UserManagement() {
         showDeleted={userMgmt.showDeleted}
         onEdit={userMgmt.handleEditUser}
         onDelete={(userId) => userMgmt.handleDeleteUser(userId, stats.fetchSystemStats)}
+        onEditAccountLimit={(user) => {
+          stats.setSelectedLimitUser(user);
+          stats.setAccountLimit(user.account_limit || 0);
+          stats.setAccountLimitModalOpened(true);
+        }}
         formatDate={userMgmt.formatDate}
       />
 

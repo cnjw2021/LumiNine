@@ -15,10 +15,11 @@ interface UserTableProps {
     showDeleted: boolean;
     onEdit: (user: AdminUser) => void;
     onDelete: (userId: number) => void;
+    onEditAccountLimit?: (user: AdminUser) => void;
     formatDate: (dateStr: string | undefined | null) => string;
 }
 
-export function UserTable({ users, showDeleted, onEdit, onDelete, formatDate }: UserTableProps) {
+export function UserTable({ users, showDeleted, onEdit, onDelete, onEditAccountLimit, formatDate }: UserTableProps) {
     return (
         <Table striped highlightOnHover withTableBorder withColumnBorders>
             <Table.Thead>
@@ -98,6 +99,16 @@ export function UserTable({ users, showDeleted, onEdit, onDelete, formatDate }: 
                                         >
                                             削除
                                         </Button>
+                                        {user.is_admin && onEditAccountLimit && (
+                                            <Button
+                                                variant="light"
+                                                color="grape"
+                                                size="xs"
+                                                onClick={() => onEditAccountLimit(user)}
+                                            >
+                                                制限
+                                            </Button>
+                                        )}
                                     </>
                                 )}
                             </Group>
