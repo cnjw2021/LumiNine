@@ -1,7 +1,7 @@
 # CI 테스트 아키텍처
 
-> **최종 업데이트:** 2026-03-01  
-> **대상 브랜치:** `fix/integration-test-seeding`
+> **최종 업데이트:** 2026-03-10  
+> **상태:** PostgreSQL 마이그레이션 완료 (Issue #97)
 
 ## 개요
 
@@ -65,7 +65,7 @@ tests/test_direction_fortune_birthdate_2026.py
 
 ### Phase 2: 백엔드 컨테이너 헬스체크 실패
 
-**문제:** `dependency failed to start: container backend-container is unhealthy`
+**문제:** `docker exec backend-container curl -sf http://localhost:5001/auth/health` 헬스체크 실패
 
 **조사 결과:**
 1. **Linux 파일 권한 충돌:** `db_manage.py init`이 `root`로 `/app/logs/app.log`를 생성 → 이후 `gunicorn`이 `appuser`로 기동 → Permission Denied로 worker 전멸
@@ -77,7 +77,7 @@ tests/test_direction_fortune_birthdate_2026.py
 
 ---
 
-### Phase 3: 데이터베이스 연결 오류 (Access Denied)
+### Phase 3: 데이터베이스 연결 오류 (Access Denied) — ※ 과거 MySQL 시절 조사 기록
 
 **문제:** `Access denied for user 'ninestarki'@'172.18.0.4' (using password: YES)`
 
@@ -99,13 +99,13 @@ tests/test_direction_fortune_birthdate_2026.py
    - `core/db_config.py`는 `DATABASE_URL`을 `DB_USER`보다 **우선** 사용 (line 89)
    - CI에서 `DB_USER=superuser`를 설정해도, `DATABASE_URL`이 우선하므로 항상 `ninestarki`로 접속
 
-**수정:**
+**수정:** (※ 현재는 PostgreSQL 기반으로 전환 완료)
 ```yaml
 # ci.yml - 프로덕션 환경 파일을 truncate (touch가 아닌 >)
 > backend/.env.production.backend
 
 # 개발용 .env에 DATABASE_URL을 포함한 전체 변수 생성
-echo "DATABASE_URL=mysql+pymysql://${DB_USER}:${DB_PASSWORD}@mysql:3306/${DB_NAME}?charset=utf8mb4" >> backend/.env.development.backend
+echo "DATABASE_URL=postgresql+psycopg2://${DB_USER}:${DB_PASSWORD}@postgres:5432/${DB_NAME}" >> backend/.env.development.backend
 ```
 
 ---
@@ -133,16 +133,15 @@ echo "DATABASE_URL=mysql+pymysql://${DB_USER}:${DB_PASSWORD}@mysql:3306/${DB_NAM
 |---|------------|------|------|
 | 1 | `Access denied for user 'ninestarki'` | `backend-test`에 `env_file`이 없어 기본값 `ninestarki` 자격 증명 사용 | `docker-compose.dev.yml`에 `env_file: ./backend/.env.development.backend` 추가 |
 | 2 | `Table 'ninestarki.zodiac_groups' doesn't exist` | `db_manage.py reset`이 테이블 생성 후 `commit()` 안 함 → 별도 커넥션의 CSV 로더에서 테이블이 보이지 않음 | `conn.commit()`을 테이블 생성 직후에 추가 |
-| 3 | `SQL 파일 'mysql/init/xxx.sql'을 찾을 수 없습니다` | `backend-test` 컨테이너 내 CWD는 `/app` (= `./backend`), 하지만 SQL 파일은 `./mysql/init/` (리포지토리 루트)에 위치 | 볼륨 마운트 `./mysql/init:/app/mysql/init` 추가 |
+| 3 | `SQL 파일 'db/init/xxx.sql'을 찾을 수 없습니다` | `backend-test` 컨테이너 내 CWD는 `/app` (= `./backend`), 하지만 SQL 파일은 `./db/init/` (리포지토리 루트)에 위치 | 볼륨 마운트 `./db/init:/app/db/init` 추가 |
 
-**최종 `docker-compose.dev.yml`의 `backend-test` 수정 내용:**
+**최종 `docker-compose.dev.yml`의 `backend-test` 설정:**
 ```yaml
 backend-test:
   user: root
   volumes:
     - ./backend:/app
-    - ./mysql/init:/app/mysql/init      # SQL 시드 스크립트
-    - ./backend/data:/var/lib/mysql-files  # CSV 파일 (LOAD DATA INFILE용)
+    - ./db/init:/app/db/init          # SQL 시드 스크립트
   env_file:
     - ./backend/.env.development.backend
   environment:
@@ -157,13 +156,13 @@ backend-test:
 
 ```mermaid
 graph TD
-    A[MySQL 컨테이너 기동] -->|docker-entrypoint-initdb.d| B[000_create_tables.sql<br/>테이블 생성]
-    B --> C[001_create_users.sql<br/>권한 설정]
+    A[PostgreSQL 컨테이너 기동] -->|docker-entrypoint-initdb.d| B[000_create_tables.sql<br/>테이블 생성]
+    B --> C[001_setup_privileges.sql<br/>권한 설정]
     C --> D[100_stars.sql ~ 900_system_data.sql<br/>SQL INSERT 데이터]
     D --> E[make db-seed]
     E -->|db_manage.py reset| F[테이블 DROP & 재생성]
     F -->|conn.commit| G[SQL 파일로 INSERT]
-    G --> H[load_all_csv_data<br/>CSV LOAD DATA INFILE]
+    G --> H[CSV 데이터 로드]
     H --> I[create_superuser<br/>슈퍼유저 생성]
     I --> J[통합 테스트 실행<br/>make test-integration]
 ```
@@ -219,8 +218,7 @@ make db-seed
 | `.github/workflows/ci.yml` | 자동 CI (단위 테스트만) |
 | `.github/workflows/integration-test.yml` | 수동 통합 테스트 |
 | `Makefile` | `test`, `test-unit`, `test-integration`, `db-seed` 타겟 |
-| `docker-compose.dev.yml` | `backend-test` 서비스 정의 |
+| `docker-compose.dev.yml` | `backend-test` 서비스 정의, PostgreSQL 서비스 |
 | `backend/db_manage.py` | `init` (슈퍼유저만) / `reset` (전체 데이터 재투입) |
-| `backend/scripts/csv_file_loader.py` | CSV 데이터 로더 |
-| `mysql/init/*.sql` | MySQL 초기화 스크립트 |
+| `db/init/*.sql` | PostgreSQL 초기화 스크립트 |
 | `backend/core/db_config.py` | DB 접속 정보 관리 (`DATABASE_URL` 우선) |

@@ -9,7 +9,6 @@ on:
         default: ''
 
 env:
-  DB_ROOT_PASSWORD: rootpassword
   DB_NAME: luminine
   DB_USER: superuser
   DB_PASSWORD: superpass!
@@ -34,27 +33,24 @@ jobs:
           > backend/.env.production.backend
 
           # Root .env for docker-compose variable interpolation
-          echo "DB_ROOT_PASSWORD=$DB_ROOT_PASSWORD" > .env
-          echo "DB_NAME=$DB_NAME" >> .env
+          echo "DB_NAME=$DB_NAME" > .env
           echo "DB_USER=$DB_USER" >> .env
           echo "DB_PASSWORD=$DB_PASSWORD" >> .env
-          echo "DB_HOST=mysql" >> .env
-          echo "DB_PORT=3306" >> .env
+          echo "DB_HOST=postgres" >> .env
+          echo "DB_PORT=5432" >> .env
 
           # Backend .env for Python app
           echo "SECRET_KEY=testsecretkey" > backend/.env.development.backend
           echo "JWT_SECRET_KEY=testjwtsecretkey" >> backend/.env.development.backend
           echo "DB_USER=$DB_USER" >> backend/.env.development.backend
           echo "DB_PASSWORD=$DB_PASSWORD" >> backend/.env.development.backend
-          echo "DB_HOST=mysql" >> backend/.env.development.backend
+          echo "DB_HOST=postgres" >> backend/.env.development.backend
           echo "DB_NAME=$DB_NAME" >> backend/.env.development.backend
-          echo "DB_PORT=3306" >> backend/.env.development.backend
+          echo "DB_PORT=5432" >> backend/.env.development.backend
           echo "DB_ROOT_USER=root" >> backend/.env.development.backend
-          echo "DB_ROOT_PASSWORD=$DB_ROOT_PASSWORD" >> backend/.env.development.backend
-          echo "DATABASE_URL=mysql+pymysql://${DB_USER}:${DB_PASSWORD}@mysql:3306/${DB_NAME}?charset=utf8mb4" >> backend/.env.development.backend
+          echo "DATABASE_URL=postgresql+psycopg2://${DB_USER}:${DB_PASSWORD}@postgres:5432/${DB_NAME}" >> backend/.env.development.backend
           echo "SUPERUSER_EMAIL=superuser" >> backend/.env.development.backend
           echo "SUPERUSER_PASSWORD=$DB_PASSWORD" >> backend/.env.development.backend
-          echo "SECURE_FILE_PRIV=/var/lib/mysql-files" >> backend/.env.development.backend
           echo "FLASK_DEBUG=1" >> backend/.env.development.backend
 
           mkdir -p backend/logs backend/.pytest_cache
@@ -78,4 +74,4 @@ jobs:
       - name: Dump Docker Logs on Failure
         if: failure()
         run: |
-          docker compose -f docker-compose.yml -f docker-compose.dev.yml logs backend mysql
+          docker compose -f docker-compose.yml -f docker-compose.dev.yml logs backend postgres

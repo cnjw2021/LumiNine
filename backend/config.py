@@ -18,8 +18,7 @@ class Config:
                 from urllib.parse import urlparse
                 # スキームを一時的に http:// に置き換えてパース
                 normalized = db_url
-                for scheme in ('postgresql+psycopg2://', 'postgresql://', 'postgres://',
-                               'mysql+pymysql://', 'mysql+mysqldb://', 'mysql://'):
+                for scheme in ('postgresql+psycopg2://', 'postgresql://', 'postgres://'):
                     normalized = normalized.replace(scheme, 'http://')
                 parsed = urlparse(normalized)
                 return {

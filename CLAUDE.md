@@ -50,11 +50,9 @@
   - `backend/docs/architecture/`: 아키텍처 가이드 및 CI/CD 수동 설정 가이드
 - `frontend/`: Next.js(App Router) 기반의 프론트엔드 UI 및 클라이언트 애플리케이션
 - `db/init/`: PostgreSQL 초기화 스크립트 (DDL/DML) — Docker 로컬 개발용
-- `mysql/init/`: 구 MySQL 초기화 스크립트 (레거시, 마이그레이션 참고용)
 - `.github/workflows/`: GitHub Actions CI/CD 워크플로우
 - `docs/`: 프로젝트 관련 문서 보관
 - `Makefile`: 로컬 개발 명령어 모음
-- `deploy.sh`: **[DEPRECATED]** ConoHa VPS 수동 배포 스크립트 (GitHub Actions로 대체)
 
 ## 🗄 DB 테이블과 관계 요약
 
@@ -71,7 +69,7 @@
 
 - **Backend (Python)**: PEP 8 스타일 가이드를 따르며, Clean Architecture를 지향하여 비즈니스 로직(Domain/Use Cases)과 프레임워크(Web/Infrastructure)를 분리.
 - **Frontend (TypeScript)**: `eslint`와 `prettier` (`eslint-config-next`) 규칙을 준수. App Router 패턴의 Server Component와 Client Component(`"use client"`)를 명확히 분리.
-- **DB**: PostgreSQL DDL/DML은 `db/init/` 디렉터리에서 버전 관리 (구 `mysql/init/`는 레거시). 프로덕션 환경은 Alembic으로 마이그레이션.
+- **DB**: PostgreSQL DDL/DML은 `db/init/` 디렉터리에서 버전 관리. 프로덕션 환경은 Alembic으로 마이그레이션.
 - **공통**: 변수명/함수명은 영어, 주석은 한국어 OK
 - **📌 코드 리뷰 가이드라인**: [docs/CODE_REVIEW_GUIDELINES.md](docs/CODE_REVIEW_GUIDELINES.md) 를 코드 작성 전 반드시 참조
 
