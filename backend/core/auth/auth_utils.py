@@ -2,11 +2,24 @@ from flask import jsonify
 from flask_jwt_extended import get_jwt_identity
 from functools import wraps
 from apps.reading.shared.domain.entities.user import User
+from core.models.exceptions import UserNotFoundError
 from core.utils.logger import get_logger
 from sqlalchemy import text
 from core.database import db
 
 logger = get_logger(__name__)
+
+
+def get_current_user():
+    """現在のJWTトークンからユーザーを取得するヘルパー関数"""
+    current_user_email = get_jwt_identity()
+    user = User.query.filter_by(email=current_user_email).first()
+
+    if not user:
+        logger.error(f"ユーザーが見つかりません: {current_user_email}")
+        raise UserNotFoundError(current_user_email)
+
+    return user
 
 def permission_required(permission_name):
     """特定の権限を持つユーザーのみアクセス可能なデコレータ"""

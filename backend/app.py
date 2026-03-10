@@ -16,6 +16,7 @@ from apps.reading.dependency_module import AppModule
 from injector import Injector
 
 from apps.reading.shared.use_cases.permission_use_case import PermissionUseCase
+from apps.reading.shared.use_cases.admin_user_use_case import AdminUserUseCase
 
 # パスを追加
 PROJECT_ROOT = os.path.dirname(os.path.abspath(__file__))
@@ -26,6 +27,7 @@ from apps.reading.ninestarki.routes.monthly_routes import create_monthly_bp
 from core.exceptions import AppError
 
 from core.auth import auth_bp
+from core.auth.auth_routes import create_auth_bp
 from core.auth.permission_routes import create_permission_bp
 
 # JSONエンコーダーをカスタマイズ
@@ -105,11 +107,15 @@ def create_app() -> Flask:
     # 블루프린트 등록
     app.register_blueprint(create_nine_star_bp())
     app.register_blueprint(create_monthly_bp())
-    app.register_blueprint(auth_bp, url_prefix='/api/auth')
 
     # 권한 유즈케이스도 DI에서 취득
     perm_use_case = injector.get(PermissionUseCase)
     app.register_blueprint(create_permission_bp(perm_use_case))
+
+    # 인증 블루프린트 등록 (AdminUserUseCase DI 주입)
+    admin_user_use_case = injector.get(AdminUserUseCase)
+    create_auth_bp(admin_user_use_case)
+    app.register_blueprint(auth_bp, url_prefix='/api/auth')
 
     # DI 설정（同一InjectorをFlaskに紐付け）
     FlaskInjector(app=app, injector=injector)

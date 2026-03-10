@@ -84,6 +84,7 @@ from apps.reading.shared.domain.repositories.permission_repository_interface imp
 from apps.reading.shared.infrastructure.persistence.permission_repository import PermissionRepository
 
 from apps.reading.shared.use_cases.permission_use_case import PermissionUseCase
+from apps.reading.shared.use_cases.admin_user_use_case import AdminUserUseCase
 
 
 class AppModule(Module):
@@ -118,6 +119,14 @@ class AppModule(Module):
         perm_repo: IPermissionRepository,
     ) -> PermissionUseCase:
         return PermissionUseCase(user_repo, perm_repo)
+
+    @singleton
+    @provider
+    def provide_admin_user_use_case(
+        self,
+        user_repo: IUserRepository,
+    ) -> AdminUserUseCase:
+        return AdminUserUseCase(user_repo)
 
     def configure(self, binder):
         # ── ninestarki ────────────────────────────────────
