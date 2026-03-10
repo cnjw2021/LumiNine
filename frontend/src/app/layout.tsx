@@ -94,7 +94,7 @@ function AppShellLayout({ children }: { children: React.ReactNode }) {
           </Group>
         </AppShell.Header>
         <AppShell.Navbar>
-          <Navigation opened={opened} onClose={toggle} />
+          <Navigation opened={opened} onClose={close} />
         </AppShell.Navbar>
         <AppShell.Main>
           {children}
