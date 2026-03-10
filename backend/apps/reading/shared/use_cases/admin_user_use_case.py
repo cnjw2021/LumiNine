@@ -4,7 +4,7 @@ Encapsulates all business logic for admin user operations:
 authorization checks, validation, user CRUD, and account limit management.
 """
 
-from typing import Dict, Any, List, Optional
+from typing import Dict, Any
 from datetime import datetime
 
 from apps.reading.shared.domain.entities.user import User
@@ -198,7 +198,7 @@ class AdminUserUseCase:
         """
         self._require_admin(current_user)
 
-        target_user = User.query.get(user_id)
+        target_user = self.user_repo.find_by_id(user_id)
         if not target_user:
             raise UserNotFoundError(f"ID {user_id}")
 
@@ -250,7 +250,7 @@ class AdminUserUseCase:
         """
         self._require_superuser(current_user)
 
-        target_user = User.query.get(user_id)
+        target_user = self.user_repo.find_by_id(user_id)
         if not target_user:
             raise UserNotFoundError(f"ID {user_id}")
 
