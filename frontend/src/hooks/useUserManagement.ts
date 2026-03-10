@@ -263,10 +263,14 @@ export function useUserManagement(): UseUserManagementReturn {
             const updateData: UpdateUserData = {
                 name: editName,
                 email: editEmail,
-                is_admin: isAdmin,
                 subscription_start: formatDateForApi(subscriptionStart),
                 subscription_end: formatDateForApi(subscriptionEnd),
             };
+
+            // is_admin はスーパーユーザーのみ変更可能（バックエンドが非スーパーユーザーの is_admin キー存在を 403 で拒否）
+            if (selectedUser && isAdmin !== selectedUser.is_admin) {
+                updateData.is_admin = isAdmin;
+            }
 
             if (editPassword) {
                 updateData.password = editPassword;

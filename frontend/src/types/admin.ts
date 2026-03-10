@@ -24,7 +24,7 @@ export interface AdminUser {
 export interface UpdateUserData {
     name: string;
     email: string;
-    is_admin: boolean;
+    is_admin?: boolean;
     subscription_start: string;
     subscription_end: string;
     password?: string;
