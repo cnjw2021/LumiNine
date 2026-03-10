@@ -115,16 +115,14 @@ export const Navigation = ({ opened, onClose }: NavigationProps) => {
     try {
       if (!isLoggedIn && href !== '/login') {
         onClose();
-        window.location.href = '/login';
+        router.push('/login');
         return;
       }
 
       setNavigating(href);
+      // lockScroll={false}를 적용했으므로 지연 없이 즉시 라우팅 가능
+      router.push(href);
       onClose();
-      // Mantine AppShell のスクロールコンテナが client-side navigation で
-      // 正常に再初期化されない既知の問題を回避するため、
-      // フルページリロードで遷移する (Issue #129)
-      window.location.href = href;
     } catch (error) {
       console.error('Navigation error:', error);
       setNavigating(null);
@@ -168,6 +166,7 @@ export const Navigation = ({ opened, onClose }: NavigationProps) => {
         padding="0"
         hiddenFrom="sm"
         withCloseButton={false}
+        lockScroll={false}
         title={<DrawerHeader title="LumiNine" onClose={onClose} />}
         styles={{
           header: {
@@ -181,6 +180,9 @@ export const Navigation = ({ opened, onClose }: NavigationProps) => {
             padding: '20px',
             backgroundColor: 'rgba(245, 247, 243, 0.95)',
             backdropFilter: 'blur(10px)'
+          },
+          content: {
+            overscrollBehavior: 'contain'
           }
         }}
       >

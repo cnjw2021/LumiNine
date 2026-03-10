@@ -33,14 +33,25 @@ const theme = createTheme({
   },
 });
 
+import { useEffect } from 'react';
 import { usePathname } from 'next/navigation';
 
 function AppShellLayout({ children }: { children: React.ReactNode }) {
-  const [opened, { toggle }] = useDisclosure();
+  const [opened, { toggle, close }] = useDisclosure();
   const pathname = usePathname();
   const { isLoggedIn } = useAuth();
   // ランディングページかつ未ログインの場合のみサイドバーを非表示にする
   const hideSidebar = pathname === '/' && !isLoggedIn;
+
+  useEffect(() => {
+    // 1. 라우트 이동 시 강제로 최상단 스크롤 (원활한 화면 전환용)
+    window.scrollTo({ top: 0, left: 0, behavior: 'instant' });
+
+    // 모바일 환경에서 라우팅이 일어났을 때 열려있던 Drawer를 강제로 닫음
+    if (opened) {
+      close();
+    }
+  }, [pathname]);
 
   return (
     <MantineProvider theme={theme} defaultColorScheme="light">
@@ -59,7 +70,6 @@ function AppShellLayout({ children }: { children: React.ReactNode }) {
             backgroundImage: GRADIENTS.pageBg,
             width: '100%',
             maxWidth: '100%',
-            overflowX: 'hidden',
             padding: hideSidebar ? 0 : undefined
           },
           navbar: {
