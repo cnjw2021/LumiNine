@@ -32,7 +32,7 @@
   - `migrations/versions/001_initial_schema.py`: 초기 스키마 생성.
   - `migrations/versions/002_seed_data.py`: SQL 파일 기반 시드 데이터 로드.
   - `migrations/versions/003_csv_seed_data.py`: CSV 파일 기반 마스터 데이터 시드 (대량 데이터용).
-- `data/csv/`: Alembic CSV 시드 마이그레이션에서 참조하는 마스터 데이터 CSV 파일 (daily_astrology, solar_terms 등 9종).
+- `data/csv/`: Alembic CSV 시드 마이그레이션에서 로드하는 마스터 데이터 CSV 파일 7종 (zodiac_groups, zodiac_group_members, hourly_star_zodiacs, solar_terms, solar_starts, daily_astrology, pattern_switch_dates). 그 외 CSV(star_compatibility_matrix, user_account)는 로컬 스크립트 전용.
 - `db_manage.py`: 데이터베이스 초기화(init) 및 리셋(reset) 유틸리티 스크립트 (로컬 개발/Docker용).
 - `docs/architecture/cicd-manual-setup-guide.md`: CI/CD 수동 설정 가이드 (Secrets 등록부터 VPS 정리까지).
 
