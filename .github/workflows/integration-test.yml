@@ -26,12 +26,6 @@ jobs:
 
       - name: Prepare environment files
         run: |
-          touch frontend/.env.production.frontend
-          touch frontend/.env.development.frontend
-          
-          # Truncate production env to prevent credential conflicts
-          > backend/.env.production.backend
-
           # Root .env for docker-compose variable interpolation
           echo "DB_NAME=$DB_NAME" > .env
           echo "DB_USER=$DB_USER" >> .env
@@ -52,6 +46,10 @@ jobs:
           echo "SUPERUSER_PASSWORD=$DB_PASSWORD" >> backend/.env.development.backend
           echo "FLASK_DEBUG=1" >> backend/.env.development.backend
 
+          # Frontend .env for Next.js (minimal, for Docker build)
+          echo "NEXT_PUBLIC_API_URL=http://localhost:5001" > frontend/.env.development.frontend
+          echo "NODE_ENV=development" >> frontend/.env.development.frontend
+
           mkdir -p backend/logs backend/.pytest_cache
           chmod -R 777 backend/logs backend/.pytest_cache
 
@@ -64,7 +62,7 @@ jobs:
         run: |
           if [ -n "${{ github.event.inputs.test_path }}" ]; then
             echo "### Running specific test: ${{ github.event.inputs.test_path }} ###"
-            docker compose -f docker-compose.yml -f docker-compose.dev.yml run --rm backend-test pytest ${{ github.event.inputs.test_path }} -v
+            docker compose run --rm backend-test pytest ${{ github.event.inputs.test_path }} -v
           else
             echo "### Running all integration tests ###"
             make test-integration
@@ -73,4 +71,4 @@ jobs:
       - name: Dump Docker Logs on Failure
         if: failure()
         run: |
-          docker compose -f docker-compose.yml -f docker-compose.dev.yml logs backend postgres
+          docker compose logs backend postgres

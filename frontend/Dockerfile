@@ -13,48 +13,17 @@ COPY package.json package-lock.json* ./
 RUN npm install --legacy-peer-deps
 
 # ===================================================================
-#  3. development - 개발 환경 스테이지
+#  3. development - 開発環境ステージ (docker-compose で使用)
+#  ※ 本番環境は Cloudflare Pages でビルド・デプロイするため
+#    Docker の production ステージは不要
 # ===================================================================
 FROM base as development
-# 개발에 필요한 도구 설치 (필요 시)
+# 開発に必要なツール設置 (必要時)
 RUN apk add --no-cache curl
 
-# deps 스테이지에서 설치한 node_modules를 복사
+# deps ステージで設置した node_modules を復元
 COPY --from=deps /app/node_modules /app/node_modules
 COPY package.json package-lock.json* ./
 
-# 개발 서버 실행 (docker-compose.dev.yml에서 코드는 볼륨 마운트)
+# 開発サーバー実行 (docker-compose でコードはボリュームマウント)
 CMD ["npm", "run", "dev"]
-
-# ===================================================================
-#  4. builder - 운영 환경 빌드 전용 스테이지
-# ===================================================================
-FROM deps as builder
-# 애플리케이션 전체 소스 코드 복사
-COPY . .
-# 운영 환경용 .env 파일 복사
-COPY .env.production.frontend .env.local
-# Next.js 애플리케이션 빌드
-RUN npm run build
-
-# ===================================================================
-#  5. production - 최종 운영 환경 스테이지 (기본값)
-# ===================================================================
-FROM base as production
-ENV NODE_ENV=production
-
-# 보안을 위한 non-root 사용자 생성
-RUN addgroup -g 1001 -S nodejs
-RUN adduser -S nextjs -u 1001
-
-# builder 스테이지에서 빌드된 결과물만 복사
-COPY --from=builder /app/public ./public
-COPY --from=builder --chown=nextjs:nodejs /app/.next ./.next
-COPY --from=builder /app/node_modules ./node_modules
-COPY --from=builder /app/package.json ./package.json
-
-# non-root 사용자로 전환
-USER nextjs
-
-EXPOSE 3000
-CMD ["npm", "run", "start"]

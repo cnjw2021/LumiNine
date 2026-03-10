@@ -65,7 +65,7 @@ LumiNine/
 cp .env.example .env
 
 # Docker로 전체 실행 (PostgreSQL 포함)
-docker compose -f docker-compose.yml -f docker-compose.dev.yml up --build
+docker compose up --build
 
 # 프론트엔드 개발 서버
 cd frontend && npm install --legacy-peer-deps && npm run dev

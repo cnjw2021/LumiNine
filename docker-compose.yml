@@ -1,14 +1,30 @@
+# ===================================================================
+#  LumiNine ローカル開発環境 (docker-compose.yml)
+#  - 運用環境: Cloudflare Pages (frontend) + Cloud Run (backend) + Supabase (DB)
+#  - このファイルはローカル開発およびCIテスト専用です
+# ===================================================================
 services:
   frontend:
     build:
       context: ./frontend
       dockerfile: Dockerfile
+      target: development
     container_name: frontend-container
     ports:
-      - "3000:3000" # Next.jsのデフォルトポート
+      - "3000:3000"
+    volumes:
+      - ./frontend:/app
+      - /app/node_modules
     env_file:
-      - ./frontend/.env.production.frontend
-    restart: always
+      - ./frontend/.env.development.frontend
+    environment:
+      - BACKEND_URL=http://backend:5001
+    healthcheck:
+      test: ["CMD-SHELL", "curl -f http://localhost:3000 || exit 1"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+      start_period: 40s
     networks:
       - app-network
 
@@ -16,59 +32,81 @@ services:
     build:
       context: ./backend
       dockerfile: Dockerfile
+      target: development
     container_name: backend-container
     ports:
       - "5001:5001"
     volumes:
+      - ./backend:/app
       - ./backend/logs:/app/logs:rw
-      - ./backend/data:/app/data:ro  # データディレクトリをマウント（読み取り専用）
     env_file:
-      - ./backend/.env.production.backend
+      - ./backend/.env.development.backend
     environment:
       LANG: en_US.UTF-8
       LC_CTYPE: en_US.UTF-8
-    restart: always
-    networks:
-      - app-network
+    user: root
+    # DB準備 > DB初期化 > Gunicorn実行 の順番
+    command: >
+      sh -c "python /app/wait_for_db.py &&
+             python /app/db_manage.py init &&
+             chown -R appuser:appgroup /app/logs &&
+             exec gunicorn --bind 0.0.0.0:5001 --reload --user appuser --group appgroup 'app:app'"
+    depends_on:
+      postgres:
+        condition: service_healthy
     healthcheck:
       test: ["CMD", "curl", "-f", "http://localhost:5001/auth/health"]
-      interval: 30s
+      interval: 10s
       timeout: 10s
-      retries: 3
-      start_period: 30s # gunicorn開始及び、DB 初期化時間を考慮して少し長く設定
-
-  nginx:
-    build:
-      context: ./nginx
-      dockerfile: Dockerfile
-    container_name: nginx-container
-    restart: always
-    ports:
-      - "80:80"
-      - "443:443" # <<< HTTPSポート
-    volumes:
-      - ./nginx/conf.d:/etc/nginx/conf.d
-      - ./certbot/conf:/etc/letsencrypt:ro
-      - ./certbot/www:/var/www/certbot
-    depends_on:
-      frontend:
-        condition: service_started
-      backend:
-        condition: service_healthy
+      retries: 15
+      start_period: 30s
     networks:
       - app-network
 
-# <<< Certbot サービス 追加 >>>
-  certbot:
-    image: certbot/certbot
-    container_name: certbot-container
-    # restart: unless-stopped # 必要に応じて再起動ポリシーを設定
+  # ── PostgreSQL ──────────────────────────────────────────────────────
+  postgres:
+    image: postgres:16-alpine
+    environment:
+      POSTGRES_DB: ${DB_NAME:-luminine}
+      POSTGRES_USER: ${DB_USER:-superuser}
+      POSTGRES_PASSWORD: ${DB_PASSWORD:-superpass!}
+    ports:
+      - "5432:5432"
     volumes:
-      - ./certbot/conf:/etc/letsencrypt
-      - ./certbot/www:/var/www/certbot
-    # デフォルトコマンドは更新試行。初回発行時は別コマンドで実行。
-    command: renew --quiet --agree-tos
+      - postgres_data_local:/var/lib/postgresql/data
+      - ./db/init:/docker-entrypoint-initdb.d  # 初期化 SQL をマウント
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U ${DB_USER:-superuser} -d ${DB_NAME:-luminine}"]
+      interval: 5s
+      timeout: 5s
+      retries: 10
+    networks:
+      - app-network
+
+  # --- テスト専用サービス ---
+  backend-test:
+    user: root
+    build:
+      context: ./backend
+      dockerfile: Dockerfile
+      target: development
+    volumes:
+      - ./backend:/app
+      - ./db/init:/app/db/init
+    env_file:
+      - ./backend/.env.development.backend
+    environment:
+      - PYTHONPATH=/app
+    depends_on:
+      backend:
+        condition: service_healthy
+    command: ["tail", "-f", "/dev/null"]
+    networks:
+      - app-network
 
 networks:
   app-network:
-    driver: bridge
+    name: app-network
+
+volumes:
+  postgres_data_local:

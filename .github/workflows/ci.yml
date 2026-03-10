@@ -22,7 +22,7 @@ jobs:
     permissions:
       contents: read
 
-    # PostgreSQL 서비스 컨테이너
+    # PostgreSQL サービスコンテナ
     services:
       postgres:
         image: postgres:16-alpine
@@ -47,15 +47,9 @@ jobs:
       - name: Checkout repository
         uses: actions/checkout@v4
 
-      # ── 테스트 환경 준비 ─────────────────────────────────────────────
+      # ── テスト環境準備 ─────────────────────────────────────────────
       - name: Prepare environment files
         run: |
-          touch frontend/.env.production.frontend
-          touch frontend/.env.development.frontend
-
-          # production env를 빈 파일로 만들어 CI 테스트 인증정보 덮어쓰기 방지
-          > backend/.env.production.backend
-
           echo "SECRET_KEY=testsecretkey" > backend/.env.development.backend
           echo "JWT_SECRET_KEY=testjwtsecretkey" >> backend/.env.development.backend
           echo "DB_USER=$DB_USER" >> backend/.env.development.backend
@@ -70,7 +64,7 @@ jobs:
           mkdir -p backend/logs backend/.pytest_cache
           chmod -R 777 backend/logs backend/.pytest_cache
 
-      # ── Python 설정 및 테스트 ────────────────────────────────────────
+      # ── Python 設定およびテスト ────────────────────────────────────
       - name: Set up Python
         uses: actions/setup-python@v5
         with:
