@@ -10,6 +10,8 @@ import '@/components/styles/result.css';
 import { Notifications } from '@mantine/notifications';
 import { useDisclosure } from '@mantine/hooks';
 import { COLORS, GRADIENTS, FONTS, NAV } from '@/utils/theme';
+import { useEffect } from 'react';
+import { usePathname } from 'next/navigation';
 
 const theme = createTheme({
   primaryColor: 'gold',
@@ -33,8 +35,6 @@ const theme = createTheme({
   },
 });
 
-import { useEffect } from 'react';
-import { usePathname } from 'next/navigation';
 
 function AppShellLayout({ children }: { children: React.ReactNode }) {
   const [opened, { toggle, close }] = useDisclosure();
