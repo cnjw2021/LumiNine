@@ -48,11 +48,10 @@
 - **Day.js**: 날짜 처리 라이브러리.
 
 ## 🔐 환경변수
-- `NEXT_PUBLIC_API_URL`: 백엔드 API 베이스 URL. `src/utils/api.ts`에서 이 값을 그대로 baseURL로 사용합니다.
-  - **⚠️ 주의**: `/api`까지 포함한 전체 경로를 지정하세요.
-  - 올바른 예시: `NEXT_PUBLIC_API_URL=http://localhost:5001/api` (로컬)
-  - 잘못된 예시 (수정 전): `NEXT_PUBLIC_API_URL=http://localhost:5001` ← `/api` 경로 누락!
-  - 미설정 시: docker-compose rewrite(`/api/*` → `http://backend:5001/api/*`) 사용. 프로덕션(Cloudflare Pages)에서는 Cloud Run URL + `/api` 필수 설정.
+- `NEXT_PUBLIC_API_URL`: 백엔드 API **베이스 URL** (`/api`를 포함하지 않는 값). `src/utils/api.ts`에서 이 값에 `/api`를 자동으로 붙여 baseURL을 구성합니다.
+  - 로컬 docker-compose: `NEXT_PUBLIC_API_URL=http://localhost:5001` (`.env.development.frontend`)
+  - 프로덕션(Cloudflare Pages): GitHub Secrets에 `NEXT_PUBLIC_API_URL=https://831shop.site`
+  - **⚠️ 주의**: `/api`를 포함하면 `/api/api/` 중복 발생. 미설정 시 docker-compose rewrite 사용.
 
 ## ⚠️ 수정 시 주의사항
 1. **App Router 활용**: Server Component 기반으로 동작하는 파일인지, Client Component(`"use client"`) 기반인지 명확하게 구분. 상태(State)나 훅스(Hooks)가 필요한 경우는 반드시 Client Component로 선언하세요.
