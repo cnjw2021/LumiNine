@@ -7,7 +7,7 @@ keeping the single auth_bp blueprint that app.py already imports.
 from flask import Blueprint, request, jsonify, Response
 from flask_jwt_extended import (
     create_access_token, create_refresh_token,
-    jwt_required, get_jwt_identity, get_jwt,
+    jwt_required, get_jwt_identity,
 )
 import bcrypt
 from apps.reading.shared.domain.entities.user import User

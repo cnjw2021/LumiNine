@@ -4,7 +4,6 @@ from flask import request, Response
 from flask_jwt_extended import jwt_required
 from apps.reading.shared.domain.entities.user import User
 from core.models.system_config import SystemConfig
-from core.database import db
 from core.utils.logger import get_logger
 from core.auth.auth_utils import get_current_user
 from config import get_config
@@ -12,6 +11,32 @@ from datetime import datetime, timezone, timedelta
 import json
 
 logger = get_logger(__name__)
+
+# JSTタイムゾーン定義 (モジュールレベルで共有)
+JST = timezone(timedelta(hours=+9), 'JST')
+
+
+def _count_active_users() -> int:
+    """サブスクリプションが有効なアクティブユーザー数をカウントします。"""
+    now = datetime.now(JST).date()
+    non_deleted_users = User.query.filter_by(is_deleted=False).all()
+
+    count = 0
+    for user in non_deleted_users:
+        if user.subscription_start and user.subscription_end:
+            start_date = (
+                user.subscription_start.date()
+                if user.subscription_start.tzinfo
+                else user.subscription_start.replace(tzinfo=JST).date()
+            )
+            end_date = (
+                user.subscription_end.date()
+                if user.subscription_end.tzinfo
+                else user.subscription_end.replace(tzinfo=JST).date()
+            )
+            if start_date <= now <= end_date:
+                count += 1
+    return count
 
 
 def register_admin_system_routes(bp):
@@ -31,26 +56,9 @@ def register_admin_system_routes(bp):
                     mimetype='application/json'
                 )
 
-            # JSTタイムゾーンの定義
-            JST = timezone(timedelta(hours=+9), 'JST')
-            now = datetime.now(JST).date()
-
-            # 削除されていないユーザーを取得
-            non_deleted_users = User.query.filter_by(is_deleted=False).all()
-
-            # 削除されたユーザー数を取得
+            active_users_count = _count_active_users()
             deleted_users_count = User.query.filter_by(is_deleted=True).count()
 
-            # サブスクリプションが有効なユーザーをカウント
-            active_users_count = 0
-            for user in non_deleted_users:
-                if user.subscription_start and user.subscription_end:
-                    start_date = user.subscription_start.date() if user.subscription_start.tzinfo else user.subscription_start.replace(tzinfo=JST).date()
-                    end_date = user.subscription_end.date() if user.subscription_end.tzinfo else user.subscription_end.replace(tzinfo=JST).date()
-                    if start_date <= now <= end_date:
-                        active_users_count += 1
-
-            # アカウント制限数を取得
             config = get_config()
             account_limit = config.get_account_limit()
 
@@ -97,19 +105,7 @@ def register_admin_system_routes(bp):
                     mimetype='application/json'
                 )
 
-            # 現在のアクティブユーザー数を取得
-            JST = timezone(timedelta(hours=+9), 'JST')
-            now = datetime.now(JST).date()
-
-            non_deleted_users = User.query.filter_by(is_deleted=False).all()
-
-            active_users_count = 0
-            for user in non_deleted_users:
-                if user.subscription_start and user.subscription_end:
-                    start_date = user.subscription_start.date() if user.subscription_start.tzinfo else user.subscription_start.replace(tzinfo=JST).date()
-                    end_date = user.subscription_end.date() if user.subscription_end.tzinfo else user.subscription_end.replace(tzinfo=JST).date()
-                    if start_date <= now <= end_date:
-                        active_users_count += 1
+            active_users_count = _count_active_users()
 
             # 新しい制限が現在のユーザー数より少ない場合はエラー
             if new_limit < active_users_count:
