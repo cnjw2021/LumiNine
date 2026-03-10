@@ -37,10 +37,12 @@ export function AccountLimitModal({
                     onChange={(e) => {
                         const value = e.currentTarget.valueAsNumber;
                         if (Number.isNaN(value)) return;
-                        onAccountLimitChange(value);
+                        const intValue = Math.trunc(value);
+                        onAccountLimitChange(intValue);
                     }}
                     type="number"
                     min={0}
+                    step={1}
                     required
                 />
                 {selectedUser?.created_accounts_count !== undefined && (

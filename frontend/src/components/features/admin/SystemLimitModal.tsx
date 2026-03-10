@@ -37,9 +37,11 @@ export function SystemLimitModal({
                     onChange={(e) => {
                         const value = e.currentTarget.valueAsNumber;
                         if (Number.isNaN(value)) return;
-                        onSystemLimitChange(value);
+                        const intValue = Math.trunc(value);
+                        onSystemLimitChange(intValue);
                     }}
                     type="number"
+                    step={1}
                     min={totalActiveUsers}
                     required
                 />

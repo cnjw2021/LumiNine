@@ -1,5 +1,8 @@
 import dayjs from 'dayjs';
+import customParseFormat from 'dayjs/plugin/customParseFormat';
 import type { DateError } from '@/types/admin';
+
+dayjs.extend(customParseFormat);
 
 /**
  * 管理画面で使用するバリデーションユーティリティ
@@ -30,8 +33,8 @@ export function validateDates(start: string, end: string): { valid: boolean; err
         };
     }
 
-    const startDate = dayjs(start);
-    const endDate = dayjs(end);
+    const startDate = dayjs(start, 'YYYY/MM/DD', true);
+    const endDate = dayjs(end, 'YYYY/MM/DD', true);
 
     if (!startDate.isValid() || !endDate.isValid()) {
         return {
