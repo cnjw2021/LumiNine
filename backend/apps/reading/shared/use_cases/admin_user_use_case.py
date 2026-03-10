@@ -260,21 +260,17 @@ class AdminUserUseCase:
         if not isinstance(new_limit, int) or new_limit < 0:
             raise ValidationError("有効なアカウント制限数を指定してください")
 
-        # AdminAccountLimit テーブルを使用
+        # AdminAccountLimit テーブルを使用（グローバル設定）
         from core.models.admin_account_limit import AdminAccountLimit
-        limit_info = AdminAccountLimit.query.filter_by(admin_id=target_user.id).first()
+        from core.database import db
+        limit_info = AdminAccountLimit.query.first()
         if limit_info:
-            limit_info.account_limit = new_limit
-            limit_info.updated_by = current_user.id
+            limit_info.max_accounts = new_limit
         else:
-            limit_info = AdminAccountLimit(
-                admin_id=target_user.id,
-                account_limit=new_limit,
-                updated_by=current_user.id,
-            )
-            from core.database import db
+            limit_info = AdminAccountLimit(max_accounts=new_limit)
             db.session.add(limit_info)
-            db.session.commit()
+
+        db.session.commit()
 
         logger.info(f"Account limit updated for admin {target_user.email}: {new_limit}")
         return {

@@ -16,7 +16,6 @@ from core.models.exceptions import (
     PasswordAuthenticationError,
     PasswordValidationError,
 )
-from core.database import db
 from core.utils.logger import get_logger
 from core.auth.auth_utils import get_current_user
 import json
