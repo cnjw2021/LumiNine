@@ -79,9 +79,14 @@ interface UsePdfReportProps {
 /**
  * PDF generation hook using html2canvas + jsPDF.
  *
- * The Result component is already laid out at A4 width (794px),
- * so html2canvas captures it at the correct size without any
- * runtime width manipulation.
+ * ## Mobile Fix (Issue #114)
+ * On mobile, Mantine AppShell.Main has `overflowX: hidden`, which clips
+ * any element wider than the viewport. Forcing width on the original
+ * element still results in a clipped capture.
+ *
+ * Solution: Deep-clone the target, apply 794px desktop styles to the clone,
+ * append it directly to document.body (outside AppShell), capture it,
+ * then remove it. This bypasses all ancestor overflow constraints.
  *
  * ## Cross-browser defenses (Issue #83)
  * 1. Font loading wait — `document.fonts.ready`
@@ -102,18 +107,12 @@ export const usePdfReport = ({ resultData, contentRef, onActionComplete }: UsePd
 
         setIsGeneratingPdf(true);
 
-        // Query header outside try so finally can restore its original position
-        const header = target.querySelector('.result-header') as HTMLElement | null;
-        const originalPosition = header?.style.position ?? '';
-        const originalMinHeight = target.style.minHeight;
-        // Capture original inline display values before hiding (to restore in finally)
-        const hiddenEls = target.querySelectorAll('.hide-on-pdf');
-        const originalDisplays = Array.from(hiddenEls).map(el => (el as HTMLElement).style.display);
+        // Off-screen clone appended to body — removed in finally block
+        let offScreenEl: HTMLElement | null = null;
 
         try {
             // ── 0. Wait for all web fonts to finish loading ──
             // This hook is 'use client' — it only runs in a browser context.
-            // Use fonts.ready directly; fallback for legacy browsers without Font Loading API.
             if (document.fonts?.ready) {
                 await document.fonts.ready;
             } else {
@@ -123,25 +122,60 @@ export const usePdfReport = ({ resultData, contentRef, onActionComplete }: UsePd
             const html2canvas = (await import('html2canvas')).default;
             const { jsPDF } = await import('jspdf');
 
-            // ── 1. Hide non-PDF elements & disable sticky header ──
-            hiddenEls.forEach(el => (el as HTMLElement).style.display = 'none');
+            // ── 1. Build the off-screen clone ──
+            // Deep-clone the entire result DOM tree.
+            const clone = target.cloneNode(true) as HTMLElement;
 
-            if (header) header.style.position = 'static';
+            // Apply desktop / A4 styles directly on the clone.
+            // Since the clone is attached to <body> (not inside AppShell),
+            // there is no ancestor overflow:hidden to clip it.
+            clone.style.position = 'fixed';
+            clone.style.left = '-9999px';
+            clone.style.top = '0';
+            clone.style.width = '794px';
+            clone.style.minWidth = '794px';
+            clone.style.maxWidth = '794px';
+            clone.style.minHeight = 'unset';
+            clone.style.zIndex = '-9999';
+            clone.classList.add('pdf-capture-mode');
 
-            // Temporarily remove minHeight so html2canvas captures only the
-            // actual content height and does not add viewport-sized blank space.
-            target.style.minHeight = 'unset';
+            // Hide .hide-on-pdf elements inside the clone
+            clone.querySelectorAll('.hide-on-pdf').forEach((el) => {
+                (el as HTMLElement).style.display = 'none';
+            });
+
+            // Disable sticky header positioning inside the clone
+            const cloneHeader = clone.querySelector('.result-header') as HTMLElement | null;
+            if (cloneHeader) cloneHeader.style.position = 'static';
+
+            // Append to body so it renders outside any overflow container
+            document.body.appendChild(clone);
+            offScreenEl = clone;
+
+            // Force a synchronous reflow so the browser computes full layout
+            void clone.offsetHeight;
+
+            // Wait two animation frames + small delay for full paint
+            await new Promise<void>(resolve => {
+                requestAnimationFrame(() => {
+                    requestAnimationFrame(() => {
+                        setTimeout(resolve, 100);
+                    });
+                });
+            });
 
             // ── 2. Determine safe scale (iOS canvas memory defense) ──
             const preferredScale = 2;
-            const safeScale = getSafeScale(target, preferredScale);
+            const safeScale = getSafeScale(clone, preferredScale);
 
-            // ── 3. Capture the DOM element ──
-            const canvas = await html2canvas(target, {
+            // ── 3. Capture the off-screen clone ──
+            // windowWidth: 860 ensures media queries evaluate at desktop breakpoint
+            const canvas = await html2canvas(clone, {
                 scale: safeScale,
                 useCORS: true,
                 backgroundColor: '#f9f7f2',
                 logging: false,
+                windowWidth: 860,
             });
 
             // ── 4. Validate canvas (empty canvas defense) ──
@@ -158,9 +192,6 @@ export const usePdfReport = ({ resultData, contentRef, onActionComplete }: UsePd
 
             const pdf = new jsPDF({ orientation: 'portrait', unit: 'pt', format: 'a4' });
 
-            // Always fit to single A4 page.
-            // If content exceeds A4 height (e.g. Safari renders taller than Chrome),
-            // scale down proportionally so everything fits on one page.
             pdf.setFillColor(249, 247, 242); // #f9f7f2
             pdf.rect(0, 0, A4_WIDTH_PT, A4_HEIGHT_PT, 'F');
 
@@ -171,7 +202,6 @@ export const usePdfReport = ({ resultData, contentRef, onActionComplete }: UsePd
                 finalWidth = imgWidth * ratio;
                 finalHeight = A4_HEIGHT_PT;
             }
-            // Center horizontally if scaled down (content narrower than A4)
             const xOffset = (A4_WIDTH_PT - finalWidth) / 2;
             pdf.addImage(canvas, 'PNG', xOffset, 0, finalWidth, finalHeight);
 
@@ -209,10 +239,10 @@ export const usePdfReport = ({ resultData, contentRef, onActionComplete }: UsePd
             console.error('PDF generation failed:', error);
             alert('PDFの生成に失敗しました。もう一度お試しください。');
         } finally {
-            // ── Always restore hidden elements & sticky header ──
-            hiddenEls.forEach((el, i) => (el as HTMLElement).style.display = originalDisplays[i] ?? '');
-            if (header) header.style.position = originalPosition;
-            target.style.minHeight = originalMinHeight;
+            // ── Always remove the off-screen clone ──
+            if (offScreenEl && document.body.contains(offScreenEl)) {
+                document.body.removeChild(offScreenEl);
+            }
             setIsGeneratingPdf(false);
         }
     };
