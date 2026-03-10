@@ -98,9 +98,14 @@ def _run_alembic_upgrade():
     )
     if result.stdout:
         logger.info(result.stdout.strip())
+    if result.stderr:
+        log_fn = logger.error if result.returncode != 0 else logger.warning
+        log_fn("Alembic stderr: %s", result.stderr.strip())
     if result.returncode != 0:
-        logger.error(f"Alembic upgrade failed: {result.stderr}")
-        raise RuntimeError(f"flask db upgrade failed (exit {result.returncode})")
+        raise RuntimeError(
+            f"flask db upgrade failed (exit {result.returncode})\n"
+            f"stdout: {result.stdout}\nstderr: {result.stderr}"
+        )
     logger.info("Alembic マイグレーション適用完了。")
 
 
@@ -124,19 +129,20 @@ def run_reset():
     conn.autocommit = False
     cursor = conn.cursor()
 
-    # すべてのテーブルを削除 (CASCADE で依存関係も一括削除)
-    cursor.execute("""
-        SELECT table_name FROM information_schema.tables
-        WHERE table_schema = 'public'
-    """)
-    tables = [row[0] for row in cursor.fetchall()]
-    for table in tables:
-        cursor.execute(f'DROP TABLE IF EXISTS "{table}" CASCADE')
-    conn.commit()
-    logger.info("すべてのテーブルが削除されました。")
-
-    cursor.close()
-    conn.close()
+    try:
+        # すべてのテーブルを削除 (CASCADE で依存関係も一括削除)
+        cursor.execute("""
+            SELECT table_name FROM information_schema.tables
+            WHERE table_schema = 'public'
+        """)
+        tables = [row[0] for row in cursor.fetchall()]
+        for table in tables:
+            cursor.execute(f'DROP TABLE IF EXISTS "{table}" CASCADE')
+        conn.commit()
+        logger.info("すべてのテーブルが削除されました。")
+    finally:
+        cursor.close()
+        conn.close()
 
     # Alembic で再構築 (DDL + SQL シード + CSV シード)
     _run_alembic_upgrade()
