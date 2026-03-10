@@ -115,19 +115,16 @@ export const Navigation = ({ opened, onClose }: NavigationProps) => {
     try {
       if (!isLoggedIn && href !== '/login') {
         onClose();
-        router.push('/login');
+        window.location.href = '/login';
         return;
       }
 
       setNavigating(href);
       onClose();
-      router.push(href);
-
-      const timeoutId = setTimeout(() => {
-        setNavigating(null);
-      }, 5000);
-
-      return () => clearTimeout(timeoutId);
+      // Mantine AppShell のスクロールコンテナが client-side navigation で
+      // 正常に再初期化されない既知の問題を回避するため、
+      // フルページリロードで遷移する (Issue #129)
+      window.location.href = href;
     } catch (error) {
       console.error('Navigation error:', error);
       setNavigating(null);
