@@ -39,16 +39,18 @@ services:
     volumes:
       - ./backend:/app
       - ./backend/logs:/app/logs:rw
+      - ./db/init:/app/db/init:ro  # Alembic 001/002 が参照する SQL シードファイル
     env_file:
       - ./backend/.env.development.backend
     environment:
       LANG: en_US.UTF-8
       LC_CTYPE: en_US.UTF-8
     user: root
-    # DB準備 > DB初期化 > Gunicorn実行 の順番
+    # DB準備 > Alembicマイグレーション > スーパーユーザー作成 > Gunicorn実行 の順番
     command: >
       sh -c "python /app/wait_for_db.py &&
-             python /app/db_manage.py init &&
+             PYTHONPATH=/app FLASK_APP=app.py flask db upgrade &&
+             python /app/db_manage.py create-superuser &&
              chown -R appuser:appgroup /app/logs &&
              exec gunicorn --bind 0.0.0.0:5001 --reload --user appuser --group appgroup 'app:app'"
     depends_on:
@@ -74,7 +76,6 @@ services:
       - "5432:5432"
     volumes:
       - postgres_data_local:/var/lib/postgresql/data
-      - ./db/init:/docker-entrypoint-initdb.d  # 初期化 SQL をマウント
     healthcheck:
       test: ["CMD-SHELL", "pg_isready -U ${DB_USER:-superuser} -d ${DB_NAME:-luminine}"]
       interval: 5s
@@ -92,7 +93,7 @@ services:
       target: development
     volumes:
       - ./backend:/app
-      - ./db/init:/app/db/init
+      - ./db/init:/app/db/init:ro  # Alembic 001/002 が参照する SQL シードファイル
     env_file:
       - ./backend/.env.development.backend
     environment:

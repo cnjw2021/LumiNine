@@ -1,6 +1,5 @@
 import os
 import sys
-import traceback
 import argparse
 from flask import Flask
 from sqlalchemy import text
@@ -10,7 +9,6 @@ import psycopg2
 from core.database import db
 from core.db_config import get_postgres_connection
 from core.utils.logger import get_logger
-from scripts.csv_file_loader import load_all_csv_data
 
 logger = get_logger(__name__)
 
@@ -86,125 +84,40 @@ def create_superuser():
             db.session.rollback()
             raise
 
-def execute_sql_file(cursor, file_path):
-    """指定されたSQLファイルを実行します。"""
-    if not os.path.exists(file_path):
-        logger.error(f"SQLファイル '{file_path}'を見つけることができません。")
-        return
-    try:
-        with open(file_path, 'r', encoding='utf-8') as file:
-            sql_content = file.read()
-            cursor.execute(sql_content)
-        logger.info(f"SQLファイル '{os.path.basename(file_path)}'が成功して実行されました。")
-    except psycopg2.Error as e:
-        logger.error(f"SQLファイル '{file_path}'実行中にエラーが発生しました: {e}")
-        raise
 
+def _run_alembic_upgrade():
+    """Alembic マイグレーションを最新版まで適用します。"""
+    import subprocess
+    logger.info("Alembic マイグレーション適用中...")
+    result = subprocess.run(
+        ["flask", "db", "upgrade"],
+        env={**os.environ, "PYTHONPATH": os.path.dirname(__file__), "FLASK_APP": "app.py"},
+        cwd=os.path.dirname(__file__) or ".",
+        capture_output=True,
+        text=True,
+    )
+    if result.stdout:
+        logger.info(result.stdout.strip())
+    if result.returncode != 0:
+        logger.error(f"Alembic upgrade failed: {result.stderr}")
+        raise RuntimeError(f"flask db upgrade failed (exit {result.returncode})")
+    logger.info("Alembic マイグレーション適用完了。")
 
-# SQLシードファイルとそのファイルが挿入するテーブルのマッピング
-# target_tables 指定時に不要なファイルの実行をスキップするために使用
-_SQL_SEED_FILE_TABLE_MAP = {
-    '100_stars.sql': {'stars'},
-
-    '200_star_attributes.sql': {'star_attributes'},
-    '210_star_grid_patterns.sql': {'star_grid_patterns'},
-    '300_monthly_directions.sql': {'monthly_directions'},
-    '310_star_number_group.sql': {'star_groups'},
-    '320_pattern_switch_dates.sql': {'pattern_switch_dates'},
-
-    '510_powerstone_seed.sql': {'powerstone_master'},
-    '900_system_data.sql': {'system_config', 'admin_account_limit', 'permissions'},
-}
-
-
-def seed_database(cursor, target_tables=None):
-    """SQL および CSV ファイルで初期データを埋め込みます。
-    target_tables が指定された場合は、該当するテーブルに関連するSQLファイルとCSVデータのみをロードします。
-    """
-    logger.info(f"データシードを開始します... {'(Target: ' + ', '.join(target_tables) + ')' if target_tables else '(All)'}")
-
-    for sql_file, tables in _SQL_SEED_FILE_TABLE_MAP.items():
-        # target_tables が指定されている場合、対象テーブルに関連するファイルのみ実行
-        if target_tables and not tables & target_tables:
-            logger.debug("スキップ: %s (対象テーブルに該当なし)", sql_file)
-            continue
-        sql_file_path = os.path.join('db', 'init', sql_file)
-        execute_sql_file(cursor, sql_file_path)
-    # SQL シードファイルにはCREATE TABLE文が含まれる場合がある（例: 320_pattern_switch_dates.sql）
-    # CSV ローダーは別の接続を使用するため、テーブル作成をコミットしてから CSV をロードする
-    cursor.connection.commit()
-
-    logger.info("CSV データをロードします...")
-    load_all_csv_data(target_tables=target_tables)
-    logger.info("データシードが完了しました。")
-
-def _get_existing_tables(cursor) -> set:
-    """現在のデータベースに存在するテーブル名の集合を返します。"""
-    cursor.execute("""
-        SELECT table_name FROM information_schema.tables
-        WHERE table_schema = 'public'
-    """)
-    return {row[0] for row in cursor.fetchall()}
-
-# 000_create_tables.sql およびシードSQLファイルに定義されている全テーブルのリスト
-# 新しいテーブルを追加した場合はここにも追加してください
-_EXPECTED_TABLES = {
-    'stars', 'solar_starts', 'solar_terms', 'daily_astrology',
-    'star_groups', 'star_attributes',
-    'star_grid_patterns', 'monthly_directions',
-    'zodiac_groups', 'zodiac_group_members',
-    'hourly_star_zodiacs', 'system_config', 'admin_account_limit',
-    'permissions', 'users', 'user_permissions',
-    'powerstone_master', 'recommendation_history',
-    # シードSQL内で CREATE TABLE IF NOT EXISTS されるテーブル
-    'pattern_switch_dates',
-}
 
 def run_init():
     """
-    [役割 変更]
-    DB 初期化はPostgreSQLコンテナが担当しますが、ボリュームの問題等でテーブルがない場合は
-    安全のためにテーブル作成と初期データシードを実行します。
-    既存DBで一部テーブルが不足している場合は、DDL (CREATE TABLE IF NOT EXISTS) と
-    シードを増分適用します。その後、スーパーユーザー作成を担当します。
+    Alembic マイグレーションを適用し、スーパーユーザーを作成します。
+    Alembic が DDL (001) + SQL シード (002) + CSV シード (003) を一括で処理するため、
+    db_manage.py は 'flask db upgrade' の実行とスーパーユーザー作成のみを担当します。
     """
-    logger.info("DB init script started: Checking database state...")
-    
-    conn = get_postgres_connection()
-    conn.autocommit = False
-    cursor = conn.cursor()
-    
-    existing = _get_existing_tables(cursor)
-
-    if not existing:
-        # 完全初期化: テーブルもデータもない
-        logger.warning("テーブルが存在しません。テーブルの作成とデータのシードを開始します...")
-        execute_sql_file(cursor, os.path.join('db', 'init', '000_create_tables.sql'))
-        conn.commit()  # CSV loader uses a separate connection, so tables must be committed first
-        seed_database(cursor)
-    else:
-        missing = _EXPECTED_TABLES - existing
-        if missing:
-            # 増分適用: 既存DBに不足テーブルがある場合
-            logger.warning("不足テーブル検出: %s — DDL+シードを増分適用します。", missing)
-            execute_sql_file(cursor, os.path.join('db', 'init', '000_create_tables.sql'))
-            conn.commit()  # CSV loader uses a separate connection, so tables must be committed first
-            # 不足しているテーブルのみをターゲットにシードを実行
-            seed_database(cursor, target_tables=missing)
-        else:
-            logger.info("テーブルは既に存在します。データシードはスキップします。")
-        
-    cursor.close()
-    conn.close()
-
-    # テーブル 存在 関係なく、スーパーユーザーが存在しない場合は常に作成しようとします
-    # create_superuser 関数 内部に既存 存在 チェック ロジックがあります
+    logger.info("DB init script started...")
+    _run_alembic_upgrade()
     create_superuser()
     logger.info("DB init script finished.")
 
 def run_reset():
     """
-    すべてのテーブルを削除し、新規に作成した後、データを再度埋め込み、スーパーユーザーを作成します。
+    すべてのテーブルを削除し、Alembic マイグレーションで再構築します。
     """
     logger.warning("DB RESET 開始! すべてのデータが削除されます。")
     conn = get_postgres_connection()
@@ -219,16 +132,14 @@ def run_reset():
     tables = [row[0] for row in cursor.fetchall()]
     for table in tables:
         cursor.execute(f'DROP TABLE IF EXISTS "{table}" CASCADE')
+    conn.commit()
     logger.info("すべてのテーブルが削除されました。")
 
-    # テーブル 再作成 及び データ シード
-    execute_sql_file(cursor, os.path.join('db', 'init', '000_create_tables.sql'))
-    conn.commit()  # CSV loader uses a separate connection, so tables must be committed first
-    seed_database(cursor) # SQL 及び CSV データ
-    
-    conn.commit()
     cursor.close()
     conn.close()
+
+    # Alembic で再構築 (DDL + SQL シード + CSV シード)
+    _run_alembic_upgrade()
 
     # SQLAlchemyを通してスーパーユーザーを作成 (パスワードハッシュが保証されます)
     create_superuser()
@@ -237,7 +148,11 @@ def run_reset():
 
 if __name__ == "__main__":
     parser = argparse.ArgumentParser(description="データベース管理スクリプト")
-    parser.add_argument("command", choices=["init", "reset"], help="実行するコマンド: 'init' (安全な初期化), 'reset' (すべてのデータを削除して再構成)")
+    parser.add_argument(
+        "command",
+        choices=["init", "reset", "create-superuser"],
+        help="実行するコマンド: 'init' (Alembic適用+スーパーユーザー), 'reset' (全削除+再構築), 'create-superuser' (スーパーユーザーのみ作成)"
+    )
     args = parser.parse_args()
 
     try:
@@ -245,6 +160,8 @@ if __name__ == "__main__":
             run_init()
         elif args.command == "reset":
             run_reset()
+        elif args.command == "create-superuser":
+            create_superuser()
     except Exception as e:
         logger.error(f"スクリプト実行中にエラーが発生しました: {e}", exc_info=True)
         sys.exit(1)
