@@ -1,7 +1,9 @@
 import axios, { AxiosRequestConfig } from 'axios';
 
 const api = axios.create({
-    // NEXT_PUBLIC_API_URL: プロダクション環境ではCloud RunのURL+/api、ローカルでは'/api'にフォールバック
+    // NEXT_PUBLIC_API_URL: ベースURL（/api を含まない）を指定してください
+    // - 例: https://831shop.site (本番), http://localhost:5001 (ローカル直接実行 + CORS必要)
+    // - 未設定時: '/api' フォールバック（Next.js rewrites経由でbackendへプロキシ）
     baseURL: process.env.NEXT_PUBLIC_API_URL ? `${process.env.NEXT_PUBLIC_API_URL}/api` : '/api',
     timeout: 30000,
     withCredentials: true,
