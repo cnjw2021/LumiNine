@@ -56,12 +56,16 @@ const nextConfig = {
   // API 경로는 NEXT_PUBLIC_API_URL 환경변수로 직접 지정합니다.
   // 로컬 개발 시에는 NEXT_PUBLIC_API_URL 미설정 → localhost:5001 폴백을 사용하세요.
   // (docker-compose 환경에서는 아래 rewrites가 자동으로 적용됩니다)
+  // [중요] 로컬 개발 시 API 프록시 설정
+  // - docker-compose 환경: BACKEND_URL 자동 주입 (http://backend:5001)
+  // - 로컬 직접 실행 (npm run dev): BACKEND_URL 미설정 → localhost:5001 폴백
   ...(process.env.NODE_ENV !== 'production' && {
     async rewrites() {
+      const backendUrl = process.env.BACKEND_URL || 'http://localhost:5001';
       return [
         {
           source: '/api/:path*',
-          destination: 'http://backend:5001/api/:path*'
+          destination: `${backendUrl}/api/:path*`
         }
       ]
     }
