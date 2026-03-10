@@ -127,7 +127,7 @@ echo "DATABASE_URL=postgresql+psycopg2://${DB_USER}:${DB_PASSWORD}@postgres:5432
 
 **문제:** `make test-integration`을 실행해도 DB가 비어 있어 전체 테스트 실패
 
-**조사 결과 (3개의 버그를 단계적으로 발견):**
+**조사 결과 (3개의 버그를 단계적으로 발견 — ※ Alembic 통합 이전의 기록):**
 
 | # | 에러 메시지 | 원인 | 수정 |
 |---|------------|------|------|
@@ -141,6 +141,7 @@ backend-test:
   user: root
   volumes:
     - ./backend:/app
+    - ./db/init:/app/db/init:ro  # Alembic 001/002이 참조하는 SQL 파일
   env_file:
     - ./backend/.env.development.backend
   environment:
