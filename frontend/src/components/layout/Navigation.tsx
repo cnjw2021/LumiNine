@@ -11,8 +11,7 @@ import {
   IconQuestionMark,
   IconLock,
   IconChevronDown,
-  IconDatabase,
-  IconDownload
+  IconDatabase
 } from '@tabler/icons-react';
 import { NavigationMenu, MenuItem } from './NavigationMenu';
 import { DrawerHeader } from './DrawerHeader';
@@ -180,9 +179,6 @@ export const Navigation = ({ opened, onClose }: NavigationProps) => {
             padding: '20px',
             backgroundColor: 'rgba(245, 247, 243, 0.95)',
             backdropFilter: 'blur(10px)'
-          },
-          content: {
-            overscrollBehavior: 'contain'
           }
         }}
       >
