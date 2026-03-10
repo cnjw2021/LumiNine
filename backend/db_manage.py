@@ -130,6 +130,9 @@ def seed_database(cursor, target_tables=None):
             continue
         sql_file_path = os.path.join('db', 'init', sql_file)
         execute_sql_file(cursor, sql_file_path)
+    # SQL シードファイルにはCREATE TABLE文が含まれる場合がある（例: 320_pattern_switch_dates.sql）
+    # CSV ローダーは別の接続を使用するため、テーブル作成をコミットしてから CSV をロードする
+    cursor.connection.commit()
 
     logger.info("CSV データをロードします...")
     load_all_csv_data(target_tables=target_tables)
