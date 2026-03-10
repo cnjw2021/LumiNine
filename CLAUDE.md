@@ -1,12 +1,14 @@
 # LumiNine (루미나인) 프로젝트 가이드
 
+> Last updated: 2026-03-10
+
 ## 🏗 아키텍처 개요 (Architecture Overview)
 
 - **Tech Stack (기술 스택)**:
-  - Backend: Python, Flask, SQLAlchemy
+  - Backend: Python, Flask, SQLAlchemy, Alembic (DB 마이그레이션)
   - Frontend: Next.js (App Router), TypeScript, Mantine UI
   - Database: PostgreSQL (Supabase)
-  - PDF 생성: html2canvas + jsPDF (프론트엔드 클라이언트 사이드)
+  - PDF 생성: html2canvas + jsPDF (프론트엔드 클라이언트 사이드, off-screen clone 패턴)
   - Infrastructure: GitHub Actions, Google Cloud Run (Backend), Cloudflare Pages (Frontend)
 
 - **Deployment Environment (배포 환경)**:
@@ -14,6 +16,7 @@
   - Backend: GCP Cloud Run (Docker 컨테이너, `$PORT` 환경변수 바인딩)
   - Frontend: Cloudflare Pages (Next.js standalone)
   - DB: Supabase (PostgreSQL 16, `postgresql+psycopg2://` 연결)
+  - DB 마이그레이션: Alembic (`flask db upgrade` → 스키마 + 시드 데이터 자동 적용)
   - 로컬 개발: Docker Compose (`docker-compose.yml` + `docker-compose.dev.yml`) — PostgreSQL 컨테이너 사용
 
 - **CI/CD**:
@@ -28,6 +31,7 @@
   2. 서버가 검증 후 JWT Access Token 발급
   3. 클라이언트는 이후 API 요청 시 `Authorization: Bearer <token>` 헤더에 토큰을 포함
   4. 서버는 보호된 라우트(예: `/api/auth/me`)에서 토큰을 검증해 사용자 인가 처리
+- **패스워드 암호화**: `core/auth/auth_utils.py`에서 `werkzeug.security`의 `generate_password_hash` / `check_password_hash` 사용
 
 ## 🔮 주요 API 경로
 
@@ -40,9 +44,12 @@
 
 - `backend/`: Flask 기반의 백엔드 API 서버 (Clean Architecture 적용)
   - `backend/apps/reading/`: 3개 서브도메인(ninestarki, numerology, powerstone) + shared
+  - `backend/core/auth/`: JWT 인증, 패스워드 암호화, 권한 관리
+  - `backend/migrations/`: Alembic DB 마이그레이션 (스키마 + 시드 데이터)
+  - `backend/data/csv/`: 마스터 데이터 CSV 파일 (Alembic 시드 마이그레이션에서 사용)
   - `backend/docs/architecture/`: 아키텍처 가이드 및 CI/CD 수동 설정 가이드
 - `frontend/`: Next.js(App Router) 기반의 프론트엔드 UI 및 클라이언트 애플리케이션
-- `db/init/`: PostgreSQL 초기화 스크립트 (DDL/DML) ← MySQL에서 전환됨
+- `db/init/`: PostgreSQL 초기화 스크립트 (DDL/DML) — Docker 로컬 개발용
 - `mysql/init/`: 구 MySQL 초기화 스크립트 (레거시, 마이그레이션 참고용)
 - `.github/workflows/`: GitHub Actions CI/CD 워크플로우
 - `docs/`: 프로젝트 관련 문서 보관
@@ -52,17 +59,19 @@
 ## 🗄 DB 테이블과 관계 요약
 
 - **기본 별 정보**: `stars` (1-9 백수성~구자화성 기본 데이터)
+- **별 속성 (추천 음식 등)**: `star_attributes` (본명성별 오행, 성격, 추천 음식 등)
 - **달력 및 절기 데이터**: `solar_starts` (입춘 데이터), `solar_terms` (절기 데이터), `daily_astrology` (일별 간지/별 데이터)
 - **방위 및 배치 데이터**: `star_grid_patterns` (구성반), `monthly_directions` (월반 방위)
 - **파워스톤**: `powerstone_master`, `recommendation_history`
 - **시스템 및 인증 데이터**: `users`, `permissions`, `user_permissions`, `system_config`
 - **스키마 위치**: `db/init/000_create_tables.sql` (PostgreSQL DDL)
+- **프로덕션 마이그레이션**: `backend/migrations/versions/` (Alembic — 001 스키마, 002 SQL 시드, 003 CSV 시드)
 
 ## ✍️ 코딩 컨벤션
 
 - **Backend (Python)**: PEP 8 스타일 가이드를 따르며, Clean Architecture를 지향하여 비즈니스 로직(Domain/Use Cases)과 프레임워크(Web/Infrastructure)를 분리.
 - **Frontend (TypeScript)**: `eslint`와 `prettier` (`eslint-config-next`) 규칙을 준수. App Router 패턴의 Server Component와 Client Component(`"use client"`)를 명확히 분리.
-- **DB**: PostgreSQL DDL/DML은 `db/init/` 디렉터리에서 버전 관리 (구 `mysql/init/`는 레거시)
+- **DB**: PostgreSQL DDL/DML은 `db/init/` 디렉터리에서 버전 관리 (구 `mysql/init/`는 레거시). 프로덕션 환경은 Alembic으로 마이그레이션.
 - **공통**: 변수명/함수명은 영어, 주석은 한국어 OK
 - **📌 코드 리뷰 가이드라인**: [docs/CODE_REVIEW_GUIDELINES.md](docs/CODE_REVIEW_GUIDELINES.md) 를 코드 작성 전 반드시 참조
 
@@ -85,3 +94,5 @@
 | [CI/CD 수동 설정 가이드](backend/docs/architecture/cicd-manual-setup-guide.md) | GitHub Secrets · Supabase · Cloud Run · Cloudflare Pages 순서별 안내 |
 | [방위 길흉 판정 로직](docs/monthly-direction-marks-logic.md) | 오행 상생 + 정위대충·소아살 파이프라인 |
 | [아키텍처 가이드](backend/docs/architecture/clean_architecture_guide.md) | Clean Architecture 적용 방식 |
+| [코드 리뷰 가이드라인](docs/CODE_REVIEW_GUIDELINES.md) | 코드 작성 및 리뷰 시 준수 사항 |
+| [CI 테스트 아키텍처](docs/ci-test-architecture.md) | GitHub Actions CI 테스트 구성 |
