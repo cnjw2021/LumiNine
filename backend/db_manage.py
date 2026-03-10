@@ -89,10 +89,11 @@ def _run_alembic_upgrade():
     """Alembic マイグレーションを最新版まで適用します。"""
     import subprocess
     logger.info("Alembic マイグレーション適用中...")
+    base_dir = os.path.dirname(os.path.abspath(__file__))
     result = subprocess.run(
         ["flask", "db", "upgrade"],
-        env={**os.environ, "PYTHONPATH": os.path.dirname(__file__), "FLASK_APP": "app.py"},
-        cwd=os.path.dirname(__file__) or ".",
+        env={**os.environ, "PYTHONPATH": base_dir, "FLASK_APP": "app.py"},
+        cwd=base_dir,
         capture_output=True,
         text=True,
     )
