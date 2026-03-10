@@ -7,7 +7,7 @@ import { Box, Container, Flex, Text, Title, UnstyledButton, Button } from '@mant
 import { IconSparkles, IconDiamond, IconShieldCheck, IconWand } from '@tabler/icons-react';
 
 export default function LandingPage() {
-  const { token, isLoading } = useAuth();
+  const { token, isLoading, isLoggedIn, userName, logout } = useAuth();
   const router = useRouter();
 
   const handleStart = () => {
@@ -75,15 +75,41 @@ export default function LandingPage() {
           </Flex>
           <Flex align="center" gap={{ base: 16, md: 48 }}>
             <UnstyledButton visibleFrom="md" style={{ fontSize: 14, fontWeight: 500, letterSpacing: '0.05em', transition: 'color 0.2s', '&:hover': { color: theme.primary } }}>お問い合わせ</UnstyledButton>
-            {!token && (
+            {!isLoggedIn ? (
               <UnstyledButton onClick={() => router.push('/login')} style={{ fontSize: 14, fontWeight: 500, letterSpacing: '0.05em', transition: 'color 0.2s', '&:hover': { color: theme.primary } }}>ログイン</UnstyledButton>
+            ) : (
+              <UnstyledButton
+                onClick={async () => { await logout(); }}
+                style={{ fontSize: 14, fontWeight: 500, letterSpacing: '0.05em', color: theme.primary, transition: 'color 0.2s' }}
+              >
+                ログアウト
+              </UnstyledButton>
             )}
           </Flex>
+          {/* ユーザーアバター: 未ログインは非表示、ログイン時はイニシャル表示 */}
           <Flex align="center" gap={16}>
-            {token && (
-              <Button onClick={() => router.push('/appraisal')} variant="outline" radius="xl" size="xs" color={theme.primary} style={{ fontWeight: 700, padding: '0 16px' }}>鑑定へ戻る</Button>
+            {isLoggedIn && (
+              <Box
+                style={{
+                  width: 40,
+                  height: 40,
+                  borderRadius: '50%',
+                  border: `1px solid ${theme.primary}66`,
+                  backgroundColor: `${theme.primary}22`,
+                  display: 'flex',
+                  alignItems: 'center',
+                  justifyContent: 'center',
+                  fontSize: 16,
+                  fontWeight: 700,
+                  color: theme.primary,
+                  letterSpacing: '0.05em',
+                  userSelect: 'none',
+                }}
+                title={userName || ''}
+              >
+                {userName ? userName.charAt(0).toUpperCase() : '?'}
+              </Box>
             )}
-            <Box style={{ width: 40, height: 40, borderRadius: '50%', border: `1px solid ${theme.primary}33`, backgroundImage: `url('https://lh3.googleusercontent.com/aida-public/AB6AXuBb0WVjXt15W807V6ixd80YNHdVN-RJwV2-f8WRn2IbZFI9Ar1MSUa2C7om3OohF7tsQJY0J5cjr2XOKfAUErgxnUPqhISJc4Hl_6nNrqivyrAZlN96fojVN85a5gG6oUSTw8X0o-GLtFfPjPsj42FKuqyLtwk-0I4C9EIk7YXdusQrQOllha4dU0lKgygigWDGRMd70SETeVWItAV5tgXmIdiYi6PHL5PBJTCt7R8cXSETZhs_W-jzpwgS3WzGzm1xJ6p2v8d04pyz')`, backgroundSize: 'cover', backgroundPosition: 'center' }} />
           </Flex>
         </Box>
       </Box>
@@ -122,7 +148,7 @@ export default function LandingPage() {
                 size="xl"
                 style={{ backgroundColor: theme.primary, color: '#fff', fontSize: 18, fontWeight: 700, letterSpacing: '0.1em', boxShadow: '0 10px 15px -3px rgba(0,0,0,0.1)', height: 56, minWidth: 280, fontFamily: '"Noto Sans JP", sans-serif' }}
               >
-                {token ? 'メンバーズ鑑定へ進む' : 'メンバーズ・ログイン'}
+                {isLoggedIn ? '鑑定へ進む' : 'ログイン'}
               </Button>
             </Box>
           </Box>
@@ -165,7 +191,7 @@ export default function LandingPage() {
               size="lg"
               style={{ backgroundColor: theme.primary, color: '#fff', fontSize: 16, fontWeight: 700, letterSpacing: '0.1em', boxShadow: '0 10px 15px -3px rgba(0,0,0,0.1)', height: 56, width: '100%', maxWidth: 320, fontFamily: '"Noto Sans JP", sans-serif' }}
             >
-              {token ? 'メンバーズ鑑定へ進む' : 'メンバーズ・ログイン'}
+              {isLoggedIn ? '鑑定へ進む' : 'ログイン'}
             </Button>
           </Box>
         </Box>
