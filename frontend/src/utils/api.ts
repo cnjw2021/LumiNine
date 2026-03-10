@@ -2,7 +2,8 @@ import axios, { AxiosRequestConfig } from 'axios';
 
 const api = axios.create({
     // NEXT_PUBLIC_API_URL: プロダクション環境ではCloud RunのURL+/api、ローカルでは'/api'にフォールバック
-    baseURL: process.env.NEXT_PUBLIC_API_URL ? `${process.env.NEXT_PUBLIC_API_URL}/api` : '/api',
+    // ⚠️ NEXT_PUBLIC_API_URL には /api まで含めた値を設定してください（例: http://localhost:5001/api）
+    baseURL: process.env.NEXT_PUBLIC_API_URL || '/api',
     timeout: 30000,
     withCredentials: true,
     headers: {
