@@ -40,11 +40,3 @@ export interface DateError {
     startDate?: string;
     endDate?: string;
 }
-
-/** システム統計情報 */
-export interface SystemStats {
-    systemLimit: number;
-    totalActiveUsers: number;
-    deletedUsersCount: number;
-    isSuperuser: boolean;
-}
