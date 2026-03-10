@@ -35,6 +35,7 @@ interface AuthContextType {
 const AuthContext = createContext<AuthContextType | undefined>(undefined);
 
 const PUBLIC_PATHS = ['/', '/login', '/register', '/forgot-password'];
+const PUBLIC_PATH_PREFIXES = ['/about/'];
 
 export function AuthProvider({ children }: { children: React.ReactNode }) {
   const router = useRouter();
@@ -363,7 +364,7 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
 
   // 非公開ページへのアクセス制御
   useEffect(() => {
-    if (!isLoading && !isLoggedIn && pathname && !PUBLIC_PATHS.includes(pathname)) {
+    if (!isLoading && !isLoggedIn && pathname && !PUBLIC_PATHS.includes(pathname) && !PUBLIC_PATH_PREFIXES.some(prefix => pathname.startsWith(prefix))) {
       router.replace('/login');
     }
   }, [isLoading, isLoggedIn, pathname, router]);

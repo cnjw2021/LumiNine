@@ -14,7 +14,6 @@ const nextConfig = {
     // [핵심] Next.js 16 Turbopack 에러 해결을 위해 빈 객체라도 명시해야 합니다.
     turbopack: {},
     optimizeCss: true,
-    scrollRestoration: true,
     optimizePackageImports: ['@mantine/core', '@mantine/hooks']
   },
   images: {

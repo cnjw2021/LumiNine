@@ -10,6 +10,8 @@ import '@/components/styles/result.css';
 import { Notifications } from '@mantine/notifications';
 import { useDisclosure } from '@mantine/hooks';
 import { COLORS, GRADIENTS, FONTS, NAV } from '@/utils/theme';
+import { useEffect } from 'react';
+import { usePathname } from 'next/navigation';
 
 const theme = createTheme({
   primaryColor: 'gold',
@@ -33,14 +35,21 @@ const theme = createTheme({
   },
 });
 
-import { usePathname } from 'next/navigation';
 
 function AppShellLayout({ children }: { children: React.ReactNode }) {
-  const [opened, { toggle }] = useDisclosure();
+  const [opened, { toggle, close }] = useDisclosure();
   const pathname = usePathname();
   const { isLoggedIn } = useAuth();
   // ランディングページかつ未ログインの場合のみサイドバーを非表示にする
   const hideSidebar = pathname === '/' && !isLoggedIn;
+
+  useEffect(() => {
+    // 1. 라우트 이동 시 강제로 최상단 스크롤 (원활한 화면 전환용)
+    window.scrollTo({ top: 0, left: 0 });
+
+    // 모바일 환경에서 라우팅이 일어났을 때 Drawer를 강제로 닫음
+    close();
+  }, [pathname, close]);
 
   return (
     <MantineProvider theme={theme} defaultColorScheme="light">
@@ -59,7 +68,6 @@ function AppShellLayout({ children }: { children: React.ReactNode }) {
             backgroundImage: GRADIENTS.pageBg,
             width: '100%',
             maxWidth: '100%',
-            overflowX: 'hidden',
             padding: hideSidebar ? 0 : undefined
           },
           navbar: {
@@ -86,7 +94,7 @@ function AppShellLayout({ children }: { children: React.ReactNode }) {
           </Group>
         </AppShell.Header>
         <AppShell.Navbar>
-          <Navigation opened={opened} onClose={toggle} />
+          <Navigation opened={opened} onClose={close} />
         </AppShell.Navbar>
         <AppShell.Main>
           {children}

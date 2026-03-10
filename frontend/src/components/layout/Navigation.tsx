@@ -11,8 +11,7 @@ import {
   IconQuestionMark,
   IconLock,
   IconChevronDown,
-  IconDatabase,
-  IconDownload
+  IconDatabase
 } from '@tabler/icons-react';
 import { NavigationMenu, MenuItem } from './NavigationMenu';
 import { DrawerHeader } from './DrawerHeader';
@@ -120,14 +119,11 @@ export const Navigation = ({ opened, onClose }: NavigationProps) => {
       }
 
       setNavigating(href);
-      onClose();
+      // lockScroll={false}를 적용했으므로 지연 없이 즉시 라우팅 가능
       router.push(href);
-
-      const timeoutId = setTimeout(() => {
-        setNavigating(null);
-      }, 5000);
-
-      return () => clearTimeout(timeoutId);
+      onClose();
+      // Ensure navigating state is cleared after successful navigation
+      setTimeout(() => setNavigating(null), 500);
     } catch (error) {
       console.error('Navigation error:', error);
       setNavigating(null);
@@ -171,6 +167,7 @@ export const Navigation = ({ opened, onClose }: NavigationProps) => {
         padding="0"
         hiddenFrom="sm"
         withCloseButton={false}
+        lockScroll={false}
         title={<DrawerHeader title="LumiNine" onClose={onClose} />}
         styles={{
           header: {
