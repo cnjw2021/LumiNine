@@ -11,7 +11,7 @@ from __future__ import annotations
 
 from dataclasses import dataclass
 from datetime import date, timedelta
-from typing import Any, Optional
+from typing import Any, List, Optional, Tuple
 
 from injector import inject
 
@@ -24,6 +24,13 @@ from apps.reading.ninestarki.domain.services.interfaces.monthly_board_service_in
 from core.utils.logger import get_logger
 
 logger = get_logger(__name__)
+
+
+# ── 도메인 상수 ──────────────────────────────────────
+_MIN_SETSU_INDEX = 1   # 寅月 (立春~)
+_MAX_SETSU_INDEX = 12  # 丑月 (小寒~)
+_FALLBACK_PERIOD_DAYS = 29  # DB에 다음 절입일이 없을 때의 최후 폴백 일수
+_GROUP_COUNT = 3  # 九星 그룹 수
 
 
 # ──────────────────────────────────────────────
@@ -115,15 +122,7 @@ class MonthlyBoardDomainService(IMonthlyBoardDomainService):
         Raises:
             SetsuMonthNotFoundError: 절기 데이터가 DB에 없는 경우
         """
-        # 절기 기준 연도(節年):
-        # - 해당 양력 연도의 立春(입춘) 이전 날짜는 전년도의 절년으로 본다.
-        # - 立春 당일 및 이후부터는 해당 연도의 절년으로 본다.
-        lookup_year = target_date.year
-        spring_start_term = self._solar_terms_repo.get_spring_start(lookup_year)
-        if spring_start_term and target_date < spring_start_term.solar_terms_date:
-            lookup_year -= 1
-        elif not spring_start_term and target_date.month == 1:
-            lookup_year -= 1
+        lookup_year = self._resolve_lookup_year(target_date)
 
         matched_term, setsu_month_index, period_end = self._determine_setsu_month(
             target_date, lookup_year
@@ -134,9 +133,6 @@ class MonthlyBoardDomainService(IMonthlyBoardDomainService):
         month_branch = month_zodiac[1] if len(month_zodiac) > 1 else ''
 
         # 그룹 판정 → monthly_directions 경유로 월반 중궁성 결정
-        # 주의: solar_terms_data.star_number 는 절기운성이며, 년반 중궁성이 아님.
-        #       solar_starts_data.star_number 가 년반 중궁성이므로, 이를 사용하여
-        #       그룹을 판정해야 한다. (1,4,7→G1 / 2,5,8→G2 / 3,6,9→G3)
         center_star = self._resolve_center_star(
             lookup_year, matched_term.month,
         )
@@ -157,43 +153,49 @@ class MonthlyBoardDomainService(IMonthlyBoardDomainService):
             period_end=period_end,
         )
 
+    # ──────────────────────────────
+    # 절년(節年) 판정
+    # ──────────────────────────────
+
+    def _resolve_lookup_year(self, target_date: date) -> int:
+        """절기 기준 연도(節年) 판정.
+
+        해당 양력 연도의 立春(입춘) 이전 날짜는 전년도의 절년으로 본다.
+        立春 당일 및 이후부터는 해당 연도의 절년으로 본다.
+        """
+        lookup_year = target_date.year
+        spring_start_term = self._solar_terms_repo.get_spring_start(lookup_year)
+        if spring_start_term and target_date < spring_start_term.solar_terms_date:
+            lookup_year -= 1
+        elif not spring_start_term and target_date.month == 1:
+            lookup_year -= 1
+        return lookup_year
+
+    # ──────────────────────────────
+    # 월반 중궁성 결정
+    # ──────────────────────────────
+
     def _resolve_center_star(
         self, lookup_year: int, calendar_month: int,
     ) -> int:
         """그룹 판정 → monthly_directions 경유로 월반 중궁성을 결정한다.
 
         1. 해당 절년의 年盤中宮星(solar_starts_data.star_number) 조회
-        2. 年盤中宮星 을 3으로 나눈 나머지로 그룹 판정
-           (1, 4, 7 → group_id=1 / 2, 5, 8 → group_id=2 / 3, 6, 9 → group_id=3)
+        2. 年盤中宮星을 그룹으로 변환 (1,4,7→G1 / 2,5,8→G2 / 3,6,9→G3)
         3. monthly_directions(group_id, month) 에서 center_star 취득
 
         중요: solar_terms_data.star_number 는 절기운성(節気運星)이지,
               年盤中宮星이 아니다. 그룹 판정에는 solar_starts_data.star_number
               를 사용해야 한다.
-
-        Args:
-            lookup_year: 절년(節年) 기준 연도
-            calendar_month: 양력 월 (1~12, solar_terms_data.month)
-
-        Returns:
-            center_star (1~9)
-
-        Raises:
-            SetsuMonthNotFoundError: 年盤 데이터 또는 monthly_directions 데이터가 없는 경우
         """
-        # solar_starts_data 에서 年盤中宮星 조회
         year_starts = self._solar_starts_repo.get_by_year(lookup_year)
         if not year_starts:
             raise SetsuMonthNotFoundError(
                 f"solar_starts 데이터를 찾을 수 없습니다. year={lookup_year}",
                 details="DB에 solar_starts_data 를 확인해 주세요.",
             )
-        year_center_star: int = year_starts.star_number
 
-        # 그룹 판정: 1,4,7→G1 / 2,5,8→G2 / 3,6,9→G3
-        group_id = year_center_star % 3
-        if group_id == 0:
-            group_id = 3
+        group_id = self._star_to_group_id(year_starts.star_number)
 
         monthly_dir = self._monthly_directions_repo.get_by_group_and_month(
             group_id, calendar_month
@@ -208,15 +210,43 @@ class MonthlyBoardDomainService(IMonthlyBoardDomainService):
         logger.debug(
             "center_star resolved: year=%d month=%d → year_center_star=%d "
             "→ group=%d → center_star=%d",
-            lookup_year, calendar_month, year_center_star,
+            lookup_year, calendar_month, year_starts.star_number,
             group_id, monthly_dir.center_star,
         )
         return monthly_dir.center_star
 
+    # ──────────────────────────────
+    # 절월 판정 파이프라인
+    # ──────────────────────────────
+
     def _determine_setsu_month(
         self, target_date: date, lookup_year: int
-    ) -> tuple[Any, int, date]:
+    ) -> Tuple[Any, int, date]:
         """target_date 가 속하는 절기 레코드, 절월 인덱스, 종료일을 반환한다.
+
+        Returns:
+            (matched_term, setsu_month_index, period_end_date)
+        """
+        setsu_sequence = self._build_setsu_sequence(lookup_year)
+        matched_term, matched_pos = self._match_term_in_sequence(
+            setsu_sequence, target_date, lookup_year,
+        )
+
+        # 위치 기반 setsu_month_index (1-indexed), 범위 클램핑
+        if matched_pos is not None:
+            setsu_month_index = matched_pos + 1
+        else:
+            setsu_month_index = _MAX_SETSU_INDEX  # 丑月 폴백
+        setsu_month_index = max(_MIN_SETSU_INDEX, min(_MAX_SETSU_INDEX, setsu_month_index))
+
+        period_end = self._calc_period_end(
+            setsu_sequence, matched_term, matched_pos, setsu_month_index,
+        )
+
+        return matched_term, setsu_month_index, period_end
+
+    def _build_setsu_sequence(self, lookup_year: int) -> List[Any]:
+        """절월 시퀀스 구축: lookup_year의 2~12월 + 다음해 1월(小寒).
 
         【DB 구조】
         solar_terms_data.month 는 그레고리력 월:
@@ -225,9 +255,6 @@ class MonthlyBoardDomainService(IMonthlyBoardDomainService):
           month=12 → 大雪 (setsu_index=11)
           month=1(다음해) → 小寒 (setsu_index=12)
         solar_terms_date 순으로 정렬하면 자동으로 절월 순서와 일치한다.
-
-        Returns:
-            (matched_term, setsu_month_index, period_end_date)
         """
         terms_curr_year = self._solar_terms_repo.get_yearly_terms(lookup_year)
         terms_next_year = self._solar_terms_repo.get_yearly_terms(lookup_year + 1)
@@ -238,14 +265,23 @@ class MonthlyBoardDomainService(IMonthlyBoardDomainService):
                 details="DB에 solar_terms 데이터를 확인해 주세요.",
             )
 
-        # 절월 시퀀스: lookup_year 의 2~12월 + 다음해 1월(小寒) — solar_terms_date 오름차순
-        setsu_sequence = sorted(
+        return sorted(
             [t for t in terms_curr_year if t.solar_terms_date.month != 1]
             + [t for t in terms_next_year if t.solar_terms_date.month == 1],
             key=lambda t: t.solar_terms_date,
         )
 
-        # target_date 직전(또는 당일)의 절기를 찾는다
+    def _match_term_in_sequence(
+        self,
+        setsu_sequence: List[Any],
+        target_date: date,
+        lookup_year: int,
+    ) -> Tuple[Any, Optional[int]]:
+        """target_date 직전(또는 당일)의 절기를 시퀀스에서 찾는다.
+
+        Returns:
+            (matched_term, matched_pos) — pos는 시퀀스 내 인덱스, 폴백 시 None
+        """
         matched_term = None
         matched_pos = None
         for i, term in enumerate(setsu_sequence):
@@ -253,57 +289,83 @@ class MonthlyBoardDomainService(IMonthlyBoardDomainService):
                 matched_term = term
                 matched_pos = i
 
-        if matched_term is None:
-            # target_date 가 해당 연도 첫 절기(立春) 이전 → 전년 丑月(=12)
-            prev_year_jan = sorted(
-                [t for t in self._solar_terms_repo.get_yearly_terms(lookup_year)
-                 if t.solar_terms_date.month == 1],
-                key=lambda t: t.solar_terms_date,
-            )
-            if prev_year_jan:
-                matched_term = prev_year_jan[-1]
-                matched_pos = None  # 시퀀스 外
-            else:
-                raise SetsuMonthNotFoundError(
-                    f"절기 데이터를 찾을 수 없습니다. target_date={target_date}",
-                    details="DB의 solar_terms 테이블에 해당 날짜 이전/당일 절기가 존재하는지 확인해 주세요.",
-                )
+        if matched_term is not None:
+            return matched_term, matched_pos
 
-        # 위치 기반 setsu_month_index (1-indexed)
-        if matched_pos is not None:
-            setsu_month_index = matched_pos + 1
-        else:
-            setsu_month_index = 12  # 丑月 폴백
-        setsu_month_index = max(1, min(12, setsu_month_index))
+        # target_date 가 해당 연도 첫 절기(立春) 이전 → 전년 丑月(=12) 폴백
+        prev_year_jan = sorted(
+            [t for t in self._solar_terms_repo.get_yearly_terms(lookup_year)
+             if t.solar_terms_date.month == 1],
+            key=lambda t: t.solar_terms_date,
+        )
+        if prev_year_jan:
+            return prev_year_jan[-1], None  # 시퀀스 外
 
-        # 종료일 = 다음 절기 전날
+        raise SetsuMonthNotFoundError(
+            f"절기 데이터를 찾을 수 없습니다. target_date={target_date}",
+            details="DB의 solar_terms 테이블에 해당 날짜 이전/당일 절기가 존재하는지 확인해 주세요.",
+        )
+
+    def _calc_period_end(
+        self,
+        setsu_sequence: List[Any],
+        matched_term: Any,
+        matched_pos: Optional[int],
+        setsu_month_index: int,
+    ) -> date:
+        """절월 종료일(= 다음 절기 전날) 계산."""
+        # 시퀀스에서 다음 절기를 직접 참조 가능한 경우
         if matched_pos is not None and matched_pos + 1 < len(setsu_sequence):
-            period_end = setsu_sequence[matched_pos + 1].solar_terms_date - timedelta(days=1)
+            return setsu_sequence[matched_pos + 1].solar_terms_date - timedelta(days=1)
+
+        # DB에서 다음 절입일을 조회하여 종료일 계산
+        setsu_year, _ = self._setsu_to_gregorian(setsu_month_index, matched_term)
+        next_index, next_setsuyear = self._next_setsu(setsu_month_index, setsu_year)
+
+        next_start = self.get_period_start_for_setsu(next_setsuyear, next_index)
+        if next_start is not None:
+            return next_start - timedelta(days=1)
+
+        # DB에 다음 절입일이 없을 때의 최후 폴백 (기존 동작 보존)
+        return matched_term.solar_terms_date + timedelta(days=_FALLBACK_PERIOD_DAYS)
+
+    # ──────────────────────────────
+    # 절월 ↔ 그레고리력 변환 (SSoT)
+    # ──────────────────────────────
+
+    @staticmethod
+    def _setsu_to_gregorian(setsu_index: int, matched_term: Any) -> Tuple[int, int]:
+        """절월 인덱스 + matched_term → (setsu_year, gregorian_month) 변환.
+
+        SSoT: 절월→그레고리력 변환 로직의 유일한 진실 소스.
+        """
+        if setsu_index == _MAX_SETSU_INDEX:
+            # 丑月=小寒: matched_term.solar_terms_date는 (year+1)년 1월
+            setsu_year = matched_term.solar_terms_date.year - 1
         else:
-            # setsu_sequence 에서 다음 절기를 찾지 못한 경우:
-            # 절월 인덱스를 기반으로 다음 절입일을 조회하여 종료일을 계산한다.
-            if setsu_month_index == 12:
-                # matched_term.solar_terms_date는 (year + 1)년 1월의 小寒
-                setsu_year = matched_term.solar_terms_date.year - 1
-            else:
-                setsu_year = matched_term.solar_terms_date.year
+            setsu_year = matched_term.solar_terms_date.year
+        return setsu_year, setsu_index + 1
 
-            # 다음 절월 인덱스와 절년 계산
-            if setsu_month_index == 12:
-                next_setsuyear = setsu_year + 1
-                next_index = 1  # 丑月 다음은 寅月(立春)
-            else:
-                next_setsuyear = setsu_year
-                next_index = setsu_month_index + 1
+    @staticmethod
+    def _next_setsu(setsu_month_index: int, setsu_year: int) -> Tuple[int, int]:
+        """다음 절월 인덱스와 절년을 계산한다.
 
-            next_start = self.get_period_start_for_setsu(next_setsuyear, next_index)
-            if next_start is not None:
-                period_end = next_start - timedelta(days=1)
-            else:
-                # DB에 다음 절입일이 없을 때의 최후 폴백 (기존 동작 보존)
-                period_end = matched_term.solar_terms_date + timedelta(days=29)
+        Returns:
+            (next_index, next_setsuyear)
+        """
+        if setsu_month_index == _MAX_SETSU_INDEX:
+            return _MIN_SETSU_INDEX, setsu_year + 1  # 丑月 → 다음해 寅月
+        return setsu_month_index + 1, setsu_year
 
-        return matched_term, setsu_month_index, period_end
+    @staticmethod
+    def _star_to_group_id(star_number: int) -> int:
+        """年盤中宮星 → 그룹 ID 변환 (1,4,7→G1 / 2,5,8→G2 / 3,6,9→G3)."""
+        group_id = star_number % _GROUP_COUNT
+        return _GROUP_COUNT if group_id == 0 else group_id
+
+    # ──────────────────────────────
+    # Public Helper
+    # ──────────────────────────────
 
     def get_period_start_for_setsu(self, year: int, setsu_index: int) -> Optional[date]:
         """절월 인덱스(1=寅月…12=丑月)에 해당하는 절입일(date)을 반환한다.
@@ -324,18 +386,18 @@ class MonthlyBoardDomainService(IMonthlyBoardDomainService):
         Returns:
             절입일 date, 또는 DB에 없는 경우 None
         """
-        if not 1 <= setsu_index <= 12:
+        if not _MIN_SETSU_INDEX <= setsu_index <= _MAX_SETSU_INDEX:
             logger.warning("get_period_start_for_setsu: invalid setsu_index=%s", setsu_index)
             return None
 
         # 절월 인덱스 → (year, gregorian_month) 변환
-        if setsu_index == 12:
+        if setsu_index == _MAX_SETSU_INDEX:
             term_year, term_month = year + 1, 1   # 丑月=小寒: 다음해 1월
         else:
             term_year, term_month = year, setsu_index + 1  # 寅月=立春: 해당년 2월 …
 
         term = self._solar_terms_repo.get_term_by_month(term_year, term_month)
-        if term is None and setsu_index == 12:
+        if term is None and setsu_index == _MAX_SETSU_INDEX:
             # 丑月 폴백: DB에서 연도 경계가 다를 경우 당해 1월 시도
             term = self._solar_terms_repo.get_term_by_month(year, 1)
 
