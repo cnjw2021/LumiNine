@@ -64,7 +64,11 @@ class FortuneStatusService:
             logger.warning("Continuing without opposite zodiac direction")
 
         # 暗剣殺の星を取得
-        dark_sword_star = self.get_dark_sword_star(grid_pattern)
+        try:
+            dark_sword_star = self.get_dark_sword_star(grid_pattern)
+        except ValueError as e:
+            logger.error(f"Error determining dark sword star: {str(e)}")
+            raise RuntimeError("Failed to determine dark sword star") from e
 
         # 各方位の星番号を取得
         directions = self._build_direction_map(grid_pattern)
@@ -186,7 +190,11 @@ class FortuneStatusService:
             logger.warning("Continuing without opposite zodiac direction")
 
         # 暗剣殺の星を取得
-        dark_sword_star = self.get_dark_sword_star(grid_pattern)
+        try:
+            dark_sword_star = self.get_dark_sword_star(grid_pattern)
+        except ValueError as e:
+            logger.error(f"Error determining dark sword star from grid_pattern: {e}")
+            raise RuntimeError("Failed to determine dark sword star") from e
 
         # 各方位の星番号を取得（中央も含める）
         directions = self._build_direction_map(grid_pattern, include_center=True)
