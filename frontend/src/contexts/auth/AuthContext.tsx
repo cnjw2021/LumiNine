@@ -25,7 +25,7 @@ interface AuthContextType {
   setIsLoading: (status: boolean) => void;
   setLoginStatus: (status: boolean, newToken?: string, refreshToken?: string) => void;
   setIsLoggedIn: (status: boolean) => void;
-  logout: () => void;
+  logout: () => Promise<void>;
   checkAdminStatus: () => Promise<void>;
   checkPermission: (permissionCode: string) => Promise<boolean>;
   checkPermissions: (permissionCodes: string[]) => Promise<Record<string, boolean>>;
@@ -164,6 +164,7 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
       console.error('Error checking admin status:', error);
       setIsAdmin(false);
       setIsSuperuser(false);
+      clearPermissionCache();
     }
   }, [isAdmin, isSuperuser, clearPermissionCache]);
 
@@ -187,10 +188,11 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
       }
 
       // スーパーユーザーは全ての権限を持つ
+      const gen = cacheGenerationRef.current;
       if (isSuperuser) {
         const allGranted: Record<string, boolean> = {};
         permissionCodes.forEach(code => { allGranted[code] = true; });
-        updatePermissionCache(allGranted, cacheGenerationRef.current);
+        updatePermissionCache(allGranted, gen);
         return allGranted;
       }
 
@@ -233,7 +235,7 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
         });
 
         if (Object.keys(toCache).length > 0) {
-          updatePermissionCache(toCache, cacheGenerationRef.current);
+          updatePermissionCache(toCache, gen);
         }
       }
 
