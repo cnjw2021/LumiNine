@@ -101,8 +101,14 @@ export function useReadingSubmit({ token, isSuperuser, currentYear }: UseReading
                     targetYear,
                 };
 
-                localStorage.removeItem(STORAGE_KEY);
-                localStorage.setItem(STORAGE_KEY, JSON.stringify(userData));
+                try {
+                    localStorage.removeItem(STORAGE_KEY);
+                    localStorage.setItem(STORAGE_KEY, JSON.stringify(userData));
+                } catch (storageSaveError) {
+                    console.error('ローカルストレージ保存エラー:', storageSaveError);
+                    setError('結果の保存中にエラーが発生しました。ブラウザのストレージ設定を確認してください。');
+                    return;
+                }
 
                 router.push(`/result?t=${Date.now()}`);
             } else {

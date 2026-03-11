@@ -50,6 +50,9 @@ export function useReadingForm({ isSuperuser, currentYear }: UseReadingFormParam
 
         const numValue = typeof value === 'string' ? parseInt(value, 10) : value;
 
+        // NaN ガード（入力途中の不正文字列）
+        if (Number.isNaN(numValue)) return;
+
         // スーパーユーザーでなく、現在年より未来が入力された場合
         if (!isSuperuser && numValue > currentYear) {
             setError(`${currentYear}年以降の鑑定はできません。現在の年に修正しました。`);
