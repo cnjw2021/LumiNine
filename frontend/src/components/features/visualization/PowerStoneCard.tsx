@@ -14,7 +14,7 @@ import { SevenLayerStoneItem } from './SixLayerStoneItem';
  * パワーストーンカード
  *
  * SRP: ストーンレイアウトの組み立てのみを担当
- *      個別ストーン表示は StoneItem3 / SixLayerStoneItem に委譲
+ *      個別ストーン表示は StoneItem3 / SevenLayerStoneItem に委譲
  *      定数はすべて powerStoneConstants.ts で管理
  */
 

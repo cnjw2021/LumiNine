@@ -84,10 +84,10 @@ export function useReadingSubmit({ token, isSuperuser, currentYear }: UseReading
             return;
         }
 
-        if (!isSuperuser && targetYear > currentYear) {
-            setError(`${currentYear}年より未来の年は鑑定できません`);
-            return;
-        }
+        // 非スーパーユーザーが未来年を指定した場合は currentYear に矯正
+        const effectiveTargetYear = (!isSuperuser && targetYear > currentYear)
+            ? currentYear
+            : targetYear;
 
         if (!fullName) {
             setError('氏名を入力してください');
@@ -103,7 +103,7 @@ export function useReadingSubmit({ token, isSuperuser, currentYear }: UseReading
 
             const response = await api.post('/nine-star/calculate', {
                 birth_datetime: birthDateTimeISO,
-                target_year: targetYear,
+                target_year: effectiveTargetYear,
             }, {
                 headers: { Authorization: `Bearer ${token}` },
             });
@@ -124,7 +124,7 @@ export function useReadingSubmit({ token, isSuperuser, currentYear }: UseReading
                     fullName,
                     birthdate,
                     gender,
-                    targetYear,
+                    targetYear: effectiveTargetYear,
                 };
 
                 try {

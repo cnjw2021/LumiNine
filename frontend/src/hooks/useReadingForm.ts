@@ -44,6 +44,13 @@ export function useReadingForm({ isSuperuser, currentYear }: UseReadingFormParam
         };
     }, []);
 
+    // isSuperuser / currentYear 変更時に targetYear をクランプ
+    useEffect(() => {
+        if (!isSuperuser && targetYear > currentYear) {
+            setTargetYear(currentYear);
+        }
+    }, [isSuperuser, currentYear, targetYear]);
+
     // 年度の入力チェック
     const handleYearChange = useCallback((value: string | number) => {
         if (value === null || value === undefined || value === '') return;
