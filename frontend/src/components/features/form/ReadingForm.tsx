@@ -1,199 +1,47 @@
 'use client';
 
-import React, { useState, useRef, useEffect } from 'react';
+import React from 'react';
 import { Button, Stack, Text, Title, Paper, TextInput, Radio, Group, NumberInput, Divider, Box, Flex } from '@mantine/core';
 import CustomDatePicker from '@/components/common/ui/Datepicker';
-import api from '@/utils/api';
-import { AxiosError } from 'axios';
 import { Gender } from '@/types';
-import dayjs from 'dayjs';
-import 'dayjs/locale/ja';
-import { useRouter } from 'next/navigation';
 import { useAuth } from '@/contexts/auth/AuthContext';
 import { COLORS, FONTS, BUTTON } from '@/utils/theme';
+import { useReadingForm } from '@/hooks/useReadingForm';
+import { useReadingSubmit } from '@/hooks/useReadingSubmit';
+import { MIN_TARGET_YEAR, MAX_YEAR_SUPERUSER, MAX_YEAR_NORMAL } from './readingFormConstants';
 
-// 日本語ロケールを設定
-dayjs.locale('ja');
-
-// ローカルストレージキー
-const STORAGE_KEY = 'luminine-result-data';
-
-// 入力データの型
-export interface ReadingFormInput {
-  birthdate: string;
-  fullname: string;
-  gender: Gender;
-}
-
-// APIエラーレスポンスの型
-export interface ApiErrorResponse {
-  error: string;
-  message?: string;
-}
+/**
+ * 鑑定入力フォーム
+ *
+ * SRP: フォームUIの描画のみを担当
+ *      状態管理は useReadingForm、送信処理は useReadingSubmit に委譲
+ */
 
 interface ReadingFormProps {
   token: string;
 }
 
+/** フォームフィールドのラベル幅 */
+const LABEL_WIDTH = '90px';
+
 const ReadingForm: React.FC<ReadingFormProps> = ({ token }) => {
-  // Auth contextからスーパーユーザー権限を取得
   const { isSuperuser } = useAuth();
   const currentYear = new Date().getFullYear();
 
-  // 共通の状態
-  const [birthdate, setBirthdate] = useState<string>('');
-  const [fullName, setFullName] = useState<string>('');
-  const [gender, setGender] = useState<Gender>('male');
-  const [targetYear, setTargetYear] = useState<number>(currentYear);
+  const {
+    birthdate, setBirthdate,
+    fullName, setFullName,
+    gender, setGender,
+    targetYear,
+    error, setError,
+    birthdateInputRef,
+    handleYearChange,
+  } = useReadingForm({ isSuperuser, currentYear });
 
-  const [error, setError] = useState<string | null>(null);
-  const [isLoading, setIsLoading] = useState(false);
-  const birthdateInputRef = useRef<HTMLInputElement>(null);
-  const router = useRouter();
+  const { isLoading, handleSubmit } = useReadingSubmit({ token, isSuperuser, currentYear });
 
-  // 年度の入力チェック
-  const handleYearChange = (value: string | number) => {
-    // 入力がnullやundefinedの場合は処理しない
-    if (value === null || value === undefined || value === '') return;
-
-    // 数値に変換
-    const numValue = typeof value === 'string' ? parseInt(value, 10) : value;
-
-    // スーパーユーザーでなく、2026年以降が入力された場合
-    if (!isSuperuser && numValue > currentYear) {
-      setError(`${currentYear}年以降の鑑定はできません。現在の年に修正しました。`);
-      setTargetYear(currentYear);
-
-      // 3秒後にエラーメッセージを消す
-      setTimeout(() => {
-        setError(null);
-      }, 3000);
-    } else {
-      if (error && error.includes('鑑定はできません')) {
-        setError(null);
-      }
-      setTargetYear(numValue);
-    }
-  };
-
-  // コンポーネントがマウントされたときに生年月日フィールドにフォーカスを当てる
-  useEffect(() => {
-    // 少し遅延させてフォーカスを設定（レンダリング完了後に確実に実行するため）
-    const timer = setTimeout(() => {
-      if (birthdateInputRef.current) {
-        birthdateInputRef.current.focus();
-      }
-    }, 100);
-
-    return () => clearTimeout(timer);
-  }, []);
-
-  const handleSubmit = async () => {
-    // 生年月日のバリデーション
-    if (!birthdate) {
-      setError('生年月日を入力してください');
-      return;
-    }
-
-    // 生年月日が未来の日付ではないかをチェック
-    const [birthYear, birthMonth, birthDay] = birthdate.split('/');
-    const birthDate = new Date(`${birthYear}-${birthMonth}-${birthDay}`);
-    birthDate.setHours(0, 0, 0, 0); // 時間をリセット
-
-    const today = new Date();
-    today.setHours(0, 0, 0, 0); // 時間をリセット
-
-    if (birthDate > today) {
-      setError('生年月日は未来の日付を指定できません');
-      return;
-    }
-
-    // 鑑定年が未来年ではないかをチェック（スーパーユーザー以外）
-    if (!isSuperuser && targetYear > currentYear) {
-      setError(`${currentYear}年より未来の年は鑑定できません`);
-      setTargetYear(currentYear);
-      return;
-    }
-
-    // 名前のバリデーション
-    if (!fullName) {
-      setError('氏名を入力してください');
-      return;
-    }
-
-    await handleNormalSubmit();
-  };
-
-  const handleNormalSubmit = async () => {
-    setIsLoading(true);
-    try {
-      // 日付の文字列を組み合わせる
-      const birthdateParts = birthdate.split('/');
-      if (birthdateParts.length !== 3) {
-        setError('生年月日の形式が正しくありません');
-        setIsLoading(false);
-        return;
-      }
-
-      const [year, month, day] = birthdateParts;
-
-      // ISO形式の日時文字列を作成（正午を指定）
-      const birthDateTimeISO = `${year}-${month}-${day} 12:00`;
-
-      const response = await api.post('/nine-star/calculate', {
-        birth_datetime: birthDateTimeISO,
-        target_year: targetYear
-      }, {
-        headers: {
-          Authorization: `Bearer ${token}`
-        }
-      });
-
-      if (response.data) {
-        try {
-          // ローカルストレージの使用可能性をチェック
-          try {
-            // 書き込みテスト
-            localStorage.setItem('test-storage', 'test');
-            localStorage.removeItem('test-storage');
-          } catch (storageAccessError) {
-            console.error('ローカルストレージアクセスエラー:', storageAccessError);
-            setError('ブラウザのストレージ設定が制限されています。プライベートブラウジングやCookieの設定を確認してください。');
-            setIsLoading(false);
-            return;
-          }
-
-          // 計算結果をローカルストレージに保存
-          const userData = {
-            result: response.data,
-            fullName,
-            birthdate,
-            gender,
-            targetYear,
-          };
-
-          // 既存のデータを削除して新しいデータを保存
-          localStorage.removeItem(STORAGE_KEY);
-          localStorage.setItem(STORAGE_KEY, JSON.stringify(userData));
-
-          // Next.jsのルーターを使用してページ遷移 (ローディングは遷移後に自動で解除)
-          router.push(`/result?t=${Date.now()}`);
-        } catch (storageError) {
-          console.error('データ保存エラー:', storageError);
-          setError('結果の保存中にエラーが発生しました');
-          setIsLoading(false);
-        }
-      } else {
-        setError('鑑定結果が返されませんでした');
-        setIsLoading(false);
-      }
-    } catch (err: unknown) {
-      const errorMessage = err instanceof AxiosError
-        ? err.response?.data?.error || '鑑定中にエラーが発生しました'
-        : '鑑定中にエラーが発生しました';
-      setError(errorMessage);
-      setIsLoading(false);
-    }
+  const onSubmit = () => {
+    handleSubmit({ birthdate, fullName, gender, targetYear }, setError);
   };
 
   return (
@@ -225,7 +73,7 @@ const ReadingForm: React.FC<ReadingFormProps> = ({ token }) => {
 
             <Stack gap="xs" mt={5}>
               <Flex align="center" gap="xs">
-                <Box style={{ width: '90px' }}>
+                <Box style={{ width: LABEL_WIDTH }}>
                   <Text size="sm" fw={500}>生年月日</Text>
                   <Text size="xs" c="dimmed">(/は自動で入力)</Text>
                 </Box>
@@ -241,7 +89,7 @@ const ReadingForm: React.FC<ReadingFormProps> = ({ token }) => {
               </Flex>
 
               <Flex align="center" gap="xs">
-                <Box style={{ width: '90px' }}>
+                <Box style={{ width: LABEL_WIDTH }}>
                   <Text size="sm" fw={500}>氏名</Text>
                 </Box>
                 <Box style={{ flexGrow: 1 }}>
@@ -267,7 +115,7 @@ const ReadingForm: React.FC<ReadingFormProps> = ({ token }) => {
               </Flex>
 
               <Flex align="center" gap="xs">
-                <Box style={{ width: '90px' }}>
+                <Box style={{ width: LABEL_WIDTH }}>
                   <Text size="sm" fw={500}>性別</Text>
                 </Box>
                 <Box style={{ flexGrow: 1 }}>
@@ -284,7 +132,7 @@ const ReadingForm: React.FC<ReadingFormProps> = ({ token }) => {
               </Flex>
 
               <Flex align="center" gap="xs">
-                <Box style={{ width: '90px' }}>
+                <Box style={{ width: LABEL_WIDTH }}>
                   <Text size="sm" fw={500}>鑑定年</Text>
                   {!isSuperuser && <Text size="xs" c="dimmed">({currentYear}年まで)</Text>}
                 </Box>
@@ -293,8 +141,8 @@ const ReadingForm: React.FC<ReadingFormProps> = ({ token }) => {
                     placeholder={currentYear.toString()}
                     value={targetYear}
                     onChange={handleYearChange}
-                    min={1900}
-                    max={isSuperuser ? 2100 : 3000}
+                    min={MIN_TARGET_YEAR}
+                    max={isSuperuser ? MAX_YEAR_SUPERUSER : MAX_YEAR_NORMAL}
                     required
                     size="xs"
                     style={{ flexGrow: 1 }}
@@ -318,7 +166,7 @@ const ReadingForm: React.FC<ReadingFormProps> = ({ token }) => {
 
           <Button
             size="md"
-            onClick={handleSubmit}
+            onClick={onSubmit}
             mt={{ base: 'sm', sm: 'md' }}
             loading={isLoading}
             disabled={isLoading}
