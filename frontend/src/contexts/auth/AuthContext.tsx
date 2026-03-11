@@ -89,6 +89,8 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
   // ── Auth State ────────────────────────────────────
 
   const clearPermissionCache = useCallback(() => {
+    // ref も同期的にクリアして stale read を防止
+    permissionCacheRef.current = {};
     setPermissionCache({});
   }, []);
 
@@ -159,16 +161,12 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
 
   // ── Permission Check ──────────────────────────────
 
-  // 個別の権限チェックAPIを呼び出すヘルパー
+  // 個別の権限チェックAPIを呼び出すヘルパー（エラーは throw → 呼び出し側で判別）
   const checkPermissionApi = useCallback(async (permissionCode: string): Promise<{ code: string; hasPermission: boolean }> => {
-    try {
-      const response = await api.post('/permissions/check', {
-        permission_code: permissionCode
-      });
-      return { code: permissionCode, hasPermission: response.data.has_permission === true };
-    } catch {
-      return { code: permissionCode, hasPermission: false };
-    }
+    const response = await api.post('/permissions/check', {
+      permission_code: permissionCode
+    });
+    return { code: permissionCode, hasPermission: response.data.has_permission === true };
   }, []);
 
   const checkPermissions = useCallback(async (permissionCodes: string[]): Promise<Record<string, boolean>> => {
