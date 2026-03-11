@@ -46,10 +46,14 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
   const [token, setToken] = useState<string | null>(null);
   const [userName, setUserName] = useState<string | null>(null);
   const permissionCacheRef = useRef<Record<string, boolean>>({});
+  const cacheGenerationRef = useRef(0);
 
-  // ref キャッシュを更新するヘルパー（ref-only → 不要な re-render を防止）
-  const updatePermissionCache = useCallback((entries: Record<string, boolean>) => {
-    permissionCacheRef.current = { ...permissionCacheRef.current, ...entries };
+  // ref キャッシュを更新するヘルパー（generation チェックで stale write を防止）
+  const updatePermissionCache = useCallback((entries: Record<string, boolean>, generation: number) => {
+    // リクエスト開始時の generation と現在が一致する場合のみ書き込み
+    if (generation === cacheGenerationRef.current) {
+      permissionCacheRef.current = { ...permissionCacheRef.current, ...entries };
+    }
   }, []);
 
   // ── Interceptors (useEffect 内で登録 → cleanup で解除) ──
@@ -89,6 +93,7 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
 
   const clearPermissionCache = useCallback(() => {
     permissionCacheRef.current = {};
+    cacheGenerationRef.current += 1;
   }, []);
 
   const clearAuthState = useCallback(() => {
@@ -103,10 +108,16 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
   }, [clearPermissionCache]);
 
   const logout = useCallback(async () => {
+    // token をスナップショットしてから状態をクリア（API側のログアウト処理を確実に実行）
+    const currentToken = localStorage.getItem('token');
     try {
-      clearAuthState();
-      await api.post('/auth/logout').catch(() => { });
+      if (currentToken) {
+        await api.post('/auth/logout', {}, {
+          headers: { Authorization: `Bearer ${currentToken}` }
+        }).catch(() => { });
+      }
     } finally {
+      clearAuthState();
       window.location.href = '/login';
     }
   }, [clearAuthState]);
@@ -179,7 +190,7 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
       if (isSuperuser) {
         const allGranted: Record<string, boolean> = {};
         permissionCodes.forEach(code => { allGranted[code] = true; });
-        updatePermissionCache(allGranted);
+        updatePermissionCache(allGranted, cacheGenerationRef.current);
         return allGranted;
       }
 
@@ -222,7 +233,7 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
         });
 
         if (Object.keys(toCache).length > 0) {
-          updatePermissionCache(toCache);
+          updatePermissionCache(toCache, cacheGenerationRef.current);
         }
       }
 
@@ -241,6 +252,8 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
         return false;
       }
 
+      const gen = cacheGenerationRef.current;
+
       if (isSuperuser) return true;
 
       if (isAdmin && ADMIN_BASIC_PERMISSIONS.includes(permissionCode)) {
@@ -258,8 +271,8 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
       });
 
       const hasPermission = response.data.has_permission === true;
-      // ref と state を同時に更新
-      updatePermissionCache({ [permissionCode]: hasPermission });
+      // 権限キャッシュ（ref）のみを更新
+      updatePermissionCache({ [permissionCode]: hasPermission }, gen);
 
       return hasPermission;
     } catch {
