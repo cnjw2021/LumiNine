@@ -135,9 +135,9 @@ class PermissionUseCase:
         if user.is_superuser:
             return {code: True for code in permission_codes}
 
-        # 중복 코드 제거 (순서 유지), 빈 문자열/비문자열 필터링
+        # 중복 코드 제거 (순서 유지), 정규화 (trim) 및 빈 문자열/비문자열 필터링
         unique_codes = list(dict.fromkeys(
-            code for code in permission_codes
+            code.strip() for code in permission_codes
             if isinstance(code, str) and code.strip()
         ))
         if not unique_codes:

@@ -108,11 +108,19 @@ def create_permission_bp(perm_use_case: PermissionUseCase):
             if not isinstance(permission_codes, list):
                 return jsonify({'error': 'permission_codes는 배열이어야 합니다'}), 400
 
-            # 각 권한 코드가 비어 있지 않은 문자열인지 검증
+            # 각 권한 코드를 정규화 (trim) 및 중복 제거, 유효하지 않은 코드 필터링
             valid_codes = []
+            seen_codes = set()
             for code in permission_codes:
-                if isinstance(code, str) and code.strip():
-                    valid_codes.append(code)
+                if isinstance(code, str):
+                    normalized = code.strip()
+                    if normalized and normalized not in seen_codes:
+                        valid_codes.append(normalized)
+                        seen_codes.add(normalized)
+                    elif not normalized:
+                        logger.warning(
+                            "Invalid permission code encountered in batch request: %r", code
+                        )
                 else:
                     logger.warning(
                         "Invalid permission code encountered in batch request: %r", code
