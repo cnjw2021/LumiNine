@@ -99,16 +99,30 @@ def create_permission_bp(perm_use_case: PermissionUseCase):
     def check_permissions_batch():
         """여러 권한 코드를 일괄 확인합니다 (N+1 API 호출 방지)."""
         try:
-            data = request.get_json()
+            data = request.get_json(silent=True)
+            if not isinstance(data, dict):
+                return jsonify({'error': '유효한 JSON 본문이 필요합니다'}), 400
+
             permission_codes = data.get('permission_codes')
 
             if not isinstance(permission_codes, list):
                 return jsonify({'error': 'permission_codes는 배열이어야 합니다'}), 400
-            if len(permission_codes) == 0:
+
+            # 각 권한 코드가 비어 있지 않은 문자열인지 검증
+            valid_codes = []
+            for code in permission_codes:
+                if isinstance(code, str) and code.strip():
+                    valid_codes.append(code)
+                else:
+                    logger.warning(
+                        "Invalid permission code encountered in batch request: %r", code
+                    )
+
+            if not valid_codes:
                 return jsonify({'permissions': {}}), 200
 
             permissions = perm_use_case.check_user_permissions_batch(
-                get_jwt_identity(), permission_codes
+                get_jwt_identity(), valid_codes
             )
             return jsonify({'permissions': permissions}), 200
         except UserNotFoundError as e:

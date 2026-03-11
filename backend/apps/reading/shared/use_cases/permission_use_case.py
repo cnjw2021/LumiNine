@@ -131,9 +131,22 @@ class PermissionUseCase:
         if not user:
             raise UserNotFoundError("사용자를 찾을 수 없습니다.")
 
-        # 중복 코드 제거 후 각 코드에 대해 권한 확인
-        unique_codes = list(dict.fromkeys(permission_codes))
+        # 스ーパーユーザーは全権限を持つ
+        if user.is_superuser:
+            return {code: True for code in permission_codes}
+
+        # 중복 코드 제거 (순서 유지), 빈 문자열/비문자열 필터링
+        unique_codes = list(dict.fromkeys(
+            code for code in permission_codes
+            if isinstance(code, str) and code.strip()
+        ))
+        if not unique_codes:
+            return {}
+
+        # 사용자의 권한을 한 번만 조회하여 N+1 쿼리 방지
+        user_permission_names = {perm.name for perm in user.permissions.all()}
+
         return {
-            code: self.permission_service.has_permission(user, code)
+            code: code in user_permission_names
             for code in unique_codes
         }
