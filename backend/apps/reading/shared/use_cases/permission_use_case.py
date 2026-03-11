@@ -120,4 +120,20 @@ class PermissionUseCase:
         if not user:
             raise UserNotFoundError("사용자를 찾을 수 없습니다.")
 
-        return user.has_permission(permission_code)
+        return self.permission_service.has_permission(user, permission_code)
+
+    def check_user_permissions_batch(self, email: str, permission_codes: List[str]) -> Dict[str, bool]:
+        """여러 권한 코드를 일괄 확인합니다 (N+1 API 호출 방지)."""
+        if not permission_codes:
+            return {}
+
+        user = self.user_repo.find_by_email(email)
+        if not user:
+            raise UserNotFoundError("사용자를 찾을 수 없습니다.")
+
+        # 중복 코드 제거 후 각 코드에 대해 권한 확인
+        unique_codes = list(dict.fromkeys(permission_codes))
+        return {
+            code: self.permission_service.has_permission(user, code)
+            for code in unique_codes
+        }

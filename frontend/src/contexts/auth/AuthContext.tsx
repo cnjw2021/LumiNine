@@ -152,12 +152,12 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
 
   // ── Permission Check ──────────────────────────────
 
-  // 個別の権限チェックAPIを呼び出すヘルパー（エラーは throw → 呼び出し側で判別）
-  const checkPermissionApi = useCallback(async (permissionCode: string): Promise<{ code: string; hasPermission: boolean }> => {
-    const response = await api.post('/permissions/check', {
-      permission_code: permissionCode
+  // 複数の権限コードを一括確認するバッチAPIヘルパー（N+1 API 呼び出し防止）
+  const checkPermissionsBatchApi = useCallback(async (codes: string[]): Promise<Record<string, boolean>> => {
+    const response = await api.post('/permissions/check-multiple', {
+      permission_codes: codes
     });
-    return { code: permissionCode, hasPermission: response.data.has_permission === true };
+    return response.data.permissions ?? {};
   }, []);
 
   const checkPermissions = useCallback(async (permissionCodes: string[]): Promise<Record<string, boolean>> => {
@@ -201,23 +201,24 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
         return true;
       });
 
-      // 未キャッシュのコードのみAPIで確認
+      // 未キャッシュのコードをバッチAPIで一括確認（N+1 → 1回）
       if (codesToCheck.length > 0) {
-        const apiResults = await Promise.allSettled(
-          codesToCheck.map(code => checkPermissionApi(code))
-        );
+        try {
+          const batchResults = await checkPermissionsBatchApi(codesToCheck);
 
-        // 成功した結果のみキャッシュに書き込む（失敗はfalse初期値のまま、キャッシュしない）
-        const toCache: Record<string, boolean> = {};
-        apiResults.forEach(result => {
-          if (result.status === 'fulfilled') {
-            results[result.value.code] = result.value.hasPermission;
-            toCache[result.value.code] = result.value.hasPermission;
+          // 成功した結果をキャッシュに書き込み
+          const toCache: Record<string, boolean> = {};
+          codesToCheck.forEach(code => {
+            const hasPermission = batchResults[code] === true;
+            results[code] = hasPermission;
+            toCache[code] = hasPermission;
+          });
+
+          if (Object.keys(toCache).length > 0) {
+            updatePermissionCache(toCache, gen);
           }
-        });
-
-        if (Object.keys(toCache).length > 0) {
-          updatePermissionCache(toCache, gen);
+        } catch {
+          // API エラー時は false 初期値のまま、キャッシュしない
         }
       }
 
@@ -227,7 +228,7 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
       permissionCodes.forEach(code => { fallback[code] = false; });
       return fallback;
     }
-  }, [isSuperuser, isAdmin, checkPermissionApi, updatePermissionCache]);
+  }, [isSuperuser, isAdmin, checkPermissionsBatchApi, updatePermissionCache]);
 
   const checkPermission = useCallback(async (permissionCode: string): Promise<boolean> => {
     try {
@@ -250,8 +251,9 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
         return cachedValue;
       }
 
-      // checkPermissionApi を再利用して API 呼び出しを一元化
-      const { hasPermission } = await checkPermissionApi(permissionCode);
+      // バッチAPIを通じて単一コードも一貫して確認
+      const batchResults = await checkPermissionsBatchApi([permissionCode]);
+      const hasPermission = batchResults[permissionCode] === true;
       // 権限キャッシュ（ref）のみを更新
       updatePermissionCache({ [permissionCode]: hasPermission }, gen);
 
@@ -259,7 +261,7 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
     } catch {
       return false;
     }
-  }, [isAdmin, isSuperuser, checkPermissionApi, updatePermissionCache]);
+  }, [isAdmin, isSuperuser, checkPermissionsBatchApi, updatePermissionCache]);
 
   // ── Effects ───────────────────────────────────────
 
