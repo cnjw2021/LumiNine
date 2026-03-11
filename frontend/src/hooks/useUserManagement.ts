@@ -69,8 +69,8 @@ export function useUserManagement(): UseUserManagementReturn {
             }
         } catch (error) {
             const axiosError = error as AxiosError;
-            // 401 は API インターセプターによるリダイレクトで静かに処理する
-            if (axiosError.response?.status === 401) {
+            // 401/403 は API インターセプターによるリダイレクトで静かに処理する
+            if (axiosError.response?.status === 401 || (error as any).__handled403) {
                 return;
             }
             console.error('Error fetching users:', error);
@@ -128,8 +128,8 @@ export function useUserManagement(): UseUserManagementReturn {
             });
         } catch (error) {
             const axiosError = error as AxiosError<{ error: string }>;
-            if (axiosError.response?.status === 401) {
-                // 認証エラー時はグローバルな interceptor に処理を任せる
+            if (axiosError.response?.status === 401 || (error as any).__handled403) {
+                // 認証/認可エラー時はグローバルな interceptor に処理を任せる
                 return;
             }
             console.error('Error creating user:', error);
@@ -194,7 +194,7 @@ export function useUserManagement(): UseUserManagementReturn {
             });
         } catch (error) {
             const axiosError = error as AxiosError<{ error: string }>;
-            if (axiosError.response?.status === 401) {
+            if (axiosError.response?.status === 401 || (error as any).__handled403) {
                 return;
             }
             console.error('Error updating user:', error);
@@ -221,8 +221,12 @@ export function useUserManagement(): UseUserManagementReturn {
                 color: 'green',
             });
         } catch (error) {
-            console.error('Error deleting user:', error);
             const axiosError = error as AxiosError<{ error: string }>;
+            // 401/403 はグローバル interceptor に委ねる
+            if (axiosError.response?.status === 401 || (error as any).__handled403) {
+                return;
+            }
+            console.error('Error deleting user:', error);
             notifications.show({
                 title: 'エラー',
                 message: axiosError.response?.data.error || '予期せぬエラーが発生しました',
