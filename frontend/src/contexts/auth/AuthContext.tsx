@@ -179,47 +179,53 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
         return allGranted;
       }
 
-      // 管理者の場合、基本権限を自動付与し、残りをAPIで個別確認
-      if (isAdmin) {
-        const results: Record<string, boolean> = {};
-        const codesToCheck = permissionCodes.filter(code => {
-          if (ADMIN_BASIC_PERMISSIONS.includes(code)) {
-            results[code] = true;
-            return false;
-          }
-          return true;
-        });
+      // 全コードを false で初期化（rejected でも undefined にしない）
+      const results: Record<string, boolean> = {};
+      permissionCodes.forEach(code => { results[code] = false; });
 
+      // キャッシュ済みコードを short-circuit
+      const cache = permissionCacheRef.current;
+      const codesToCheck = permissionCodes.filter(code => {
+        // 管理者の基本権限は自動付与
+        if (isAdmin && ADMIN_BASIC_PERMISSIONS.includes(code)) {
+          results[code] = true;
+          return false;
+        }
+        // キャッシュにあればAPIスキップ
+        if (cache[code] !== undefined) {
+          results[code] = cache[code];
+          return false;
+        }
+        return true;
+      });
+
+      // 未キャッシュのコードのみAPIで確認
+      if (codesToCheck.length > 0) {
         const apiResults = await Promise.allSettled(
           codesToCheck.map(code => checkPermissionApi(code))
         );
+
+        // 成功した結果のみキャッシュに書き込む（失敗はfalse初期値のまま、キャッシュしない）
+        const toCache: Record<string, boolean> = {};
         apiResults.forEach(result => {
           if (result.status === 'fulfilled') {
             results[result.value.code] = result.value.hasPermission;
+            toCache[result.value.code] = result.value.hasPermission;
           }
+          // rejected → results は false 初期値のまま、キャッシュしない
         });
 
-        // キャッシュを一括更新
-        setPermissionCache(prev => ({ ...prev, ...results }));
-        return results;
+        if (Object.keys(toCache).length > 0) {
+          setPermissionCache(prev => ({ ...prev, ...toCache }));
+        }
       }
 
-      // 一般ユーザーの場合はAPIで個別確認
-      const results: Record<string, boolean> = {};
-      const apiResults = await Promise.allSettled(
-        permissionCodes.map(code => checkPermissionApi(code))
-      );
-      apiResults.forEach(result => {
-        if (result.status === 'fulfilled') {
-          results[result.value.code] = result.value.hasPermission;
-        }
-      });
-
-      // キャッシュを一括更新
-      setPermissionCache(prev => ({ ...prev, ...results }));
       return results;
     } catch {
-      return {};
+      // 全コードを false として返す
+      const fallback: Record<string, boolean> = {};
+      permissionCodes.forEach(code => { fallback[code] = false; });
+      return fallback;
     }
   }, [isSuperuser, isAdmin, checkPermissionApi]);
 
