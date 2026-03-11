@@ -43,8 +43,7 @@ export function useReadingSubmit({ token, isSuperuser, currentYear }: UseReading
         }
 
         const [birthYear, birthMonth, birthDay] = birthdate.split('/');
-        const birthDate = new Date(`${birthYear}-${birthMonth}-${birthDay}`);
-        birthDate.setHours(0, 0, 0, 0);
+        const birthDate = new Date(Number(birthYear), Number(birthMonth) - 1, Number(birthDay));
 
         const today = new Date();
         today.setHours(0, 0, 0, 0);

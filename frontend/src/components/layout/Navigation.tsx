@@ -106,7 +106,7 @@ export const Navigation = ({ opened, onClose }: NavigationProps) => {
       >
         <Box style={{ position: 'relative' }}>
           <NavigationContent {...contentProps} />
-          <ScrollIndicator deps={[isLoggedIn, permissionsLoaded, adminMenuItems.length]} />
+          <ScrollIndicator isLoggedIn={isLoggedIn} permissionsLoaded={permissionsLoaded} adminMenuCount={adminMenuItems.length} />
         </Box>
       </Drawer>
 

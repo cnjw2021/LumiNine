@@ -18,11 +18,13 @@ const SCROLL_CONTAINER_SELECTOR = '.mantine-Drawer-body';
 const GRADIENT_BG = 'linear-gradient(to top, rgba(249, 247, 242, 0.95) 0%, rgba(249, 247, 242, 0) 100%)';
 
 interface ScrollIndicatorProps {
-    /** スクロール可否の再計算トリガー */
-    deps: unknown[];
+    /** スクロール可否の再計算トリガー (個別プリミティブ値) */
+    isLoggedIn: boolean;
+    permissionsLoaded: boolean;
+    adminMenuCount: number;
 }
 
-export const ScrollIndicator = ({ deps }: ScrollIndicatorProps) => {
+export const ScrollIndicator = ({ isLoggedIn, permissionsLoaded, adminMenuCount }: ScrollIndicatorProps) => {
     const [showScrollIndicator, setShowScrollIndicator] = useState(false);
 
     useEffect(() => {
@@ -37,8 +39,7 @@ export const ScrollIndicator = ({ deps }: ScrollIndicatorProps) => {
         checkScroll();
         window.addEventListener('resize', checkScroll);
         return () => window.removeEventListener('resize', checkScroll);
-        // eslint-disable-next-line react-hooks/exhaustive-deps
-    }, deps);
+    }, [isLoggedIn, permissionsLoaded, adminMenuCount]);
 
     return (
         <Transition mounted={showScrollIndicator} transition="fade" duration={200}>
