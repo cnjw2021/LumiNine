@@ -127,14 +127,6 @@ class PermissionUseCase:
         if not permission_codes:
             return {}
 
-        user = self.user_repo.find_by_email(email)
-        if not user:
-            raise UserNotFoundError("사용자를 찾을 수 없습니다.")
-
-        # 스ーパーユーザーは全権限を持つ
-        if user.is_superuser:
-            return {code: True for code in permission_codes}
-
         # 중복 코드 제거 (순서 유지), 정규화 (trim) 및 빈 문자열/비문자열 필터링
         unique_codes = list(dict.fromkeys(
             code.strip() for code in permission_codes
@@ -142,6 +134,14 @@ class PermissionUseCase:
         ))
         if not unique_codes:
             return {}
+
+        user = self.user_repo.find_by_email(email)
+        if not user:
+            raise UserNotFoundError("사용자를 찾을 수 없습니다.")
+
+        # スーパーユーザーは全権限を持つ（正規化済みコードに対して返却）
+        if user.is_superuser:
+            return {code: True for code in unique_codes}
 
         # 사용자의 권한을 한 번만 조회하여 N+1 쿼리 방지
         user_permission_names = {perm.name for perm in user.permissions.all()}
