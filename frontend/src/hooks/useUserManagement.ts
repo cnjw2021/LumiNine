@@ -5,13 +5,11 @@ import { useRouter } from 'next/navigation';
 import api from '@/utils/api';
 import { notifications } from '@mantine/notifications';
 import { AxiosError } from 'axios';
-import type { AdminUser, UpdateUserData, DateError } from '@/types/admin';
-import {
-    validateDates,
-    validateEmail,
-    formatDateSlash,
-    formatDateForApi,
-} from '@/utils/adminValidation';
+import type { AdminUser, UpdateUserData } from '@/types/admin';
+import { formatDateSlash, formatDateForApi } from '@/utils/adminValidation';
+import { useUserFormState, UseUserFormStateReturn } from '@/hooks/useUserFormState';
+
+// ── 型定義 ──────────────────────────────────────────
 
 interface UseUserManagementReturn {
     // ユーザーリスト
@@ -20,35 +18,15 @@ interface UseUserManagementReturn {
     setShowDeleted: (v: boolean) => void;
     fetchUsers: () => Promise<void>;
 
-    // 作成モーダル
+    // 作成フォーム
     createModalOpened: boolean;
     setCreateModalOpened: (v: boolean) => void;
-    newUserName: string;
-    setNewUserName: (v: string) => void;
-    newUserEmail: string;
-    setNewUserEmail: (v: string) => void;
-    newUserPassword: string;
-    setNewUserPassword: (v: string) => void;
+    createForm: UseUserFormStateReturn;
 
-    // 編集モーダル
+    // 編集フォーム
     editModalOpened: boolean;
     selectedUser: AdminUser | null;
-    editName: string;
-    setEditName: (v: string) => void;
-    editEmail: string;
-    setEditEmail: (v: string) => void;
-    editPassword: string;
-    setEditPassword: (v: string) => void;
-
-    // 共通フォーム状態
-    subscriptionStart: string;
-    setSubscriptionStart: (v: string) => void;
-    subscriptionEnd: string;
-    setSubscriptionEnd: (v: string) => void;
-    isAdmin: boolean;
-    setIsAdmin: (v: boolean) => void;
-    emailError: string;
-    dateError: DateError;
+    editForm: UseUserFormStateReturn;
 
     // ハンドラー
     handleCreateUser: (systemLimit: number, totalActiveUsers: number, onSuccess: () => Promise<void>) => Promise<void>;
@@ -62,6 +40,8 @@ interface UseUserManagementReturn {
     formatDate: (dateStr: string | undefined | null) => string;
 }
 
+// ── フック ──────────────────────────────────────────
+
 export function useUserManagement(): UseUserManagementReturn {
     const router = useRouter();
 
@@ -69,35 +49,19 @@ export function useUserManagement(): UseUserManagementReturn {
     const [users, setUsers] = useState<AdminUser[]>([]);
     const [showDeleted, setShowDeleted] = useState(false);
 
-    // 作成モーダル
+    // モーダル状態
     const [createModalOpened, setCreateModalOpened] = useState(false);
-    const [newUserName, setNewUserName] = useState('');
-    const [newUserEmail, setNewUserEmail] = useState('');
-    const [newUserPassword, setNewUserPassword] = useState('');
-
-    // 編集モーダル
     const [editModalOpened, setEditModalOpened] = useState(false);
     const [selectedUser, setSelectedUser] = useState<AdminUser | null>(null);
-    const [editName, setEditName] = useState('');
-    const [editEmail, setEditEmail] = useState('');
-    const [editPassword, setEditPassword] = useState('');
 
-    // 共通フォーム状態
-    const [subscriptionStart, setSubscriptionStart] = useState('');
-    const [subscriptionEnd, setSubscriptionEnd] = useState('');
-    const [isAdmin, setIsAdmin] = useState(false);
-    const [emailError, setEmailError] = useState('');
-    const [dateError, setDateError] = useState<DateError>({});
+    // 独立したフォーム状態（create/edit が互いに干渉しない）
+    const createForm = useUserFormState();
+    const editForm = useUserFormState();
 
-    // ユーザーリスト取得
+    // ── ユーザーリスト取得 ────────────────────────────
+
     const fetchUsers = useCallback(async () => {
         try {
-            const token = localStorage.getItem('token');
-            if (!token) {
-                router.push('/login');
-                return;
-            }
-
             const response = await api.get(`/auth/admin/users?show_deleted=${showDeleted}`);
             if (response.data && Array.isArray(response.data.users)) {
                 setUsers(response.data.users);
@@ -107,28 +71,22 @@ export function useUserManagement(): UseUserManagementReturn {
             }
         } catch (error) {
             console.error('Error fetching users:', error);
-            if ((error as AxiosError).response?.status === 403) {
-                router.push('/');
-            }
             setUsers([]);
         }
-    }, [router, showDeleted]);
+    }, [showDeleted]);
 
     useEffect(() => {
         fetchUsers();
     }, [fetchUsers]);
 
-    // ユーザー作成
+    // ── ユーザー作成 ────────────────────────────────
+
     const handleCreateUser = useCallback(async (
         systemLimit: number,
         totalActiveUsers: number,
         onSuccess: () => Promise<void>,
     ) => {
         try {
-            // バリデーション前にエラー状態をクリア
-            setEmailError('');
-            setDateError({});
-
             // システム上限チェック
             if (systemLimit <= totalActiveUsers) {
                 notifications.show({
@@ -139,60 +97,23 @@ export function useUserManagement(): UseUserManagementReturn {
                 return;
             }
 
-            if (!newUserName.trim()) {
-                notifications.show({
-                    title: 'エラー',
-                    message: '名前を入力してください',
-                    color: 'red',
-                });
+            if (!createForm.validate({ requirePassword: true })) {
                 return;
             }
 
-            const emailResult = validateEmail(newUserEmail);
-            if (!emailResult.valid) {
-                setEmailError(emailResult.error);
-                return;
-            }
-
-            const dateResult = validateDates(subscriptionStart, subscriptionEnd);
-            if (!dateResult.valid) {
-                setDateError(dateResult.errors);
-                return;
-            }
-
-            if (newUserPassword.length < 8) {
-                notifications.show({
-                    title: 'エラー',
-                    message: 'パスワードは8文字以上である必要があります',
-                    color: 'red',
-                });
-                return;
-            }
-
-            const token = localStorage.getItem('token');
-            if (!token) {
-                router.push('/login');
-                return;
-            }
+            const { name, email, password, subscriptionStart, subscriptionEnd, isAdmin } = createForm.fields;
 
             await api.post('/auth/admin/users', {
-                name: newUserName,
-                email: newUserEmail,
-                password: newUserPassword,
+                name,
+                email,
+                password,
                 subscription_start: formatDateForApi(subscriptionStart),
                 subscription_end: formatDateForApi(subscriptionEnd),
                 is_admin: isAdmin,
             });
 
             setCreateModalOpened(false);
-            setNewUserName('');
-            setNewUserEmail('');
-            setNewUserPassword('');
-            setSubscriptionStart('');
-            setSubscriptionEnd('');
-            setIsAdmin(false);
-            setEmailError('');
-            setDateError({});
+            createForm.reset();
 
             await onSuccess();
             await fetchUsers();
@@ -205,64 +126,38 @@ export function useUserManagement(): UseUserManagementReturn {
         } catch (error) {
             console.error('Error creating user:', error);
             const axiosError = error as AxiosError<{ error: string }>;
-            setEmailError(axiosError.response?.data.error || '予期せぬエラーが発生しました');
+            createForm.setEmailError(axiosError.response?.data.error || '予期せぬエラーが発生しました');
         }
-    }, [newUserName, newUserEmail, newUserPassword, subscriptionStart, subscriptionEnd, isAdmin, router, fetchUsers]);
+    }, [createForm, fetchUsers]);
 
-    // ユーザー編集モーダルを開く
+    // ── ユーザー編集モーダルを開く ──────────────────
+
     const handleEditUser = useCallback((user: AdminUser) => {
         setSelectedUser(user);
-        setEditName(user.name);
-        setEditEmail(user.email);
-        setSubscriptionStart(user.subscription_start ? formatDateSlash(user.subscription_start) : '');
-        setSubscriptionEnd(user.subscription_end ? formatDateSlash(user.subscription_end) : '');
-        setIsAdmin(user.is_admin || false);
-        setEditPassword('');
+        editForm.setName(user.name);
+        editForm.setEmail(user.email);
+        editForm.setSubscriptionStart(user.subscription_start ? formatDateSlash(user.subscription_start) : '');
+        editForm.setSubscriptionEnd(user.subscription_end ? formatDateSlash(user.subscription_end) : '');
+        editForm.setIsAdmin(user.is_admin || false);
+        editForm.setPassword('');
         setEditModalOpened(true);
-    }, []);
+    }, [editForm]);
 
-    // ユーザー更新
+    // ── ユーザー更新 ────────────────────────────────
+
     const handleUpdateUser = useCallback(async (onSuccess: () => Promise<void>) => {
         if (!selectedUser) return;
 
         try {
-            // バリデーション前にエラー状態をクリア
-            setEmailError('');
-            setDateError({});
-
-            if (!editName.trim()) {
-                notifications.show({
-                    title: 'エラー',
-                    message: '名前を入力してください',
-                    color: 'red',
-                });
+            if (!editForm.validate()) {
                 return;
             }
 
-            const emailResult = validateEmail(editEmail);
-            if (!emailResult.valid) {
-                setEmailError(emailResult.error);
-                return;
-            }
-
-            const dateResult = validateDates(subscriptionStart, subscriptionEnd);
-            if (!dateResult.valid) {
-                setDateError(dateResult.errors);
-                return;
-            }
-
-            if (editPassword && editPassword.length < 8) {
-                notifications.show({
-                    title: 'エラー',
-                    message: 'パスワードは8文字以上である必要があります',
-                    color: 'red',
-                });
-                return;
-            }
+            const { name, email, password, subscriptionStart, subscriptionEnd, isAdmin } = editForm.fields;
 
             const updateData: UpdateUserData = {
-                name: editName,
-                email: editEmail,
+                name,
+                email,
                 subscription_start: formatDateForApi(subscriptionStart),
                 subscription_end: formatDateForApi(subscriptionEnd),
             };
@@ -272,21 +167,15 @@ export function useUserManagement(): UseUserManagementReturn {
                 updateData.is_admin = isAdmin;
             }
 
-            if (editPassword) {
-                updateData.password = editPassword;
+            if (password) {
+                updateData.password = password;
             }
 
             await api.put(`/auth/admin/users/${selectedUser.id}`, updateData);
 
             setEditModalOpened(false);
             setSelectedUser(null);
-            setEditEmail('');
-            setEditPassword('');
-            setSubscriptionStart('');
-            setSubscriptionEnd('');
-            setIsAdmin(false);
-            setEmailError('');
-            setDateError({});
+            editForm.reset();
 
             await onSuccess();
             await fetchUsers();
@@ -299,23 +188,18 @@ export function useUserManagement(): UseUserManagementReturn {
         } catch (error) {
             console.error('Error updating user:', error);
             const axiosError = error as AxiosError<{ error: string }>;
-            setEmailError(axiosError.response?.data.error || '予期せぬエラーが発生しました');
+            editForm.setEmailError(axiosError.response?.data.error || '予期せぬエラーが発生しました');
         }
-    }, [selectedUser, editName, editEmail, editPassword, subscriptionStart, subscriptionEnd, isAdmin, router, fetchUsers]);
+    }, [selectedUser, editForm, fetchUsers]);
 
-    // ユーザー削除
+    // ── ユーザー削除 ────────────────────────────────
+
     const handleDeleteUser = useCallback(async (userId: number, onSuccess: () => Promise<void>) => {
         if (!confirm('このユーザーを削除してもよろしいですか？')) {
             return;
         }
 
         try {
-            const token = localStorage.getItem('token');
-            if (!token) {
-                router.push('/login');
-                return;
-            }
-
             await api.delete(`/auth/admin/users/${userId}`);
 
             await onSuccess();
@@ -335,33 +219,22 @@ export function useUserManagement(): UseUserManagementReturn {
                 color: 'red',
             });
         }
-    }, [router, fetchUsers]);
+    }, [fetchUsers]);
 
-    // モーダル閉じる
+    // ── モーダル閉じる ──────────────────────────────
+
     const handleCloseCreateModal = useCallback(() => {
         setCreateModalOpened(false);
-        setNewUserName('');
-        setNewUserEmail('');
-        setNewUserPassword('');
-        setSubscriptionStart('');
-        setSubscriptionEnd('');
-        setIsAdmin(false);
-        setEmailError('');
-        setDateError({});
-    }, []);
+        createForm.reset();
+    }, [createForm]);
 
     const handleCloseEditModal = useCallback(() => {
         setEditModalOpened(false);
         setSelectedUser(null);
-        setEditName('');
-        setEditEmail('');
-        setEditPassword('');
-        setSubscriptionStart('');
-        setSubscriptionEnd('');
-        setIsAdmin(false);
-        setEmailError('');
-        setDateError({});
-    }, []);
+        editForm.reset();
+    }, [editForm]);
+
+    // ── return ──────────────────────────────────────
 
     return {
         users,
@@ -370,28 +243,10 @@ export function useUserManagement(): UseUserManagementReturn {
         fetchUsers,
         createModalOpened,
         setCreateModalOpened,
-        newUserName,
-        setNewUserName,
-        newUserEmail,
-        setNewUserEmail,
-        newUserPassword,
-        setNewUserPassword,
+        createForm,
         editModalOpened,
         selectedUser,
-        editName,
-        setEditName,
-        editEmail,
-        setEditEmail,
-        editPassword,
-        setEditPassword,
-        subscriptionStart,
-        setSubscriptionStart,
-        subscriptionEnd,
-        setSubscriptionEnd,
-        isAdmin,
-        setIsAdmin,
-        emailError,
-        dateError,
+        editForm,
         handleCreateUser,
         handleEditUser,
         handleUpdateUser,

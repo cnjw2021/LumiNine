@@ -13,6 +13,8 @@ from dataclasses import dataclass
 from datetime import date, timedelta
 from typing import Any, List, Optional, Tuple
 
+from apps.reading.ninestarki.domain.value_objects.star_grid_pattern_vo import StarGridPatternVO
+
 from injector import inject
 
 from apps.reading.ninestarki.domain.repositories.solar_terms_repository_interface import ISolarTermsRepository
@@ -53,24 +55,12 @@ class MonthlyBoardResult:
     """
     setsu_month_index: int
     center_star: int
-    grid_pattern: Optional[Any]
+    grid_pattern: Optional[StarGridPatternVO]
     month_stem: str
     month_branch: str
     month_zodiac: str
     period_start: date
     period_end: date
-
-    def to_dict(self) -> dict:
-        return {
-            "setsu_month_index": self.setsu_month_index,
-            "center_star": self.center_star,
-            "month_stem": self.month_stem,
-            "month_branch": self.month_branch,
-            "month_zodiac": self.month_zodiac,
-            "period_start": self.period_start.isoformat(),
-            "period_end": self.period_end.isoformat(),
-            "grid_pattern": self.grid_pattern.to_dict() if self.grid_pattern else None,
-        }
 
 
 # ──────────────────────────────────────────────
