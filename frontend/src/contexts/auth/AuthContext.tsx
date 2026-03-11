@@ -230,7 +230,10 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
       return results;
     } catch {
       const fallback: Record<string, boolean> = {};
-      permissionCodes.forEach(code => { fallback[code.trim()] = false; });
+      const normalizedFallbackCodes = Array.from(
+        new Set((permissionCodes || []).map(code => code.trim()).filter(Boolean))
+      );
+      normalizedFallbackCodes.forEach(code => { fallback[code] = false; });
       return fallback;
     }
   }, [isSuperuser, isAdmin, checkPermissionsBatchApi, updatePermissionCache]);
