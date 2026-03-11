@@ -13,6 +13,8 @@ from dataclasses import dataclass
 from datetime import date, timedelta
 from typing import List, Optional, Tuple
 
+from injector import inject
+
 from apps.reading.ninestarki.domain.value_objects.star_grid_pattern_vo import StarGridPatternVO
 
 from apps.reading.ninestarki.domain.entities.solar_term import SolarTerm
@@ -74,6 +76,7 @@ class MonthlyBoardDomainService(IMonthlyBoardDomainService):
     의존성은 생성자 주입 방식으로 공급된다.
     """
 
+    @inject
     def __init__(
         self,
         solar_terms_repo: ISolarTermsRepository,

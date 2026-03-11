@@ -2,6 +2,7 @@
 
 import { useState, useEffect } from 'react';
 import api from '@/utils/api';
+import { extractErrorMessage } from '@/utils/apiErrorUtils';
 import { PeriodFortuneData, MonthDirectionInfo, PowerStones } from '@/types/directionFortune';
 
 /**
@@ -38,8 +39,9 @@ export const useMonthFortuneData = (mainStar: number, monthStar: number, targetY
                 }
                 setError(null);
             } catch (err) {
-                console.error('月の運気情報の取得に失敗しました:', err);
-                setError('月の運気データの取得に失敗しました。');
+                const message = extractErrorMessage(err, '月の運気データの取得に失敗しました。');
+                console.error('月の運気情報の取得に失敗しました:', { message, error: err });
+                setError(message);
             } finally {
                 setLoading(false);
             }

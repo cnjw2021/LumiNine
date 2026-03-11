@@ -61,4 +61,4 @@ frontend/.env*
 frontend/*.tsbuildinfo
 frontend/next-env.d.ts .pr-review/handled_comment_urls.json
 .pr-review/
-backend/temp/
+temp/
