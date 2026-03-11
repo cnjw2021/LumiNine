@@ -11,11 +11,11 @@ from __future__ import annotations
 
 from dataclasses import dataclass
 from datetime import date, timedelta
-from typing import Any, List, Optional, Tuple
+from typing import List, Optional, Tuple
 
 from apps.reading.ninestarki.domain.value_objects.star_grid_pattern_vo import StarGridPatternVO
 
-from injector import inject
+from apps.reading.ninestarki.domain.entities.solar_term import SolarTerm
 
 from apps.reading.ninestarki.domain.repositories.solar_terms_repository_interface import ISolarTermsRepository
 from apps.reading.ninestarki.domain.repositories.solar_starts_repository_interface import ISolarStartsRepository
@@ -73,10 +73,9 @@ class MonthlyBoardDomainService(IMonthlyBoardDomainService):
     solar_terms_data 의 절기 정보(날짜·간지)와 monthly_directions 테이블의
     그룹별 월반 중궁성을 사용하여 지정 날짜에 해당하는 절월을 결정하고 월반을 편성한다.
 
-    의존성은 생성자 주입(injector) 방식으로 공급된다.
+    의존성은 생성자 주입 방식으로 공급된다.
     """
 
-    @inject
     def __init__(
         self,
         solar_terms_repo: ISolarTermsRepository,
@@ -211,7 +210,7 @@ class MonthlyBoardDomainService(IMonthlyBoardDomainService):
 
     def _determine_setsu_month(
         self, target_date: date, lookup_year: int
-    ) -> Tuple[Any, int, date]:
+    ) -> Tuple[SolarTerm, int, date]:
         """target_date 가 속하는 절기 레코드, 절월 인덱스, 종료일을 반환한다.
 
         Returns:
@@ -235,7 +234,7 @@ class MonthlyBoardDomainService(IMonthlyBoardDomainService):
 
         return matched_term, setsu_month_index, period_end
 
-    def _build_setsu_sequence(self, lookup_year: int) -> List[Any]:
+    def _build_setsu_sequence(self, lookup_year: int) -> List[SolarTerm]:
         """절월 시퀀스 구축: lookup_year의 2~12월 + 다음해 1월(小寒).
 
         【DB 구조】
@@ -263,10 +262,10 @@ class MonthlyBoardDomainService(IMonthlyBoardDomainService):
 
     def _match_term_in_sequence(
         self,
-        setsu_sequence: List[Any],
+        setsu_sequence: List[SolarTerm],
         target_date: date,
         lookup_year: int,
-    ) -> Tuple[Any, Optional[int]]:
+    ) -> Tuple[SolarTerm, Optional[int]]:
         """target_date 직전(또는 당일)의 절기를 시퀀스에서 찾는다.
 
         Returns:
@@ -298,8 +297,8 @@ class MonthlyBoardDomainService(IMonthlyBoardDomainService):
 
     def _calc_period_end(
         self,
-        setsu_sequence: List[Any],
-        matched_term: Any,
+        setsu_sequence: List[SolarTerm],
+        matched_term: SolarTerm,
         matched_pos: Optional[int],
         setsu_month_index: int,
     ) -> date:
@@ -324,7 +323,7 @@ class MonthlyBoardDomainService(IMonthlyBoardDomainService):
     # ──────────────────────────────
 
     @staticmethod
-    def _resolve_setsu_year(setsu_index: int, matched_term: Any) -> int:
+    def _resolve_setsu_year(setsu_index: int, matched_term: SolarTerm) -> int:
         """절월 인덱스 + matched_term → 절년(setsu_year) 반환.
 
         丑月(setsu_index=12)의 절입일은 다음 그레고리력 연도의 1월이므로,
