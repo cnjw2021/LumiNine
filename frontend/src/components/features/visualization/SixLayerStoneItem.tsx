@@ -8,9 +8,9 @@ import { StoneRecommendation, isGogyoStone } from '@/types/directionFortune';
 import { LAYER_META_7, GOGYO_THEME, GOGYO_NORMALIZE } from './powerStoneConstants';
 
 /**
- * 6-Layer ストーンカード（数秘術・九星気学共用）
+ * 7-Layer ストーンカード（数秘術・九星気学共用）
  *
- * SRP: 6-Layer用の単一ストーン表示のみを担当
+ * SRP: 7-Layer用の単一ストーン表示のみを担当
  */
 export const SixLayerStoneItem: React.FC<{
     stone: StoneRecommendation;

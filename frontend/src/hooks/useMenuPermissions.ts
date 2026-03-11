@@ -34,7 +34,18 @@ export function useMenuPermissions({
     const [userPermissions, setUserPermissions] = useState<Record<string, boolean>>({});
 
     useEffect(() => {
-        if (!isLoggedIn || authLoading) return;
+        // ログアウト時やロード中は状態をリセット
+        if (!isLoggedIn || authLoading) {
+            setPermissionsLoaded(false);
+            setUserPermissions({});
+            return;
+        }
+
+        let cancelled = false;
+
+        // 再チェック前に一旦リセット
+        setPermissionsLoaded(false);
+        setUserPermissions({});
 
         const checkMenuPermissions = async () => {
             try {
@@ -44,21 +55,28 @@ export function useMenuPermissions({
 
                 if (permissionCodes.length > 0) {
                     const permissions = await checkPermissions(permissionCodes);
-                    setUserPermissions(permissions);
-                    setPermissionsLoaded(true);
+                    if (!cancelled) {
+                        setUserPermissions(permissions);
+                        setPermissionsLoaded(true);
+                    }
                 } else {
-                    // 権限コードがない場合でも loaded を確定
-                    setUserPermissions({});
-                    setPermissionsLoaded(true);
+                    if (!cancelled) {
+                        setUserPermissions({});
+                        setPermissionsLoaded(true);
+                    }
                 }
             } catch (error) {
                 console.error('Error checking permissions:', error);
-                setUserPermissions({});
-                setPermissionsLoaded(true);
+                if (!cancelled) {
+                    setUserPermissions({});
+                    setPermissionsLoaded(true);
+                }
             }
         };
 
         checkMenuPermissions();
+
+        return () => { cancelled = true; };
     }, [isLoggedIn, authLoading, adminMenuItems, checkPermissions]);
 
     // メニューセクションの表示可否を判定
