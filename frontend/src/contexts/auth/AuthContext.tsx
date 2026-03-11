@@ -48,10 +48,14 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
   const [permissionCache, setPermissionCache] = useState<Record<string, boolean>>({});
   const permissionCacheRef = useRef<Record<string, boolean>>({});
 
-  // permissionCache が更新されたら ref を同期
-  useEffect(() => {
-    permissionCacheRef.current = permissionCache;
-  }, [permissionCache]);
+  // state と ref を同時に更新するヘルパー（stale read 防止）
+  const updatePermissionCache = useCallback((entries: Record<string, boolean>) => {
+    setPermissionCache(prev => {
+      const updated = { ...prev, ...entries };
+      permissionCacheRef.current = updated;
+      return updated;
+    });
+  }, []);
 
   // ── Interceptors (useEffect 内で登録 → cleanup で解除) ──
 
@@ -171,21 +175,31 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
 
   const checkPermissions = useCallback(async (permissionCodes: string[]): Promise<Record<string, boolean>> => {
     try {
+      // 未認証の場合は全て false
+      if (!localStorage.getItem('token')) {
+        const denied: Record<string, boolean> = {};
+        permissionCodes.forEach(code => { denied[code] = false; });
+        return denied;
+      }
+
       // スーパーユーザーは全ての権限を持つ
       if (isSuperuser) {
         const allGranted: Record<string, boolean> = {};
         permissionCodes.forEach(code => { allGranted[code] = true; });
-        setPermissionCache(prev => ({ ...prev, ...allGranted }));
+        updatePermissionCache(allGranted);
         return allGranted;
       }
 
+      // 重複コードを除去
+      const uniqueCodes = [...new Set(permissionCodes)];
+
       // 全コードを false で初期化（rejected でも undefined にしない）
       const results: Record<string, boolean> = {};
-      permissionCodes.forEach(code => { results[code] = false; });
+      uniqueCodes.forEach(code => { results[code] = false; });
 
       // キャッシュ済みコードを short-circuit
       const cache = permissionCacheRef.current;
-      const codesToCheck = permissionCodes.filter(code => {
+      const codesToCheck = uniqueCodes.filter(code => {
         // 管理者の基本権限は自動付与
         if (isAdmin && ADMIN_BASIC_PERMISSIONS.includes(code)) {
           results[code] = true;
@@ -212,25 +226,28 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
             results[result.value.code] = result.value.hasPermission;
             toCache[result.value.code] = result.value.hasPermission;
           }
-          // rejected → results は false 初期値のまま、キャッシュしない
         });
 
         if (Object.keys(toCache).length > 0) {
-          setPermissionCache(prev => ({ ...prev, ...toCache }));
+          updatePermissionCache(toCache);
         }
       }
 
       return results;
     } catch {
-      // 全コードを false として返す
       const fallback: Record<string, boolean> = {};
       permissionCodes.forEach(code => { fallback[code] = false; });
       return fallback;
     }
-  }, [isSuperuser, isAdmin, checkPermissionApi]);
+  }, [isSuperuser, isAdmin, checkPermissionApi, updatePermissionCache]);
 
   const checkPermission = useCallback(async (permissionCode: string): Promise<boolean> => {
     try {
+      // 未認証の場合は即 false（ログアウト後のキャッシュ漏れ防止）
+      if (!localStorage.getItem('token')) {
+        return false;
+      }
+
       if (isSuperuser) return true;
 
       if (isAdmin && ADMIN_BASIC_PERMISSIONS.includes(permissionCode)) {
@@ -248,13 +265,14 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
       });
 
       const hasPermission = response.data.has_permission === true;
-      setPermissionCache(prev => ({ ...prev, [permissionCode]: hasPermission }));
+      // ref と state を同時に更新
+      updatePermissionCache({ [permissionCode]: hasPermission });
 
       return hasPermission;
     } catch {
       return false;
     }
-  }, [isAdmin, isSuperuser]);
+  }, [isAdmin, isSuperuser, updatePermissionCache]);
 
   // ── Effects ───────────────────────────────────────
 
