@@ -68,6 +68,11 @@ export function useUserManagement(): UseUserManagementReturn {
                 setUsers([]);
             }
         } catch (error) {
+            const axiosError = error as AxiosError;
+            // 401 は API インターセプターによるリダイレクトで静かに処理する
+            if (axiosError.response?.status === 401) {
+                return;
+            }
             console.error('Error fetching users:', error);
             setUsers([]);
         }
@@ -122,8 +127,12 @@ export function useUserManagement(): UseUserManagementReturn {
                 color: 'green',
             });
         } catch (error) {
-            console.error('Error creating user:', error);
             const axiosError = error as AxiosError<{ error: string }>;
+            if (axiosError.response?.status === 401) {
+                // 認証エラー時はグローバルな interceptor に処理を任せる
+                return;
+            }
+            console.error('Error creating user:', error);
             createForm.setEmailError(axiosError.response?.data.error || '予期せぬエラーが発生しました');
         }
     }, [createForm.validate, createForm.fields, createForm.reset, createForm.setEmailError, fetchUsers]);
@@ -184,8 +193,11 @@ export function useUserManagement(): UseUserManagementReturn {
                 color: 'green',
             });
         } catch (error) {
-            console.error('Error updating user:', error);
             const axiosError = error as AxiosError<{ error: string }>;
+            if (axiosError.response?.status === 401) {
+                return;
+            }
+            console.error('Error updating user:', error);
             editForm.setEmailError(axiosError.response?.data.error || '予期せぬエラーが発生しました');
         }
     }, [selectedUser, editForm.validate, editForm.fields, editForm.reset, editForm.setEmailError, fetchUsers]);

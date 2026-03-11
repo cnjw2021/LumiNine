@@ -102,15 +102,8 @@ export function useUserFormState(): UseUserFormStateReturn {
         }
 
         const requirePw = opts?.requirePassword ?? false;
-        if (requirePw && password.length < 8) {
-            notifications.show({
-                title: 'エラー',
-                message: 'パスワードは8文字以上である必要があります',
-                color: 'red',
-            });
-            return false;
-        }
-        if (!requirePw && password && password.length < 8) {
+        const needsPwCheck = requirePw || (password.length > 0);
+        if (needsPwCheck && password.length < 8) {
             notifications.show({
                 title: 'エラー',
                 message: 'パスワードは8文字以上である必要があります',
