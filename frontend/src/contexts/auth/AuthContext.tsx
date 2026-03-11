@@ -50,11 +50,11 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
 
   // state と ref を同時に更新するヘルパー（stale read 防止）
   const updatePermissionCache = useCallback((entries: Record<string, boolean>) => {
-    setPermissionCache(prev => {
-      const updated = { ...prev, ...entries };
-      permissionCacheRef.current = updated;
-      return updated;
-    });
+    // ref を同期的に更新して、直後の読み取りで最新値を取得できるようにする
+    permissionCacheRef.current = { ...permissionCacheRef.current, ...entries };
+
+    // UI 用の state は後から同期させる（ref には依存しない）
+    setPermissionCache(prev => ({ ...prev, ...entries }));
   }, []);
 
   // ── Interceptors (useEffect 内で登録 → cleanup で解除) ──
