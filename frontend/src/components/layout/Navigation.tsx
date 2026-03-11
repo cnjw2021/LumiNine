@@ -1,21 +1,34 @@
 'use client';
 
-import React, { useState, useEffect, useMemo } from 'react';
+import React, { useState } from 'react';
 import { useAuth } from '@/contexts/auth/AuthContext';
 import { useRouter } from 'next/navigation';
-import { Stack, Drawer, Box, Text, Flex, Transition } from '@mantine/core';
-import {
-  IconHome2,
-  IconLogout,
-  IconLogin,
-  IconQuestionMark,
-  IconLock,
-  IconChevronDown,
-  IconDatabase
-} from '@tabler/icons-react';
-import { NavigationMenu, MenuItem } from './NavigationMenu';
+import { Stack, Drawer, Box, Text } from '@mantine/core';
 import { DrawerHeader } from './DrawerHeader';
-import { COLORS, FONTS, NAV } from '@/utils/theme';
+import { NavigationContent } from './NavigationContent';
+import { ScrollIndicator } from './ScrollIndicator';
+import { useNavigationMenuItems } from '@/hooks/useNavigationMenuItems';
+import { useMenuPermissions } from '@/hooks/useMenuPermissions';
+import { COLORS, NAV } from '@/utils/theme';
+
+/**
+ * ナビゲーションコンテナ
+ *
+ * SRP: Drawer / Sidebar レイアウトの切り替えと
+ *      ルーティング処理のみを担当
+ */
+
+/** Drawer / Sidebar の幅 */
+const NAV_WIDTH = '320px';
+
+/** ナビゲーション後の状態クリア遅延 (ms) */
+const NAVIGATION_RESET_DELAY_MS = 500;
+
+/** 共通背景スタイル */
+const NAV_BG_STYLE = {
+  backgroundColor: 'rgba(245, 247, 243, 0.95)',
+  backdropFilter: 'blur(10px)',
+} as const;
 
 interface NavigationProps {
   opened: boolean;
@@ -25,90 +38,15 @@ interface NavigationProps {
 export const Navigation = ({ opened, onClose }: NavigationProps) => {
   const router = useRouter();
   const { isLoggedIn, isAdmin, isSuperuser, checkPermissions, logout, isLoading: authLoading } = useAuth();
-  const [permissionsLoaded, setPermissionsLoaded] = useState(false);
-  const [userPermissions, setUserPermissions] = useState<Record<string, boolean>>({});
   const [navigating, setNavigating] = useState<string | null>(null);
-  const [showScrollIndicator, setShowScrollIndicator] = useState(false);
 
-  // メニュー項目の定義
-  const defaultMenuItems: MenuItem[] = useMemo(() => {
-    if (!isLoggedIn && !authLoading) return [];
-    return [
-      { icon: IconHome2, label: 'パーソナルストーン鑑定', href: '/appraisal' }
-    ];
-  }, [isLoggedIn, authLoading]);
+  const { defaultMenuItems, adminMenuItems, aboutItems, accountItems } = useNavigationMenuItems({
+    isLoggedIn, isAdmin, isSuperuser, authLoading, onClose, logout,
+  });
 
-  // 管理者メニュー項目
-  const adminMenuItems: MenuItem[] = useMemo(() => {
-    if (!isLoggedIn || (!isAdmin && !isSuperuser)) return [];
-
-    const items = [
-      { icon: IconDatabase, label: '管理画面', href: '/admin', permission: 'data_management' }
-    ];
-
-    return items;
-  }, [isLoggedIn, isAdmin, isSuperuser]);
-
-  // 鑑定のインサイト
-  const aboutItems: MenuItem[] = useMemo(() => {
-    if (!isLoggedIn && !authLoading) return [];
-    return [
-      { icon: IconQuestionMark, label: '数秘術について', href: '/about/numerology' },
-      { icon: IconQuestionMark, label: '九星気学について', href: '/about/ninestarki' },
-      { icon: IconQuestionMark, label: 'パワーストーンについて', href: '/about/powerstone' }
-    ];
-  }, [isLoggedIn, authLoading]);
-
-  // アカウントメニュー項目
-  const accountItems: MenuItem[] = useMemo(() => {
-    if (isLoggedIn || authLoading) {
-      return [
-        { icon: IconLock, label: 'パスワード変更', href: '/password-change' },
-        {
-          icon: IconLogout,
-          label: 'ログアウト',
-          href: '#',
-          onClick: async () => {
-            try {
-              onClose();
-              await logout();
-              window.location.href = '/login';
-            } catch (error) {
-              console.error('Logout error:', error);
-              window.location.href = '/login';
-            }
-          }
-        }
-      ];
-    } else {
-      return [{ icon: IconLogin, label: 'ログイン', href: '/login' }];
-    }
-  }, [isLoggedIn, authLoading, logout, onClose]);
-
-  // 権限チェック
-  useEffect(() => {
-    if (!isLoggedIn || authLoading) return;
-
-    const checkMenuPermissions = async () => {
-      try {
-        const permissionCodes = adminMenuItems
-          .filter(item => item.permission)
-          .map(item => item.permission as string);
-
-        if (permissionCodes.length > 0) {
-          const permissions = await checkPermissions(permissionCodes);
-          setUserPermissions(permissions);
-          setPermissionsLoaded(true);
-        }
-      } catch (error) {
-        console.error('Error checking permissions:', error);
-        setUserPermissions({});
-        setPermissionsLoaded(true);
-      }
-    };
-
-    checkMenuPermissions();
-  }, [isLoggedIn, authLoading, adminMenuItems, checkPermissions]);
+  const { permissionsLoaded, hasAnyAdminPermission } = useMenuPermissions({
+    isLoggedIn, isAdmin, isSuperuser, authLoading, adminMenuItems, checkPermissions,
+  });
 
   const handleNavigation = async (href: string) => {
     try {
@@ -117,53 +55,37 @@ export const Navigation = ({ opened, onClose }: NavigationProps) => {
         router.push('/login');
         return;
       }
-
       setNavigating(href);
-      // lockScroll={false}를 적용했으므로 지연 없이 즉시 라우팅 가능
       router.push(href);
       onClose();
-      // Ensure navigating state is cleared after successful navigation
-      setTimeout(() => setNavigating(null), 500);
+      setTimeout(() => setNavigating(null), NAVIGATION_RESET_DELAY_MS);
     } catch (error) {
       console.error('Navigation error:', error);
       setNavigating(null);
     }
   };
 
-  // メニューセクションの表示可否を判定
-  const hasAnyAdminPermission = useMemo(() => {
-    if (!isLoggedIn) return false;
-    if (isSuperuser) return true;
-    if (!permissionsLoaded) return false;
-
-    return adminMenuItems.some(item => {
-      if (!item.permission) return true;
-      if (isAdmin && ['user_view', 'user_create', 'user_edit', 'user_delete'].includes(item.permission)) return true;
-      return userPermissions[item.permission] === true;
-    });
-  }, [isLoggedIn, permissionsLoaded, isSuperuser, isAdmin, adminMenuItems, userPermissions]);
-
-  // スクロールインジケーターの表示制御
-  useEffect(() => {
-    const checkScroll = () => {
-      const container = document.querySelector('.mantine-Drawer-body');
-      if (container) {
-        const hasOverflow = container.scrollHeight > container.clientHeight;
-        setShowScrollIndicator(hasOverflow);
-      }
-    };
-
-    checkScroll();
-    window.addEventListener('resize', checkScroll);
-    return () => window.removeEventListener('resize', checkScroll);
-  }, [isLoggedIn, permissionsLoaded, adminMenuItems.length]);
+  /** NavigationContent に渡す共通 props */
+  const contentProps = {
+    defaultMenuItems,
+    aboutItems,
+    accountItems,
+    adminMenuItems,
+    isLoggedIn,
+    isAdmin,
+    isSuperuser,
+    hasAnyAdminPermission,
+    permissionsLoaded,
+    onNavigate: handleNavigation,
+    navigating,
+  };
 
   return (
     <>
       <Drawer
         opened={opened}
         onClose={onClose}
-        size="320px"
+        size={NAV_WIDTH}
         padding="0"
         hiddenFrom="sm"
         withCloseButton={false}
@@ -174,94 +96,17 @@ export const Navigation = ({ opened, onClose }: NavigationProps) => {
             padding: 0,
             margin: 0,
             borderBottom: `2px solid ${NAV.borderColor}`,
-            backgroundColor: 'rgba(245, 247, 243, 0.95)',
-            backdropFilter: 'blur(10px)'
+            ...NAV_BG_STYLE,
           },
           body: {
             padding: '20px',
-            backgroundColor: 'rgba(245, 247, 243, 0.95)',
-            backdropFilter: 'blur(10px)'
-          }
+            ...NAV_BG_STYLE,
+          },
         }}
       >
         <Box style={{ position: 'relative' }}>
-          <Stack gap="lg">
-            {defaultMenuItems.length > 0 && (
-              <Stack gap="xs">
-                <NavigationMenu
-                  items={defaultMenuItems}
-                  onNavigate={handleNavigation}
-                  navigating={navigating}
-                />
-              </Stack>
-            )}
-
-            {aboutItems.length > 0 && (
-              <Stack gap="xs">
-                <Text size="sm" fw={700} c={NAV.sectionTitle} style={{ letterSpacing: '0.5px', fontFamily: FONTS.caption }}>
-                  鑑定のインサイト
-                </Text>
-                <NavigationMenu
-                  items={aboutItems}
-                  onNavigate={handleNavigation}
-                  navigating={navigating}
-                />
-              </Stack>
-            )}
-
-            <Stack gap="xs">
-              <Text size="sm" fw={700} c={NAV.sectionTitle} style={{ letterSpacing: '0.5px', fontFamily: FONTS.caption }}>
-                アカウント
-              </Text>
-              <NavigationMenu
-                items={accountItems}
-                onNavigate={handleNavigation}
-                navigating={navigating}
-              />
-            </Stack>
-
-            {isLoggedIn && (isAdmin || isSuperuser) && hasAnyAdminPermission && (
-              <Stack gap="xs">
-                <Text size="sm" fw={700} c={NAV.sectionTitle} style={{ letterSpacing: '0.5px', fontFamily: FONTS.caption }}>
-                  管理者メニュー
-                  {!permissionsLoaded && (
-                    <Text component="span" size="xs" c="dimmed" style={{ marginLeft: '5px' }}>
-                      (読み込み中...)
-                    </Text>
-                  )}
-                </Text>
-                {permissionsLoaded && (
-                  <NavigationMenu
-                    items={adminMenuItems}
-                    onNavigate={handleNavigation}
-                    navigating={navigating}
-                  />
-                )}
-              </Stack>
-            )}
-          </Stack>
-
-          {/* スクロールインジケーター */}
-          <Transition mounted={showScrollIndicator} transition="fade" duration={200}>
-            {(styles) => (
-              <Flex
-                justify="center"
-                align="center"
-                style={{
-                  ...styles,
-                  position: 'absolute',
-                  bottom: 0,
-                  left: 0,
-                  right: 0,
-                  padding: '10px',
-                  background: 'linear-gradient(to top, rgba(249, 247, 242, 0.95) 0%, rgba(249, 247, 242, 0) 100%)',
-                  pointerEvents: 'none',
-                }}
-              >
-                <IconChevronDown size={20} color={COLORS.accent} style={{ opacity: 0.7 }} />
-              </Flex>
-            )}
-          </Transition>
+          <NavigationContent {...contentProps} />
+          <ScrollIndicator deps={[isLoggedIn, permissionsLoaded, adminMenuItems.length]} />
         </Box>
       </Drawer>
 
@@ -270,71 +115,16 @@ export const Navigation = ({ opened, onClose }: NavigationProps) => {
         p="md"
         style={{
           height: '100%',
-          width: '320px',
-          backgroundColor: 'rgba(245, 247, 243, 0.95)',
-          backdropFilter: 'blur(10px)',
+          width: NAV_WIDTH,
+          ...NAV_BG_STYLE,
           borderRight: `1px solid ${NAV.borderColor}`,
           display: 'flex',
-          flexDirection: 'column'
+          flexDirection: 'column',
         }}
       >
         <Text size="xl" mb="md" style={{ fontSize: 20, fontWeight: 700, letterSpacing: '0.1em', textTransform: 'uppercase', color: COLORS.text }}>LumiNine</Text>
         <Box style={{ position: 'relative', flexGrow: 1, overflow: 'auto' }}>
-          <Stack gap="lg">
-            {defaultMenuItems.length > 0 && (
-              <Stack gap="xs">
-                <NavigationMenu
-                  items={defaultMenuItems}
-                  onNavigate={handleNavigation}
-                  navigating={navigating}
-                />
-              </Stack>
-            )}
-
-            {aboutItems.length > 0 && (
-              <Stack gap="xs">
-                <Text size="sm" fw={700} c={NAV.sectionTitle} style={{ letterSpacing: '0.5px', fontFamily: FONTS.caption }}>
-                  鑑定のインサイト
-                </Text>
-                <NavigationMenu
-                  items={aboutItems}
-                  onNavigate={handleNavigation}
-                  navigating={navigating}
-                />
-              </Stack>
-            )}
-
-            <Stack gap="xs">
-              <Text size="sm" fw={700} c={NAV.sectionTitle} style={{ letterSpacing: '0.5px', fontFamily: FONTS.caption }}>
-                アカウント
-              </Text>
-              <NavigationMenu
-                items={accountItems}
-                onNavigate={handleNavigation}
-                navigating={navigating}
-              />
-            </Stack>
-
-            {isLoggedIn && (isAdmin || isSuperuser) && hasAnyAdminPermission && (
-              <Stack gap="xs">
-                <Text size="sm" fw={700} c={NAV.sectionTitle} style={{ letterSpacing: '0.5px', fontFamily: FONTS.caption }}>
-                  管理者メニュー
-                  {!permissionsLoaded && (
-                    <Text component="span" size="xs" c="dimmed" style={{ marginLeft: '5px' }}>
-                      (読み込み中...)
-                    </Text>
-                  )}
-                </Text>
-                {permissionsLoaded && (
-                  <NavigationMenu
-                    items={adminMenuItems}
-                    onNavigate={handleNavigation}
-                    navigating={navigating}
-                  />
-                )}
-              </Stack>
-            )}
-          </Stack>
+          <NavigationContent {...contentProps} />
         </Box>
       </Stack>
     </>
