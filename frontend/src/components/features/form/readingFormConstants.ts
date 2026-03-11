@@ -16,8 +16,8 @@ export const ERROR_TIMEOUT_MS = 3000;
 /** ISO日時生成時のデフォルト時刻 */
 export const DEFAULT_BIRTH_TIME = '12:00';
 
-/** 出生年の最小値 */
-export const MIN_BIRTH_YEAR = 1900;
+/** 鑑定年 (targetYear) の最小値 */
+export const MIN_TARGET_YEAR = 1900;
 
 /** スーパーユーザーの最大鑑定年 */
 export const MAX_YEAR_SUPERUSER = 2100;

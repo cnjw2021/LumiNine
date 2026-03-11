@@ -8,7 +8,7 @@ import { useAuth } from '@/contexts/auth/AuthContext';
 import { COLORS, FONTS, BUTTON } from '@/utils/theme';
 import { useReadingForm } from '@/hooks/useReadingForm';
 import { useReadingSubmit } from '@/hooks/useReadingSubmit';
-import { MIN_BIRTH_YEAR, MAX_YEAR_SUPERUSER, MAX_YEAR_NORMAL } from './readingFormConstants';
+import { MIN_TARGET_YEAR, MAX_YEAR_SUPERUSER, MAX_YEAR_NORMAL } from './readingFormConstants';
 
 /**
  * 鑑定入力フォーム
@@ -16,13 +16,6 @@ import { MIN_BIRTH_YEAR, MAX_YEAR_SUPERUSER, MAX_YEAR_NORMAL } from './readingFo
  * SRP: フォームUIの描画のみを担当
  *      状態管理は useReadingForm、送信処理は useReadingSubmit に委譲
  */
-
-/** Form 入力データの型 */
-export interface ReadingFormInput {
-  birthdate: string;
-  fullname: string;
-  gender: Gender;
-}
 
 interface ReadingFormProps {
   token: string;
@@ -148,7 +141,7 @@ const ReadingForm: React.FC<ReadingFormProps> = ({ token }) => {
                     placeholder={currentYear.toString()}
                     value={targetYear}
                     onChange={handleYearChange}
-                    min={MIN_BIRTH_YEAR}
+                    min={MIN_TARGET_YEAR}
                     max={isSuperuser ? MAX_YEAR_SUPERUSER : MAX_YEAR_NORMAL}
                     required
                     size="xs"

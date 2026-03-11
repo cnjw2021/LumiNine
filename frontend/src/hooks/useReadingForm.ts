@@ -22,6 +22,7 @@ export function useReadingForm({ isSuperuser, currentYear }: UseReadingFormParam
     const [targetYear, setTargetYear] = useState<number>(currentYear);
     const [error, setError] = useState<string | null>(null);
     const birthdateInputRef = useRef<HTMLInputElement>(null);
+    const errorTimerRef = useRef<ReturnType<typeof setTimeout> | null>(null);
 
     // コンポーネントマウント時に生年月日フィールドにフォーカス
     useEffect(() => {
@@ -32,6 +33,15 @@ export function useReadingForm({ isSuperuser, currentYear }: UseReadingFormParam
         }, FOCUS_DELAY_MS);
 
         return () => clearTimeout(timer);
+    }, []);
+
+    // エラータイマーのクリーンアップ
+    useEffect(() => {
+        return () => {
+            if (errorTimerRef.current) {
+                clearTimeout(errorTimerRef.current);
+            }
+        };
     }, []);
 
     // 年度の入力チェック
@@ -45,8 +55,13 @@ export function useReadingForm({ isSuperuser, currentYear }: UseReadingFormParam
             setError(`${currentYear}年以降の鑑定はできません。現在の年に修正しました。`);
             setTargetYear(currentYear);
 
-            setTimeout(() => {
+            // 既存タイマーをクリアしてから再設定
+            if (errorTimerRef.current) {
+                clearTimeout(errorTimerRef.current);
+            }
+            errorTimerRef.current = setTimeout(() => {
                 setError(null);
+                errorTimerRef.current = null;
             }, ERROR_TIMEOUT_MS);
         } else {
             if (error && error.includes('鑑定はできません')) {
