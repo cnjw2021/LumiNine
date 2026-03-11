@@ -12,7 +12,14 @@ from apps.reading.ninestarki.domain.services.monthly_board_domain_service import
     MonthlyBoardDomainService,
     MonthlyBoardResult,
 )
+from apps.reading.ninestarki.domain.services.interfaces.monthly_board_service_interface import IMonthlyBoardDomainService
+from apps.reading.ninestarki.domain.repositories.solar_terms_repository_interface import ISolarTermsRepository
+from apps.reading.ninestarki.domain.repositories.solar_starts_repository_interface import ISolarStartsRepository
+from apps.reading.ninestarki.domain.repositories.star_grid_pattern_repository_interface import IStarGridPatternRepository
+from apps.reading.ninestarki.domain.repositories.monthly_directions_repository_interface import IMonthlyDirectionsRepository
 from apps.reading.ninestarki.domain.value_objects.star_grid_pattern_vo import StarGridPatternVO
+from injector import Injector, Module, singleton
+
 
 
 # ══════════════════════════════════════════════════════
@@ -306,3 +313,45 @@ class TestResolvePeriodStart:
         # stub 에는 2030 데이터가 없음
         result = service.resolve_period_start(2030, 1)
         assert result is None
+
+
+# ══════════════════════════════════════════════════════
+# DI 회귀 테스트 — @inject 누락 방지
+# ══════════════════════════════════════════════════════
+
+class _StubDIModule(Module):
+    """Injector 용 Stub 바인딩 모듈.
+
+    실제 dependency_module.py 와 동일한 인터페이스 바인딩을 Stub 으로 재현하여
+    MonthlyBoardDomainService 의 DI 해석이 정상 동작하는지 검증한다.
+    """
+
+    def configure(self, binder):
+        binder.bind(ISolarTermsRepository, to=_make_solar_terms_repo, scope=singleton)
+        binder.bind(ISolarStartsRepository, to=_make_solar_starts_repo, scope=singleton)
+        binder.bind(IStarGridPatternRepository, to=_StubStarGridPatternRepo, scope=singleton)
+        binder.bind(IMonthlyDirectionsRepository, to=_make_monthly_directions_repo, scope=singleton)
+        binder.bind(IMonthlyBoardDomainService, to=MonthlyBoardDomainService, scope=singleton)
+
+
+class TestMonthlyBoardDomainServiceDI:
+    """@inject 데코레이터 누락 회귀 방지 테스트.
+
+    injector.get(IMonthlyBoardDomainService) 로 인스턴스를 생성할 수 있는지 검증한다.
+    @inject 가 누락되면 injector.CallError 가 발생하여 이 테스트가 실패한다.
+    """
+
+    def test_injector_resolves_monthly_board_service(self):
+        """Injector 가 IMonthlyBoardDomainService 를 정상적으로 해석할 수 있는지 검증."""
+        injector = Injector([_StubDIModule()])
+        service = injector.get(IMonthlyBoardDomainService)
+        assert isinstance(service, MonthlyBoardDomainService)
+
+    def test_injector_resolved_service_is_functional(self):
+        """DI 로 생성된 서비스가 실제로 동작하는지 검증."""
+        injector = Injector([_StubDIModule()])
+        service = injector.get(IMonthlyBoardDomainService)
+        result = service.get_monthly_board(target_date=date(2026, 3, 5))
+        assert isinstance(result, MonthlyBoardResult)
+        assert 1 <= result.center_star <= 9
+
