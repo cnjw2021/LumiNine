@@ -268,11 +268,8 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
         return cachedValue;
       }
 
-      const response = await api.post('/permissions/check', {
-        permission_code: permissionCode
-      });
-
-      const hasPermission = response.data.has_permission === true;
+      // checkPermissionApi を再利用して API 呼び出しを一元化
+      const { hasPermission } = await checkPermissionApi(permissionCode);
       // 権限キャッシュ（ref）のみを更新
       updatePermissionCache({ [permissionCode]: hasPermission }, gen);
 
@@ -280,7 +277,7 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
     } catch {
       return false;
     }
-  }, [isAdmin, isSuperuser, updatePermissionCache]);
+  }, [isAdmin, isSuperuser, checkPermissionApi, updatePermissionCache]);
 
   // ── Effects ───────────────────────────────────────
 
