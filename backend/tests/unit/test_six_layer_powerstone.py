@@ -17,7 +17,6 @@ from tests.unit.powerstone_test_fixtures import (
     PATCH_LIFE_PATH,
     PATCH_PERSONAL_YEAR,
     PATCH_TRAITS,
-    make_gogyo_result,
     make_numerology_result,
 )
 
