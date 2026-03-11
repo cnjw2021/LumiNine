@@ -216,8 +216,9 @@ class MonthlyDirectionsUseCase:
     def _resolve_setsu_month_start(self, year: int, setsu_index: int) -> Optional[date]:
         """절월(節月) 인덱스에 해당하는 절입일(date)을 취득한다.
 
-        MonthlyBoardDomainService.resolve_period_start() 경유로 접근하므로
-        캡슐화를 유지한다. (getattr() 등의 내부 속성 직접 접근은 사용하지 않음)
+        IMonthlyBoardDomainService.resolve_period_start()
+        (self._monthly_board.resolve_period_start) 경유로 접근하므로 캡슐화를 유지한다.
+        getattr() 등의 내부 속성 직접 접근은 사용하지 않음.
 
         Args:
             year: 조회 연도
