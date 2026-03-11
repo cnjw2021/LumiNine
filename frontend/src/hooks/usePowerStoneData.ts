@@ -2,6 +2,7 @@
 
 import { useState, useEffect } from 'react';
 import api from '@/utils/api';
+import { extractErrorMessage } from '@/utils/apiErrorUtils';
 import { PowerStones, SixLayerPowerStones } from '@/types/directionFortune';
 
 /**
@@ -59,8 +60,9 @@ export const usePowerStoneData = (
                     setPowerStones(currentBoard?.power_stones ?? null);
                 }
             } catch (err) {
-                console.warn('パワーストーンデータの取得に失敗:', err);
-                setError('パワーストーンデータの取得に失敗しました');
+                const message = extractErrorMessage(err, 'パワーストーンデータの取得に失敗しました');
+                console.warn('パワーストーンデータの取得に失敗:', message);
+                setError(message);
             } finally {
                 setLoading(false);
             }
