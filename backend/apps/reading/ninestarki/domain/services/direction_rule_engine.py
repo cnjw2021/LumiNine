@@ -1,6 +1,7 @@
 from typing import Any, Dict, List
 from injector import inject
 from apps.reading.ninestarki.domain.repositories.star_grid_pattern_repository_interface import IStarGridPatternRepository
+from apps.reading.ninestarki.domain.services.fortune_status_service import FortuneStatusService
 from core.utils.calendar_utils import get_opposite_zodiac_direction
 
 
@@ -9,8 +10,9 @@ class DirectionRuleEngine:
     九星気学のルールに従って方位の吉凶を判断する純粋なロジック。 (Domain Service)
     """
     @inject
-    def __init__(self, star_grid_repo: IStarGridPatternRepository) -> None:
+    def __init__(self, star_grid_repo: IStarGridPatternRepository, fortune_status_service: FortuneStatusService) -> None:
         self.star_grid_repo = star_grid_repo
+        self._fortune_service = fortune_status_service
 
     def get_yearly_fortune_directions(
         self,
@@ -25,7 +27,7 @@ class DirectionRuleEngine:
             'main_star': main_star, 'month_star': month_star,
             'year_star': year_star, 'zodiac': zodiac
         }
-        return grid_pattern.get_fortune_status(fortune_params)
+        return self._fortune_service.get_fortune_status(grid_pattern, fortune_params)
 
     def filter_auspicious_directions(self, fortune_status: Dict[str, Any]) -> List[str]:
         """吉凶状態の結果から'is_auspicious'がtrueの方位のみを抽出します。"""
@@ -48,7 +50,7 @@ class DirectionRuleEngine:
         except ValueError:
             pass
 
-        dark_sword_dir = board_pattern.get_dark_sword_direction()  # 暗剣殺のチェック
+        dark_sword_dir = FortuneStatusService.get_dark_sword_direction(board_pattern)  # 暗剣殺のチェック
         if dark_sword_dir:
             inauspicious_marks.append(dark_sword_dir)
 

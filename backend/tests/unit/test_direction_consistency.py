@@ -9,17 +9,16 @@ Issue #61: 기존에 두 API가 서로 다른 메서드(get_time_fortune_status 
 from __future__ import annotations
 
 import pytest
-from unittest.mock import MagicMock, patch
 
-from core.models.star_grid_pattern import StarGridPattern
+from apps.reading.ninestarki.domain.services.fortune_status_service import FortuneStatusService
 
 
 # ══════════════════════════════════════════════════════
-# 테스트 헬퍼: StarGridPattern 의 순수 로직만 테스트하기 위한 가짜 객체
+# 테스트 헬퍼: DB/ORM 의존 없이 순수 길흉 판정 로직을 테스트하기 위한 가짜 객체
 # ══════════════════════════════════════════════════════
 
 class FakeGridPattern:
-    """StarGridPattern 에서 DB/ORM 의존 없이 순수 길흉 판정 메서드만 호출 가능한 객체."""
+    """StarGridPattern 에서 DB/ORM 의존 없이 순수 방위 속성만 보유하는 객체."""
 
     def __init__(
         self, center: int,
@@ -35,15 +34,6 @@ class FakeGridPattern:
         self.southwest = southwest
         self.west = west
         self.northwest = northwest
-
-    def get_fortune_status(self, params):
-        return StarGridPattern.get_fortune_status(self, params)
-
-    def get_time_fortune_status(self, params):
-        return StarGridPattern.get_time_fortune_status(self, params)
-
-    def _get_dark_sword_star(self):
-        return StarGridPattern._get_dark_sword_star(self)
 
 
 # 九星盤パターン: 중궁성 2 (二黒土星). 五黄은 northeast에 위치.
@@ -76,6 +66,9 @@ _DIRECTIONS = [
     "south", "southwest", "west", "northwest",
 ]
 
+# FortuneStatusService インスタンス (stateless)
+_service = FortuneStatusService()
+
 
 # ══════════════════════════════════════════════════════
 # 교차 검증 테스트
@@ -101,8 +94,8 @@ class TestDirectionConsistency:
         즉 get_fortune_status()에서 吉인 방위가
         get_time_fortune_status()에서 凶으로 되는 것은 논리적으로 불가능.
         """
-        full_result = grid.get_fortune_status(params)
-        time_result = grid.get_time_fortune_status(params)
+        full_result = _service.get_fortune_status(grid, params)
+        time_result = _service.get_time_fortune_status(grid, params)
 
         for d in _DIRECTIONS:
             full_ausp = full_result.get(d, {}).get("is_auspicious", True)
@@ -122,9 +115,9 @@ class TestDirectionConsistency:
         get_fortune_status()에 포함된 五黄殺/本命殺/月命殺 체크가
         get_time_fortune_status()에서 누락되면 이 테스트가 실패한다.
         """
-        full_result = grid.get_fortune_status(params)
+        full_result = _service.get_fortune_status(grid, params)
 
-        time_result = grid.get_time_fortune_status(params)
+        time_result = _service.get_time_fortune_status(grid, params)
 
         full_inauspicious = {
             d for d in _DIRECTIONS
@@ -140,4 +133,3 @@ class TestDirectionConsistency:
             f"get_time_fortune_status()에만 존재하는 凶방위: "
             f"{time_inauspicious - full_inauspicious}"
         )
-

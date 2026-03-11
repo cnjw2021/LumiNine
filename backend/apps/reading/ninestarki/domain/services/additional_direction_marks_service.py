@@ -15,7 +15,7 @@
     svc = AdditionalDirectionMarksService()
     svc.enrich(directions, grid_pattern=grid, month_branch="卯")
 """
-from __future__ import annotations
+from apps.reading.ninestarki.domain.constants.direction_constants import OPPOSITE_POSITIONS
 
 from typing import Any, Dict
 
@@ -33,14 +33,6 @@ STAR_HOME_DIRECTION: Dict[int, str] = {
     7: "west",        # 七赤金星 → 兌(西)
     8: "northeast",   # 八白土星 → 艮(東北)
     9: "south",       # 九紫火星 → 離(南)
-}
-
-# 方位の反対関係
-OPPOSITE_DIRECTIONS: Dict[str, str] = {
-    "north": "south", "south": "north",
-    "northeast": "southwest", "southwest": "northeast",
-    "east": "west", "west": "east",
-    "southeast": "northwest", "northwest": "southeast",
 }
 
 
@@ -136,7 +128,7 @@ class AdditionalDirectionMarksService:
             home = STAR_HOME_DIRECTION.get(star_number)
             if home is None:
                 continue
-            opposite = OPPOSITE_DIRECTIONS.get(home)
+            opposite = OPPOSITE_POSITIONS.get(home)
             if direction == opposite:
                 result = directions.get(direction)
                 if result and result.get("fortune_level") in (

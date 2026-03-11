@@ -64,9 +64,6 @@ class _StubGridPattern:
     def to_dict(self):
         return {"center_star": self.center_star}
 
-    def get_fortune_status(self, params):
-        return {}
-
 
 class _StubStarGridPatternRepo:
     def get_by_center_star(self, center_star: int):

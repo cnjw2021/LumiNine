@@ -3,7 +3,7 @@
 처리 흐름:
 1. YearStarDomainService → 연반 중궁성 + 연간지 취득
 2. MonthlyBoardDomainService → 절월(節月) 결정 + 월반 편성 (solar_terms_data 직접 조회)
-3. StarGridPattern.get_fortune_status() → 길흉방위 판정
+3. FortuneStatusService.get_fortune_status() → 길흉방위 판정
 4. 응답 dict 반환
 """
 from __future__ import annotations
@@ -15,6 +15,7 @@ from injector import inject
 
 from apps.reading.ninestarki.domain.services.year_star_domain_service import YearStarDomainService
 from apps.reading.ninestarki.domain.services.interfaces.monthly_board_service_interface import IMonthlyBoardDomainService
+from apps.reading.ninestarki.domain.services.fortune_status_service import FortuneStatusService
 from apps.reading.ninestarki.domain.services.five_elements_fortune_service import FiveElementsFortuneService
 from apps.reading.ninestarki.domain.services.additional_direction_marks_service import AdditionalDirectionMarksService
 from apps.reading.shared.domain.exceptions import (
@@ -41,11 +42,13 @@ class MonthlyDirectionsUseCase:
         self,
         year_star_service: YearStarDomainService,
         monthly_board_service: IMonthlyBoardDomainService,
+        fortune_status_service: FortuneStatusService,
         five_elements_service: FiveElementsFortuneService,
         additional_marks_service: AdditionalDirectionMarksService,
     ) -> None:
         self._year_star_service = year_star_service
         self._monthly_board = monthly_board_service
+        self._fortune_status = fortune_status_service
         self._five_elements = five_elements_service
         self._additional_marks = additional_marks_service
 
@@ -140,7 +143,7 @@ class MonthlyDirectionsUseCase:
                         "year_star": year_center_star,
                         "zodiac": board_result.month_zodiac,
                     }
-                    fortune_status = board_result.grid_pattern.get_fortune_status(fortune_params)
+                    fortune_status = self._fortune_status.get_fortune_status(board_result.grid_pattern, fortune_params)
 
                     # 五行相生による fortune_level 判定 (OCP: 独立サービスで拡張可能)
                     self._five_elements.enrich(
