@@ -41,6 +41,7 @@ from apps.reading.ninestarki.domain.services.interfaces.monthly_board_service_in
 from apps.reading.ninestarki.domain.services.year_star_domain_service import YearStarDomainService
 from apps.reading.ninestarki.domain.services.five_elements_fortune_service import FiveElementsFortuneService
 from apps.reading.ninestarki.domain.services.additional_direction_marks_service import AdditionalDirectionMarksService
+from apps.reading.ninestarki.domain.services.fortune_status_service import FortuneStatusService
 
 from apps.reading.ninestarki.use_cases.calculate_stars_use_case import CalculateStarsUseCase
 from apps.reading.ninestarki.use_cases.monthly_directions_use_case import MonthlyDirectionsUseCase
@@ -140,6 +141,7 @@ class AppModule(Module):
         binder.bind(YearStarDomainService, to=YearStarDomainService, scope=singleton)
         binder.bind(FiveElementsFortuneService, to=FiveElementsFortuneService, scope=singleton)
         binder.bind(AdditionalDirectionMarksService, to=AdditionalDirectionMarksService, scope=singleton)
+        binder.bind(FortuneStatusService, to=FortuneStatusService, scope=singleton)
         binder.bind(IStarAttributeRepository, to=StarAttributeRepository, scope=singleton)
         binder.bind(MonthlyDirectionsUseCase, to=MonthlyDirectionsUseCase, scope=singleton)
 
