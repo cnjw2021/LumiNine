@@ -108,6 +108,10 @@ def create_permission_bp(perm_use_case: PermissionUseCase):
             if not isinstance(permission_codes, list):
                 return jsonify({'error': 'permission_codes는 배열이어야 합니다'}), 400
 
+            MAX_BATCH_SIZE = 100
+            if len(permission_codes) > MAX_BATCH_SIZE:
+                return jsonify({'error': f'permission_codes는 최대 {MAX_BATCH_SIZE}개까지 허용됩니다'}), 400
+
             # 각 권한 코드를 정규화 (trim) 및 중복 제거, 유효하지 않은 코드 필터링
             valid_codes = []
             seen_codes = set()
