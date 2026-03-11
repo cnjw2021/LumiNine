@@ -2,7 +2,7 @@
 
 ORM モデル (core.models.star_grid_pattern.StarGridPattern) から分離された
 不変ドメイン型。方位別の星番号のみを保持し、インフラ関心事
-(SQLAlchemy relationship, timestamp, to_dict) を含まない。
+(SQLAlchemy relationship や timestamp など) を含まない。
 """
 from __future__ import annotations
 

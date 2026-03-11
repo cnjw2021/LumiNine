@@ -46,7 +46,7 @@ class MonthlyBoardResult:
     Attributes:
         setsu_month_index: 절월(節月) 인덱스 (1=寅月/立春~ … 12=丑月/小寒~)
         center_star: 월반 중궁성 (1~9)
-        grid_pattern: StarGridPattern 엔티티 (방위별 별 배치). None 이면 DB 미등록.
+        grid_pattern: StarGridPatternVO 도메인 VO (방위별 별 배치). None 이면 DB 미등록.
         month_stem: 月天干 문자 (예: '丙')
         month_branch: 月地支 문자 (예: '寅')
         month_zodiac: 月干支 결합 문자열 (예: '丙寅')

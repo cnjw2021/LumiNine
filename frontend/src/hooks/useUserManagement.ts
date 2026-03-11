@@ -1,7 +1,6 @@
 'use client';
 
 import { useState, useEffect, useCallback } from 'react';
-import { useRouter } from 'next/navigation';
 import api from '@/utils/api';
 import { notifications } from '@mantine/notifications';
 import { AxiosError } from 'axios';
@@ -43,7 +42,6 @@ interface UseUserManagementReturn {
 // ── フック ──────────────────────────────────────────
 
 export function useUserManagement(): UseUserManagementReturn {
-    const router = useRouter();
 
     // ユーザーリスト
     const [users, setUsers] = useState<AdminUser[]>([]);

@@ -1,6 +1,6 @@
 'use client';
 
-import { useState, useCallback } from 'react';
+import { useState, useCallback, useMemo } from 'react';
 import type { DateError } from '@/types/admin';
 import {
     validateDates,
@@ -50,6 +50,9 @@ export interface UseUserFormStateReturn {
  *
  * 各インスタンスが独立した状態を持つため、
  * create と edit のフローがお互いの状態を干渉しない.
+ *
+ * 注意: `fields` と `errors` は useMemo で安定化されているため、
+ * 依存配列に含めてもフィールド値が変わらない限り再実行されない.
  */
 export function useUserFormState(): UseUserFormStateReturn {
     const [name, setName] = useState('');
@@ -119,9 +122,18 @@ export function useUserFormState(): UseUserFormStateReturn {
         return true;
     }, [name, email, password, subscriptionStart, subscriptionEnd]);
 
+    // useMemo で安定化: フィールド値が変わらない限り同一参照を維持
+    const fields = useMemo<UserFormFields>(() => ({
+        name, email, password, subscriptionStart, subscriptionEnd, isAdmin,
+    }), [name, email, password, subscriptionStart, subscriptionEnd, isAdmin]);
+
+    const errors = useMemo<UserFormErrors>(() => ({
+        emailError, dateError,
+    }), [emailError, dateError]);
+
     return {
-        fields: { name, email, password, subscriptionStart, subscriptionEnd, isAdmin },
-        errors: { emailError, dateError },
+        fields,
+        errors,
         setName,
         setEmail,
         setPassword,
@@ -134,3 +146,4 @@ export function useUserFormState(): UseUserFormStateReturn {
         validate,
     };
 }
+

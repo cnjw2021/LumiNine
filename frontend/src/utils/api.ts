@@ -81,7 +81,7 @@ api.interceptors.response.use(
 
         // 403 Forbidden → ホームへリダイレクト（SSoT: 認可失敗リダイレクト）
         if (error.response?.status === 403) {
-            if (typeof window !== 'undefined') {
+            if (typeof window !== 'undefined' && window.location.pathname !== '/') {
                 window.location.href = '/';
             }
             return Promise.reject(error);
