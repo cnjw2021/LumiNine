@@ -61,7 +61,7 @@ export const usePowerStoneData = (
                 }
             } catch (err) {
                 const message = extractErrorMessage(err, 'パワーストーンデータの取得に失敗しました');
-                console.warn('パワーストーンデータの取得に失敗:', message);
+                console.warn('パワーストーンデータの取得に失敗:', { message, err });
                 setError(message);
             } finally {
                 setLoading(false);
