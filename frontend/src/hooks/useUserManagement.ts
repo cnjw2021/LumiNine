@@ -126,7 +126,7 @@ export function useUserManagement(): UseUserManagementReturn {
             const axiosError = error as AxiosError<{ error: string }>;
             createForm.setEmailError(axiosError.response?.data.error || '予期せぬエラーが発生しました');
         }
-    }, [createForm, fetchUsers]);
+    }, [createForm.validate, createForm.fields, createForm.reset, createForm.setEmailError, fetchUsers]);
 
     // ── ユーザー編集モーダルを開く ──────────────────
 
@@ -139,7 +139,7 @@ export function useUserManagement(): UseUserManagementReturn {
         editForm.setIsAdmin(user.is_admin || false);
         editForm.setPassword('');
         setEditModalOpened(true);
-    }, [editForm]);
+    }, [editForm.setName, editForm.setEmail, editForm.setSubscriptionStart, editForm.setSubscriptionEnd, editForm.setIsAdmin, editForm.setPassword]);
 
     // ── ユーザー更新 ────────────────────────────────
 
@@ -188,7 +188,7 @@ export function useUserManagement(): UseUserManagementReturn {
             const axiosError = error as AxiosError<{ error: string }>;
             editForm.setEmailError(axiosError.response?.data.error || '予期せぬエラーが発生しました');
         }
-    }, [selectedUser, editForm, fetchUsers]);
+    }, [selectedUser, editForm.validate, editForm.fields, editForm.reset, editForm.setEmailError, fetchUsers]);
 
     // ── ユーザー削除 ────────────────────────────────
 

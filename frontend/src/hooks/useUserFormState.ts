@@ -131,7 +131,9 @@ export function useUserFormState(): UseUserFormStateReturn {
         emailError, dateError,
     }), [emailError, dateError]);
 
-    return {
+    // useMemo で戻り値全体を安定化:
+    // フィールド値・エラー・コールバックが変わらない限り同一参照を維持
+    return useMemo<UseUserFormStateReturn>(() => ({
         fields,
         errors,
         setName,
@@ -144,6 +146,6 @@ export function useUserFormState(): UseUserFormStateReturn {
         setDateError,
         reset,
         validate,
-    };
+    }), [fields, errors, reset, validate]);
 }
 
