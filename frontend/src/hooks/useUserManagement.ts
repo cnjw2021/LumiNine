@@ -71,6 +71,7 @@ export function useUserManagement(): UseUserManagementReturn {
             const axiosError = error as AxiosError;
             // 401/403 は API インターセプターによるリダイレクトで静かに処理する
             if (axiosError.response?.status === 401 || (error as any).__handled403) {
+                setUsers([]);
                 return;
             }
             console.error('Error fetching users:', error);

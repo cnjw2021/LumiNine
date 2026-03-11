@@ -84,11 +84,9 @@ api.interceptors.response.use(
             if (typeof window !== 'undefined' && window.location.pathname !== '/') {
                 window.location.replace('/');
             }
-            // グローバルで処理済みであることを示すフラグを付与して reject
-            return Promise.reject({
-                ...error,
-                __handled403: true
-            });
+            // グローバルで処理済みであることを示すフラグを元のエラーに付与
+            (error as any).__handled403 = true;
+            return Promise.reject(error);
         }
 
         // その他のエラーは詳細情報を取得
