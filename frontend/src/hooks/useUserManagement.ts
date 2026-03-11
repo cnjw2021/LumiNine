@@ -224,13 +224,13 @@ export function useUserManagement(): UseUserManagementReturn {
     const handleCloseCreateModal = useCallback(() => {
         setCreateModalOpened(false);
         createForm.reset();
-    }, [createForm]);
+    }, [createForm.reset]);
 
     const handleCloseEditModal = useCallback(() => {
         setEditModalOpened(false);
         setSelectedUser(null);
         editForm.reset();
-    }, [editForm]);
+    }, [editForm.reset]);
 
     // ── return ──────────────────────────────────────
 
