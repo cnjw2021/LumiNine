@@ -22,7 +22,7 @@ from apps.reading.powerstone.domain.services.numerology_powerstone_engine import
 STANDARD_LAYERS = ("overall", "health", "wealth", "love")
 ALL_LAYERS = (*STANDARD_LAYERS, "yearly")
 MASTER_NUMBERS = (11, 22, 33)
-MASTER_BASE_PAIRS = [(11, 2), (22, 4), (33, 6)]
+MASTER_BASE_PAIRS = ((11, 2), (22, 4), (33, 6))
 
 
 # ── assertion 헬퍼 (DRY: 동일 검증 패턴 4+ 반복 방지) ────
