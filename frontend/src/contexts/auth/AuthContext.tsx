@@ -5,13 +5,15 @@ import { useRouter, usePathname } from 'next/navigation';
 import api from '@/utils/api';
 import { AxiosError, InternalAxiosRequestConfig, AxiosResponse } from 'axios';
 
-interface Permission {
-  id: number;
-  code: string;
-  name: string;
-  description: string | null;
-  category: string;
-}
+// ── 상수 ────────────────────────────────────────────
+
+const PUBLIC_PATHS = ['/', '/login', '/register', '/forgot-password'];
+const PUBLIC_PATH_PREFIXES = ['/about/'];
+
+/** 管理者に自動付与される基本権限（DRY: checkPermission / checkPermissions 共有） */
+const ADMIN_BASIC_PERMISSIONS = ['user_view', 'user_create', 'user_edit', 'user_delete'];
+
+// ── 型定義 ──────────────────────────────────────────
 
 interface AuthContextType {
   isLoggedIn: boolean;
@@ -28,14 +30,11 @@ interface AuthContextType {
   checkPermission: (permissionCode: string) => Promise<boolean>;
   checkPermissions: (permissionCodes: string[]) => Promise<Record<string, boolean>>;
   clearPermissionCache: () => void;
-  allPermissions: Record<string, Permission[]>;
-  userPermissions: Record<string, Permission[]>;
 }
 
 const AuthContext = createContext<AuthContextType | undefined>(undefined);
 
-const PUBLIC_PATHS = ['/', '/login', '/register', '/forgot-password'];
-const PUBLIC_PATH_PREFIXES = ['/about/'];
+// ── Provider ────────────────────────────────────────
 
 export function AuthProvider({ children }: { children: React.ReactNode }) {
   const router = useRouter();
@@ -47,24 +46,27 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
   const [token, setToken] = useState<string | null>(null);
   const [userName, setUserName] = useState<string | null>(null);
   const [permissionCache, setPermissionCache] = useState<Record<string, boolean>>({});
-  const [allPermissions, setAllPermissions] = useState<Record<string, Permission[]>>({});
-  const [userPermissions, setUserPermissions] = useState<Record<string, Permission[]>>({});
 
-  // キャッシュ制御のためのヘッダー設定
-  api.interceptors.request.use((config: InternalAxiosRequestConfig) => {
-    config.headers = config.headers || {};
-    config.headers['Cache-Control'] = 'no-cache';
-    config.headers['Pragma'] = 'no-cache';
-    config.headers['Expires'] = '0';
-    return config;
-  });
+  // ── Interceptors (useEffect 内で登録 → cleanup で解除) ──
 
-  // レスポンスインターセプターの設定
   useEffect(() => {
-    const interceptor = api.interceptors.response.use(
+    const reqInterceptor = api.interceptors.request.use((config: InternalAxiosRequestConfig) => {
+      config.headers = config.headers || {};
+      config.headers['Cache-Control'] = 'no-cache';
+      config.headers['Pragma'] = 'no-cache';
+      config.headers['Expires'] = '0';
+      return config;
+    });
+
+    return () => {
+      api.interceptors.request.eject(reqInterceptor);
+    };
+  }, []);
+
+  useEffect(() => {
+    const resInterceptor = api.interceptors.response.use(
       (response: AxiosResponse) => response,
       (error: AxiosError) => {
-        // 403エラーの場合は新しい鑑定ページへリダイレクト
         if (error.response?.status === 403) {
           router.replace('/');
           return Promise.reject(error);
@@ -73,18 +75,17 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
       }
     );
 
-    // クリーンアップ関数
     return () => {
-      api.interceptors.response.eject(interceptor);
+      api.interceptors.response.eject(resInterceptor);
     };
   }, [router]);
 
-  // 権限キャッシュをクリアする関数
+  // ── Auth State ────────────────────────────────────
+
   const clearPermissionCache = useCallback(() => {
     setPermissionCache({});
   }, []);
 
-  // 認証状態をクリアする関数
   const clearAuthState = useCallback(() => {
     localStorage.removeItem('token');
     localStorage.removeItem('refresh_token');
@@ -98,17 +99,13 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
 
   const logout = useCallback(async () => {
     try {
-      // ログアウトAPIを呼び出す前に状態をクリア
       clearAuthState();
-      // APIエラーが発生してもログアウト処理は続行
       await api.post('/auth/logout').catch(() => { });
     } finally {
-      // router.pushの代わりにwindow.location.hrefを使用して即時遷移
       window.location.href = '/login';
     }
   }, [clearAuthState]);
 
-  // ログイン状態変更関数
   const setLoginStatus = (status: boolean, newToken?: string, refreshToken?: string) => {
     setIsLoggedIn(status);
 
@@ -120,15 +117,15 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
         localStorage.setItem('refresh_token', refreshToken);
       }
 
-      // ログイン成功時に権限キャッシュをクリア
       clearPermissionCache();
     } else {
       clearAuthState();
     }
   };
 
-  // 管理者ステータスチェック
-  const checkAdminStatus = async () => {
+  // ── Admin Status ──────────────────────────────────
+
+  const checkAdminStatus = useCallback(async () => {
     try {
       const storedToken = localStorage.getItem('token');
 
@@ -139,132 +136,54 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
       }
 
       const response = await api.get('/auth/admin-status', {
-        headers: {
-          Authorization: `Bearer ${storedToken}`
-        }
+        headers: { Authorization: `Bearer ${storedToken}` }
       });
       setIsAdmin(response.data.is_admin);
       setIsSuperuser(response.data.is_superuser);
 
-      // 管理者ステータスが変更された場合、権限キャッシュをクリア
       if (isAdmin !== response.data.is_admin || isSuperuser !== response.data.is_superuser) {
         clearPermissionCache();
       }
     } catch (error) {
       console.error('Error checking admin status:', error);
-      // エラー時は管理者権限なしとして扱う
       setIsAdmin(false);
       setIsSuperuser(false);
     }
-  };
+  }, [isAdmin, isSuperuser, clearPermissionCache]);
 
-  // 権限定義とユーザー権限を取得
-  const fetchPermissions = useCallback(async () => {
-    try {
-      // まずユーザー情報を取得
-      const userResponse = await api.get('/auth/me');
+  // ── Permission Check ──────────────────────────────
 
-      if (!userResponse?.data) {
-        throw new Error('ユーザー情報の取得に失敗しました');
-      }
-
-      // ユーザーの権限を取得
-      let hasPermissionManage = false;
-      if (userResponse.data.id) {
-        try {
-          const userPermissionsResponse = await api.get(`/permissions/${userResponse.data.id}`);
-          const permissions = userPermissionsResponse?.data?.permissions || {};
-          setUserPermissions(permissions);
-
-          // permission_manage権限を持っているか確認
-          hasPermissionManage = Object.values(permissions as Record<string, Permission[]>).some(
-            permissionList => permissionList.some(
-              permission => permission.code === 'permission_manage'
-            )
-          );
-        } catch (error) {
-          if (error instanceof AxiosError && error.response?.status === 401) {
-            throw error;
-          }
-          setUserPermissions({});
-        }
-      }
-
-      // 権限定義を取得（スーパーユーザーまたはpermission_manage権限を持つ場合のみ）
-      setAllPermissions({}); // デフォルトで空のオブジェクトを設定
-      if (userResponse.data.is_superuser || hasPermissionManage) {
-        try {
-          const permissionsResponse = await api.get('/permissions');
-          setAllPermissions(permissionsResponse?.data || {});
-        } catch (error) {
-          if (error instanceof AxiosError && error.response?.status === 401) {
-            throw error;
-          }
-          // 403エラーなどその他のエラーは無視
-        }
-      }
-    } catch (error: unknown) {
-      if (error instanceof AxiosError && error.response?.status === 401) {
-        clearAuthState();
-        router.replace('/login');
-        return;
-      }
-      throw error;
-    }
-  }, [clearAuthState, router]);
-
-  // 複数の権限を一度にチェックする関数
   const checkPermissions = useCallback(async (permissionCodes: string[]): Promise<Record<string, boolean>> => {
     try {
       // スーパーユーザーは全ての権限を持つ
       if (isSuperuser) {
-        const allPermissions: Record<string, boolean> = {};
+        const result: Record<string, boolean> = {};
         permissionCodes.forEach(code => {
-          allPermissions[code] = true;
-          setPermissionCache(prev => ({
-            ...prev,
-            [code]: true
-          }));
+          result[code] = true;
+          setPermissionCache(prev => ({ ...prev, [code]: true }));
         });
-        return allPermissions;
+        return result;
       }
 
       // 管理者の場合、基本権限を自動付与
       if (isAdmin) {
-        const adminBasicPermissions = ['user_view', 'user_create', 'user_edit', 'user_delete'];
         const results: Record<string, boolean> = {};
 
         try {
-          // すべての権限をAPIで確認
           const response = await api.post('/auth/permissions/check-multiple', {
             permission_codes: permissionCodes
           });
 
           if (response.data && response.data.permissions) {
-            // 各権限をチェック
             permissionCodes.forEach(code => {
-              // 基本権限の場合は自動的にtrue
-              if (adminBasicPermissions.includes(code)) {
-                results[code] = true;
-              } else {
-                // その他の権限はAPIレスポンスの結果を使用
-                results[code] = !!response.data.permissions[code];
-              }
-              // キャッシュを更新
-              setPermissionCache(prev => ({
-                ...prev,
-                [code]: results[code]
-              }));
+              results[code] = ADMIN_BASIC_PERMISSIONS.includes(code) || !!response.data.permissions[code];
+              setPermissionCache(prev => ({ ...prev, [code]: results[code] }));
             });
           }
         } catch {
-          // エラー時は基本権限のみ設定し、その他はfalse
           permissionCodes.forEach(code => {
-            results[code] = adminBasicPermissions.includes(code);
-            setPermissionCache(prev => ({
-              ...prev,
-              [code]: results[code]
-            }));
+            results[code] = ADMIN_BASIC_PERMISSIONS.includes(code);
+            setPermissionCache(prev => ({ ...prev, [code]: results[code] }));
           });
         }
 
@@ -279,10 +198,7 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
       if (response.data && response.data.permissions) {
         const permissions = response.data.permissions;
         Object.entries(permissions).forEach(([code, hasPermission]) => {
-          setPermissionCache(prev => ({
-            ...prev,
-            [code]: !!hasPermission
-          }));
+          setPermissionCache(prev => ({ ...prev, [code]: !!hasPermission }));
         });
         return permissions;
       }
@@ -293,20 +209,12 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
     }
   }, [isSuperuser, isAdmin, setPermissionCache]);
 
-  // 単一の権限チェック
   const checkPermission = useCallback(async (permissionCode: string): Promise<boolean> => {
     try {
-      if (isSuperuser) {
+      if (isSuperuser) return true;
+
+      if (isAdmin && ADMIN_BASIC_PERMISSIONS.includes(permissionCode)) {
         return true;
-      }
-
-      if (isAdmin) {
-        const adminBasicPermissions = ['user_view', 'user_create', 'user_edit', 'user_delete'];
-
-        // 管理者の基本権限（ユーザー管理）のみを自動付与
-        if (adminBasicPermissions.includes(permissionCode)) {
-          return true;
-        }
       }
 
       if (permissionCache[permissionCode] !== undefined) {
@@ -318,13 +226,15 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
       });
 
       const hasPermission = response.data.has_permission === true;
-      permissionCache[permissionCode] = hasPermission;
+      setPermissionCache(prev => ({ ...prev, [permissionCode]: hasPermission }));
 
       return hasPermission;
     } catch {
       return false;
     }
   }, [isAdmin, isSuperuser, permissionCache]);
+
+  // ── Effects ───────────────────────────────────────
 
   // ログイン状態が変わったらパーミッションキャッシュをクリア
   useEffect(() => {
@@ -333,7 +243,7 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
     }
   }, [isLoggedIn, clearPermissionCache]);
 
-  // 初期化時に権限情報を取得
+  // 初期化
   useEffect(() => {
     const initialize = async () => {
       try {
@@ -345,10 +255,8 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
             setIsLoggedIn(true);
             setIsAdmin(response.data.is_admin);
             setIsSuperuser(response.data.is_superuser);
-            // ユーザー名を取得（full_name → name → email の優先順）
             const name = response.data.full_name || response.data.name || response.data.email || null;
             setUserName(name);
-            await fetchPermissions();
           }
         }
       } catch (error) {
@@ -360,7 +268,7 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
     };
 
     initialize();
-  }, [fetchPermissions, clearAuthState]);
+  }, [clearAuthState]);
 
   // 非公開ページへのアクセス制御
   useEffect(() => {
@@ -368,6 +276,8 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
       router.replace('/login');
     }
   }, [isLoading, isLoggedIn, pathname, router]);
+
+  // ── Render ────────────────────────────────────────
 
   return (
     <AuthContext.Provider value={{
@@ -385,8 +295,6 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
       checkPermission,
       checkPermissions,
       clearPermissionCache,
-      allPermissions,
-      userPermissions
     }}>
       {children}
     </AuthContext.Provider>
@@ -399,4 +307,4 @@ export function useAuth() {
     throw new Error('useAuth must be used within an AuthProvider');
   }
   return context;
-} 
+}
