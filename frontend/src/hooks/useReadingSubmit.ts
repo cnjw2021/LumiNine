@@ -42,8 +42,39 @@ export function useReadingSubmit({ token, isSuperuser, currentYear }: UseReading
             return;
         }
 
-        const [birthYear, birthMonth, birthDay] = birthdate.split('/');
-        const birthDate = new Date(Number(birthYear), Number(birthMonth) - 1, Number(birthDay));
+        const birthdateParts = birthdate.split('/');
+        if (birthdateParts.length !== 3) {
+            setError('生年月日を正しく入力してください');
+            return;
+        }
+
+        const [birthYearStr, birthMonthStr, birthDayStr] = birthdateParts;
+        const birthYearNum = Number(birthYearStr);
+        const birthMonthNum = Number(birthMonthStr);
+        const birthDayNum = Number(birthDayStr);
+
+        if (
+            !Number.isInteger(birthYearNum) ||
+            !Number.isInteger(birthMonthNum) ||
+            !Number.isInteger(birthDayNum) ||
+            birthMonthNum < 1 ||
+            birthMonthNum > 12 ||
+            birthDayNum < 1 ||
+            birthDayNum > 31
+        ) {
+            setError('生年月日を正しく入力してください');
+            return;
+        }
+
+        const birthDate = new Date(birthYearNum, birthMonthNum - 1, birthDayNum);
+        if (
+            birthDate.getFullYear() !== birthYearNum ||
+            birthDate.getMonth() !== birthMonthNum - 1 ||
+            birthDate.getDate() !== birthDayNum
+        ) {
+            setError('生年月日を正しく入力してください');
+            return;
+        }
 
         const today = new Date();
         today.setHours(0, 0, 0, 0);
@@ -66,14 +97,7 @@ export function useReadingSubmit({ token, isSuperuser, currentYear }: UseReading
         // --- API送信 ---
         setIsLoading(true);
         try {
-            const birthdateParts = birthdate.split('/');
-            if (birthdateParts.length !== 3) {
-                setError('生年月日の形式が正しくありません');
-                return;
-            }
-
-            const [year, month, day] = birthdateParts;
-            const birthDateTimeISO = `${year}-${month}-${day} ${DEFAULT_BIRTH_TIME}`;
+            const birthDateTimeISO = `${birthYearStr}-${birthMonthStr}-${birthDayStr} ${DEFAULT_BIRTH_TIME}`;
 
             const response = await api.post('/nine-star/calculate', {
                 birth_datetime: birthDateTimeISO,

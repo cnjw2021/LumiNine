@@ -12,7 +12,7 @@ import { LAYER_META_7, GOGYO_THEME, GOGYO_NORMALIZE } from './powerStoneConstant
  *
  * SRP: 7-Layer用の単一ストーン表示のみを担当
  */
-export const SixLayerStoneItem: React.FC<{
+export const SevenLayerStoneItem: React.FC<{
     stone: StoneRecommendation;
     layerKey: string;
 }> = ({ stone, layerKey }) => {

@@ -8,7 +8,7 @@ import {
     isSixLayer,
 } from '@/types/directionFortune';
 import { StoneItem3 } from './StoneItem3';
-import { SixLayerStoneItem } from './SixLayerStoneItem';
+import { SevenLayerStoneItem } from './SixLayerStoneItem';
 
 /**
  * パワーストーンカード
@@ -57,10 +57,10 @@ const PowerStoneCard: React.FC<PowerStoneCardProps> = ({ powerStones, targetYear
                     🔮 数秘術ストーン（一生の守護石）
                 </Text>
                 <SimpleGrid cols={{ base: 2, sm: 2 }} spacing="xs" mb="sm">
-                    <SixLayerStoneItem stone={powerStones.overall_stone} layerKey="overall" />
-                    <SixLayerStoneItem stone={powerStones.health_stone} layerKey="health" />
-                    <SixLayerStoneItem stone={powerStones.wealth_stone} layerKey="wealth" />
-                    <SixLayerStoneItem stone={powerStones.love_stone} layerKey="love" />
+                    <SevenLayerStoneItem stone={powerStones.overall_stone} layerKey="overall" />
+                    <SevenLayerStoneItem stone={powerStones.health_stone} layerKey="health" />
+                    <SevenLayerStoneItem stone={powerStones.wealth_stone} layerKey="wealth" />
+                    <SevenLayerStoneItem stone={powerStones.love_stone} layerKey="love" />
                 </SimpleGrid>
 
                 {/* 年運石 (Personal Year Number) */}
@@ -75,7 +75,7 @@ const PowerStoneCard: React.FC<PowerStoneCardProps> = ({ powerStones, targetYear
                             )}
                         </Text>
                         <SimpleGrid cols={{ base: 1, sm: 1 }} spacing="xs" mb="sm">
-                            <SixLayerStoneItem stone={powerStones.yearly_stone} layerKey="yearly" />
+                            <SevenLayerStoneItem stone={powerStones.yearly_stone} layerKey="yearly" />
                         </SimpleGrid>
                     </>
                 )}
@@ -88,10 +88,10 @@ const PowerStoneCard: React.FC<PowerStoneCardProps> = ({ powerStones, targetYear
                         </Text>
                         <SimpleGrid cols={{ base: 2, sm: 2 }} spacing="xs">
                             {powerStones.monthly_stone && (
-                                <SixLayerStoneItem stone={powerStones.monthly_stone} layerKey="monthly" />
+                                <SevenLayerStoneItem stone={powerStones.monthly_stone} layerKey="monthly" />
                             )}
                             {powerStones.protection_stone && (
-                                <SixLayerStoneItem stone={powerStones.protection_stone} layerKey="protection" />
+                                <SevenLayerStoneItem stone={powerStones.protection_stone} layerKey="protection" />
                             )}
                         </SimpleGrid>
                     </>
