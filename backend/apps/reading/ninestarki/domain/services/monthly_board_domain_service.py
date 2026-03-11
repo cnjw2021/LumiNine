@@ -11,11 +11,11 @@ from __future__ import annotations
 
 from dataclasses import dataclass
 from datetime import date, timedelta
-from typing import Any, List, Optional, Tuple
+from typing import List, Optional, Tuple
 
 from apps.reading.ninestarki.domain.value_objects.star_grid_pattern_vo import StarGridPatternVO
 
-from injector import inject
+from apps.reading.ninestarki.domain.entities.solar_term import SolarTerm
 
 from apps.reading.ninestarki.domain.repositories.solar_terms_repository_interface import ISolarTermsRepository
 from apps.reading.ninestarki.domain.repositories.solar_starts_repository_interface import ISolarStartsRepository
@@ -23,9 +23,7 @@ from apps.reading.ninestarki.domain.repositories.star_grid_pattern_repository_in
 from apps.reading.ninestarki.domain.repositories.monthly_directions_repository_interface import IMonthlyDirectionsRepository
 from apps.reading.shared.domain.exceptions import SetsuMonthNotFoundError
 from apps.reading.ninestarki.domain.services.interfaces.monthly_board_service_interface import IMonthlyBoardDomainService
-from core.utils.logger import get_logger
 
-logger = get_logger(__name__)
 
 
 # ── 도메인 상수 ──────────────────────────────────────
@@ -73,10 +71,9 @@ class MonthlyBoardDomainService(IMonthlyBoardDomainService):
     solar_terms_data 의 절기 정보(날짜·간지)와 monthly_directions 테이블의
     그룹별 월반 중궁성을 사용하여 지정 날짜에 해당하는 절월을 결정하고 월반을 편성한다.
 
-    의존성은 생성자 주입(injector) 방식으로 공급된다.
+    의존성은 생성자 주입 방식으로 공급된다.
     """
 
-    @inject
     def __init__(
         self,
         solar_terms_repo: ISolarTermsRepository,
@@ -129,8 +126,6 @@ class MonthlyBoardDomainService(IMonthlyBoardDomainService):
 
         # StarGridPattern 조회
         grid_pattern = self._star_grid_repo.get_by_center_star(center_star)
-        if grid_pattern is None:
-            logger.warning("StarGridPattern が見つかりません。center_star=%d", center_star)
 
         return MonthlyBoardResult(
             setsu_month_index=setsu_month_index,
@@ -197,12 +192,6 @@ class MonthlyBoardDomainService(IMonthlyBoardDomainService):
                 details="monthly_directions 테이블 데이터를 확인해 주세요.",
             )
 
-        logger.debug(
-            "center_star resolved: year=%d month=%d → year_center_star=%d "
-            "→ group=%d → center_star=%d",
-            lookup_year, calendar_month, year_starts.star_number,
-            group_id, monthly_dir.center_star,
-        )
         return monthly_dir.center_star
 
     # ──────────────────────────────
@@ -211,7 +200,7 @@ class MonthlyBoardDomainService(IMonthlyBoardDomainService):
 
     def _determine_setsu_month(
         self, target_date: date, lookup_year: int
-    ) -> Tuple[Any, int, date]:
+    ) -> Tuple[SolarTerm, int, date]:
         """target_date 가 속하는 절기 레코드, 절월 인덱스, 종료일을 반환한다.
 
         Returns:
@@ -235,7 +224,7 @@ class MonthlyBoardDomainService(IMonthlyBoardDomainService):
 
         return matched_term, setsu_month_index, period_end
 
-    def _build_setsu_sequence(self, lookup_year: int) -> List[Any]:
+    def _build_setsu_sequence(self, lookup_year: int) -> List[SolarTerm]:
         """절월 시퀀스 구축: lookup_year의 2~12월 + 다음해 1월(小寒).
 
         【DB 구조】
@@ -263,10 +252,10 @@ class MonthlyBoardDomainService(IMonthlyBoardDomainService):
 
     def _match_term_in_sequence(
         self,
-        setsu_sequence: List[Any],
+        setsu_sequence: List[SolarTerm],
         target_date: date,
         lookup_year: int,
-    ) -> Tuple[Any, Optional[int]]:
+    ) -> Tuple[SolarTerm, Optional[int]]:
         """target_date 직전(또는 당일)의 절기를 시퀀스에서 찾는다.
 
         Returns:
@@ -298,8 +287,8 @@ class MonthlyBoardDomainService(IMonthlyBoardDomainService):
 
     def _calc_period_end(
         self,
-        setsu_sequence: List[Any],
-        matched_term: Any,
+        setsu_sequence: List[SolarTerm],
+        matched_term: SolarTerm,
         matched_pos: Optional[int],
         setsu_month_index: int,
     ) -> date:
@@ -312,7 +301,7 @@ class MonthlyBoardDomainService(IMonthlyBoardDomainService):
         setsu_year = self._resolve_setsu_year(setsu_month_index, matched_term)
         next_index, next_setsu_year = self._next_setsu(setsu_month_index, setsu_year)
 
-        next_start = self.get_period_start_for_setsu(next_setsu_year, next_index)
+        next_start = self.resolve_period_start(next_setsu_year, next_index)
         if next_start is not None:
             return next_start - timedelta(days=1)
 
@@ -324,7 +313,7 @@ class MonthlyBoardDomainService(IMonthlyBoardDomainService):
     # ──────────────────────────────
 
     @staticmethod
-    def _resolve_setsu_year(setsu_index: int, matched_term: Any) -> int:
+    def _resolve_setsu_year(setsu_index: int, matched_term: SolarTerm) -> int:
         """절월 인덱스 + matched_term → 절년(setsu_year) 반환.
 
         丑月(setsu_index=12)의 절입일은 다음 그레고리력 연도의 1월이므로,
@@ -366,15 +355,18 @@ class MonthlyBoardDomainService(IMonthlyBoardDomainService):
         return _GROUP_COUNT if group_id == 0 else group_id
 
     # ──────────────────────────────
-    # Public Helper
+    # 절입일 해석 (도메인 규칙)
     # ──────────────────────────────
+    # ⚠️ API 확장 통제: 이 서비스의 Public API는 get_monthly_board() 와
+    # resolve_period_start() 로 제한한다. 추가 조회성 헬퍼는 별도 서비스로 분리할 것.
 
-    def get_period_start_for_setsu(self, year: int, setsu_index: int) -> Optional[date]:
-        """절월 인덱스(1=寅月…12=丑月)에 해당하는 절입일(date)을 반환한다.
+    def resolve_period_start(self, year: int, setsu_index: int) -> Optional[date]:
+        """절월 인덱스를 절입일(date)로 해석하는 도메인 규칙.
 
-        UseCase 에서 getattr() 없이 직접 접근할 수 있도록 제공하는 퍼블릭 헬퍼.
+        절월 인덱스(1=寅月/立春 … 12=丑月/小寒)를 그레고리력 (year, month)로 변환한 뒤
+        solar_terms_data 에서 해당 절입일을 조회하여 반환한다.
 
-        절월 인덱스 → 그레고리력 (연, 월) 대응:
+        절월 인덱스 → 그레고리력 대응:
           1(寅月) → (year, 2)   立春
           2(卯月) → (year, 3)   啓蟄
           …
@@ -387,10 +379,14 @@ class MonthlyBoardDomainService(IMonthlyBoardDomainService):
 
         Returns:
             절입일 date, 또는 DB에 없는 경우 None
+
+        Raises:
+            ValueError: setsu_index 가 유효 범위(1~12) 밖일 때
         """
         if not _MIN_SETSU_INDEX <= setsu_index <= _MAX_SETSU_INDEX:
-            logger.warning("get_period_start_for_setsu: invalid setsu_index=%s", setsu_index)
-            return None
+            raise ValueError(
+                f"setsu_index 가 유효 범위(1~12)를 벗어났습니다: {setsu_index}"
+            )
 
         # 절월 인덱스 → (year, gregorian_month) 변환 (SSoT: _setsu_to_gregorian)
         term_year, term_month = self._setsu_to_gregorian(setsu_index, year)

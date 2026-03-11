@@ -274,3 +274,35 @@ class TestMonthlyBoardDomainService:
             "instead of resolving via solar_starts_data.star_number"
         )
 
+
+class TestResolvePeriodStart:
+    """resolve_period_start() の正常・異常ケースを検証する."""
+
+    @pytest.fixture
+    def service(self):
+        return MonthlyBoardDomainService(
+            solar_terms_repo=_make_solar_terms_repo(),
+            solar_starts_repo=_make_solar_starts_repo(),
+            star_grid_repo=_StubStarGridPatternRepo(),
+            monthly_directions_repo=_make_monthly_directions_repo(),
+        )
+
+    @pytest.mark.parametrize("setsu_index", [1, 6, 12])
+    def test_valid_setsu_index_returns_date(self, service, setsu_index):
+        """유효 범위(1~12) 내 절월 인덱스는 date 를 반환한다."""
+        result = service.resolve_period_start(2026, setsu_index)
+        assert isinstance(result, date), (
+            f"setsu_index={setsu_index} should return a date, got {result}"
+        )
+
+    @pytest.mark.parametrize("setsu_index", [0, 13, -1, 100])
+    def test_invalid_setsu_index_raises_value_error(self, service, setsu_index):
+        """유효 범위 밖 절월 인덱스는 ValueError 를 발생시킨다."""
+        with pytest.raises(ValueError, match="setsu_index"):
+            service.resolve_period_start(2026, setsu_index)
+
+    def test_db_miss_returns_none(self, service):
+        """DB에 해당 연도 절기 데이터가 없으면 None 을 반환한다."""
+        # stub 에는 2030 데이터가 없음
+        result = service.resolve_period_start(2030, 1)
+        assert result is None
