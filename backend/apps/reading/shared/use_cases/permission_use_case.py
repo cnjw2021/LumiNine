@@ -113,14 +113,16 @@ class PermissionUseCase:
 
     def check_user_permission(self, email: str, permission_code: str) -> bool:
         """사용자가 특정 권한을 가졌는지 확인합니다."""
-        if not permission_code:
+        # 정규화 및 유효성 검증 (공백/빈 문자열/쉼표만 있는 입력 방어)
+        normalized = permission_code.strip() if isinstance(permission_code, str) else ''
+        if not normalized:
             raise ValueError("권한 코드가 지정되지 않았습니다.")
             
         user = self.user_repo.find_by_email(email)
         if not user:
             raise UserNotFoundError("사용자를 찾을 수 없습니다.")
 
-        return self.permission_service.has_permission(user, permission_code)
+        return self.permission_service.has_permission(user, normalized)
 
     def check_user_permissions_batch(self, email: str, permission_codes: List[str]) -> Dict[str, bool]:
         """여러 권한 코드를 일괄 확인합니다 (N+1 API 호출 방지)."""
