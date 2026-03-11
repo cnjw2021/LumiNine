@@ -1,6 +1,6 @@
 'use client';
 
-import React, { useState } from 'react';
+import { useState } from 'react';
 import { useAuth } from '@/contexts/auth/AuthContext';
 import { useRouter } from 'next/navigation';
 import { Stack, Drawer, Box, Text } from '@mantine/core';

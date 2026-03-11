@@ -1,6 +1,6 @@
 'use client';
 
-import React, { useState, useEffect } from 'react';
+import { useState, useEffect } from 'react';
 import { Flex, Transition } from '@mantine/core';
 import { IconChevronDown } from '@tabler/icons-react';
 import { COLORS } from '@/utils/theme';

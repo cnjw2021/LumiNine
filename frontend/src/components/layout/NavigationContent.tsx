@@ -1,6 +1,5 @@
 'use client';
 
-import React from 'react';
 import { Stack, Text } from '@mantine/core';
 import { NavigationMenu, MenuItem } from './NavigationMenu';
 import { FONTS, NAV } from '@/utils/theme';
