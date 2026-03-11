@@ -154,8 +154,13 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
 
   // 複数の権限コードを一括確認するバッチAPIヘルパー（N+1 API 呼び出し防止）
   const checkPermissionsBatchApi = useCallback(async (codes: string[]): Promise<Record<string, boolean>> => {
+    // 正規化 (trim) および重複除去してからバックエンドに送信
+    const normalizedCodes = Array.from(
+      new Set((codes || []).map(code => code.trim()).filter(Boolean))
+    );
+
     const response = await api.post('/permissions/check-multiple', {
-      permission_codes: codes
+      permission_codes: normalizedCodes
     });
     return response.data.permissions ?? {};
   }, []);
