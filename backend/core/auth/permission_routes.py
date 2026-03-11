@@ -94,4 +94,53 @@ def create_permission_bp(perm_use_case: PermissionUseCase):
         except Exception as e:
             return jsonify({'error': str(e)}), 500
 
+    @permission_bp.route('/check-multiple', methods=['POST'])
+    @jwt_required()
+    def check_permissions_batch():
+        """여러 권한 코드를 일괄 확인합니다 (N+1 API 호출 방지)."""
+        try:
+            data = request.get_json(silent=True)
+            if not isinstance(data, dict):
+                return jsonify({'error': '유효한 JSON 본문이 필요합니다'}), 400
+
+            permission_codes = data.get('permission_codes')
+
+            if not isinstance(permission_codes, list):
+                return jsonify({'error': 'permission_codes는 배열이어야 합니다'}), 400
+
+            MAX_BATCH_SIZE = 100
+            if len(permission_codes) > MAX_BATCH_SIZE:
+                return jsonify({'error': f'permission_codes는 최대 {MAX_BATCH_SIZE}개까지 허용됩니다'}), 400
+
+            # 각 권한 코드를 정규화 (trim) 및 중복 제거, 유효하지 않은 코드 필터링
+            valid_codes = []
+            seen_codes = set()
+            for code in permission_codes:
+                if isinstance(code, str):
+                    normalized = code.strip()
+                    if normalized and normalized not in seen_codes:
+                        valid_codes.append(normalized)
+                        seen_codes.add(normalized)
+                    elif not normalized:
+                        logger.warning(
+                            "Invalid permission code encountered in batch request: %r", code
+                        )
+                else:
+                    logger.warning(
+                        "Invalid permission code encountered in batch request: %r", code
+                    )
+
+            if not valid_codes:
+                return jsonify({'permissions': {}}), 200
+
+            permissions = perm_use_case.check_user_permissions_batch(
+                get_jwt_identity(), valid_codes
+            )
+            return jsonify({'permissions': permissions}), 200
+        except UserNotFoundError as e:
+            return jsonify({'error': str(e)}), 400
+        except Exception as e:
+            logger.error(f"Batch permission check error: {str(e)}")
+            return jsonify({'error': str(e)}), 500
+
     return permission_bp

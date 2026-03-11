@@ -113,11 +113,56 @@ class PermissionUseCase:
 
     def check_user_permission(self, email: str, permission_code: str) -> bool:
         """사용자가 특정 권한을 가졌는지 확인합니다."""
-        if not permission_code:
+        # 정규화 및 유효성 검증 (공백/빈 문자열/쉼표만 있는 입력 방어)
+        normalized = permission_code.strip() if isinstance(permission_code, str) else ''
+        if not normalized:
             raise ValueError("권한 코드가 지정되지 않았습니다.")
-            
+
+        # 쉼표 구분 입력을 지원하되, 빈 토큰이 서비스로 전달되지 않도록 방어
+        if ',' in normalized:
+            tokens = [t.strip() for t in normalized.split(',') if t.strip()]
+            if not tokens:
+                raise ValueError("권한 코드가 지정되지 않았습니다.")
+
+            user = self.user_repo.find_by_email(email)
+            if not user:
+                raise UserNotFoundError("사용자를 찾을 수 없습니다.")
+
+            # 정제된 토큰에 대해서만 권한 확인 (빈 문자열이 서비스로 전달되지 않음)
+            return any(self.permission_service.has_permission(user, code) for code in tokens)
+
+        # 단일 권한 코드인 경우
         user = self.user_repo.find_by_email(email)
         if not user:
             raise UserNotFoundError("사용자를 찾을 수 없습니다.")
 
-        return user.has_permission(permission_code)
+        return self.permission_service.has_permission(user, normalized)
+
+    def check_user_permissions_batch(self, email: str, permission_codes: List[str]) -> Dict[str, bool]:
+        """여러 권한 코드를 일괄 확인합니다 (N+1 API 호출 방지)."""
+        if not permission_codes:
+            return {}
+
+        # 중복 코드 제거 (순서 유지), 정규화 (trim) 및 빈 문자열/비문자열 필터링
+        unique_codes = list(dict.fromkeys(
+            code.strip() for code in permission_codes
+            if isinstance(code, str) and code.strip()
+        ))
+        if not unique_codes:
+            return {}
+
+        user = self.user_repo.find_by_email(email)
+        if not user:
+            raise UserNotFoundError("사용자를 찾을 수 없습니다.")
+
+        # スーパーユーザーは全権限を持つ（正規化済みコードに対して返却）
+        if user.is_superuser:
+            return {code: True for code in unique_codes}
+
+        # 사용자의 권한을 한 번만 조회하여 N+1 쿼리 방지
+        user_permission_names = {perm.name for perm in user.permissions.all()}
+
+        return {
+            code: code in user_permission_names
+            for code in unique_codes
+        }
