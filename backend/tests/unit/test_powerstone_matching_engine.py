@@ -15,7 +15,6 @@ from __future__ import annotations
 import pytest
 
 from apps.reading.shared.domain.exceptions import (
-    NoAuspiciousDirectionError,
     PowerStoneMatchingError,
 )
 from apps.reading.powerstone.domain.services.gogyo_service import GogyoService
@@ -56,38 +55,41 @@ def _make_directions(
     return result
 
 
+@pytest.fixture
+def default_directions() -> dict:
+    """가장 흔한 테스트 시나리오: south 길방위 + north 五黄殺."""
+    return _make_directions(
+        auspicious={"south": True},
+        marks={"north": ["five_yellow"]},
+    )
+
+
 # ══════════════════════════════════════════════════════
 # recommend() 기본 동작
 # ══════════════════════════════════════════════════════
 
 class TestRecommendBasic:
-    def test_returns_powerstone_result(self, engine: PowerStoneMatchingEngine):
+    def test_returns_powerstone_result(
+        self, engine: PowerStoneMatchingEngine, default_directions: dict,
+    ):
         """recommend() 는 PowerStoneResult 를 반환한다."""
-        directions = _make_directions(
-            auspicious={"south": True},
-            marks={"north": ["five_yellow"]},
-        )
-        result = engine.recommend(main_star=1, directions=directions)
+        result = engine.recommend(main_star=1, directions=default_directions)
         assert isinstance(result, PowerStoneResult)
 
-    def test_result_has_three_stones(self, engine: PowerStoneMatchingEngine):
+    def test_result_has_three_stones(
+        self, engine: PowerStoneMatchingEngine, default_directions: dict,
+    ):
         """결과에 base, monthly, protection 3개 스톤이 존재한다."""
-        directions = _make_directions(
-            auspicious={"south": True},
-            marks={"north": ["five_yellow"]},
-        )
-        result = engine.recommend(main_star=1, directions=directions)
+        result = engine.recommend(main_star=1, directions=default_directions)
         assert result.base_stone is not None
         assert result.monthly_stone is not None
         assert result.protection_stone is not None
 
-    def test_three_distinct_stone_ids(self, engine: PowerStoneMatchingEngine):
+    def test_three_distinct_stone_ids(
+        self, engine: PowerStoneMatchingEngine, default_directions: dict,
+    ):
         """결과의 3개 스톤은 항상 서로 다른 id를 갖는다."""
-        directions = _make_directions(
-            auspicious={"south": True},
-            marks={"north": ["five_yellow"]},
-        )
-        result = engine.recommend(main_star=1, directions=directions)
+        result = engine.recommend(main_star=1, directions=default_directions)
         ids = {result.base_stone.stone.id, result.monthly_stone.stone.id, result.protection_stone.stone.id}
         assert len(ids) == 3
 
@@ -104,22 +106,17 @@ class TestLayer1BaseStone:
     ])
     def test_base_stone_by_star(
         self, engine: PowerStoneMatchingEngine, star: int, expected_id: str,
+        default_directions: dict,
     ):
         """본명성 1~9 → 올바른 기본석."""
-        directions = _make_directions(
-            auspicious={"south": True},
-            marks={"north": ["five_yellow"]},
-        )
-        result = engine.recommend(main_star=star, directions=directions)
+        result = engine.recommend(main_star=star, directions=default_directions)
         assert result.base_stone.stone.id == expected_id
 
-    def test_base_stone_reason_key(self, engine: PowerStoneMatchingEngine):
+    def test_base_stone_reason_key(
+        self, engine: PowerStoneMatchingEngine, default_directions: dict,
+    ):
         """기본석 reason_key 는 'reason.base' 이다."""
-        directions = _make_directions(
-            auspicious={"south": True},
-            marks={"north": ["five_yellow"]},
-        )
-        result = engine.recommend(main_star=1, directions=directions)
+        result = engine.recommend(main_star=1, directions=default_directions)
         assert result.base_stone.reason_key == "reason.base"
 
 
@@ -161,13 +158,11 @@ class TestLayer2MonthlyStone:
         result = engine.recommend(main_star=1, directions=directions)
         assert result.monthly_stone.reason_params["direction_key"] == "direction.east"
 
-    def test_monthly_reason_params(self, engine: PowerStoneMatchingEngine):
+    def test_monthly_reason_params(
+        self, engine: PowerStoneMatchingEngine, default_directions: dict,
+    ):
         """월운석 reason_params 에 direction, element 포함."""
-        directions = _make_directions(
-            auspicious={"south": True},
-            marks={"north": ["five_yellow"]},
-        )
-        result = engine.recommend(main_star=1, directions=directions)
+        result = engine.recommend(main_star=1, directions=default_directions)
         assert "direction_key" in result.monthly_stone.reason_params
         assert "element_key" in result.monthly_stone.reason_params
 
@@ -201,13 +196,11 @@ class TestLayer3ProtectionStone:
         # 木의 상극은 金 (金剋木)
         assert result.protection_stone.stone.gogyo.value == "金"
 
-    def test_protection_reason_params(self, engine: PowerStoneMatchingEngine):
+    def test_protection_reason_params(
+        self, engine: PowerStoneMatchingEngine, default_directions: dict,
+    ):
         """호신석 reason_params 에 threat, direction, threat_element, counter_element 포함."""
-        directions = _make_directions(
-            auspicious={"south": True},
-            marks={"north": ["five_yellow"]},
-        )
-        result = engine.recommend(main_star=1, directions=directions)
+        result = engine.recommend(main_star=1, directions=default_directions)
         params = result.protection_stone.reason_params
         assert "threat_key" in params
         assert "direction_key" in params
@@ -240,7 +233,6 @@ class TestLayer3ProtectionStone:
             marks={"north": [alias_code]},
         )
         result = engine.recommend(main_star=1, directions=directions)
-        # alias 코드는 엔진에서 canonical 코드로 정규화되어 threat.{canonical_code} 로 노출된다.
         assert result.protection_stone.reason_params["threat_key"] == f"threat.{canonical_code}"
 
     def test_alias_severity_ordering(self, engine: PowerStoneMatchingEngine):

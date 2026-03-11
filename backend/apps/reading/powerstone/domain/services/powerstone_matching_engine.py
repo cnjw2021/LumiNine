@@ -40,8 +40,8 @@ _DIRECTION_PRIORITY: Dict[str, int] = {
     "north": 4, "west": 5, "northeast": 6, "northwest": 7,
 }
 
-# ── 흉살 위험도 순위표 (설계서 §4-2 참조) ─────────────────
-# 값이 작을수록 위험
+# ── 흉살 위험도 순위표 (설계서 §4-2 참조, SSoT) ──────────
+# 값이 작을수록 위험. canonical 코드만 등록.
 _THREAT_SEVERITY: Dict[str, int] = {
     "five_yellow": 1,       # 五黄殺
     "dark_sword": 2,        # 暗剣殺
@@ -51,12 +51,12 @@ _THREAT_SEVERITY: Dict[str, int] = {
     "opposite_zodiac": 6,   # 破
     "bad_star": 7,          # 凶方星
     "main_opposite": 8,     # 本命的殺
-    "main_star_opposite": 8,    # 本命的殺 (direction-fortune source alias)
     "month_opposite": 9,    # 月命的殺
-    "month_star_opposite": 9,   # 月命的殺 (direction-fortune source alias)
 }
 
-# ── alias → canonical 正規化マップ (MessageCatalog キー解決用) ────
+# ── alias → canonical 正規化マップ ────────────────────────
+# direction-fortune 소스에서 유입되는 alias 코드를 canonical 코드로 변환.
+# _THREAT_SEVERITY 에는 canonical 코드만 등록하여 SSoT 를 보장한다.
 _THREAT_ALIAS_MAP: Dict[str, str] = {
     "main_star_opposite": "main_opposite",
     "month_star_opposite": "month_opposite",
@@ -220,6 +220,24 @@ class PowerStoneMatchingEngine(IPowerStoneMatchingEngine):
     # 유틸리티 메서드
     # ═══════════════════════════════════════════════════
 
+    @staticmethod
+    def _normalize_mark(mark: Any) -> str:
+        """mark 오브젝트에서 코드를 추출하고 alias → canonical 정규화.
+
+        Args:
+            mark: 문자열 또는 {"code": "..."} 딕셔너리
+
+        Returns:
+            정규화된 canonical 코드 (미등록이면 원본 코드 그대로)
+        """
+        code = mark if isinstance(mark, str) else mark.get("code", "")
+        return _THREAT_ALIAS_MAP.get(code, code)
+
+    @staticmethod
+    def _get_severity(canonical_code: str) -> int | None:
+        """canonical 코드의 위험도 반환. 미등록이면 None."""
+        return _THREAT_SEVERITY.get(canonical_code)
+
     def _filter_auspicious(
         self, directions: Dict[str, Any],
     ) -> List[str]:
@@ -259,27 +277,32 @@ class PowerStoneMatchingEngine(IPowerStoneMatchingEngine):
     ) -> Tuple[str, str]:
         """가장 위험한 흉살 방위 + 흉살 코드 반환.
 
+        알고리즘:
+          1. 비길방위(is_auspicious=False)만 스캔
+          2. 각 mark를 정규화 후 severity 조회
+          3. 최소 severity(=최대 위험) 선택, 동순위 시 방위 우선순위로 tiebreak
+
         Returns:
-            (방위명, 흉살 코드) 튜플
+            (방위명, canonical 흉살 코드) 튜플
         """
         worst_direction = ""
         worst_threat = ""
         worst_severity = 999
 
         for name, info in directions.items():
-            # L3는 비길방위(흔살 있는 방위)만 스캔: is_auspicious 가 False 인 방위만 대상
+            # L3는 비길방위(흉살 있는 방위)만 스캔
             if info.get("is_auspicious") is not False:
                 continue
-            marks = info.get("marks", [])
-            for mark in marks:
-                mark_code = mark if isinstance(mark, str) else mark.get("code", "")
-                if mark_code not in _THREAT_SEVERITY:
+
+            for mark in info.get("marks", []):
+                canonical = self._normalize_mark(mark)
+                severity = self._get_severity(canonical)
+                if severity is None:
                     continue  # 미등록 sentinel mark 무시
-                severity = _THREAT_SEVERITY[mark_code]
+
                 if severity < worst_severity:
                     worst_severity = severity
-                    # alias → canonical 정규화
-                    worst_threat = _THREAT_ALIAS_MAP.get(mark_code, mark_code)
+                    worst_threat = canonical
                     worst_direction = name
                 elif severity == worst_severity:
                     # 동순위 → 방위 우선순위
@@ -287,7 +310,7 @@ class PowerStoneMatchingEngine(IPowerStoneMatchingEngine):
                         worst_direction, 99
                     ):
                         worst_direction = name
-                        worst_threat = _THREAT_ALIAS_MAP.get(mark_code, mark_code)
+                        worst_threat = canonical
 
         if not worst_threat:
             raise PowerStoneMatchingError(
