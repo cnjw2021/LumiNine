@@ -319,10 +319,10 @@ class MonthlyBoardDomainService(IMonthlyBoardDomainService):
             return setsu_sequence[matched_pos + 1].solar_terms_date - timedelta(days=1)
 
         # DB에서 다음 절입일을 조회하여 종료일 계산
-        setsu_year, _ = self._setsu_to_gregorian(setsu_month_index, matched_term)
-        next_index, next_setsuyear = self._next_setsu(setsu_month_index, setsu_year)
+        setsu_year = self._resolve_setsu_year(setsu_month_index, matched_term)
+        next_index, next_setsu_year = self._next_setsu(setsu_month_index, setsu_year)
 
-        next_start = self.get_period_start_for_setsu(next_setsuyear, next_index)
+        next_start = self.get_period_start_for_setsu(next_setsu_year, next_index)
         if next_start is not None:
             return next_start - timedelta(days=1)
 
@@ -334,24 +334,36 @@ class MonthlyBoardDomainService(IMonthlyBoardDomainService):
     # ──────────────────────────────
 
     @staticmethod
-    def _setsu_to_gregorian(setsu_index: int, matched_term: Any) -> Tuple[int, int]:
-        """절월 인덱스 + matched_term → (setsu_year, gregorian_month) 변환.
+    def _resolve_setsu_year(setsu_index: int, matched_term: Any) -> int:
+        """절월 인덱스 + matched_term → 절년(setsu_year) 반환.
 
-        SSoT: 절월→그레고리력 변환 로직의 유일한 진실 소스.
+        丑月(setsu_index=12)의 절입일은 다음 그레고리력 연도의 1월이므로,
+        matched_term.solar_terms_date.year - 1 이 절년이 된다.
         """
         if setsu_index == _MAX_SETSU_INDEX:
-            # 丑月=小寒: matched_term.solar_terms_date는 (year+1)년 1월
-            setsu_year = matched_term.solar_terms_date.year - 1
-        else:
-            setsu_year = matched_term.solar_terms_date.year
-        return setsu_year, setsu_index + 1
+            return matched_term.solar_terms_date.year - 1
+        return matched_term.solar_terms_date.year
+
+    @staticmethod
+    def _setsu_to_gregorian(setsu_index: int, year: int) -> Tuple[int, int]:
+        """절월 인덱스 + 절년 → (그레고리력 연, 그레고리력 월) 변환.
+
+        SSoT: 절월→그레고리력 변환 로직의 유일한 진실 소스.
+
+        절월 인덱스 → 그레고리력 대응:
+          1(寅月) → (year, 2)   … 11(子月) → (year, 12)
+          12(丑月) → (year+1, 1)
+        """
+        if setsu_index == _MAX_SETSU_INDEX:
+            return year + 1, 1  # 丑月=小寒: 다음해 1월
+        return year, setsu_index + 1
 
     @staticmethod
     def _next_setsu(setsu_month_index: int, setsu_year: int) -> Tuple[int, int]:
         """다음 절월 인덱스와 절년을 계산한다.
 
         Returns:
-            (next_index, next_setsuyear)
+            (next_index, next_setsu_year)
         """
         if setsu_month_index == _MAX_SETSU_INDEX:
             return _MIN_SETSU_INDEX, setsu_year + 1  # 丑月 → 다음해 寅月
@@ -390,11 +402,8 @@ class MonthlyBoardDomainService(IMonthlyBoardDomainService):
             logger.warning("get_period_start_for_setsu: invalid setsu_index=%s", setsu_index)
             return None
 
-        # 절월 인덱스 → (year, gregorian_month) 변환
-        if setsu_index == _MAX_SETSU_INDEX:
-            term_year, term_month = year + 1, 1   # 丑月=小寒: 다음해 1월
-        else:
-            term_year, term_month = year, setsu_index + 1  # 寅月=立春: 해당년 2월 …
+        # 절월 인덱스 → (year, gregorian_month) 변환 (SSoT: _setsu_to_gregorian)
+        term_year, term_month = self._setsu_to_gregorian(setsu_index, year)
 
         term = self._solar_terms_repo.get_term_by_month(term_year, term_month)
         if term is None and setsu_index == _MAX_SETSU_INDEX:
