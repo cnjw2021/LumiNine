@@ -1,6 +1,6 @@
 'use client';
 
-import React, { createContext, useContext, useState, useEffect, useCallback } from 'react';
+import React, { createContext, useContext, useState, useEffect, useCallback, useRef } from 'react';
 import { useRouter, usePathname } from 'next/navigation';
 import api from '@/utils/api';
 import { AxiosError, InternalAxiosRequestConfig, AxiosResponse } from 'axios';
@@ -46,6 +46,12 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
   const [token, setToken] = useState<string | null>(null);
   const [userName, setUserName] = useState<string | null>(null);
   const [permissionCache, setPermissionCache] = useState<Record<string, boolean>>({});
+  const permissionCacheRef = useRef<Record<string, boolean>>({});
+
+  // permissionCache が更新されたら ref を同期
+  useEffect(() => {
+    permissionCacheRef.current = permissionCache;
+  }, [permissionCache]);
 
   // ── Interceptors (useEffect 内で登録 → cleanup で解除) ──
 
@@ -153,61 +159,71 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
 
   // ── Permission Check ──────────────────────────────
 
+  // 個別の権限チェックAPIを呼び出すヘルパー
+  const checkPermissionApi = useCallback(async (permissionCode: string): Promise<{ code: string; hasPermission: boolean }> => {
+    try {
+      const response = await api.post('/permissions/check', {
+        permission_code: permissionCode
+      });
+      return { code: permissionCode, hasPermission: response.data.has_permission === true };
+    } catch {
+      return { code: permissionCode, hasPermission: false };
+    }
+  }, []);
+
   const checkPermissions = useCallback(async (permissionCodes: string[]): Promise<Record<string, boolean>> => {
     try {
       // スーパーユーザーは全ての権限を持つ
       if (isSuperuser) {
-        const result: Record<string, boolean> = {};
-        permissionCodes.forEach(code => {
-          result[code] = true;
-          setPermissionCache(prev => ({ ...prev, [code]: true }));
-        });
-        return result;
+        const allGranted: Record<string, boolean> = {};
+        permissionCodes.forEach(code => { allGranted[code] = true; });
+        setPermissionCache(prev => ({ ...prev, ...allGranted }));
+        return allGranted;
       }
 
-      // 管理者の場合、基本権限を自動付与
+      // 管理者の場合、基本権限を自動付与し、残りをAPIで個別確認
       if (isAdmin) {
         const results: Record<string, boolean> = {};
-
-        try {
-          const response = await api.post('/auth/permissions/check-multiple', {
-            permission_codes: permissionCodes
-          });
-
-          if (response.data && response.data.permissions) {
-            permissionCodes.forEach(code => {
-              results[code] = ADMIN_BASIC_PERMISSIONS.includes(code) || !!response.data.permissions[code];
-              setPermissionCache(prev => ({ ...prev, [code]: results[code] }));
-            });
+        const codesToCheck = permissionCodes.filter(code => {
+          if (ADMIN_BASIC_PERMISSIONS.includes(code)) {
+            results[code] = true;
+            return false;
           }
-        } catch {
-          permissionCodes.forEach(code => {
-            results[code] = ADMIN_BASIC_PERMISSIONS.includes(code);
-            setPermissionCache(prev => ({ ...prev, [code]: results[code] }));
-          });
-        }
+          return true;
+        });
 
+        const apiResults = await Promise.allSettled(
+          codesToCheck.map(code => checkPermissionApi(code))
+        );
+        apiResults.forEach(result => {
+          if (result.status === 'fulfilled') {
+            results[result.value.code] = result.value.hasPermission;
+          }
+        });
+
+        // キャッシュを一括更新
+        setPermissionCache(prev => ({ ...prev, ...results }));
         return results;
       }
 
-      // 一般ユーザーの場合はAPIで確認
-      const response = await api.post('/auth/permissions/check-multiple', {
-        permission_codes: permissionCodes
+      // 一般ユーザーの場合はAPIで個別確認
+      const results: Record<string, boolean> = {};
+      const apiResults = await Promise.allSettled(
+        permissionCodes.map(code => checkPermissionApi(code))
+      );
+      apiResults.forEach(result => {
+        if (result.status === 'fulfilled') {
+          results[result.value.code] = result.value.hasPermission;
+        }
       });
 
-      if (response.data && response.data.permissions) {
-        const permissions = response.data.permissions;
-        Object.entries(permissions).forEach(([code, hasPermission]) => {
-          setPermissionCache(prev => ({ ...prev, [code]: !!hasPermission }));
-        });
-        return permissions;
-      }
-
-      return {};
+      // キャッシュを一括更新
+      setPermissionCache(prev => ({ ...prev, ...results }));
+      return results;
     } catch {
       return {};
     }
-  }, [isSuperuser, isAdmin, setPermissionCache]);
+  }, [isSuperuser, isAdmin, checkPermissionApi]);
 
   const checkPermission = useCallback(async (permissionCode: string): Promise<boolean> => {
     try {
@@ -217,8 +233,10 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
         return true;
       }
 
-      if (permissionCache[permissionCode] !== undefined) {
-        return permissionCache[permissionCode];
+      // useRefで最新のキャッシュを参照（依存配列に含めない → コールバック安定化）
+      const cachedValue = permissionCacheRef.current[permissionCode];
+      if (cachedValue !== undefined) {
+        return cachedValue;
       }
 
       const response = await api.post('/permissions/check', {
@@ -232,7 +250,7 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
     } catch {
       return false;
     }
-  }, [isAdmin, isSuperuser, permissionCache]);
+  }, [isAdmin, isSuperuser]);
 
   // ── Effects ───────────────────────────────────────
 
