@@ -97,7 +97,9 @@ export function useReadingSubmit({ token, isSuperuser, currentYear }: UseReading
         // --- API送信 ---
         setIsLoading(true);
         try {
-            const birthDateTimeISO = `${birthYearStr}-${birthMonthStr}-${birthDayStr} ${DEFAULT_BIRTH_TIME}`;
+            const normalizedMonth = birthMonthStr.padStart(2, '0');
+            const normalizedDay = birthDayStr.padStart(2, '0');
+            const birthDateTimeISO = `${birthYearStr}-${normalizedMonth}-${normalizedDay} ${DEFAULT_BIRTH_TIME}`;
 
             const response = await api.post('/nine-star/calculate', {
                 birth_datetime: birthDateTimeISO,

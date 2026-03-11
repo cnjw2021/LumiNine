@@ -11,7 +11,7 @@ const PUBLIC_PATHS = ['/', '/login', '/register', '/forgot-password'];
 const PUBLIC_PATH_PREFIXES = ['/about/'];
 
 /** 管理者に自動付与される基本権限（DRY: checkPermission / checkPermissions 共有） */
-const ADMIN_BASIC_PERMISSIONS = ['user_view', 'user_create', 'user_edit', 'user_delete'];
+export const ADMIN_BASIC_PERMISSIONS = ['user_view', 'user_create', 'user_edit', 'user_delete'];
 
 // ── 型定義 ──────────────────────────────────────────
 

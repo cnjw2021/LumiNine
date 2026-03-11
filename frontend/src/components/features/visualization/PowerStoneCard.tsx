@@ -30,7 +30,7 @@ interface PowerStoneCardProps {
 }
 
 const PowerStoneCard: React.FC<PowerStoneCardProps> = ({ powerStones, targetYear }) => {
-    // ── 6-Layer ──
+    // ── 7-Layer ──
     if (isSixLayer(powerStones)) {
         return (
             <Card shadow="xs" withBorder p="sm" radius="md" mt="sm" style={CARD_STYLE}>

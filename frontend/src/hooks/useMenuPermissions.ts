@@ -2,6 +2,7 @@
 
 import { useState, useEffect, useMemo } from 'react';
 import { MenuItem } from '@/components/layout/NavigationMenu';
+import { ADMIN_BASIC_PERMISSIONS } from '@/contexts/auth/AuthContext';
 
 /**
  * メニュー項目の権限チェック
@@ -9,9 +10,6 @@ import { MenuItem } from '@/components/layout/NavigationMenu';
  * SRP: 権限チェック・判定のみを担当
  * DIP: checkPermissions 関数を外部から注入
  */
-
-/** 管理者ロールに暗黙的に付与される権限 */
-const ADMIN_IMPLICIT_PERMISSIONS = ['user_view', 'user_create', 'user_edit', 'user_delete'] as const;
 
 interface UseMenuPermissionsParams {
     isLoggedIn: boolean;
@@ -87,7 +85,7 @@ export function useMenuPermissions({
 
         return adminMenuItems.some(item => {
             if (!item.permission) return true;
-            if (isAdmin && (ADMIN_IMPLICIT_PERMISSIONS as readonly string[]).includes(item.permission)) return true;
+            if (isAdmin && ADMIN_BASIC_PERMISSIONS.includes(item.permission)) return true;
             return userPermissions[item.permission] === true;
         });
     }, [isLoggedIn, permissionsLoaded, isSuperuser, isAdmin, adminMenuItems, userPermissions]);
