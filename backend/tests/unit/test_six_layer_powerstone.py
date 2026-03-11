@@ -186,6 +186,8 @@ class TestTraitsAndHelpers:
         assert formatted["layer"] == "overall"
         assert formatted["description"] == "直感を高める"
         assert formatted["secondary"]["stone_id"] == "amethyst"
+        assert formatted["secondary"]["stone_name"] == "アメシスト"
+        assert formatted["secondary"]["description"] == "精神の安定"
 
     def test_merge_six_layer_partial_returns_numerology_only(self, use_case):
         numerology = make_numerology_result()
@@ -193,7 +195,20 @@ class TestTraitsAndHelpers:
 
         for key in ("overall_stone", "health_stone", "wealth_stone", "love_stone"):
             assert key in result and result[key] is not None
-            assert "stone_id" in result[key]
+
+            layer_data = result[key]
+            assert isinstance(layer_data, dict)
+            assert "stone_id" in layer_data
+            assert "stone_name" in layer_data
+            assert "layer" in layer_data
+            assert "description" in layer_data
+            assert "secondary" in layer_data
+
+            assert isinstance(layer_data["secondary"], dict)
+            assert "stone_id" in layer_data["secondary"]
+
+            expected_layer = key.replace("_stone", "")
+            assert layer_data["layer"] == expected_layer
 
         assert result["monthly_stone"] is None
         assert result["protection_stone"] is None

@@ -3,7 +3,7 @@
 상수/팩토리는 powerstone_test_fixtures.py에 집약하고,
 이 conftest는 pytest fixture만 노출한다.
 
-Issue #128: Copilot 리뷰 반영 — SUT import를 fixture 내부에서 지연 로딩
+Issue #128: Copilot 리뷰 반영 — SUT는 각 테스트 모듈에서 직접 import하고, 이 파일은 공용 mock/결과 fixture만 제공한다.
 """
 from __future__ import annotations
 
