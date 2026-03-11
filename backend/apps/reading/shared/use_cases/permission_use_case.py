@@ -118,12 +118,20 @@ class PermissionUseCase:
         if not normalized:
             raise ValueError("권한 코드가 지정되지 않았습니다.")
 
-        # 쉼표 구분 입력 시 빈 토큰만 포함된 경우 거절
+        # 쉼표 구분 입력을 지원하되, 빈 토큰이 서비스로 전달되지 않도록 방어
         if ',' in normalized:
             tokens = [t.strip() for t in normalized.split(',') if t.strip()]
             if not tokens:
                 raise ValueError("권한 코드가 지정되지 않았습니다.")
-            
+
+            user = self.user_repo.find_by_email(email)
+            if not user:
+                raise UserNotFoundError("사용자를 찾을 수 없습니다.")
+
+            # 정제된 토큰에 대해서만 권한 확인 (빈 문자열이 서비스로 전달되지 않음)
+            return any(self.permission_service.has_permission(user, code) for code in tokens)
+
+        # 단일 권한 코드인 경우
         user = self.user_repo.find_by_email(email)
         if not user:
             raise UserNotFoundError("사용자를 찾을 수 없습니다.")
