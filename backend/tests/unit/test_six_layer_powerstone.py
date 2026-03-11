@@ -12,7 +12,7 @@ import pytest
 from apps.reading.powerstone.use_cases.six_layer_powerstone_use_case import (
     SixLayerPowerStoneUseCase,
 )
-from tests.unit.conftest import (
+from tests.unit.powerstone_test_fixtures import (
     DUMMY_DIRECTIONS,
     PATCH_LIFE_PATH,
     PATCH_PERSONAL_YEAR,
@@ -22,21 +22,7 @@ from tests.unit.conftest import (
 )
 
 
-# ── pytest fixture (conftest 의존) ────────────────────────
-
-@pytest.fixture
-def mock_stone_uc() -> MagicMock:
-    uc = MagicMock()
-    uc.execute.return_value = make_gogyo_result()
-    return uc
-
-
-@pytest.fixture
-def mock_engine() -> MagicMock:
-    engine = MagicMock()
-    engine.recommend_as_dict.return_value = make_numerology_result()
-    return engine
-
+# ── pytest fixture ────────────────────────────────────
 
 @pytest.fixture
 def use_case(mock_stone_uc, mock_engine) -> SixLayerPowerStoneUseCase:
@@ -133,7 +119,7 @@ class TestSevenLayerBranch:
 
     @patch(PATCH_PERSONAL_YEAR)
     @patch(PATCH_LIFE_PATH)
-    def test_both_engines_called(self, mock_calc, mock_pyn, use_case, mock_stone_uc):
+    def test_both_engines_called(self, mock_calc, mock_pyn, use_case, mock_stone_uc, mock_engine):
         mock_calc.return_value = MagicMock(number=3)
         mock_pyn.return_value = MagicMock(number=2)
 
@@ -142,11 +128,17 @@ class TestSevenLayerBranch:
             locale="ko", birth_date="1995-12-25", target_year=2026,
         )
 
+        # 구성기학 호출 검증
         mock_stone_uc.execute.assert_called_once_with(
             main_star=5, directions=DUMMY_DIRECTIONS, locale="ko",
         )
+
+        # 수비술 호출 검증
         mock_calc.assert_called_once_with("1995-12-25")
         mock_pyn.assert_called_once_with("1995-12-25", 2026)
+        mock_engine.recommend_as_dict.assert_called_once_with(
+            life_path_number=3, locale="ko", personal_year_number=2,
+        )
 
     @patch(PATCH_PERSONAL_YEAR)
     @patch(PATCH_LIFE_PATH)
