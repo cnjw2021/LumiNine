@@ -37,8 +37,8 @@ class IMonthlyBoardDomainService(ABC):
         """
 
     @abstractmethod
-    def get_period_start_for_setsu(self, year: int, setsu_index: int) -> Optional[date]:
-        """절월 인덱스(1=寅月…12=丑月)에 해당하는 절입일을 반환한다.
+    def resolve_period_start(self, year: int, setsu_index: int) -> Optional[date]:
+        """절월 인덱스를 절입일(date)로 해석하는 도메인 규칙.
 
         Args:
             year: 조회 연도
@@ -46,4 +46,7 @@ class IMonthlyBoardDomainService(ABC):
 
         Returns:
             절입일 date, 또는 DB에 없는 경우 None
+
+        Raises:
+            ValueError: setsu_index 가 유효 범위(1~12) 밖일 때
         """
