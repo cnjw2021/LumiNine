@@ -13,6 +13,8 @@ from dataclasses import dataclass
 from datetime import date, timedelta
 from typing import List, Optional, Tuple
 
+from injector import inject
+
 from apps.reading.ninestarki.domain.value_objects.star_grid_pattern_vo import StarGridPatternVO
 
 from apps.reading.ninestarki.domain.entities.solar_term import SolarTerm
@@ -23,7 +25,6 @@ from apps.reading.ninestarki.domain.repositories.star_grid_pattern_repository_in
 from apps.reading.ninestarki.domain.repositories.monthly_directions_repository_interface import IMonthlyDirectionsRepository
 from apps.reading.shared.domain.exceptions import SetsuMonthNotFoundError
 from apps.reading.ninestarki.domain.services.interfaces.monthly_board_service_interface import IMonthlyBoardDomainService
-from injector import inject
 
 
 

@@ -1,5 +1,3 @@
-
-
 /**
  * api.ts のレスポンスインターセプターが加工したエラーから
  * 人間が読めるメッセージを抽出するユーティリティ。
@@ -18,8 +16,16 @@ export function extractErrorMessage(err: unknown, fallback: string): string {
 
     if (details) {
         // details.data に backend エラーメッセージがある場合
-        if (details.data && typeof details.data === 'object' && 'error' in details.data) {
-            return String((details.data as Record<string, unknown>).error);
+        if (details.data && typeof details.data === 'object') {
+            const data = details.data as Record<string, unknown>;
+            // {error: "message"} 形式
+            if (typeof data.error === 'string') return data.error;
+            // {error: {message: "..."}} 形式 (AppError ハンドラ)
+            if (data.error && typeof data.error === 'object' && 'message' in (data.error as object)) {
+                return String((data.error as Record<string, unknown>).message);
+            }
+            // {message: "..."} 形式 (NineStarKiError.to_dict())
+            if (typeof data.message === 'string') return data.message;
         }
         if (details.message) return details.message;
         if (details.status) return `HTTP ${details.status}${details.statusText ? ` ${details.statusText}` : ''}`;
