@@ -117,6 +117,12 @@ class PermissionUseCase:
         normalized = permission_code.strip() if isinstance(permission_code, str) else ''
         if not normalized:
             raise ValueError("권한 코드가 지정되지 않았습니다.")
+
+        # 쉼표 구분 입력 시 빈 토큰만 포함된 경우 거절
+        if ',' in normalized:
+            tokens = [t.strip() for t in normalized.split(',') if t.strip()]
+            if not tokens:
+                raise ValueError("권한 코드가 지정되지 않았습니다.")
             
         user = self.user_repo.find_by_email(email)
         if not user:
