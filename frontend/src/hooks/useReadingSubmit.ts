@@ -69,7 +69,6 @@ export function useReadingSubmit({ token, isSuperuser, currentYear }: UseReading
             const birthdateParts = birthdate.split('/');
             if (birthdateParts.length !== 3) {
                 setError('生年月日の形式が正しくありません');
-                setIsLoading(false);
                 return;
             }
 
@@ -84,44 +83,37 @@ export function useReadingSubmit({ token, isSuperuser, currentYear }: UseReading
             });
 
             if (response.data) {
+                // ローカルストレージのアクセス確認
                 try {
-                    // ローカルストレージのアクセス確認
-                    try {
-                        localStorage.setItem('test-storage', 'test');
-                        localStorage.removeItem('test-storage');
-                    } catch (storageAccessError) {
-                        console.error('ローカルストレージアクセスエラー:', storageAccessError);
-                        setError('ブラウザのストレージ設定が制限されています。プライベートブラウジングやCookieの設定を確認してください。');
-                        setIsLoading(false);
-                        return;
-                    }
-
-                    const userData = {
-                        result: response.data,
-                        fullName,
-                        birthdate,
-                        gender,
-                        targetYear,
-                    };
-
-                    localStorage.removeItem(STORAGE_KEY);
-                    localStorage.setItem(STORAGE_KEY, JSON.stringify(userData));
-
-                    router.push(`/result?t=${Date.now()}`);
-                } catch (storageError) {
-                    console.error('データ保存エラー:', storageError);
-                    setError('結果の保存中にエラーが発生しました');
-                    setIsLoading(false);
+                    localStorage.setItem('test-storage', 'test');
+                    localStorage.removeItem('test-storage');
+                } catch (storageAccessError) {
+                    console.error('ローカルストレージアクセスエラー:', storageAccessError);
+                    setError('ブラウザのストレージ設定が制限されています。プライベートブラウジングやCookieの設定を確認してください。');
+                    return;
                 }
+
+                const userData = {
+                    result: response.data,
+                    fullName,
+                    birthdate,
+                    gender,
+                    targetYear,
+                };
+
+                localStorage.removeItem(STORAGE_KEY);
+                localStorage.setItem(STORAGE_KEY, JSON.stringify(userData));
+
+                router.push(`/result?t=${Date.now()}`);
             } else {
                 setError('鑑定結果が返されませんでした');
-                setIsLoading(false);
             }
         } catch (err: unknown) {
             const errorMessage = err instanceof AxiosError
                 ? err.response?.data?.error || '鑑定中にエラーが発生しました'
                 : '鑑定中にエラーが発生しました';
             setError(errorMessage);
+        } finally {
             setIsLoading(false);
         }
     }, [token, isSuperuser, currentYear, router]);

@@ -46,6 +46,10 @@ export function useMenuPermissions({
                     const permissions = await checkPermissions(permissionCodes);
                     setUserPermissions(permissions);
                     setPermissionsLoaded(true);
+                } else {
+                    // 権限コードがない場合でも loaded を確定
+                    setUserPermissions({});
+                    setPermissionsLoaded(true);
                 }
             } catch (error) {
                 console.error('Error checking permissions:', error);
