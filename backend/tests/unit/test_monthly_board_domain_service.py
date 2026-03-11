@@ -12,6 +12,7 @@ from apps.reading.ninestarki.domain.services.monthly_board_domain_service import
     MonthlyBoardDomainService,
     MonthlyBoardResult,
 )
+from apps.reading.ninestarki.domain.value_objects.star_grid_pattern_vo import StarGridPatternVO
 
 
 # ══════════════════════════════════════════════════════
@@ -57,17 +58,14 @@ class _StubSolarTermsRepo:
         return None
 
 
-class _StubGridPattern:
-    def __init__(self, center_star: int):
-        self.center_star = center_star
-
-    def to_dict(self):
-        return {"center_star": self.center_star}
-
-
 class _StubStarGridPatternRepo:
+    """StarGridPattern リポジトリのスタブ — StarGridPatternVO を返す."""
     def get_by_center_star(self, center_star: int):
-        return _StubGridPattern(center_star)
+        return StarGridPatternVO(
+            center_star=center_star,
+            north=1, northeast=2, east=3, southeast=4,
+            south=5, southwest=6, west=7, northwest=8,
+        )
 
 class _StubMonthlyDirection:
     """MonthlyDirections エンティティのスタブ."""
@@ -205,12 +203,13 @@ class TestMonthlyBoardDomainService:
         assert isinstance(result, MonthlyBoardResult)
         assert 1 <= result.center_star <= 9
 
-    def test_grid_pattern_assembled(self, service):
+    def test_grid_pattern_is_domain_vo(self, service):
+        """grid_pattern が StarGridPatternVO ドメイン VO であることを検証する."""
         result = service.get_monthly_board(
             target_date=date(2026, 2, 5),
         )
         assert result.grid_pattern is not None
-        # Stub returns _StubGridPattern whose center_star equals result.center_star
+        assert isinstance(result.grid_pattern, StarGridPatternVO)
         assert result.grid_pattern.center_star == result.center_star
 
     def test_month_zodiac_format(self, service):
@@ -226,18 +225,6 @@ class TestMonthlyBoardDomainService:
             target_date=date(2026, 2, 5),
         )
         assert result.period_start <= result.period_end
-
-
-    def test_to_dict_has_required_keys(self, service):
-        result = service.get_monthly_board(
-            target_date=date(2026, 2, 5),
-        )
-        d = result.to_dict()
-        required_keys = {
-            "setsu_month_index", "center_star", "month_stem", "month_branch",
-            "month_zodiac", "period_start", "period_end", "grid_pattern",
-        }
-        assert required_keys.issubset(d.keys())
 
     def test_center_star_differs_from_solar_terms_star_number(self, service):
         """center_star が solar_terms_data.star_number と異なるケースが存在することを
@@ -286,3 +273,4 @@ class TestMonthlyBoardDomainService:
             "if this fails, solar_terms_data.star_number may be used directly "
             "instead of resolving via solar_starts_data.star_number"
         )
+

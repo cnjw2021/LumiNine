@@ -79,6 +79,16 @@ api.interceptors.response.use(
             });
         }
 
+        // 403 Forbidden → ホームへリダイレクト（SSoT: 認可失敗リダイレクト）
+        if (error.response?.status === 403) {
+            if (typeof window !== 'undefined' && window.location.pathname !== '/') {
+                window.location.replace('/');
+            }
+            // グローバルで処理済みであることを示すフラグを元のエラーに付与
+            (error as any).__handled403 = true;
+            return Promise.reject(error);
+        }
+
         // その他のエラーは詳細情報を取得
         const errorDetails: {
             status?: number;

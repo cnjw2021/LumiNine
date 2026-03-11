@@ -3,7 +3,7 @@
 import React, { createContext, useContext, useState, useEffect, useCallback, useRef } from 'react';
 import { useRouter, usePathname } from 'next/navigation';
 import api from '@/utils/api';
-import { AxiosError, InternalAxiosRequestConfig, AxiosResponse } from 'axios';
+import { InternalAxiosRequestConfig } from 'axios';
 
 // ── 상수 ────────────────────────────────────────────
 
@@ -22,9 +22,7 @@ interface AuthContextType {
   isLoading: boolean;
   token: string | null;
   userName: string | null;
-  setIsLoading: (status: boolean) => void;
   setLoginStatus: (status: boolean, newToken?: string, refreshToken?: string) => void;
-  setIsLoggedIn: (status: boolean) => void;
   logout: () => Promise<void>;
   checkAdminStatus: () => Promise<void>;
   checkPermission: (permissionCode: string) => Promise<boolean>;
@@ -72,22 +70,6 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
     };
   }, []);
 
-  useEffect(() => {
-    const resInterceptor = api.interceptors.response.use(
-      (response: AxiosResponse) => response,
-      (error: AxiosError) => {
-        if (error.response?.status === 403) {
-          router.replace('/');
-          return Promise.reject(error);
-        }
-        return Promise.reject(error);
-      }
-    );
-
-    return () => {
-      api.interceptors.response.eject(resInterceptor);
-    };
-  }, [router]);
 
   // ── Auth State ────────────────────────────────────
 
@@ -332,9 +314,7 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
       isLoading,
       token,
       userName,
-      setIsLoading,
       setLoginStatus,
-      setIsLoggedIn,
       logout,
       checkAdminStatus,
       checkPermission,
