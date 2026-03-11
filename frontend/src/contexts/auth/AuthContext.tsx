@@ -45,16 +45,11 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
   const [isLoading, setIsLoading] = useState<boolean>(true);
   const [token, setToken] = useState<string | null>(null);
   const [userName, setUserName] = useState<string | null>(null);
-  const [permissionCache, setPermissionCache] = useState<Record<string, boolean>>({});
   const permissionCacheRef = useRef<Record<string, boolean>>({});
 
-  // state と ref を同時に更新するヘルパー（stale read 防止）
+  // ref キャッシュを更新するヘルパー（ref-only → 不要な re-render を防止）
   const updatePermissionCache = useCallback((entries: Record<string, boolean>) => {
-    // ref を同期的に更新して、直後の読み取りで最新値を取得できるようにする
     permissionCacheRef.current = { ...permissionCacheRef.current, ...entries };
-
-    // UI 用の state は後から同期させる（ref には依存しない）
-    setPermissionCache(prev => ({ ...prev, ...entries }));
   }, []);
 
   // ── Interceptors (useEffect 内で登録 → cleanup で解除) ──
@@ -93,9 +88,7 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
   // ── Auth State ────────────────────────────────────
 
   const clearPermissionCache = useCallback(() => {
-    // ref も同期的にクリアして stale read を防止
     permissionCacheRef.current = {};
-    setPermissionCache({});
   }, []);
 
   const clearAuthState = useCallback(() => {
