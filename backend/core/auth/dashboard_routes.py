@@ -3,6 +3,7 @@
 각 핸들러: 요청 파싱 → UseCase 호출 → JSON 응답 포맷팅.
 비즈니스 로직은 DashboardUseCase에 위임합니다.
 """
+import json
 from datetime import datetime, timezone
 
 from flask import Blueprint, request, Response
@@ -10,11 +11,13 @@ from flask_jwt_extended import jwt_required
 
 from apps.reading.shared.use_cases.dashboard_use_case import DashboardUseCase
 from core.auth.auth_utils import get_current_user
+from core.exceptions import AppError
 from core.utils.logger import get_logger
 
-import json
-
 logger = get_logger(__name__)
+
+# target_name 최대 길이 (DB 컬럼 VARCHAR(100)과 일치)
+_TARGET_NAME_MAX_LENGTH = 100
 
 # UseCase — create_dashboard_bp() 에서 주입
 _use_case: DashboardUseCase = None  # type: ignore
@@ -35,20 +38,13 @@ def create_dashboard_bp(use_case: DashboardUseCase) -> Blueprint:
         try:
             current_user = get_current_user()
             result = _use_case.get_admin_summary(current_user)
-            return Response(
-                json.dumps(result, ensure_ascii=False),
-                status=200, mimetype='application/json',
-            )
-        except PermissionError as e:
-            return Response(
-                json.dumps({'error': str(e)}, ensure_ascii=False),
-                status=403, mimetype='application/json',
-            )
+            return _json_response(result, 200)
+        except AppError as e:
+            return _json_response(e.to_dict(), e.status)
         except Exception as e:
-            logger.error(f"admin_summary 에러: {e}")
-            return Response(
-                json.dumps({'error': '대시보드 요약 조회 중 오류가 발생했습니다.'}, ensure_ascii=False),
-                status=500, mimetype='application/json',
+            logger.error("admin_summary 에러: %s", e)
+            return _json_response(
+                {'error': '대시보드 요약 조회 중 오류가 발생했습니다.'}, 500,
             )
 
     @bp.route('/admin/dashboard/chart', methods=['GET'])
@@ -64,20 +60,13 @@ def create_dashboard_bp(use_case: DashboardUseCase) -> Blueprint:
             end = _parse_datetime(end_str)
 
             result = _use_case.get_admin_chart_data(current_user, start, end, interval)
-            return Response(
-                json.dumps(result, ensure_ascii=False),
-                status=200, mimetype='application/json',
-            )
-        except PermissionError as e:
-            return Response(
-                json.dumps({'error': str(e)}, ensure_ascii=False),
-                status=403, mimetype='application/json',
-            )
+            return _json_response(result, 200)
+        except AppError as e:
+            return _json_response(e.to_dict(), e.status)
         except Exception as e:
-            logger.error(f"admin_chart 에러: {e}")
-            return Response(
-                json.dumps({'error': '차트 데이터 조회 중 오류가 발생했습니다.'}, ensure_ascii=False),
-                status=500, mimetype='application/json',
+            logger.error("admin_chart 에러: %s", e)
+            return _json_response(
+                {'error': '차트 데이터 조회 중 오류가 발생했습니다.'}, 500,
             )
 
     @bp.route('/admin/dashboard/users', methods=['GET'])
@@ -94,20 +83,13 @@ def create_dashboard_bp(use_case: DashboardUseCase) -> Blueprint:
             result = _use_case.get_admin_users(
                 current_user, page, per_page, sort, order, search,
             )
-            return Response(
-                json.dumps(result, ensure_ascii=False),
-                status=200, mimetype='application/json',
-            )
-        except PermissionError as e:
-            return Response(
-                json.dumps({'error': str(e)}, ensure_ascii=False),
-                status=403, mimetype='application/json',
-            )
+            return _json_response(result, 200)
+        except AppError as e:
+            return _json_response(e.to_dict(), e.status)
         except Exception as e:
-            logger.error(f"admin_users 에러: {e}")
-            return Response(
-                json.dumps({'error': '사용자 목록 조회 중 오류가 발생했습니다.'}, ensure_ascii=False),
-                status=500, mimetype='application/json',
+            logger.error("admin_users 에러: %s", e)
+            return _json_response(
+                {'error': '사용자 목록 조회 중 오류가 발생했습니다.'}, 500,
             )
 
     # ── 일반 사용자 엔드포인트 ─────────────────────────────
@@ -118,15 +100,11 @@ def create_dashboard_bp(use_case: DashboardUseCase) -> Blueprint:
         try:
             current_user = get_current_user()
             result = _use_case.get_my_summary(current_user)
-            return Response(
-                json.dumps(result, ensure_ascii=False),
-                status=200, mimetype='application/json',
-            )
+            return _json_response(result, 200)
         except Exception as e:
-            logger.error(f"my_summary 에러: {e}")
-            return Response(
-                json.dumps({'error': '개인 요약 조회 중 오류가 발생했습니다.'}, ensure_ascii=False),
-                status=500, mimetype='application/json',
+            logger.error("my_summary 에러: %s", e)
+            return _json_response(
+                {'error': '개인 요약 조회 중 오류가 발생했습니다.'}, 500,
             )
 
     @bp.route('/dashboard/my/history', methods=['GET'])
@@ -138,15 +116,11 @@ def create_dashboard_bp(use_case: DashboardUseCase) -> Blueprint:
             per_page = request.args.get('per_page', 20, type=int)
 
             result = _use_case.get_my_history(current_user, page, per_page)
-            return Response(
-                json.dumps(result, ensure_ascii=False),
-                status=200, mimetype='application/json',
-            )
+            return _json_response(result, 200)
         except Exception as e:
-            logger.error(f"my_history 에러: {e}")
-            return Response(
-                json.dumps({'error': '이력 조회 중 오류가 발생했습니다.'}, ensure_ascii=False),
-                status=500, mimetype='application/json',
+            logger.error("my_history 에러: %s", e)
+            return _json_response(
+                {'error': '이력 조회 중 오류가 발생했습니다.'}, 500,
             )
 
     @bp.route('/dashboard/my/chart', methods=['GET'])
@@ -155,15 +129,11 @@ def create_dashboard_bp(use_case: DashboardUseCase) -> Blueprint:
         try:
             current_user = get_current_user()
             result = _use_case.get_my_chart(current_user)
-            return Response(
-                json.dumps(result, ensure_ascii=False),
-                status=200, mimetype='application/json',
-            )
+            return _json_response(result, 200)
         except Exception as e:
-            logger.error(f"my_chart 에러: {e}")
-            return Response(
-                json.dumps({'error': '차트 데이터 조회 중 오류가 발생했습니다.'}, ensure_ascii=False),
-                status=500, mimetype='application/json',
+            logger.error("my_chart 에러: %s", e)
+            return _json_response(
+                {'error': '차트 데이터 조회 중 오류가 발생했습니다.'}, 500,
             )
 
     # ── PDF 이벤트 기록 ───────────────────────────────────
@@ -175,24 +145,35 @@ def create_dashboard_bp(use_case: DashboardUseCase) -> Blueprint:
             current_user = get_current_user()
             data = request.get_json() or {}
 
+            target_name = data.get('target_name')
+            if target_name and len(target_name) > _TARGET_NAME_MAX_LENGTH:
+                target_name = target_name[:_TARGET_NAME_MAX_LENGTH]
+
             _use_case.record_pdf_download(
                 user_id=current_user.id,
-                target_name=data.get('target_name'),
+                target_name=target_name,
                 target_year=data.get('target_year'),
                 target_month=data.get('target_month'),
             )
-            return Response(
-                json.dumps({'status': 'ok'}, ensure_ascii=False),
-                status=201, mimetype='application/json',
-            )
+            return _json_response({'status': 'ok'}, 201)
         except Exception as e:
-            logger.error(f"record_pdf_download 에러: {e}")
-            return Response(
-                json.dumps({'error': 'PDF 이벤트 기록 중 오류가 발생했습니다.'}, ensure_ascii=False),
-                status=500, mimetype='application/json',
+            logger.error("record_pdf_download 에러: %s", e)
+            return _json_response(
+                {'error': 'PDF 이벤트 기록 중 오류가 발생했습니다.'}, 500,
             )
 
     return bp
+
+
+# ── 헬퍼 함수 ─────────────────────────────────────────────
+
+def _json_response(data: dict, status: int) -> Response:
+    """JSON Response를 생성합니다."""
+    return Response(
+        json.dumps(data, ensure_ascii=False),
+        status=status,
+        mimetype='application/json',
+    )
 
 
 def _parse_datetime(value: str | None) -> datetime | None:

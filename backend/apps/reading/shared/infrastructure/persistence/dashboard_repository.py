@@ -6,17 +6,16 @@ SQLAlchemy 기반으로 recommendation_history, pdf_download_events, users 테�
 from datetime import datetime
 from typing import Any, Dict, List, Optional
 
-from injector import inject
-from sqlalchemy import func, text, desc, asc, case, and_
-from sqlalchemy.orm import Session
+from sqlalchemy import func, text, desc, asc
+from sqlalchemy.orm import Query
 
+from apps.reading.shared.domain.entities.user import User
 from apps.reading.shared.domain.repositories.dashboard_repository_interface import (
     IDashboardRepository,
 )
 from core.database import db
 from core.models.pdf_download_event import PdfDownloadEvent
 from core.models.recommendation_history import RecommendationHistory
-from apps.reading.shared.domain.entities.user import User
 
 
 # ── 집계 간격에 따른 날짜 포맷 (PostgreSQL) ───────────────
@@ -30,30 +29,20 @@ _INTERVAL_FORMAT = {
 class DashboardRepository(IDashboardRepository):
     """SQLAlchemy 기반 대시보드 리포지토리."""
 
-    @inject
-    def __init__(self, session: Session) -> None:
-        self._session = session
-
-    # ── helpers ────────────────────────────────────────────
-
-    def _db_session(self) -> Session:
-        """현재 활성 DB 세션을 반환합니다."""
-        return db.session
-
     # ── 전체 집계 (Superuser) ──────────────────────────────
 
     def get_total_reading_count(self) -> int:
-        return self._db_session().query(
+        return db.session.query(
             func.count(RecommendationHistory.id),
         ).scalar() or 0
 
     def get_total_pdf_count(self) -> int:
-        return self._db_session().query(
+        return db.session.query(
             func.count(PdfDownloadEvent.id),
         ).scalar() or 0
 
     def get_active_user_count(self) -> int:
-        return self._db_session().query(
+        return db.session.query(
             func.count(User.id),
         ).filter(User.is_deleted.is_(False)).scalar() or 0
 
@@ -62,7 +51,7 @@ class DashboardRepository(IDashboardRepository):
     ) -> List[Dict[str, Any]]:
         fmt = _INTERVAL_FORMAT.get(interval, _INTERVAL_FORMAT['daily'])
         rows = (
-            self._db_session()
+            db.session
             .query(
                 func.to_char(RecommendationHistory.created_at, fmt).label('date'),
                 func.count(RecommendationHistory.id).label('count'),
@@ -82,7 +71,7 @@ class DashboardRepository(IDashboardRepository):
     ) -> List[Dict[str, Any]]:
         fmt = _INTERVAL_FORMAT.get(interval, _INTERVAL_FORMAT['daily'])
         rows = (
-            self._db_session()
+            db.session
             .query(
                 func.to_char(PdfDownloadEvent.created_at, fmt).label('date'),
                 func.count(PdfDownloadEvent.id).label('count'),
@@ -107,10 +96,10 @@ class DashboardRepository(IDashboardRepository):
         'last_reading_date': 'last_reading_date',
     }
 
-    def _users_base_query(self, search: Optional[str]):
+    def _users_base_query(self, search: Optional[str]) -> Query:
         """사용자 목록 기반 쿼리 (JOIN + 집계)."""
         reading_count = (
-            self._db_session()
+            db.session
             .query(
                 RecommendationHistory.user_id,
                 func.count(RecommendationHistory.id).label('reading_count'),
@@ -120,7 +109,7 @@ class DashboardRepository(IDashboardRepository):
         )
 
         pdf_count = (
-            self._db_session()
+            db.session
             .query(
                 PdfDownloadEvent.user_id,
                 func.count(PdfDownloadEvent.id).label('pdf_count'),
@@ -130,7 +119,7 @@ class DashboardRepository(IDashboardRepository):
         )
 
         last_reading = (
-            self._db_session()
+            db.session
             .query(
                 RecommendationHistory.user_id,
                 func.max(RecommendationHistory.created_at).label('last_reading_date'),
@@ -140,7 +129,7 @@ class DashboardRepository(IDashboardRepository):
         )
 
         q = (
-            self._db_session()
+            db.session
             .query(
                 User.id,
                 User.name,
@@ -199,7 +188,7 @@ class DashboardRepository(IDashboardRepository):
         ]
 
     def get_users_count(self, search: Optional[str]) -> int:
-        q = self._db_session().query(func.count(User.id)).filter(
+        q = db.session.query(func.count(User.id)).filter(
             User.is_deleted.is_(False),
         )
         if search:
@@ -212,17 +201,17 @@ class DashboardRepository(IDashboardRepository):
     # ── 개인 집계 ─────────────────────────────────────────
 
     def get_user_reading_count(self, user_id: int) -> int:
-        return self._db_session().query(
+        return db.session.query(
             func.count(RecommendationHistory.id),
         ).filter(RecommendationHistory.user_id == user_id).scalar() or 0
 
     def get_user_pdf_count(self, user_id: int) -> int:
-        return self._db_session().query(
+        return db.session.query(
             func.count(PdfDownloadEvent.id),
         ).filter(PdfDownloadEvent.user_id == user_id).scalar() or 0
 
     def get_user_last_reading_date(self, user_id: int) -> Optional[str]:
-        result = self._db_session().query(
+        result = db.session.query(
             func.max(RecommendationHistory.created_at),
         ).filter(RecommendationHistory.user_id == user_id).scalar()
         return result.isoformat() if result else None
@@ -232,7 +221,7 @@ class DashboardRepository(IDashboardRepository):
     ) -> List[Dict[str, Any]]:
         offset = (page - 1) * per_page
         rows = (
-            self._db_session()
+            db.session
             .query(RecommendationHistory)
             .filter(RecommendationHistory.user_id == user_id)
             .order_by(desc(RecommendationHistory.created_at))
@@ -252,7 +241,7 @@ class DashboardRepository(IDashboardRepository):
         ]
 
     def get_user_reading_history_count(self, user_id: int) -> int:
-        return self._db_session().query(
+        return db.session.query(
             func.count(RecommendationHistory.id),
         ).filter(RecommendationHistory.user_id == user_id).scalar() or 0
 
@@ -261,7 +250,7 @@ class DashboardRepository(IDashboardRepository):
     ) -> List[Dict[str, Any]]:
         offset = (page - 1) * per_page
         rows = (
-            self._db_session()
+            db.session
             .query(PdfDownloadEvent)
             .filter(PdfDownloadEvent.user_id == user_id)
             .order_by(desc(PdfDownloadEvent.created_at))
@@ -281,7 +270,7 @@ class DashboardRepository(IDashboardRepository):
         ]
 
     def get_user_pdf_history_count(self, user_id: int) -> int:
-        return self._db_session().query(
+        return db.session.query(
             func.count(PdfDownloadEvent.id),
         ).filter(PdfDownloadEvent.user_id == user_id).scalar() or 0
 
@@ -289,14 +278,14 @@ class DashboardRepository(IDashboardRepository):
         self, user_id: int, months: int,
     ) -> List[Dict[str, Any]]:
         rows = (
-            self._db_session()
+            db.session
             .query(
                 func.to_char(RecommendationHistory.created_at, 'YYYY-MM').label('month'),
                 func.count(RecommendationHistory.id).label('count'),
             )
             .filter(
                 RecommendationHistory.user_id == user_id,
-                RecommendationHistory.created_at >= func.now() - text(f"INTERVAL '{months} months'"),
+                RecommendationHistory.created_at >= func.now() - text("INTERVAL ':m months'").bindparams(m=months),
             )
             .group_by(text('1'))
             .order_by(text('1'))
@@ -319,5 +308,5 @@ class DashboardRepository(IDashboardRepository):
             target_year=target_year,
             target_month=target_month,
         )
-        self._db_session().add(event)
-        self._db_session().commit()
+        db.session.add(event)
+        db.session.commit()

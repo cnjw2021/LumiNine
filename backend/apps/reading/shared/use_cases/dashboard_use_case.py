@@ -8,9 +8,11 @@ from typing import Any, Dict, Optional
 
 from injector import inject
 
+from apps.reading.shared.domain.entities.user import User
 from apps.reading.shared.domain.repositories.dashboard_repository_interface import (
     IDashboardRepository,
 )
+from core.exceptions import ForbiddenError
 from core.utils.logger import get_logger
 
 logger = get_logger(__name__)
@@ -18,7 +20,7 @@ logger = get_logger(__name__)
 # ── 상수 ────────────────────────────────────────────────
 DEFAULT_CHART_DAYS = 30
 MINI_CHART_MONTHS = 6
-DEFAULT_PER_PAGE = 20
+MAX_PER_PAGE = 100
 VALID_INTERVALS = ('daily', 'weekly', 'monthly')
 VALID_SORT_FIELDS = ('name', 'email', 'reading_count', 'pdf_count', 'last_reading_date')
 VALID_ORDERS = ('asc', 'desc')
@@ -33,14 +35,14 @@ class DashboardUseCase:
 
     # ── Superuser 전용 ────────────────────────────────────
 
-    def get_admin_summary(self, current_user) -> Dict[str, Any]:
+    def get_admin_summary(self, current_user: User) -> Dict[str, Any]:
         """전체 요약 통계를 반환합니다.
 
         Args:
             current_user: 현재 인증된 사용자 (is_superuser 검증용).
 
         Raises:
-            PermissionError: superuser가 아닌 경우.
+            ForbiddenError: superuser가 아닌 경우.
         """
         self._require_superuser(current_user)
 
@@ -52,7 +54,7 @@ class DashboardUseCase:
 
     def get_admin_chart_data(
         self,
-        current_user,
+        current_user: User,
         start: Optional[datetime],
         end: Optional[datetime],
         interval: str,
@@ -78,7 +80,7 @@ class DashboardUseCase:
 
     def get_admin_users(
         self,
-        current_user,
+        current_user: User,
         page: int,
         per_page: int,
         sort: str,
@@ -89,7 +91,7 @@ class DashboardUseCase:
         self._require_superuser(current_user)
 
         page = max(1, page)
-        per_page = min(max(1, per_page), 100)
+        per_page = min(max(1, per_page), MAX_PER_PAGE)
         if sort not in VALID_SORT_FIELDS:
             sort = 'name'
         if order not in VALID_ORDERS:
@@ -111,7 +113,7 @@ class DashboardUseCase:
 
     # ── 일반 사용자 ───────────────────────────────────────
 
-    def get_my_summary(self, current_user) -> Dict[str, Any]:
+    def get_my_summary(self, current_user: User) -> Dict[str, Any]:
         """현재 사용자의 개인 요약 통계를 반환합니다."""
         user_id = current_user.id
         return {
@@ -122,14 +124,14 @@ class DashboardUseCase:
 
     def get_my_history(
         self,
-        current_user,
+        current_user: User,
         page: int,
         per_page: int,
     ) -> Dict[str, Any]:
         """현재 사용자의 이용 이력을 반환합니다 (페이징)."""
         user_id = current_user.id
         page = max(1, page)
-        per_page = min(max(1, per_page), 100)
+        per_page = min(max(1, per_page), MAX_PER_PAGE)
 
         readings = self._repo.get_user_reading_history(user_id, page, per_page)
         readings_total = self._repo.get_user_reading_history_count(user_id)
@@ -151,7 +153,7 @@ class DashboardUseCase:
             },
         }
 
-    def get_my_chart(self, current_user) -> Dict[str, Any]:
+    def get_my_chart(self, current_user: User) -> Dict[str, Any]:
         """현재 사용자의 최근 6개월 미니 차트 데이터를 반환합니다."""
         user_id = current_user.id
         return {
@@ -171,12 +173,15 @@ class DashboardUseCase:
     ) -> None:
         """PDF 다운로드 이벤트를 기록합니다."""
         self._repo.record_pdf_download(user_id, target_name, target_year, target_month)
-        logger.info(f"PDF 다운로드 이벤트 기록: user_id={user_id}")
+        logger.info("PDF 다운로드 이벤트 기록: user_id=%d", user_id)
 
     # ── 내부 헬퍼 ─────────────────────────────────────────
 
     @staticmethod
-    def _require_superuser(user) -> None:
+    def _require_superuser(user: User) -> None:
         """superuser 권한을 검증합니다."""
         if not user.is_superuser:
-            raise PermissionError("이 기능은 슈퍼유저만 사용할 수 있습니다.")
+            raise ForbiddenError(
+                "이 기능은 슈퍼유저만 사용할 수 있습니다.",
+                details="is_superuser=True 권한이 필요합니다.",
+            )
