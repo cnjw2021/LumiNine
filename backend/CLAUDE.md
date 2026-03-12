@@ -16,7 +16,7 @@
 - `wait_for_db.py`: 로컬 개발환경 전용 PostgreSQL 연결 대기 스크립트 (psycopg2 사용).
 - `core/`: 설정(`config.py`), DB 세션(`database.py`), DB 설정(`db_config.py`), 예외 처리(`exceptions.py`), 유틸리티.
   - `core/auth/`: 인증 모듈 — `auth_routes.py`(로그인·로그아웃·패스워드변경·유저정보), `admin_user_routes.py`(관리자 유저 CRUD), `admin_system_routes.py`(시스템 설정·계정제한), `token_routes.py`(JWT 토큰 라이프사이클), `debug_routes.py`(헬스체크), `auth_utils.py`(get_current_user 헬퍼·권한 데코레이터), `jwt_helpers.py`(JWT), `permission_routes.py`(권한관리).
-  - `core/models/`: SQLAlchemy 모델 정의 — `stars`, `star_attributes`, `star_grid_pattern`, `monthly_directions`, `daily_astrology`, `solar_starts`, `solar_terms`, `powerstone_master`, `recommendation_history`, `hourly_star_zodiac`, `zodiac_group`/`zodiac_group_member`, `pattern_switch_date`, `system_config`, `admin_account_limit`, `exceptions`.
+  - `core/models/`: SQLAlchemy 모델 정의 — `stars`, `star_attributes`, `star_grid_patterns`, `monthly_directions`, `daily_astrology`, `solar_starts`, `solar_terms`, `powerstone_master`, `recommendation_history`, `hourly_star_zodiacs`, `zodiac_groups`/`zodiac_group_members`, `pattern_switch_dates`, `system_config`, `admin_account_limit`, `star_groups`, `exceptions`.
   - `core/services/`: 공통 서비스 레이어.
   - `core/utils/`: 로거(`logger.py`) 등 유틸리티.
 - `apps/reading/`: 도메인 기반으로 분리된 기능 모듈. 3개 서브도메인 + 공통 모듈.
