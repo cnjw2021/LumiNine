@@ -64,7 +64,7 @@
   - `stoneImageMap.ts`: 파워스톤 이미지 매핑
   - `adminValidation.ts`: 관리자 폼 유효성 검증
   - `apiErrorUtils.ts`: API 에러 처리 유틸리티
-- `public/images/stones/`: AI 생성 파워스톤 이미지 30종.
+- `public/images/stones/`: AI 생성 파워스톤 이미지 32종 (`stoneImageMap.ts`의 `STONE_IDS`와 1:1 매핑).
 
 ## 📦 외부 의존성
 - **Next.js (App Router)**: SSR 및 정적 사이트 생성을 지원하는 React 프레임워크.
