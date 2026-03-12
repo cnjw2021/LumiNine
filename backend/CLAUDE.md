@@ -22,7 +22,7 @@
 - `apps/reading/`: 도메인 기반으로 분리된 기능 모듈. 3개 서브도메인 + 공통 모듈.
   - `apps/reading/ninestarki/`: 구성기학(九星気学) 도메인 — 방위 길흉·연월반 계산, 운세.
     - `domain/entities/`: 핵심 비즈니스 엔티티.
-    - `domain/repositories/`: 레포지토리 인터페이스 (7개).
+    - `domain/repositories/`: 레포지토리 인터페이스 (6개).
     - `domain/services/`: 도메인 서비스 — `star_calculator_service`, `monthly_board_domain_service`, `fortune_status_service`, `five_elements_fortune_service`, `additional_direction_marks_service`, `direction_rule_engine`, `year_star_domain_service` + `interfaces/` (서비스 인터페이스).
     - `domain/constants/`: 도메인 상수 (`direction_constants` 등).
     - `domain/value_objects/`: 값 객체 (`gogyo`, `locale`, `star_grid_pattern_vo`).
