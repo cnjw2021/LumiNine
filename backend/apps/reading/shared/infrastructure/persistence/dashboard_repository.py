@@ -44,7 +44,7 @@ class DashboardRepository(IDashboardRepository):
     def get_active_user_count(self) -> int:
         return db.session.query(
             func.count(User.id),
-        ).filter(User.is_deleted.is_(False)).scalar() or 0
+        ).filter(User.is_deleted.is_(False), User.is_active.is_(True)).scalar() or 0
 
     def get_readings_by_period(
         self, start: datetime, end: datetime, interval: str,
@@ -141,7 +141,10 @@ class DashboardRepository(IDashboardRepository):
             .outerjoin(reading_count, User.id == reading_count.c.user_id)
             .outerjoin(pdf_count, User.id == pdf_count.c.user_id)
             .outerjoin(last_reading, User.id == last_reading.c.user_id)
-            .filter(User.is_deleted.is_(False))
+            .filter(
+                User.is_deleted.is_(False),
+                User.is_active.is_(True),
+            )
         )
 
         if search:
@@ -191,6 +194,7 @@ class DashboardRepository(IDashboardRepository):
     def get_users_count(self, search: Optional[str]) -> int:
         q = db.session.query(func.count(User.id)).filter(
             User.is_deleted.is_(False),
+            User.is_active.is_(True),
         )
         if search:
             pattern = f'%{search}%'
