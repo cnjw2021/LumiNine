@@ -43,7 +43,7 @@
     - `SixLayerStoneItem.tsx` / `StoneItem3.tsx`: 스톤 아이템 컴포넌트
     - `powerStoneConstants.ts`: 파워스톤 레이어 상수
   - `layout/`: 네비게이션 — `Navigation.tsx` (전체 네비게이션), `NavigationContent.tsx` (네비게이션 콘텐츠), `NavigationMenu.tsx` (메뉴 컴포넌트), `DrawerHeader.tsx` (모바일 드로어 헤더), `ScrollIndicator.tsx` (스크롤 인디케이터)
-  - `styles/`: CSS 파일 — `result.css` (결과 페이지 + PDF 캡처 모드 스타일), `form.css` (폼 스타일), `paragraph.css` (문단 스타일)
+  - `src/components/styles/`: CSS 파일 — `result.css` (결과 페이지 + PDF 캡처 모드 스타일), `form.css` (폼 스타일), `paragraph.css` (문단 스타일)
 - `src/contexts/auth/`: React Context 기반 인증 상태 관리 (`AuthContext`).
 - `src/hooks/`: Custom React Hooks.
   - `usePdfReport.ts`: html2canvas + jsPDF 기반 PDF 생성. **Off-screen clone 패턴** 사용 — 원본 DOM을 변경하지 않고 `cloneNode(true)` → `document.body`에 붙여 A4 폭(794px) 데스크톱 레이아웃으로 캡처. iOS Safari 메모리 방어, 폰트 로딩 대기, 빈 canvas 검증 등 크로스브라우저 방어 로직 포함.

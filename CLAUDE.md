@@ -37,8 +37,7 @@
 ## 🔮 주요 API 경로
 
 - **구성기학 기본 계산**: `/api/nine-star/calculate` (생년월일 기반 본명성, 월명성 등 계산 및 감정)
-- **월반 방위 차트**: `/api/monthly/directions` (월별 길방위/흉방위 계산 + 파워스톤 추천)
-- **월반 보드 데이터**: `/api/monthly/monthly-board` (연/월 기준 월반 방위 길흉 결과)
+- **월반 방위 차트 & 보드 데이터**: `/api/monthly/monthly-board` (월별 길방위/흉방위 계산 + 연/월 기준 월반 방위 길흉 결과 + 파워스톤 추천)
 - **파워스톤 추천**: `/api/nine-star/calculate` 응답에 6-레이어 파워스톤 추천 결과 포함
 - **헬스체크**: `GET /api/health` (Cloud Run 헬스체크용, DB 연결 상태 포함)
 
@@ -66,8 +65,7 @@
 - **방위 및 배치 데이터**: `star_grid_patterns` (구성반), `monthly_directions` (월반 방위), `pattern_switch_dates` (반전환일)
 - **파워스톤**: `powerstone_master`, `recommendation_history`
 - **간지-별 관계**: `hourly_star_zodiacs` (시진 별 간지), `zodiac_groups` / `zodiac_group_members` (간지 그룹)
-- **별 상성**: `star_compatibility_matrix` (별 간 상성 매트릭스)
-- **시스템 및 인증 데이터**: `users`, `permissions`, `user_permissions`, `system_config`, `admin_account_limits`
+- **시스템 및 인증 데이터**: `users`, `permissions`, `user_permissions`, `system_config`, `admin_account_limit`
 - **스키마 위치**: `backend/migrations/versions/` (Alembic — 001 스키마, 002 SQL 시드, 003 CSV 시드) / `db/init/*.sql` (Alembic 001/002에서 참조)
 - **프로덕션 마이그레이션**: `flask db upgrade` (Cloud Run 배포 시 자동 적용)
 

@@ -40,7 +40,7 @@
   - `migrations/versions/001_initial_schema.py`: 초기 스키마 생성.
   - `migrations/versions/002_seed_data.py`: SQL 파일 기반 시드 데이터 로드.
   - `migrations/versions/003_csv_seed_data.py`: CSV 파일 기반 마스터 데이터 시드 (대량 데이터용).
-- `data/csv/`: Alembic CSV 시드 마이그레이션에서 로드하는 마스터 데이터 CSV 파일 8종 (zodiac_groups, zodiac_group_members, hourly_star_zodiacs, solar_terms, solar_starts, daily_astrology, pattern_switch_dates, star_compatibility_matrix).
+- `data/csv/`: Alembic CSV 시드 마이그레이션에서 로드하는 마스터 데이터 CSV 파일 7종 (zodiac_groups, zodiac_group_members, hourly_star_zodiacs, solar_terms, solar_starts, daily_astrology, pattern_switch_dates).
 - `db_manage.py`: 데이터베이스 관리 유틸리티 — `init` (Alembic 마이그레이션 적용+슈퍼유저 생성), `reset` (전체 DROP+재구축), `create-superuser` (슈퍼유저만 생성).
 - `tests/`: pytest 기반 테스트 — 도메인 서비스, 유즈케이스, 라우트 단위 테스트.
 - `docs/architecture/`: 아키텍처 가이드, CI/CD 수동 설정 가이드, 리팩터링 플레이북 등.
