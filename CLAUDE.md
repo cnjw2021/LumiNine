@@ -1,6 +1,6 @@
 # LumiNine (루미나인) 프로젝트 가이드
 
-> Last updated: 2026-03-10
+> Last updated: 2026-03-12
 
 ## 🏗 아키텍처 개요 (Architecture Overview)
 
@@ -21,6 +21,7 @@
 
 - **CI/CD**:
   - `.github/workflows/ci.yml`: PR 테스트 (PostgreSQL 서비스 컨테이너 + pytest)
+  - `.github/workflows/integration-test.yml`: 통합 테스트
   - `.github/workflows/deploy-backend.yml`: Backend → GHCR → Cloud Run
   - `.github/workflows/deploy-frontend.yml`: Frontend → Cloudflare Pages
 
@@ -36,7 +37,7 @@
 ## 🔮 주요 API 경로
 
 - **구성기학 기본 계산**: `/api/nine-star/calculate` (생년월일 기반 본명성, 월명성 등 계산 및 감정)
-- **월반/연반(방위) 차트**: `/api/nine-star/monthly-chart`, `/api/monthly/directions` (월별 길방위/흉방위 계산)
+- **월반 방위 차트 & 보드 데이터**: `/api/monthly/monthly-board` (월별 길방위/흉방위 계산 + 연/월 기준 월반 방위 길흉 결과 + 파워스톤 추천)
 - **파워스톤 추천**: `/api/nine-star/calculate` 응답에 6-레이어 파워스톤 추천 결과 포함
 - **헬스체크**: `GET /api/health` (Cloud Run 헬스체크용, DB 연결 상태 포함)
 
@@ -48,20 +49,23 @@
   - `backend/migrations/`: Alembic DB 마이그레이션 (스키마 + 시드 데이터)
   - `backend/data/csv/`: 마스터 데이터 CSV 파일 (Alembic 시드 마이그레이션에서 사용)
   - `backend/docs/architecture/`: 아키텍처 가이드 및 CI/CD 수동 설정 가이드
+  - `backend/tests/`: pytest 기반 백엔드 테스트
 - `frontend/`: Next.js(App Router) 기반의 프론트엔드 UI 및 클라이언트 애플리케이션
-- `db/init/`: SQL 파일 (Alembic 001 DDL + 002 시드에서 참조) — Docker entrypoint에서는 사용하지 않음
-- `.github/workflows/`: GitHub Actions CI/CD 워크플로우
+- `db/init/`: SQL 파일 (Alembic 001 DDL + 002 시드에서 참조) — Docker 빌드 컨텍스트가 `./backend`이므로 Cloud Run 이미지에 포함되지 않음. 컨테이너 내 001/002 SQL seed는 동작하지 않으며, CSV 기반 003만 정상 동작.
+- `.github/workflows/`: GitHub Actions CI/CD 워크플로우 (ci, integration-test, deploy-backend, deploy-frontend)
 - `docs/`: 프로젝트 관련 문서 보관
-- `Makefile`: 로컬 개발 명령어 모음
+- `scripts/`: PR 리뷰 자동화 스크립트 (`pr-triage.js`, `pr-review-reply.js`)
+- `Makefile`: 로컬 개발 명령어 모음 (빌드, 테스트, PR 워크플로우 등)
 
 ## 🗄 DB 테이블과 관계 요약
 
 - **기본 별 정보**: `stars` (1-9 백수성~구자화성 기본 데이터)
 - **별 속성 (추천 음식 등)**: `star_attributes` (본명성별 오행, 성격, 추천 음식 등)
 - **달력 및 절기 데이터**: `solar_starts` (입춘 데이터), `solar_terms` (절기 데이터), `daily_astrology` (일별 간지/별 데이터)
-- **방위 및 배치 데이터**: `star_grid_patterns` (구성반), `monthly_directions` (월반 방위)
+- **방위 및 배치 데이터**: `star_grid_patterns` (구성반), `monthly_directions` (월반 방위), `pattern_switch_dates` (반전환일)
 - **파워스톤**: `powerstone_master`, `recommendation_history`
-- **시스템 및 인증 데이터**: `users`, `permissions`, `user_permissions`, `system_config`
+- **간지-별 관계**: `hourly_star_zodiacs` (시진 별 간지), `zodiac_groups` / `zodiac_group_members` (간지 그룹), `star_groups` (별 그룹)
+- **시스템 및 인증 데이터**: `users`, `permissions`, `user_permissions`, `system_config`, `admin_account_limit`
 - **스키마 위치**: `backend/migrations/versions/` (Alembic — 001 스키마, 002 SQL 시드, 003 CSV 시드) / `db/init/*.sql` (Alembic 001/002에서 참조)
 - **프로덕션 마이그레이션**: `flask db upgrade` (Cloud Run 배포 시 자동 적용)
 
@@ -94,3 +98,4 @@
 | [아키텍처 가이드](backend/docs/architecture/clean_architecture_guide.md) | Clean Architecture 적용 방식 |
 | [코드 리뷰 가이드라인](docs/CODE_REVIEW_GUIDELINES.md) | 코드 작성 및 리뷰 시 준수 사항 |
 | [CI 테스트 아키텍처](docs/ci-test-architecture.md) | GitHub Actions CI 테스트 구성 |
+| [연운 방위 로직](docs/yearly-direction-logic.md) | 연운 방위 길흉 판정 로직 |
