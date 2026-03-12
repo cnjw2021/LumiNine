@@ -13,7 +13,7 @@ from apps.reading.shared.domain.entities.user import User
 from apps.reading.shared.domain.repositories.dashboard_repository_interface import (
     IDashboardRepository,
 )
-from core.database import db
+from core.database import db, write_session
 from core.models.pdf_download_event import PdfDownloadEvent
 from core.models.recommendation_history import RecommendationHistory
 
@@ -302,10 +302,11 @@ class DashboardRepository(IDashboardRepository):
         target_year: Optional[int],
         target_month: Optional[int],
     ) -> None:
-        event = PdfDownloadEvent(
-            user_id=user_id,
-            target_name=target_name,
-            target_year=target_year,
-            target_month=target_month,
-        )
-        db.session.add(event)
+        with write_session() as session:
+            event = PdfDownloadEvent(
+                user_id=user_id,
+                target_name=target_name,
+                target_year=target_year,
+                target_month=target_month,
+            )
+            session.add(event)
