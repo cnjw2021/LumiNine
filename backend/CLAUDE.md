@@ -7,7 +7,7 @@
 - 사용자 인증(Authentication/Authorization), JWT 발급, 패스워드 암호화(`bcrypt`) 등 세션 및 권한 관리.
 - 클라이언트(프론트엔드)에서 접근 가능한 RESTful API 엔드포인트 제공.
 - Cloud Run 배포: `$PORT` 환경변수 바인딩, `GET /api/health` 헬스체크 엔드포인트.
-- Alembic 기반 DB 마이그레이션: `flask db upgrade`로 스키마 + 시드 데이터 자동 적용.
+- Alembic 기반 DB 마이그레이션: `start.sh`에서 `flask db upgrade` 실행. 단, Docker 빌드 컨텍스트가 `./backend`이므로 repo root의 `db/init/` SQL 파일은 이미지에 미포함 → 001/002 SQL seed는 CI/로컬 전용, Cloud Run에서는 003 CSV seed만 동작.
 
 ## 📂 주요 파일별 역할
 - `app.py`: Flask 애플리케이션의 엔트리포인트. 미들웨어 설정, Blueprint 등록, FlaskInjector DI 바인딩, 전역 에러 핸들러, `/api/health` 포함.

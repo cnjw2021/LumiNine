@@ -51,7 +51,7 @@
   - `backend/docs/architecture/`: 아키텍처 가이드 및 CI/CD 수동 설정 가이드
   - `backend/tests/`: pytest 기반 백엔드 테스트
 - `frontend/`: Next.js(App Router) 기반의 프론트엔드 UI 및 클라이언트 애플리케이션
-- `db/init/`: SQL 파일 (Alembic 001 DDL + 002 시드에서 참조) — Docker entrypoint에서는 사용하지 않음
+- `db/init/`: SQL 파일 (Alembic 001 DDL + 002 시드에서 참조) — Docker 빌드 컨텍스트가 `./backend`이므로 Cloud Run 이미지에 포함되지 않음. 컨테이너 내 001/002 SQL seed는 동작하지 않으며, CSV 기반 003만 정상 동작.
 - `.github/workflows/`: GitHub Actions CI/CD 워크플로우 (ci, integration-test, deploy-backend, deploy-frontend)
 - `docs/`: 프로젝트 관련 문서 보관
 - `scripts/`: PR 리뷰 자동화 스크립트 (`pr-triage.js`, `pr-review-reply.js`)
