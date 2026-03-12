@@ -1,7 +1,7 @@
 'use client';
 
 import { useState, useMemo } from 'react';
-import { useAuth } from '@/contexts/AuthContext';
+import { useAuth } from '@/contexts/auth/AuthContext';
 import {
     Container, Title, Text, Card, Group, Stack, SimpleGrid,
     Loader, Center, Pagination, Box, SegmentedControl,

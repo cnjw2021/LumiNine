@@ -192,20 +192,25 @@ export function useAdminDashboardUsers(
 
 // ── PDF 이벤트 기록 ─────────────────────────────────────
 
-/** PDF 다운로드 이벤트를 백엔드에 기록 (fire-and-forget) */
+/** PDF ダウンロードイベントをバックエンドに記録 (fire-and-forget) */
 export async function recordPdfDownload(
     targetName?: string,
     targetYear?: number,
     targetMonth?: number,
 ): Promise<void> {
     try {
-        await api.post('/events/pdf-download', {
-            target_name: targetName,
-            target_year: targetYear,
-            target_month: targetMonth,
+        const baseUrl = process.env.NEXT_PUBLIC_API_URL || '';
+        await fetch(`${baseUrl}/events/pdf-download`, {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            credentials: 'include',
+            body: JSON.stringify({
+                target_name: targetName,
+                target_year: targetYear,
+                target_month: targetMonth,
+            }),
         });
     } catch {
-        // 이벤트 기록 실패는 사용자 경험에 영향을 주지 않으므로 무시
-        console.warn('[Dashboard] PDF 다운로드 이벤트 기록 실패');
+        // イベント記録の失敗はユーザー体験に影響しないため無視
     }
 }
