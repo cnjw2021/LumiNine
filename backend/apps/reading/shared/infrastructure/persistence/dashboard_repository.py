@@ -309,4 +309,3 @@ class DashboardRepository(IDashboardRepository):
             target_month=target_month,
         )
         db.session.add(event)
-        db.session.commit()

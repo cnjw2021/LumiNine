@@ -108,6 +108,8 @@ def create_dashboard_bp(use_case: DashboardUseCase) -> Blueprint:
             current_user = get_current_user()
             result = _use_case.get_my_summary(current_user)
             return _json_response(result, 200)
+        except UserNotFoundError as e:
+            return _json_response({'error': str(e)}, 404)
         except Exception as e:
             logger.error("my_summary 에러: %s", e)
             return _json_response(
@@ -124,6 +126,8 @@ def create_dashboard_bp(use_case: DashboardUseCase) -> Blueprint:
 
             result = _use_case.get_my_history(current_user, page, per_page)
             return _json_response(result, 200)
+        except UserNotFoundError as e:
+            return _json_response({'error': str(e)}, 404)
         except Exception as e:
             logger.error("my_history 에러: %s", e)
             return _json_response(
@@ -137,6 +141,8 @@ def create_dashboard_bp(use_case: DashboardUseCase) -> Blueprint:
             current_user = get_current_user()
             result = _use_case.get_my_chart(current_user)
             return _json_response(result, 200)
+        except UserNotFoundError as e:
+            return _json_response({'error': str(e)}, 404)
         except Exception as e:
             logger.error("my_chart 에러: %s", e)
             return _json_response(
@@ -156,11 +162,28 @@ def create_dashboard_bp(use_case: DashboardUseCase) -> Blueprint:
             if target_name and len(target_name) > _TARGET_NAME_MAX_LENGTH:
                 target_name = target_name[:_TARGET_NAME_MAX_LENGTH]
 
+            # target_year / target_month 파라미터 검증 및 int 캐스팅
+            target_year_raw = data.get('target_year')
+            target_month_raw = data.get('target_month')
+
+            target_year = None
+            target_month = None
+            try:
+                if target_year_raw is not None:
+                    target_year = int(target_year_raw)
+                if target_month_raw is not None:
+                    target_month = int(target_month_raw)
+            except (TypeError, ValueError):
+                return _json_response({'error': '잘못된 파라미터입니다.'}, 400)
+
+            if target_month is not None and not (1 <= target_month <= 12):
+                return _json_response({'error': '잘못된 파라미터입니다.'}, 400)
+
             _use_case.record_pdf_download(
                 user_id=current_user.id,
                 target_name=target_name,
-                target_year=data.get('target_year'),
-                target_month=data.get('target_month'),
+                target_year=target_year,
+                target_month=target_month,
             )
             return _json_response({'status': 'ok'}, 201)
         except Exception as e:
@@ -184,11 +207,16 @@ def _json_response(data: dict, status: int) -> Response:
 
 
 def _parse_datetime(value: str | None) -> datetime | None:
-    """ISO-8601 문자열을 datetime으로 파싱합니다."""
+    """ISO-8601 문자열을 datetime으로 파싱합니다.
+
+    JavaScript `new Date().toISOString()` 형식(trailing 'Z')도 지원합니다.
+    """
     if not value:
         return None
     try:
-        dt = datetime.fromisoformat(value)
+        # JavaScript ISO 문자열의 trailing 'Z' → '+00:00' 정규화
+        normalized = value.replace('Z', '+00:00')
+        dt = datetime.fromisoformat(normalized)
         if dt.tzinfo is None:
             dt = dt.replace(tzinfo=timezone.utc)
         return dt

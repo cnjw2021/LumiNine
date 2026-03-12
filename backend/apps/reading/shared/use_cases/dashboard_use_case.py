@@ -173,7 +173,7 @@ class DashboardUseCase:
     ) -> None:
         """PDF 다운로드 이벤트를 기록합니다."""
         self._repo.record_pdf_download(user_id, target_name, target_year, target_month)
-        logger.info("PDF 다운로드 이벤트 기록: user_id=%d", user_id)
+        logger.debug("PDF 다운로드 이벤트 기록: user_id=%d", user_id)
 
     # ── 내부 헬퍼 ─────────────────────────────────────────
 
