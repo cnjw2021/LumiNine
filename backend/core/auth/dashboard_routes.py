@@ -186,6 +186,8 @@ def create_dashboard_bp(use_case: DashboardUseCase) -> Blueprint:
                 target_month=target_month,
             )
             return _json_response({'status': 'ok'}, 201)
+        except UserNotFoundError as e:
+            return _json_response({'error': str(e)}, 404)
         except Exception as e:
             logger.error("record_pdf_download 에러: %s", e)
             return _json_response(
