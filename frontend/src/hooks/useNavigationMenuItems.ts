@@ -7,7 +7,8 @@ import {
     IconLogin,
     IconQuestionMark,
     IconLock,
-    IconDatabase
+    IconDatabase,
+    IconChartBar
 } from '@tabler/icons-react';
 import { MenuItem } from '@/components/layout/NavigationMenu';
 
@@ -42,7 +43,8 @@ export function useNavigationMenuItems({
     const defaultMenuItems: MenuItem[] = useMemo(() => {
         if (!isLoggedIn && !authLoading) return [];
         return [
-            { icon: IconHome2, label: 'パーソナルストーン鑑定', href: '/appraisal' }
+            { icon: IconHome2, label: 'パーソナルストーン鑑定', href: '/appraisal' },
+            { icon: IconChartBar, label: 'マイダッシュボード', href: '/dashboard' }
         ];
     }, [isLoggedIn, authLoading]);
 
@@ -50,7 +52,8 @@ export function useNavigationMenuItems({
     const adminMenuItems: MenuItem[] = useMemo(() => {
         if (!isLoggedIn || (!isAdmin && !isSuperuser)) return [];
         return [
-            { icon: IconDatabase, label: '管理画面', href: '/admin', permission: ADMIN_PERMISSION_DATA_MANAGEMENT }
+            { icon: IconDatabase, label: '管理画面', href: '/admin', permission: ADMIN_PERMISSION_DATA_MANAGEMENT },
+            { icon: IconChartBar, label: '管理ダッシュボード', href: '/admin/dashboard', permission: ADMIN_PERMISSION_DATA_MANAGEMENT }
         ];
     }, [isLoggedIn, isAdmin, isSuperuser]);
 

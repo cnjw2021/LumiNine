@@ -235,6 +235,15 @@ export const usePdfReport = ({ resultData, contentRef, onActionComplete }: UsePd
             }
 
             if (onActionComplete) onActionComplete();
+
+            // PDF 다운로드 이벤트를 백엔드에 기록 (fire-and-forget)
+            import('@/hooks/useDashboard').then(({ recordPdfDownload }) => {
+                recordPdfDownload(
+                    resultData.fullName || undefined,
+                    undefined,  // target_year — 결과 데이터에서 추출 가능 시 설정
+                    undefined,  // target_month
+                );
+            }).catch(() => { /* 이벤트 기록 모듈 로드 실패 무시 */ });
         } catch (error) {
             console.error('PDF generation failed:', error);
             alert('PDFの生成に失敗しました。もう一度お試しください。');

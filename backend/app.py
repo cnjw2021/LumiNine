@@ -17,6 +17,7 @@ from injector import Injector
 
 from apps.reading.shared.use_cases.permission_use_case import PermissionUseCase
 from apps.reading.shared.use_cases.admin_user_use_case import AdminUserUseCase
+from apps.reading.shared.use_cases.dashboard_use_case import DashboardUseCase
 
 # パスを追加
 PROJECT_ROOT = os.path.dirname(os.path.abspath(__file__))
@@ -29,6 +30,7 @@ from core.exceptions import AppError
 from core.auth import auth_bp
 from core.auth.auth_routes import create_auth_bp
 from core.auth.permission_routes import create_permission_bp
+from core.auth.dashboard_routes import create_dashboard_bp
 
 # JSONエンコーダーをカスタマイズ
 class CustomJSONEncoder(json.JSONEncoder):
@@ -116,6 +118,10 @@ def create_app() -> Flask:
     admin_user_use_case = injector.get(AdminUserUseCase)
     create_auth_bp(admin_user_use_case)
     app.register_blueprint(auth_bp, url_prefix='/api/auth')
+
+    # 대시보드 블루프린트 등록
+    dashboard_use_case = injector.get(DashboardUseCase)
+    app.register_blueprint(create_dashboard_bp(dashboard_use_case))
 
     # DI 설정（同一InjectorをFlaskに紐付け）
     FlaskInjector(app=app, injector=injector)
