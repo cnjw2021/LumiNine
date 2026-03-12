@@ -51,10 +51,17 @@ export function useNavigationMenuItems({
     // 管理者メニュー項目
     const adminMenuItems: MenuItem[] = useMemo(() => {
         if (!isLoggedIn || (!isAdmin && !isSuperuser)) return [];
-        return [
+
+        const items: MenuItem[] = [
             { icon: IconDatabase, label: '管理画面', href: '/admin', permission: ADMIN_PERMISSION_DATA_MANAGEMENT },
-            { icon: IconChartBar, label: '管理ダッシュボード', href: '/admin/dashboard', permission: ADMIN_PERMISSION_DATA_MANAGEMENT }
         ];
+
+        // 管理ダッシュボードは superuser 専用
+        if (isSuperuser) {
+            items.push({ icon: IconChartBar, label: '管理ダッシュボード', href: '/admin/dashboard', permission: ADMIN_PERMISSION_DATA_MANAGEMENT });
+        }
+
+        return items;
     }, [isLoggedIn, isAdmin, isSuperuser]);
 
     // 鑑定のインサイト

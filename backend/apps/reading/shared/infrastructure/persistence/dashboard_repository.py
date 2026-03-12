@@ -285,7 +285,7 @@ class DashboardRepository(IDashboardRepository):
             )
             .filter(
                 RecommendationHistory.user_id == user_id,
-                RecommendationHistory.created_at >= func.now() - text("INTERVAL ':m months'").bindparams(m=months),
+                RecommendationHistory.created_at >= func.now() - func.make_interval(months=months),
             )
             .group_by(text('1'))
             .order_by(text('1'))

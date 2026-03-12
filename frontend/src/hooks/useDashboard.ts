@@ -48,6 +48,7 @@ export function useMyDashboardHistory(page: number, perPage: number) {
         let cancelled = false;
         (async () => {
             setLoading(true);
+            setError(null);
             try {
                 const { data } = await api.get<MyHistoryResponse>('/dashboard/my/history', {
                     params: { page, per_page: perPage },
@@ -167,6 +168,7 @@ export function useAdminDashboardUsers(
 
     const fetchUsers = useCallback(async () => {
         setLoading(true);
+        setError(null);
         try {
             const { data: resp } = await api.get<AdminUsersResponse>(
                 '/admin/dashboard/users',

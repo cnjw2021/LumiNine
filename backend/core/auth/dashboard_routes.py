@@ -12,6 +12,7 @@ from flask_jwt_extended import jwt_required
 from apps.reading.shared.use_cases.dashboard_use_case import DashboardUseCase
 from core.auth.auth_utils import get_current_user
 from core.exceptions import AppError
+from core.models.exceptions import UserNotFoundError
 from core.utils.logger import get_logger
 
 logger = get_logger(__name__)
@@ -39,6 +40,8 @@ def create_dashboard_bp(use_case: DashboardUseCase) -> Blueprint:
             current_user = get_current_user()
             result = _use_case.get_admin_summary(current_user)
             return _json_response(result, 200)
+        except UserNotFoundError as e:
+            return _json_response({'error': str(e)}, 404)
         except AppError as e:
             return _json_response(e.to_dict(), e.status)
         except Exception as e:
@@ -61,6 +64,8 @@ def create_dashboard_bp(use_case: DashboardUseCase) -> Blueprint:
 
             result = _use_case.get_admin_chart_data(current_user, start, end, interval)
             return _json_response(result, 200)
+        except UserNotFoundError as e:
+            return _json_response({'error': str(e)}, 404)
         except AppError as e:
             return _json_response(e.to_dict(), e.status)
         except Exception as e:
@@ -84,6 +89,8 @@ def create_dashboard_bp(use_case: DashboardUseCase) -> Blueprint:
                 current_user, page, per_page, sort, order, search,
             )
             return _json_response(result, 200)
+        except UserNotFoundError as e:
+            return _json_response({'error': str(e)}, 404)
         except AppError as e:
             return _json_response(e.to_dict(), e.status)
         except Exception as e:

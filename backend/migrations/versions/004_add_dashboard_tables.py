@@ -33,11 +33,9 @@ def upgrade():
     op.create_index('idx_pde_created_at', 'pdf_download_events', ['created_at'])
 
     # recommendation_history 인덱스 추가 (집계 쿼리 성능 최적화)
-    op.create_index(
-        'idx_rh_created_at',
-        'recommendation_history',
-        ['created_at'],
-        if_not_exists=True,
+    op.execute(
+        "CREATE INDEX IF NOT EXISTS idx_rh_created_at "
+        "ON recommendation_history (created_at)"
     )
 
 

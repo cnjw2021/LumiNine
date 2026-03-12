@@ -23,7 +23,7 @@ export interface AdminChartData {
     pdfs: ChartDataPoint[];
     start: string;
     end: string;
-    interval: string;
+    interval: AggregationInterval;
 }
 
 /** 사용자별 통계 행 */
