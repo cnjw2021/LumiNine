@@ -1,6 +1,7 @@
 'use client';
 
 import { useState, useMemo } from 'react';
+import { useAuth } from '@/contexts/AuthContext';
 import {
     Container, Title, Text, Card, Group, Stack, SimpleGrid,
     Loader, Center, Pagination, Box, SegmentedControl,
@@ -325,6 +326,18 @@ function UsersTable() {
 // ── メインページ ─────────────────────────────────────────
 
 export default function AdminDashboardPage() {
+    const { isSuperuser } = useAuth();
+
+    if (!isSuperuser) {
+        return (
+            <Container size="lg" py="xl">
+                <Center py="xl">
+                    <Text c="dimmed" size="lg">このページはスーパーユーザー専用です。</Text>
+                </Center>
+            </Container>
+        );
+    }
+
     return (
         <Container size="lg" py="xl">
             <Stack gap="xl">

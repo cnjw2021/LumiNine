@@ -42,4 +42,4 @@ __all__ = [
     'PowerStoneMaster',
     'RecommendationHistory',
     'PdfDownloadEvent',
-] 
+]
