@@ -22,7 +22,7 @@ class IDashboardRepository(ABC):
 
     @abstractmethod
     def get_active_user_count(self) -> int:
-        """활성 사용자 수 (is_deleted=False)."""
+        """활성 사용자 수 (is_deleted=False AND is_active=True)."""
 
     @abstractmethod
     def get_readings_by_period(
