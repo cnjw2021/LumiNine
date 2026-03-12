@@ -27,7 +27,7 @@ export function useMyDashboardSummary() {
                 const { data } = await api.get<MyDashboardSummary>('/dashboard/my/summary');
                 if (!cancelled) setSummary(data);
             } catch (e: unknown) {
-                if (!cancelled) setError('요약 데이터를 불러올 수 없습니다.');
+                if (!cancelled) setError('サマリーデータを読み込めませんでした。');
             } finally {
                 if (!cancelled) setLoading(false);
             }
@@ -55,7 +55,7 @@ export function useMyDashboardHistory(page: number, perPage: number) {
                 });
                 if (!cancelled) setHistory(data);
             } catch (e: unknown) {
-                if (!cancelled) setError('이력 데이터를 불러올 수 없습니다.');
+                if (!cancelled) setError('履歴データを読み込めませんでした。');
             } finally {
                 if (!cancelled) setLoading(false);
             }
@@ -79,7 +79,7 @@ export function useMyDashboardChart() {
                 const { data } = await api.get<MyChartResponse>('/dashboard/my/chart');
                 if (!cancelled) setChartData(data);
             } catch (e: unknown) {
-                if (!cancelled) setError('차트 데이터를 불러올 수 없습니다.');
+                if (!cancelled) setError('チャートデータを読み込めませんでした。');
             } finally {
                 if (!cancelled) setLoading(false);
             }
@@ -107,7 +107,7 @@ export function useAdminDashboardSummary() {
                 );
                 if (!cancelled) setSummary(data);
             } catch (e: unknown) {
-                if (!cancelled) setError('관리자 요약을 불러올 수 없습니다.');
+                if (!cancelled) setError('管理者サマリーを読み込めませんでした。');
             } finally {
                 if (!cancelled) setLoading(false);
             }
@@ -132,6 +132,7 @@ export function useAdminDashboardChart(
         let cancelled = false;
         (async () => {
             setLoading(true);
+            setError(null);
             try {
                 const params: Record<string, string> = { interval };
                 if (start) params.start = start;
@@ -143,7 +144,7 @@ export function useAdminDashboardChart(
                 );
                 if (!cancelled) setChartData(data);
             } catch (e: unknown) {
-                if (!cancelled) setError('차트 데이터를 불러올 수 없습니다.');
+                if (!cancelled) setError('チャートデータを読み込めませんでした。');
             } finally {
                 if (!cancelled) setLoading(false);
             }
@@ -166,27 +167,27 @@ export function useAdminDashboardUsers(
     const [loading, setLoading] = useState(true);
     const [error, setError] = useState<string | null>(null);
 
-    const fetchUsers = useCallback(async () => {
-        setLoading(true);
-        setError(null);
-        try {
-            const { data: resp } = await api.get<AdminUsersResponse>(
-                '/admin/dashboard/users',
-                { params: { page, per_page: perPage, sort, order, search: search || undefined } },
-            );
-            setData(resp);
-        } catch (e: unknown) {
-            setError('사용자 목록을 불러올 수 없습니다.');
-        } finally {
-            setLoading(false);
-        }
+    useEffect(() => {
+        let cancelled = false;
+        (async () => {
+            setLoading(true);
+            setError(null);
+            try {
+                const { data: resp } = await api.get<AdminUsersResponse>(
+                    '/admin/dashboard/users',
+                    { params: { page, per_page: perPage, sort, order, search: search || undefined } },
+                );
+                if (!cancelled) setData(resp);
+            } catch (e: unknown) {
+                if (!cancelled) setError('ユーザー一覧を読み込めませんでした。');
+            } finally {
+                if (!cancelled) setLoading(false);
+            }
+        })();
+        return () => { cancelled = true; };
     }, [page, perPage, sort, order, search]);
 
-    useEffect(() => {
-        fetchUsers();
-    }, [fetchUsers]);
-
-    return { data, loading, error, refetch: fetchUsers };
+    return { data, loading, error };
 }
 
 // ── PDF 이벤트 기록 ─────────────────────────────────────

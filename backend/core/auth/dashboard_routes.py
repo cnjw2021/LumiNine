@@ -62,6 +62,18 @@ def create_dashboard_bp(use_case: DashboardUseCase) -> Blueprint:
             start = _parse_datetime(start_str)
             end = _parse_datetime(end_str)
 
+            # start/end가 제공됐지만 ISO 파싱 실패 시 400 응답
+            if start_str is not None and start is None:
+                return _json_response(
+                    {'error': "Invalid 'start' parameter. Expected ISO 8601 datetime string."},
+                    400,
+                )
+            if end_str is not None and end is None:
+                return _json_response(
+                    {'error': "Invalid 'end' parameter. Expected ISO 8601 datetime string."},
+                    400,
+                )
+
             result = _use_case.get_admin_chart_data(current_user, start, end, interval)
             return _json_response(result, 200)
         except UserNotFoundError as e:
