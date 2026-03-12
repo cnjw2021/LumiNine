@@ -16,7 +16,7 @@
 - `wait_for_db.py`: 로컬 개발환경 전용 PostgreSQL 연결 대기 스크립트 (psycopg2 사용).
 - `core/`: 설정(`config.py`), DB 세션(`database.py`), DB 설정(`db_config.py`), 예외 처리(`exceptions.py`), 유틸리티.
   - `core/auth/`: 인증 모듈 — `auth_routes.py`(로그인·로그아웃·패스워드변경·유저정보), `admin_user_routes.py`(관리자 유저 CRUD), `admin_system_routes.py`(시스템 설정·계정제한), `token_routes.py`(JWT 토큰 라이프사이클), `debug_routes.py`(헬스체크), `auth_utils.py`(get_current_user 헬퍼·권한 데코레이터), `jwt_helpers.py`(JWT), `permission_routes.py`(권한관리).
-  - `core/models/`: SQLAlchemy 모델 정의 (14개) — `star_grid_patterns`, `monthly_directions`, `daily_astrology`, `solar_starts`, `solar_terms`, `powerstone_master`, `recommendation_history`, `hourly_star_zodiacs`, `zodiac_groups`/`zodiac_group_members`, `pattern_switch_dates`, `system_config`, `admin_account_limit`, `star_groups`. `exceptions.py`는 커스텀 예외 클래스 모음.
+  - `core/models/`: SQLAlchemy 모델 정의 (14개) — `star_grid_patterns`, `monthly_directions`, `daily_astrology`, `solar_starts`, `solar_terms`, `powerstone_master`, `recommendation_history`, `hourly_star_zodiacs`, `zodiac_groups`/`zodiac_group_members`, `pattern_switch_dates`, `system_config`, `admin_account_limit`, `star_groups`. 별도로 `core/models/exceptions.py`는 DB 모델 관련 커스텀 예외 클래스 모음 (cf. `core/exceptions.py`는 애플리케이션 레벨 예외).
   - `core/services/`: 공통 서비스 레이어.
   - `core/utils/`: 로거(`logger.py`) 등 유틸리티.
 - `apps/reading/`: 도메인 기반으로 분리된 기능 모듈. 3개 서브도메인 + 공통 모듈.
@@ -61,7 +61,7 @@
 1. **Clean Architecture 준수**: `use_cases`나 `domain` 레이어에 `Flask`나 `SQLAlchemy` 같은 특정 인프라 코드가 직접적으로 침투하지 않도록 유의하세요.
 2. **서브도메인 독립성**: `ninestarki`, `numerology`, `powerstone` 각 서브도메인은 서로 직접 import하지 않고, `dependency_module.py`를 통해 연결됩니다.
 3. **DB 스키마 변경**: 모델을 변경할 경우, Alembic 마이그레이션(`migrations/versions/`)을 생성하세요 (`make db-migrate MSG="설명"`).
-4. **환경에 따른 설정 분리**: `config.py`는 단일 `Config` 클래스로 구성. 프로덕션은 `DATABASE_URL` 환경변수로 제어.
+4. **환경에 따른 설정 분리**: `core/config.py`는 `BaseConfig`/`DevelopmentConfig`/`ProductionConfig` 환경별 클래스 구조. `FLASK_ENV`/`FLASK_DEBUG` 환경변수로 프로덕션 여부 판단. 프로덕션은 `DATABASE_URL` 환경변수로 DB 연결 제어.
 5. **Cloud Run 호환성**: `start.sh`에서 `PORT` 환경변수를 반드시 사용. cron, logrotate, New Relic 등 VPS 전용 로직을 추가하지 마세요.
 6. **패키지 정리**: `requirements.txt`에서 WeasyPrint, Redis, RQ 등은 제거된 상태. 추가 시 Cloud Run 이미지 크기 증가에 유의.
 7. **CSV 시드 데이터**: 마스터 데이터 추가/수정 시 `data/csv/` 디렉토리의 CSV 파일과 `migrations/versions/003_csv_seed_data.py`를 함께 관리하세요.
