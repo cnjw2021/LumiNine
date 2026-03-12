@@ -64,7 +64,7 @@
 - **달력 및 절기 데이터**: `solar_starts` (입춘 데이터), `solar_terms` (절기 데이터), `daily_astrology` (일별 간지/별 데이터)
 - **방위 및 배치 데이터**: `star_grid_patterns` (구성반), `monthly_directions` (월반 방위), `pattern_switch_dates` (반전환일)
 - **파워스톤**: `powerstone_master`, `recommendation_history`
-- **간지-별 관계**: `hourly_star_zodiacs` (시진 별 간지), `zodiac_groups` / `zodiac_group_members` (간지 그룹)
+- **간지-별 관계**: `hourly_star_zodiacs` (시진 별 간지), `zodiac_groups` / `zodiac_group_members` (간지 그룹), `star_groups` (별 그룹)
 - **시스템 및 인증 데이터**: `users`, `permissions`, `user_permissions`, `system_config`, `admin_account_limit`
 - **스키마 위치**: `backend/migrations/versions/` (Alembic — 001 스키마, 002 SQL 시드, 003 CSV 시드) / `db/init/*.sql` (Alembic 001/002에서 참조)
 - **프로덕션 마이그레이션**: `flask db upgrade` (Cloud Run 배포 시 자동 적용)

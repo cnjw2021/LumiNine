@@ -16,12 +16,12 @@
 - `wait_for_db.py`: 로컬 개발환경 전용 PostgreSQL 연결 대기 스크립트 (psycopg2 사용).
 - `core/`: 설정(`config.py`), DB 세션(`database.py`), DB 설정(`db_config.py`), 예외 처리(`exceptions.py`), 유틸리티.
   - `core/auth/`: 인증 모듈 — `auth_routes.py`(로그인·로그아웃·패스워드변경·유저정보), `admin_user_routes.py`(관리자 유저 CRUD), `admin_system_routes.py`(시스템 설정·계정제한), `token_routes.py`(JWT 토큰 라이프사이클), `debug_routes.py`(헬스체크), `auth_utils.py`(get_current_user 헬퍼·권한 데코레이터), `jwt_helpers.py`(JWT), `permission_routes.py`(권한관리).
-  - `core/models/`: SQLAlchemy 모델 정의 — `stars`, `star_attributes`, `star_grid_patterns`, `monthly_directions`, `daily_astrology`, `solar_starts`, `solar_terms`, `powerstone_master`, `recommendation_history`, `hourly_star_zodiacs`, `zodiac_groups`/`zodiac_group_members`, `pattern_switch_dates`, `system_config`, `admin_account_limit`, `star_groups`, `exceptions`.
+  - `core/models/`: SQLAlchemy 모델 정의 (14개) — `star_grid_patterns`, `monthly_directions`, `daily_astrology`, `solar_starts`, `solar_terms`, `powerstone_master`, `recommendation_history`, `hourly_star_zodiacs`, `zodiac_groups`/`zodiac_group_members`, `pattern_switch_dates`, `system_config`, `admin_account_limit`, `star_groups`. `exceptions.py`는 커스텀 예외 클래스 모음.
   - `core/services/`: 공통 서비스 레이어.
   - `core/utils/`: 로거(`logger.py`) 등 유틸리티.
 - `apps/reading/`: 도메인 기반으로 분리된 기능 모듈. 3개 서브도메인 + 공통 모듈.
   - `apps/reading/ninestarki/`: 구성기학(九星気学) 도메인 — 방위 길흉·연월반 계산, 운세.
-    - `domain/entities/`: 핵심 비즈니스 엔티티.
+    - `domain/entities/`: 핵심 비즈니스 엔티티 — `nine_star.py`(테이블: `stars`), `star_attribute.py`(테이블: `star_attributes`), `solar_term.py`(도메인 엔티티).
     - `domain/repositories/`: 레포지토리 인터페이스 (6개).
     - `domain/services/`: 도메인 서비스 — `star_calculator_service`, `monthly_board_domain_service`, `fortune_status_service`, `five_elements_fortune_service`, `additional_direction_marks_service`, `direction_rule_engine`, `year_star_domain_service` + `interfaces/` (서비스 인터페이스).
     - `domain/constants/`: 도메인 상수 (`direction_constants` 등).
@@ -34,7 +34,7 @@
     - `utils/`: 유틸리티.
   - `apps/reading/numerology/`: 수비술(Numerology) 도메인 — Life Path Number 기반 파워스톤.
   - `apps/reading/powerstone/`: 파워스톤 추천 도메인 — 6-레이어 추천 엔진 + `data/` (JSON 데이터).
-  - `apps/reading/shared/`: 공통 모듈 — `domain/`(entities: user/permission, constants, exceptions, repositories, services) + `infrastructure/persistence/` + `use_cases/`(admin_user_use_case, permission_use_case).
+  - `apps/reading/shared/`: 공통 모듈 — `domain/entities/`(`user.py`→`users`, `permission.py`→`permissions`, `user_permission.py`→`user_permissions`) + `domain/`(constants, exceptions, repositories, services) + `infrastructure/persistence/` + `use_cases/`(admin_user_use_case, permission_use_case).
   - `apps/reading/dependency_module.py`: Flask-Injector 기반 DI 컨테이너 설정 (모든 서브도메인 바인딩).
 - `migrations/`: Alembic DB 마이그레이션 디렉토리.
   - `migrations/versions/001_initial_schema.py`: 초기 스키마 생성.
