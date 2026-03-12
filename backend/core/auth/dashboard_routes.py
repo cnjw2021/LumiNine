@@ -20,15 +20,9 @@ logger = get_logger(__name__)
 # target_name 최대 길이 (DB 컬럼 VARCHAR(100)과 일치)
 _TARGET_NAME_MAX_LENGTH = 100
 
-# UseCase — create_dashboard_bp() 에서 주입
-_use_case: DashboardUseCase = None  # type: ignore
-
 
 def create_dashboard_bp(use_case: DashboardUseCase) -> Blueprint:
     """대시보드 Blueprint를 생성합니다."""
-    global _use_case
-    _use_case = use_case
-
     bp = Blueprint('dashboard', __name__, url_prefix='/api')
 
     # ── Superuser 전용 엔드포인트 ──────────────────────────
@@ -38,7 +32,7 @@ def create_dashboard_bp(use_case: DashboardUseCase) -> Blueprint:
     def admin_summary():
         try:
             current_user = get_current_user()
-            result = _use_case.get_admin_summary(current_user)
+            result = use_case.get_admin_summary(current_user)
             return _json_response(result, 200)
         except UserNotFoundError as e:
             return _json_response({'error': str(e)}, 404)
@@ -74,7 +68,7 @@ def create_dashboard_bp(use_case: DashboardUseCase) -> Blueprint:
                     400,
                 )
 
-            result = _use_case.get_admin_chart_data(current_user, start, end, interval)
+            result = use_case.get_admin_chart_data(current_user, start, end, interval)
             return _json_response(result, 200)
         except UserNotFoundError as e:
             return _json_response({'error': str(e)}, 404)
@@ -97,7 +91,7 @@ def create_dashboard_bp(use_case: DashboardUseCase) -> Blueprint:
             order = request.args.get('order', 'asc')
             search = request.args.get('search')
 
-            result = _use_case.get_admin_users(
+            result = use_case.get_admin_users(
                 current_user, page, per_page, sort, order, search,
             )
             return _json_response(result, 200)
@@ -118,7 +112,7 @@ def create_dashboard_bp(use_case: DashboardUseCase) -> Blueprint:
     def my_summary():
         try:
             current_user = get_current_user()
-            result = _use_case.get_my_summary(current_user)
+            result = use_case.get_my_summary(current_user)
             return _json_response(result, 200)
         except UserNotFoundError as e:
             return _json_response({'error': str(e)}, 404)
@@ -136,7 +130,7 @@ def create_dashboard_bp(use_case: DashboardUseCase) -> Blueprint:
             page = request.args.get('page', 1, type=int)
             per_page = request.args.get('per_page', 20, type=int)
 
-            result = _use_case.get_my_history(current_user, page, per_page)
+            result = use_case.get_my_history(current_user, page, per_page)
             return _json_response(result, 200)
         except UserNotFoundError as e:
             return _json_response({'error': str(e)}, 404)
@@ -151,7 +145,7 @@ def create_dashboard_bp(use_case: DashboardUseCase) -> Blueprint:
     def my_chart():
         try:
             current_user = get_current_user()
-            result = _use_case.get_my_chart(current_user)
+            result = use_case.get_my_chart(current_user)
             return _json_response(result, 200)
         except UserNotFoundError as e:
             return _json_response({'error': str(e)}, 404)
@@ -170,9 +164,13 @@ def create_dashboard_bp(use_case: DashboardUseCase) -> Blueprint:
             current_user = get_current_user()
             data = request.get_json(silent=True) or {}
 
-            target_name = data.get('target_name')
-            if target_name and len(target_name) > _TARGET_NAME_MAX_LENGTH:
-                target_name = target_name[:_TARGET_NAME_MAX_LENGTH]
+            target_name_raw = data.get('target_name')
+            if target_name_raw is None:
+                target_name = None
+            else:
+                target_name = str(target_name_raw)
+                if len(target_name) > _TARGET_NAME_MAX_LENGTH:
+                    target_name = target_name[:_TARGET_NAME_MAX_LENGTH]
 
             # target_year / target_month 파라미터 검증 및 int 캐스팅
             target_year_raw = data.get('target_year')
@@ -191,7 +189,7 @@ def create_dashboard_bp(use_case: DashboardUseCase) -> Blueprint:
             if target_month is not None and not (1 <= target_month <= 12):
                 return _json_response({'error': '잘못된 파라미터입니다.'}, 400)
 
-            _use_case.record_pdf_download(
+            use_case.record_pdf_download(
                 user_id=current_user.id,
                 target_name=target_name,
                 target_year=target_year,

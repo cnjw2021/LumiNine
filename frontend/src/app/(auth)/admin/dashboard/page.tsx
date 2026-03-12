@@ -243,6 +243,14 @@ function UsersTable() {
         <Table.Th
             style={{ cursor: 'pointer', userSelect: 'none', whiteSpace: 'nowrap' }}
             onClick={() => toggleSort(field)}
+            onKeyDown={(e: React.KeyboardEvent) => {
+                if (e.key === 'Enter' || e.key === ' ') {
+                    e.preventDefault();
+                    toggleSort(field);
+                }
+            }}
+            role="button"
+            tabIndex={0}
         >
             <Group gap={4} wrap="nowrap">
                 <Text size="xs" fw={600}>{label}</Text>
