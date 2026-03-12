@@ -4,7 +4,7 @@ import { useState, useMemo } from 'react';
 import {
     Container, Title, Text, Card, Group, Stack, SimpleGrid,
     Loader, Center, Pagination, Box, SegmentedControl,
-    Table, TextInput, Select, ActionIcon,
+    Table, TextInput, Select,
 } from '@mantine/core';
 import {
     IconChartBar, IconFileDownload, IconUsers,

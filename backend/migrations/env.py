@@ -57,6 +57,7 @@ from core.models.pattern_switch_date import PatternSwitchDate     # noqa: F401
 from core.models.monthly_directions import MonthlyDirections      # noqa: F401
 from core.models.powerstone_master import PowerStoneMaster        # noqa: F401
 from core.models.admin_account_limit import AdminAccountLimit     # noqa: F401
+from core.models.pdf_download_event import PdfDownloadEvent       # noqa: F401
 config.set_main_option('sqlalchemy.url', get_engine_url())
 target_db = current_app.extensions['migrate'].db
 
