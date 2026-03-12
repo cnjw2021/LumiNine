@@ -156,7 +156,7 @@ function HistoryTabs() {
     if (!history) return null;
 
     return (
-        <Tabs defaultValue="readings" styles={{
+        <Tabs defaultValue="readings" onChange={() => setPage(1)} styles={{
             tab: { fontFamily: FONTS.caption, fontSize: '13px', letterSpacing: '0.05em' },
         }}>
             <Tabs.List>

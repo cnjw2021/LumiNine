@@ -167,7 +167,8 @@ class DashboardRepository(IDashboardRepository):
         if isinstance(sort_col, str):
             sort_col = text(sort_col)
         sort_expr = desc(sort_col) if order == 'desc' else asc(sort_col)
-        q = q.order_by(sort_expr)
+        secondary_sort_expr = asc(User.id)
+        q = q.order_by(sort_expr, secondary_sort_expr)
 
         # 페이징
         offset = (page - 1) * per_page

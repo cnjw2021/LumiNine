@@ -168,7 +168,7 @@ def create_dashboard_bp(use_case: DashboardUseCase) -> Blueprint:
     def record_pdf_download():
         try:
             current_user = get_current_user()
-            data = request.get_json() or {}
+            data = request.get_json(silent=True) or {}
 
             target_name = data.get('target_name')
             if target_name and len(target_name) > _TARGET_NAME_MAX_LENGTH:
