@@ -199,16 +199,10 @@ export async function recordPdfDownload(
     targetMonth?: number,
 ): Promise<void> {
     try {
-        const baseUrl = process.env.NEXT_PUBLIC_API_URL || '';
-        await fetch(`${baseUrl}/events/pdf-download`, {
-            method: 'POST',
-            headers: { 'Content-Type': 'application/json' },
-            credentials: 'include',
-            body: JSON.stringify({
-                target_name: targetName,
-                target_year: targetYear,
-                target_month: targetMonth,
-            }),
+        await api.post('/events/pdf-download', {
+            target_name: targetName,
+            target_year: targetYear,
+            target_month: targetMonth,
         });
     } catch {
         // イベント記録の失敗はユーザー体験に影響しないため無視
