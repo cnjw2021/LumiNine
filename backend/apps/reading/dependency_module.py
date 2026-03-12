@@ -87,6 +87,10 @@ from apps.reading.shared.infrastructure.persistence.permission_repository import
 from apps.reading.shared.use_cases.permission_use_case import PermissionUseCase
 from apps.reading.shared.use_cases.admin_user_use_case import AdminUserUseCase
 
+from apps.reading.shared.domain.repositories.dashboard_repository_interface import IDashboardRepository
+from apps.reading.shared.infrastructure.persistence.dashboard_repository import DashboardRepository
+from apps.reading.shared.use_cases.dashboard_use_case import DashboardUseCase
+
 
 class AppModule(Module):
     """
@@ -129,6 +133,14 @@ class AppModule(Module):
     ) -> AdminUserUseCase:
         return AdminUserUseCase(user_repo)
 
+    @singleton
+    @provider
+    def provide_dashboard_use_case(
+        self,
+        dashboard_repo: IDashboardRepository,
+    ) -> DashboardUseCase:
+        return DashboardUseCase(dashboard_repo)
+
     def configure(self, binder):
         # ── ninestarki ────────────────────────────────────
         binder.bind(INineStarRepository, to=NineStarRepository, scope=singleton)
@@ -161,3 +173,6 @@ class AppModule(Module):
         # ── shared ────────────────────────────────────────
         binder.bind(IUserRepository, to=UserRepository, scope=singleton)
         binder.bind(IPermissionRepository, to=PermissionRepository, scope=singleton)
+
+        # ── dashboard ─────────────────────────────────────
+        binder.bind(IDashboardRepository, to=DashboardRepository, scope=singleton)

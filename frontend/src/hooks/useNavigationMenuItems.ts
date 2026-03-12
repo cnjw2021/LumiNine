@@ -7,7 +7,8 @@ import {
     IconLogin,
     IconQuestionMark,
     IconLock,
-    IconDatabase
+    IconDatabase,
+    IconChartBar
 } from '@tabler/icons-react';
 import { MenuItem } from '@/components/layout/NavigationMenu';
 
@@ -42,16 +43,25 @@ export function useNavigationMenuItems({
     const defaultMenuItems: MenuItem[] = useMemo(() => {
         if (!isLoggedIn && !authLoading) return [];
         return [
-            { icon: IconHome2, label: 'パーソナルストーン鑑定', href: '/appraisal' }
+            { icon: IconHome2, label: 'パーソナルストーン鑑定', href: '/appraisal' },
+            { icon: IconChartBar, label: 'マイダッシュボード', href: '/dashboard' }
         ];
     }, [isLoggedIn, authLoading]);
 
     // 管理者メニュー項目
     const adminMenuItems: MenuItem[] = useMemo(() => {
         if (!isLoggedIn || (!isAdmin && !isSuperuser)) return [];
-        return [
-            { icon: IconDatabase, label: '管理画面', href: '/admin', permission: ADMIN_PERMISSION_DATA_MANAGEMENT }
+
+        const items: MenuItem[] = [
+            { icon: IconDatabase, label: '管理画面', href: '/admin', permission: ADMIN_PERMISSION_DATA_MANAGEMENT },
         ];
+
+        // 管理ダッシュボードは superuser 専用
+        if (isSuperuser) {
+            items.push({ icon: IconChartBar, label: '管理ダッシュボード', href: '/admin/dashboard', permission: ADMIN_PERMISSION_DATA_MANAGEMENT });
+        }
+
+        return items;
     }, [isLoggedIn, isAdmin, isSuperuser]);
 
     // 鑑定のインサイト
